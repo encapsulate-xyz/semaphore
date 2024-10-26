@@ -17,6 +17,7 @@ create table `project` (
 );
 
 create table `project__user` (
+	`id` integer primary key autoincrement,
 	`project_id` int not null,
 	`user_id` int not null,
 	`admin` boolean not null default false,
@@ -101,12 +102,13 @@ create table `task` (
 	foreign key (`template_id`) references project__template(`id`) on delete cascade
 );
 
-create table `task__output` (
-	`task_id` int not null,
-	`task` varchar(255) not null,
-	`time` datetime not null,
-	`output` longtext not null,
+create table task__output
+(
+    id integer primary key autoincrement,
+    task_id int not null,
+    task varchar(255) not null,
+    time datetime not null,
+    output longtext not null,
 
-	unique (`task_id`, `time`),
-	foreign key (`task_id`) references task(`id`) on delete cascade
+    foreign key (`task_id`) references task(`id`) on delete cascade
 );
