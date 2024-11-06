@@ -130,6 +130,17 @@ func (r Repository) GetType() RepositoryType {
 }
 
 func (r Repository) Validate() error {
+    // Check if GitBranch is "main"
+    if r.GitBranch != "main" {
+        return &ValidationError{"repository branch must be 'main'"}
+    }
+
+    // Check if GitURL starts with the required prefix
+    requiredPrefix := "git@github.com:encapsulate-xyz"
+    if !strings.HasPrefix(r.GitURL, requiredPrefix) {
+        return &ValidationError{fmt.Sprintf("repository URL must start with '%s'", requiredPrefix)}
+    }
+
 	if r.Name == "" {
 		return &ValidationError{"repository name can't be empty"}
 	}
