@@ -2,7 +2,6 @@ package db_lib
 
 import (
 	"fmt"
-	"os"
 	"os/exec"
 	"strings"
 	"time"
@@ -107,8 +106,8 @@ func (t *ShellApp) makeShellCmd(args []string, environmentVars *[]string) *exec.
 	return t.makeCmd(command, append(appArgs, args...), environmentVars)
 }
 
-func (t *ShellApp) Run(args []string, environmentVars *[]string, inputs map[string]string, cb func(*os.Process)) error {
-	cmd := t.makeShellCmd(args, environmentVars)
+func (t *ShellApp) Run(args LocalAppRunningArgs) error {
+	cmd := t.makeShellCmd(args.CliArgs, args.EnvironmentVars)
 	t.Logger.LogCmd(cmd)
 	//cmd.Stdin = &t.reader
 	cmd.Stdin = strings.NewReader("")
@@ -116,6 +115,6 @@ func (t *ShellApp) Run(args []string, environmentVars *[]string, inputs map[stri
 	if err != nil {
 		return err
 	}
-	cb(cmd.Process)
+	args.Callback(cmd.Process)
 	return cmd.Wait()
 }

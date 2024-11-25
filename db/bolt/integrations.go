@@ -3,8 +3,9 @@ package bolt
 import (
 	"errors"
 	"fmt"
-	"github.com/semaphoreui/semaphore/db"
 	"reflect"
+
+	"github.com/semaphoreui/semaphore/db"
 )
 
 /*
@@ -283,7 +284,7 @@ func (d *BoltDb) GetAllSearchableIntegrations() (integrations []db.Integration, 
 			return
 		}
 
-		integrations = append(projectIntegrations)
+		integrations = append(integrations, projectIntegrations...)
 	}
 
 	return

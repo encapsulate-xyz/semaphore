@@ -102,6 +102,8 @@ type Template struct {
 	App TemplateApp `db:"app" json:"app"`
 
 	Tasks int `db:"tasks" json:"tasks" backup:"-"`
+
+	TaskParams MapStringAnyField `db:"task_params" json:"task_params"`
 }
 
 func (tpl *Template) Validate() error {

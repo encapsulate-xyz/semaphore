@@ -4,7 +4,7 @@
       <v-col cols="12" sm="6">
         <v-checkbox
           class="mt-0"
-          :input-value="value.debug"
+          :input-value="params.debug"
           @change="updateValue('debug', $event)"
         >
           <template v-slot:label>
@@ -15,7 +15,7 @@
       <v-col cols="12" sm="6">
         <v-checkbox
           class="mt-0"
-          :input-value="value.dry_run"
+          :input-value="params.dry_run"
           @change="updateValue('dry_run', $event)"
         >
           <template v-slot:label>
@@ -26,7 +26,7 @@
       <v-col cols="12" sm="6">
         <v-checkbox
           class="mt-0"
-          :input-value="value.diff"
+          :input-value="params.diff"
           @change="updateValue('diff', $event)"
         >
           <template v-slot:label>
@@ -39,7 +39,7 @@
   <div v-else-if="app === 'terraform' || app === 'tofu'">
     <v-checkbox
       class="mt-0"
-      :input-value="value.plan"
+      :input-value="params.plan"
       @change="updateValue('plan', $event)"
     >
       <template v-slot:label>
@@ -48,7 +48,7 @@
     </v-checkbox>
     <v-checkbox
       class="mt-0"
-      :input-value="value.auto_approve"
+      :input-value="params.auto_approve"
       @change="updateValue('auto_approve', $event)"
     >
       <template v-slot:label>
@@ -68,6 +68,7 @@
 const APP_PARAMS = {
   terraform: ['plan', 'auto_approve'],
   tofu: ['plan', 'auto_approve'],
+  ansible: ['diff', 'debug', 'dry_run'],
 };
 
 export default {
@@ -76,9 +77,23 @@ export default {
     app: String,
   },
 
+  watch: {
+    value(val) {
+      this.params = val;
+    },
+  },
+
+  data() {
+    return {
+      params: {},
+    };
+  },
+
   methods: {
     updateValue(prop, value) {
-      let input = { ...this.value, [prop]: value };
+      this.params[prop] = value;
+
+      let input = { ...this.params, [prop]: value };
 
       if (APP_PARAMS[this.app]) {
         input = (APP_PARAMS[this.app] || []).reduce((res, param) => ({

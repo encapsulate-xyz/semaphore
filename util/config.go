@@ -677,6 +677,16 @@ func (d *DbConfig) GetHostname() string {
 	return d.Hostname
 }
 
+// GetConnectionString constructs the database connection string based on the current configuration.
+// It supports MySQL, BoltDB, and PostgreSQL dialects.
+// If the dialect is unsupported, it returns an error.
+//
+// Parameters:
+// - includeDbName: a boolean indicating whether to include the database name in the connection string.
+//
+// Returns:
+// - connectionString: the constructed database connection string.
+// - err: an error if the dialect is unsupported.
 func (d *DbConfig) GetConnectionString(includeDbName bool) (connectionString string, err error) {
 	dbName := d.GetDbName()
 	dbUser := d.GetUsername()
@@ -731,11 +741,17 @@ func (d *DbConfig) GetConnectionString(includeDbName bool) (connectionString str
 	return
 }
 
+// PrintDbInfo prints the database connection information based on the current configuration.
+// It retrieves the database dialect and prints the corresponding connection details.
+// If the dialect is not found, it panics with an error message.
 func (conf *ConfigType) PrintDbInfo() {
+	// Get the database dialect
 	dialect, err := conf.GetDialect()
 	if err != nil {
 		panic(err)
 	}
+
+	// Print database connection information based on the dialect
 	switch dialect {
 	case DbDriverMySQL:
 		fmt.Printf("MySQL %v@%v %v\n", conf.MySQL.GetUsername(), conf.MySQL.GetHostname(), conf.MySQL.GetDbName())

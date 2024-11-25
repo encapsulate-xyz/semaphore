@@ -88,7 +88,7 @@
       />
     </div>
 
-    <TaskParamsForm v-if="template.app === 'ansible'" v-model="item" :app="template.app" />
+    <TaskParamsForm v-if="template.app === 'ansible'" v-model="item.params" :app="template.app" />
     <TaskParamsForm v-else v-model="item.params" :app="template.app" />
 
     <ArgsPicker

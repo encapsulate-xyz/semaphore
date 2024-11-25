@@ -1,6 +1,7 @@
 package db
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/go-gorp/gorp/v3"
 	"time"
@@ -8,6 +9,20 @@ import (
 	"github.com/semaphoreui/semaphore/pkg/task_logger"
 	"github.com/semaphoreui/semaphore/util"
 )
+
+type DefaultTaskParams struct {
+}
+
+type TerraformTaskParams struct {
+	Plan        bool `json:"plan"`
+	AutoApprove bool `json:"auto_approve"`
+}
+
+type AnsibleTaskParams struct {
+	Debug  bool `json:"debug"`
+	DryRun bool `json:"dry_run"`
+	Diff   bool `json:"diff"`
+}
 
 // Task is a model of a task which will be executed by the runner
 type Task struct {
@@ -51,10 +66,36 @@ type Task struct {
 	Version *string `db:"version" json:"version"`
 
 	InventoryID *int `db:"inventory_id" json:"inventory_id"`
+
+	Params MapStringAnyField `db:"params" json:"params"`
+}
+
+func (task *Task) GetParams(target interface{}) (err error) {
+	content, err := json.Marshal(task.Params)
+	if err != nil {
+		return
+	}
+	err = json.Unmarshal(content, target)
+	return
 }
 
 func (task *Task) PreInsert(gorp.SqlExecutor) error {
 	task.Created = task.Created.UTC()
+
+	// Init params from old fields for backward compatibility
+
+	if task.Debug {
+		task.Params["debug"] = true
+	}
+
+	if task.DryRun {
+		task.Params["dry_run"] = true
+	}
+
+	if task.Diff {
+		task.Params["diff"] = true
+	}
+
 	return nil
 }
 
@@ -104,7 +145,18 @@ func (task *Task) GetUrl() *string {
 }
 
 func (task *Task) ValidateNewTask(template Template) error {
-	return nil
+
+	var params interface{}
+	switch template.App {
+	case AppAnsible:
+		params = &AnsibleTaskParams{}
+	case AppTerraform, AppTofu:
+		params = &TerraformTaskParams{}
+	default:
+		params = &DefaultTaskParams{}
+	}
+
+	return task.GetParams(params)
 }
 
 func (task *TaskWithTpl) Fill(d Store) error {

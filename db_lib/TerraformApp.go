@@ -148,15 +148,22 @@ func (t *TerraformApp) Apply(args []string, environmentVars *[]string, inputs ma
 	return cmd.Wait()
 }
 
-func (t *TerraformApp) Run(args []string, environmentVars *[]string, inputs map[string]string, cb func(*os.Process)) error {
-	err := t.Plan(args, environmentVars, inputs, cb)
+func (t *TerraformApp) Run(args LocalAppRunningArgs) error {
+	err := t.Plan(args.CliArgs, args.EnvironmentVars, args.Inputs, args.Callback)
 	if err != nil {
 		return err
 	}
 
-	if t.noChanges {
+	params := args.TaskParams.(*db.TerraformTaskParams)
+
+	if t.noChanges || params.Plan {
 		t.Logger.SetStatus(task_logger.TaskSuccessStatus)
 		return nil
+	}
+
+	if params.AutoApprove {
+		t.Logger.SetStatus(task_logger.TaskRunningStatus)
+		return t.Apply(args.CliArgs, args.EnvironmentVars, args.Inputs, args.Callback)
 	}
 
 	t.Logger.SetStatus(task_logger.TaskWaitingConfirmation)
@@ -173,7 +180,7 @@ func (t *TerraformApp) Run(args []string, environmentVars *[]string, inputs map[
 		return nil
 	case terraformReaderConfirmed:
 		t.Logger.SetStatus(task_logger.TaskRunningStatus)
-		return t.Apply(args, environmentVars, inputs, cb)
+		return t.Apply(args.CliArgs, args.EnvironmentVars, args.Inputs, args.Callback)
 	default:
 		return fmt.Errorf("unknown plan result")
 	}
