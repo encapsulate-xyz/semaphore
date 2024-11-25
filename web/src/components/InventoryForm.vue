@@ -62,7 +62,9 @@
 
     <v-select
       v-model="item.repository_id"
-      :label="$t('repository') + ' (Optional)'"
+      :label="$t('repository')"
+      :rules="[v => !!v || $t('repository_required')]"
+      required
       clearable
       :items="repositories"
       item-value="id"

@@ -29,10 +29,20 @@ func (d *BoltDb) DeleteInventory(projectID int, inventoryID int) error {
 }
 
 func (d *BoltDb) UpdateInventory(inventory db.Inventory) error {
+    err := inventory.Validate()
+
+    if err != nil {
+        return err
+    }
 	return d.updateObject(inventory.ProjectID, db.InventoryProps, inventory)
 }
 
 func (d *BoltDb) CreateInventory(inventory db.Inventory) (db.Inventory, error) {
+    err := inventory.Validate()
+
+	if err != nil {
+		return db.Inventory{}, err
+	}
 	newInventory, err := d.createObject(inventory.ProjectID, db.InventoryProps, inventory)
 	return newInventory.(db.Inventory), err
 }

@@ -85,3 +85,12 @@ func FillInventory(d Store, inventory *Inventory) (err error) {
 
 	return
 }
+
+func (i Inventory) Validate() error {
+    // Check if RepositoryID is nil
+    if i.RepositoryID == nil {
+        return &ValidationError{"Repository must be present"}
+    }
+
+    return nil
+}

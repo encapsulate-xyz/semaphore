@@ -27,8 +27,13 @@ func (d *SqlDb) DeleteInventory(projectID int, inventoryID int) error {
 }
 
 func (d *SqlDb) UpdateInventory(inventory db.Inventory) error {
+    err := inventory.Validate()
 
-	_, err := d.exec(
+    	if err != nil {
+    		return err
+    	}
+
+	_, err = d.exec(
 		"update project__inventory set name=?, type=?, ssh_key_id=?, inventory=?, become_key_id=?, holder_id=?, repository_id=? where id=?",
 		inventory.Name,
 		inventory.Type,
@@ -43,6 +48,11 @@ func (d *SqlDb) UpdateInventory(inventory db.Inventory) error {
 }
 
 func (d *SqlDb) CreateInventory(inventory db.Inventory) (newInventory db.Inventory, err error) {
+    err = inventory.Validate()
+
+	if err != nil {
+		return db.Inventory{}, err
+	}
 	insertID, err := d.insert(
 		"id",
 		"insert into project__inventory (project_id, name, type, ssh_key_id, inventory, become_key_id, holder_id, repository_id) values "+
