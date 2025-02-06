@@ -3,6 +3,7 @@
     v-model="dialog"
     :save-button-text="$t(TEMPLATE_TYPE_ACTION_TITLES[templateType])"
     :title="$t('newTask')"
+    :max-width="dialogWidth"
     @save="closeDialog"
     @close="closeDialog"
   >
@@ -51,9 +52,15 @@ export default {
   data() {
     return {
       dialog: false,
+      dialogWidth: 400,
       TEMPLATE_TYPE_ACTION_TITLES,
       TEMPLATE_TYPE_ICONS,
     };
+  },
+  mounted() {
+    this.dialogWidth = (window.innerWidth > 450 + this.templateAlias.length
+      && 450 + this.templateAlias.length < 700)
+      ? 450 + this.templateAlias.length : 400;
   },
   watch: {
     async dialog(val) {
