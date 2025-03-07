@@ -1,5 +1,2 @@
-alter table `project__schedule`
-    alter column last_commit_hash type varchar(64);
-
-alter table `task`
-    alter column commit_hash type varchar(64);
+alter table `project__schedule` change `last_commit_hash` `last_commit_hash` varchar(64);
+alter table `task` change `commit_hash` `commit_hash` varchar(64);
