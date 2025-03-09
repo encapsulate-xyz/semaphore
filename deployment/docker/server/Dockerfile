@@ -92,6 +92,7 @@ RUN apk add --no-cache -U python3-dev build-base openssl-dev libffi-dev cargo &&
      chown -R semaphore:0 /opt/semaphore
 
 USER 1001
+EXPOSE 3000
 
 ENV VIRTUAL_ENV="$ANSIBLE_VENV_PATH"
 ENV PATH="$ANSIBLE_VENV_PATH/bin:$PATH"
