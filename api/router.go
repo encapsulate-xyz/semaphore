@@ -141,7 +141,7 @@ func Route() *mux.Router {
 	adminAPI.Path("/options").HandlerFunc(getOptions).Methods("GET", "HEAD")
 	adminAPI.Path("/options").HandlerFunc(setOption).Methods("POST")
 
-	adminAPI.Path("/runners").HandlerFunc(getGlobalRunners).Methods("GET", "HEAD")
+	adminAPI.Path("/runners").HandlerFunc(getAllRunners).Methods("GET", "HEAD")
 	adminAPI.Path("/runners").HandlerFunc(addGlobalRunner).Methods("POST", "HEAD")
 
 	globalRunnersAPI := adminAPI.PathPrefix("/runners").Subrouter()

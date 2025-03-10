@@ -86,7 +86,7 @@ func (t *RemoteJob) Run(username string, incomingVersion *string, alias string) 
 			return
 		}
 		var globalRunners []db.Runner
-		globalRunners, err = t.taskPool.store.GetGlobalRunners(true)
+		globalRunners, err = t.taskPool.store.GetAllRunners(true, true)
 		if err != nil {
 			return
 		}

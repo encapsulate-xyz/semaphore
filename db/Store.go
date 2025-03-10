@@ -352,7 +352,7 @@ type Store interface {
 	DeleteRunner(projectID int, runnerID int) error
 	GetGlobalRunnerByToken(token string) (Runner, error)
 	GetGlobalRunner(runnerID int) (Runner, error)
-	GetGlobalRunners(activeOnly bool) ([]Runner, error)
+	GetAllRunners(activeOnly bool, globalOnly bool) ([]Runner, error)
 	DeleteGlobalRunner(runnerID int) error
 	UpdateRunner(runner Runner) error
 	CreateRunner(runner Runner) (Runner, error)

@@ -33,8 +33,13 @@ func (d *SqlDb) GetGlobalRunner(runnerID int) (runner db.Runner, err error) {
 	return
 }
 
-func (d *SqlDb) GetGlobalRunners(activeOnly bool) (runners []db.Runner, err error) {
+func (d *SqlDb) GetAllRunners(activeOnly bool, globalOnly bool) (runners []db.Runner, err error) {
 	err = d.getObjects(0, db.GlobalRunnerProps, db.RetrieveQueryParams{}, func(builder squirrel.SelectBuilder) squirrel.SelectBuilder {
+
+		if globalOnly {
+			builder = builder.Where("project_id is null")
+		}
+
 		if activeOnly {
 			builder = builder.Where("active=?", activeOnly)
 		}
