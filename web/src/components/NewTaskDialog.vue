@@ -1,7 +1,12 @@
 <template>
-  <EditDialog v-model="dialog" :save-button-text="$t(TEMPLATE_TYPE_ACTION_TITLES[templateType])" :title="$t('newTask')"
-    @save="closeDialog" @close="closeDialog">
-    <template v-slot:title={ }>
+  <EditDialog
+    v-model="dialog"
+    :save-button-text="$t(TEMPLATE_TYPE_ACTION_TITLES[templateType])"
+    :title="$t('newTask')"
+    @save="closeDialog"
+    @close="closeDialog"
+  >
+    <template v-slot:title={}>
       <v-icon small class="mr-4">{{ TEMPLATE_TYPE_ICONS[templateType] }}</v-icon>
       <span class="breadcrumbs__item">{{ templateAlias }}</span>
       <v-icon>mdi-chevron-right</v-icon>
@@ -9,8 +14,16 @@
     </template>
 
     <template v-slot:form="{ onSave, onError, needSave, needReset }">
-      <TaskForm :project-id="projectId" item-id="new" :template-id="templateId" @save="onSave" @error="onError"
-        :need-save="needSave" :need-reset="needReset" :source-task="sourceTask" />
+      <TaskForm
+        :project-id="projectId"
+        item-id="new"
+        :template-id="templateId"
+        @save="onSave"
+        @error="onError"
+        :need-save="needSave"
+        :need-reset="needReset"
+        :source-task="sourceTask"
+      />
     </template>
   </EditDialog>
 </template>
