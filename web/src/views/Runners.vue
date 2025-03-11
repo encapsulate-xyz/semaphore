@@ -7,7 +7,8 @@
         {{ $t('dashboard2') }}
       </v-toolbar-title>
     </v-toolbar>
-    <v-divider />
+
+    <v-divider v-if="!projectId" />
 
     <DashboardMenu
       v-if="projectId"
@@ -243,6 +244,14 @@
       </v-btn>
     </v-toolbar>
 
+    <v-btn
+      v-else-if="premiumFeatures.project_runners"
+      style="position: absolute; right: 15px; top: 15px;"
+      color="primary"
+      @click="editItem('new')"
+    >{{ $t('newRunner') }}
+    </v-btn>
+
     <v-alert
       v-if="!premiumFeatures.project_runners"
       type="info"
@@ -341,16 +350,7 @@ export default {
 
   computed: {
     itemProjectId() {
-      if (!this.itemId || this.itemId === 'new') {
-        return null;
-      }
-
-      const item = this.items.find((x) => x.id === this.itemId);
-      if (item) {
-        return item.project_id;
-      }
-
-      return null;
+      return this.getProjectIdOfItem(this.itemId);
     },
 
     runnerConfigCommand() {
@@ -403,6 +403,18 @@ semaphore runner start --no-config`;
   },
 
   methods: {
+    getProjectIdOfItem(itemId) {
+      if (!itemId || itemId === 'new') {
+        return null;
+      }
+
+      const item = this.items.find((x) => x.id === itemId);
+      if (item) {
+        return item.project_id;
+      }
+
+      return null;
+    },
 
     async downloadFile(content, type, name) {
       const a = document.createElement('a');
@@ -438,9 +450,15 @@ semaphore runner start --no-config`;
     },
 
     async setActive(runnerId, active) {
+      const projectId = this.projectId || this.getProjectIdOfItem(runnerId);
+
+      const url = projectId
+        ? `/api/project/${projectId}/runners/${runnerId}/active`
+        : `/api/runners/${runnerId}/active`;
+
       await axios({
         method: 'post',
-        url: `/api/runners/${runnerId}/active`,
+        url,
         responseType: 'json',
         data: {
           active,
