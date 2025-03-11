@@ -1,13 +1,7 @@
 <template>
-  <EditDialog
-    v-model="dialog"
-    :save-button-text="$t(TEMPLATE_TYPE_ACTION_TITLES[templateType])"
-    :title="$t('newTask')"
-    :max-width="dialogWidth"
-    @save="closeDialog"
-    @close="closeDialog"
-  >
-    <template v-slot:title={}>
+  <EditDialog v-model="dialog" :save-button-text="$t(TEMPLATE_TYPE_ACTION_TITLES[templateType])" :title="$t('newTask')"
+    @save="closeDialog" @close="closeDialog">
+    <template v-slot:title={ }>
       <v-icon small class="mr-4">{{ TEMPLATE_TYPE_ICONS[templateType] }}</v-icon>
       <span class="breadcrumbs__item">{{ templateAlias }}</span>
       <v-icon>mdi-chevron-right</v-icon>
@@ -15,16 +9,8 @@
     </template>
 
     <template v-slot:form="{ onSave, onError, needSave, needReset }">
-      <TaskForm
-        :project-id="projectId"
-        item-id="new"
-        :template-id="templateId"
-        @save="onSave"
-        @error="onError"
-        :need-save="needSave"
-        :need-reset="needReset"
-        :source-task="sourceTask"
-      />
+      <TaskForm :project-id="projectId" item-id="new" :template-id="templateId" @save="onSave" @error="onError"
+        :need-save="needSave" :need-reset="needReset" :source-task="sourceTask" />
     </template>
   </EditDialog>
 </template>
@@ -52,15 +38,11 @@ export default {
   data() {
     return {
       dialog: false,
-      dialogWidth: 400,
       TEMPLATE_TYPE_ACTION_TITLES,
       TEMPLATE_TYPE_ICONS,
     };
   },
   mounted() {
-    this.dialogWidth = (window.innerWidth > 450 + this.templateAlias.length
-      && 450 + this.templateAlias.length < 700)
-      ? 450 + this.templateAlias.length : 400;
   },
   watch: {
     async dialog(val) {
