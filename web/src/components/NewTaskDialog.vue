@@ -55,8 +55,6 @@ export default {
       TEMPLATE_TYPE_ICONS,
     };
   },
-  mounted() {
-  },
   watch: {
     async dialog(val) {
       this.$emit('input', val);
