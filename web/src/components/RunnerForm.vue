@@ -65,6 +65,10 @@ export default {
     },
 
     getSingleItemUrl() {
+      if (this.projectId) {
+        return `/api/projects/${this.projectId}/runners/${this.itemId}`;
+      }
+
       return `/api/runners/${this.itemId}`;
     },
   },

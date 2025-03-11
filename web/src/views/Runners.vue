@@ -24,7 +24,7 @@
     >
       <template v-slot:form="{ onSave, onError, needSave, needReset }">
         <RunnerForm
-          :project-id="projectId"
+          :project-id="projectId || itemProjectId"
           :item-id="itemId"
           @save="onSave"
           @error="onError"
@@ -340,6 +340,19 @@ export default {
   },
 
   computed: {
+    itemProjectId() {
+      if (!this.itemId || this.itemId === 'new') {
+        return null;
+      }
+
+      const item = this.items.find((x) => x.id === this.itemId);
+      if (item) {
+        return item.project_id;
+      }
+
+      return null;
+    },
+
     runnerConfigCommand() {
       return `{
   "web_host": "${this.webHost}",
@@ -390,6 +403,7 @@ semaphore runner start --no-config`;
   },
 
   methods: {
+
     async downloadFile(content, type, name) {
       const a = document.createElement('a');
       const blob = new Blob([content], { type });
@@ -443,6 +457,10 @@ semaphore runner start --no-config`;
           value: 'name',
           width: '50%',
         },
+        ...(this.projectId ? [] : [{
+          text: this.$i18n.t('project'),
+          value: 'project_id',
+        }]),
         {
           text: this.$i18n.t('webhook'),
           value: 'webhook',
