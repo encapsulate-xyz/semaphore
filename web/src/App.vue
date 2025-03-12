@@ -769,6 +769,9 @@ const LANGUAGES = {
   de: {
     title: 'German',
   },
+  nl: {
+    title: 'Dutch (Netherlands)',
+  },
   zh_cn: {
     title: '中文(大陆)',
   },

@@ -23,7 +23,7 @@
       v-if="this.projectId"
       v-model="item.tag"
       :label="$t('tag')"
-      :rules="[v => !!v || $t('name_required')]"
+      :rules="[v => !!v || $t('tag_required')]"
       required
       :disabled="formSaving"
     ></v-text-field>

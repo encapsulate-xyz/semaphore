@@ -306,4 +306,7 @@ export default {
   status_success: 'Success',
   status_failed: 'Failed',
   status_stopped: 'Stopped',
+
+  tag: 'Tag',
+  tag_required: 'Tag is required',
 };
