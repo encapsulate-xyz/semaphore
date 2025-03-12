@@ -298,12 +298,12 @@
           v-if="needField('allow_override_inventory')"
         />
 
-        <v-checkbox
-          class="mt-0"
-          :label="$t('allowLimitInTask')"
-          v-model="item.task_params.allow_override_limit"
-          v-if="needField('allow_override_limit')"
-        />
+<!--        <v-checkbox-->
+<!--          class="mt-0"-->
+<!--          :label="$t('allowLimitInTask')"-->
+<!--          v-model="item.task_params.allow_override_limit"-->
+<!--          v-if="needField('allow_override_limit')"-->
+<!--        />-->
       </v-col>
     </v-row>
   </v-form>
