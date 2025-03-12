@@ -86,7 +86,7 @@ func (d *SqlDb) UpdateTemplate(template db.Template) error {
 		"survey_vars=?, "+
 		"suppress_success_alerts=?, "+
 		"app=?, "+
-		"`git_branch`=? "+
+		"`git_branch`=?, "+
 		"runner_tag=? "+
 		"where id=? and project_id=?",
 		template.InventoryID,

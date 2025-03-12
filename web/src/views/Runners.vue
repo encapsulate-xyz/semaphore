@@ -8,8 +8,6 @@
       </v-toolbar-title>
     </v-toolbar>
 
-    <v-divider v-if="!projectId" />
-
     <DashboardMenu
       v-if="projectId"
       :project-id="projectId"
@@ -252,6 +250,8 @@
     >{{ $t('newRunner') }}
     </v-btn>
 
+    <v-divider v-if="!projectId" />
+
     <v-alert
       v-if="!premiumFeatures.project_runners"
       type="info"
@@ -297,6 +297,15 @@
 
       <template v-slot:item.max_parallel_tasks="{ item }">
         {{ item.max_parallel_tasks || '∞' }}
+      </template>
+
+      <template v-slot:item.project_id="{ item }">
+        {{ item.project_id ? `#${item.project_id}` : '&mdash;' }}
+      </template>
+
+      <template v-slot:item.tag="{ item }">
+        <code v-if="item.tag">{{ item.tag }}</code>
+        <span v-else>&mdash;</span>
       </template>
 
       <template v-slot:item.actions="{ item }">
@@ -482,10 +491,12 @@ semaphore runner start --no-config`;
         {
           text: this.$i18n.t('webhook'),
           value: 'webhook',
-        },
-        {
-          text: this.$i18n.t('maxNumberOfParallelTasks'),
-          value: 'max_parallel_tasks',
+        }, {
+          text: this.$i18n.t('tag'),
+          value: 'tag',
+        // }, {
+        //   text: this.$i18n.t('maxNumberOfParallelTasks'),
+        //   value: 'max_parallel_tasks',
         }, {
           text: this.$i18n.t('actions'),
           value: 'actions',
