@@ -205,7 +205,7 @@
 
         <ArgsPicker
           v-if="needField('limit')"
-          :vars="limit"
+          :vars="item.task_params.limit"
           @change="setLimit"
           title="Limit"
         />
@@ -291,6 +291,19 @@
           v-model="item.allow_override_args_in_task"
         />
 
+        <v-checkbox
+          class="mt-0"
+          :label="$t('allowInventoryInTask')"
+          v-model="item.task_params.allow_override_inventory"
+          v-if="needField('allow_override_inventory')"
+        />
+
+        <v-checkbox
+          class="mt-0"
+          :label="$t('allowLimitInTask')"
+          v-model="item.task_params.allow_override_limit"
+          v-if="needField('allow_override_limit')"
+        />
       </v-col>
     </v-row>
   </v-form>
@@ -376,9 +389,7 @@ export default {
       helpDialog: null,
       helpKey: null,
 
-      advancedOptions: false,
       args: [],
-      limit: [],
     };
   },
 
@@ -401,6 +412,7 @@ export default {
   },
 
   computed: {
+
     surveyVars() {
       if (this.sourceItemId != null && this.item.survey_vars === undefined) {
         throw new Error();
@@ -432,7 +444,7 @@ export default {
 
   methods: {
     setLimit(limit) {
-      this.limit = limit;
+      this.item.task_params.limit = limit;
     },
 
     setArgs(args) {
@@ -453,6 +465,10 @@ export default {
     },
 
     async afterLoadData() {
+      if (!this.item.task_params) {
+        this.item.task_params = {};
+      }
+
       if (this.sourceItemId) {
         const item = (await axios({
           url: `/api/project/${this.projectId}/templates/${this.sourceItemId}`,
@@ -480,8 +496,6 @@ export default {
 
         this.item = item;
       }
-
-      this.advancedOptions = this.item.arguments != null || this.item.allow_override_args_in_task;
 
       this.repositories = (await axios({
         url: `/api/project/${this.projectId}/repositories`,
@@ -531,7 +545,6 @@ export default {
         }
 
         this.args = JSON.parse(this.item.arguments || '[]');
-        this.limit = JSON.parse((this.item.task_params || {}).limit || '[]');
       });
 
       this.buildTemplates = builds;
@@ -587,11 +600,6 @@ export default {
       this.item.app = this.app;
 
       this.item.arguments = JSON.stringify(this.args);
-
-      if (!this.item.task_params) {
-        this.item.task_params = {};
-      }
-      this.item.task_params.limit = JSON.stringify(this.limit);
     },
 
     async afterSave(newItem) {

@@ -150,6 +150,12 @@ export const ANSIBLE_FIELDS = {
   limit: {
     label: 'limit',
   },
+  allow_override_inventory: {
+    label: 'allowInventoryInTask',
+  },
+  allow_override_limit: {
+    label: 'allowLimitInTask',
+  },
 };
 
 export const TERRAFORM_FIELDS = {

@@ -17,29 +17,40 @@ func (d *SqlDb) CreateTemplate(template db.Template) (newTemplate db.Template, e
 
 	insertID, err := d.insert(
 		"id",
-		"insert into project__template (project_id, inventory_id, repository_id, environment_id, "+
-			"name, playbook, arguments, allow_override_args_in_task, description, `type`, start_version,"+
-			"build_template_id, view_id, autorun, survey_vars, suppress_success_alerts, app, git_branch)"+
-			"values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+		"insert into project__template ("+
+			"project_id, inventory_id, repository_id, environment_id, name, "+
+			"playbook, arguments, allow_override_args_in_task, description, `type`, "+
+			"start_version, build_template_id, view_id, autorun, survey_vars, "+
+			"suppress_success_alerts, app, git_branch, runner_tag, task_params)"+
+			"values ("+
+			"?, ?, ?, ?, ?, "+
+			"?, ?, ?, ?, ?, "+
+			"?, ?, ?, ?, ?, "+
+			"?, ?, ?, ?, ?)",
 		template.ProjectID,
 		template.InventoryID,
 		template.RepositoryID,
 		template.EnvironmentID,
 		template.Name,
+
 		template.Playbook,
 		template.Arguments,
 		template.AllowOverrideArgsInTask,
 		template.Description,
 		template.Type,
+
 		template.StartVersion,
 		template.BuildTemplateID,
 		template.ViewID,
 		template.Autorun,
 		db.ObjectToJSON(template.SurveyVars),
+
 		template.SuppressSuccessAlerts,
 		template.App,
 		template.GitBranch,
-		template.RunnerTag)
+		template.RunnerTag,
+		template.TaskParams,
+	)
 
 	if err != nil {
 		return
@@ -87,6 +98,7 @@ func (d *SqlDb) UpdateTemplate(template db.Template) error {
 		"suppress_success_alerts=?, "+
 		"app=?, "+
 		"`git_branch`=?, "+
+		"task_params=?, "+
 		"runner_tag=? "+
 		"where id=? and project_id=?",
 		template.InventoryID,
@@ -106,6 +118,7 @@ func (d *SqlDb) UpdateTemplate(template db.Template) error {
 		template.SuppressSuccessAlerts,
 		template.App,
 		template.GitBranch,
+		template.TaskParams,
 		template.RunnerTag,
 		template.ID,
 		template.ProjectID,

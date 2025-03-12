@@ -104,7 +104,7 @@
       dense
       required
       :disabled="formSaving"
-      v-if="needField('inventory')"
+      v-if="needField('inventory') && (template.task_params || {}).allow_override_inventory"
       hide-details
     ></v-select>
 

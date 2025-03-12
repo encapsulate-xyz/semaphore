@@ -392,7 +392,6 @@ export default {
       images: [
         'dind-runner:latest',
       ],
-      advancedOptions: false,
 
       json: '{}',
       extraVars: [],

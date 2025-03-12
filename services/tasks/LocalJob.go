@@ -337,7 +337,7 @@ func (t *LocalJob) getPlaybookArgs(username string, incomingVersion *string) (ar
 
 	var tplParams db.AnsibleTemplateParams
 
-	err = t.Task.FillParams(&tplParams)
+	err = t.Template.FillParams(&tplParams)
 	if err != nil {
 		return
 	}
@@ -395,7 +395,7 @@ func (t *LocalJob) getPlaybookArgs(username string, incomingVersion *string) (ar
 	var limit string
 
 	if len(tplParams.Limit) > 0 {
-		strings.Join(tplParams.Limit, ",")
+		limit = strings.Join(tplParams.Limit, ",")
 	}
 
 	if t.Task.Limit != "" && tplParams.AllowOverrideLimit {
