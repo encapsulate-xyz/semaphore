@@ -13,8 +13,9 @@ import (
 )
 
 type RemoteJob struct {
-	Task     db.Task
-	taskPool *TaskPool
+	RunnerTag *string
+	Task      db.Task
+	taskPool  *TaskPool
 }
 
 type runnerWebhookPayload struct {
