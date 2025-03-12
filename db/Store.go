@@ -348,7 +348,7 @@ type Store interface {
 	SetViewPositions(projectID int, viewPositions map[int]int) error
 
 	GetRunner(projectID int, runnerID int) (Runner, error)
-	GetRunners(projectID int, activeOnly bool) ([]Runner, error)
+	GetRunners(projectID int, activeOnly bool, tag string) ([]Runner, error)
 	DeleteRunner(projectID int, runnerID int) error
 	GetGlobalRunnerByToken(token string) (Runner, error)
 	GetGlobalRunner(runnerID int) (Runner, error)
