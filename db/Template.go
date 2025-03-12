@@ -61,6 +61,12 @@ const (
 	SurveyVarEnum TemplateType = "enum"
 )
 
+type AnsibleTemplateParams struct {
+	AllowOverrideInventory bool     `json:"allow_override_inventory"`
+	AllowOverrideLimit     bool     `json:"allow_override_limit"`
+	Limit                  []string `json:"limit"`
+}
+
 type TerraformTemplateParams struct {
 	AllowDestroy     bool `json:"allow_destroy"`
 	AllowAutoApprove bool `json:"allow_auto_approve"`
@@ -137,6 +143,15 @@ type Template struct {
 	TaskParams MapStringAnyField `db:"task_params" json:"task_params"`
 
 	RunnerTag *string `db:"runner_tag" json:"runner_tag"`
+}
+
+func (tpl *Template) FillParams(target interface{}) error {
+	content, err := json.Marshal(tpl.TaskParams)
+	if err != nil {
+		return nil
+	}
+	err = json.Unmarshal(content, target)
+	return err
 }
 
 func (tpl *Template) Validate() error {
