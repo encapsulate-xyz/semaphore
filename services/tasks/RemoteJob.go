@@ -82,7 +82,7 @@ func (t *RemoteJob) Run(username string, incomingVersion *string, alias string) 
 	var runners []db.Runner
 	db.StoreSession(t.taskPool.store, "run remote job", func() {
 		var projectRunners []db.Runner
-		projectRunners, err = t.taskPool.store.GetRunners(t.Task.ProjectID, true, "")
+		projectRunners, err = t.taskPool.store.GetRunners(t.Task.ProjectID, true, nil)
 		if err != nil {
 			return
 		}
