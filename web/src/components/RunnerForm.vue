@@ -20,6 +20,15 @@
     ></v-text-field>
 
     <v-text-field
+      v-if="this.projectId"
+      v-model="item.tag"
+      :label="$t('tag')"
+      :rules="[v => !!v || $t('name_required')]"
+      required
+      :disabled="formSaving"
+    ></v-text-field>
+
+    <v-text-field
       v-model="item.webhook"
       :label="$t('webhook')"
       required
