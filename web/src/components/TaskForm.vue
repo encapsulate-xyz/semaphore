@@ -17,6 +17,7 @@
       dark
       dismissible
       dense
+      @input="item.commit_hash=null"
       v-model="hasCommit"
       class="overflow-hidden mt-2"
     >
