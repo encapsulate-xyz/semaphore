@@ -311,4 +311,5 @@ export default {
   tag_required: 'Tag is required',
   allowInventoryInTask: 'Ask Inventory on launch',
   allowLimitInTask: 'Ask Limit on launch',
+  addLimit: 'Add limit',
 };

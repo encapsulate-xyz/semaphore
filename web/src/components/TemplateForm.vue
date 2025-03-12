@@ -207,7 +207,9 @@
           v-if="needField('limit')"
           :vars="item.task_params.limit"
           @change="setLimit"
-          title="Limit"
+          :title="$t('limit')"
+          :arg-title="$t('limit')"
+          :add-arg-title="$t('addLimit')"
         />
 
       </v-col>
