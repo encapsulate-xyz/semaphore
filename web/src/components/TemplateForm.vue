@@ -203,6 +203,13 @@
           v-if="needField('environment')"
         ></v-select>
 
+        <ArgsPicker
+          v-if="needField('limit')"
+          :vars="limit"
+          @change="setLimit"
+          title="Limit"
+        />
+
       </v-col>
 
       <v-col cols="12" md="6" class="pb-0">
@@ -371,6 +378,7 @@ export default {
 
       advancedOptions: false,
       args: [],
+      limit: [],
     };
   },
 
@@ -423,6 +431,10 @@ export default {
   },
 
   methods: {
+    setLimit(limit) {
+      this.limit = limit;
+    },
+
     setArgs(args) {
       this.args = args;
     },
@@ -519,6 +531,7 @@ export default {
         }
 
         this.args = JSON.parse(this.item.arguments || '[]');
+        this.limit = JSON.parse((this.item.task_params || {}).limit || '[]');
       });
 
       this.buildTemplates = builds;
@@ -574,6 +587,11 @@ export default {
       this.item.app = this.app;
 
       this.item.arguments = JSON.stringify(this.args);
+
+      if (!this.item.task_params) {
+        this.item.task_params = {};
+      }
+      this.item.task_params.limit = JSON.stringify(this.limit);
     },
 
     async afterSave(newItem) {

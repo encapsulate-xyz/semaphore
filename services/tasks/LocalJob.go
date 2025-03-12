@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"maps"
 	"os"
+	"strings"
 
 	"path"
 	"strconv"
@@ -334,6 +335,13 @@ func (t *LocalJob) getPlaybookArgs(username string, incomingVersion *string) (ar
 		}
 	}
 
+	var tplParams db.AnsibleTemplateParams
+
+	err = t.Task.FillParams(&tplParams)
+	if err != nil {
+		return
+	}
+
 	var params db.AnsibleTaskParams
 
 	err = t.Task.FillParams(&params)
@@ -384,9 +392,19 @@ func (t *LocalJob) getPlaybookArgs(username string, incomingVersion *string) (ar
 		return
 	}
 
-	if t.Task.Limit != "" {
+	var limit string
+
+	if len(tplParams.Limit) > 0 {
+		strings.Join(tplParams.Limit, ",")
+	}
+
+	if t.Task.Limit != "" && tplParams.AllowOverrideLimit {
 		t.Log("--limit=" + t.Task.Limit)
-		templateArgs = append(templateArgs, "--limit="+t.Task.Limit)
+		limit = t.Task.Limit
+	}
+
+	if limit != "" {
+		templateArgs = append(templateArgs, "--limit="+limit)
 	}
 
 	args = append(args, templateArgs...)

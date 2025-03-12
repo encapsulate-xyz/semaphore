@@ -147,6 +147,9 @@ export const ANSIBLE_FIELDS = {
   vault: {
     label: 'vaultPassword2',
   },
+  limit: {
+    label: 'limit',
+  },
 };
 
 export const TERRAFORM_FIELDS = {
