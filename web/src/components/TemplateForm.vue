@@ -227,7 +227,7 @@
         @change="setSkipTags"
         :title="$t('skipTags')"
         :arg-title="$t('tag')"
-        :add-arg-title="$t('addTag')"
+        :add-arg-title="$t('addSkippedTag')"
       />
 
       <TemplateVaults
