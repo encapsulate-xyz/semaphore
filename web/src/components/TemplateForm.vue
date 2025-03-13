@@ -431,6 +431,10 @@ export default {
   watch: {
     needReset(val) {
       if (val) {
+        this.$emit('resize', {
+          width: 770,
+        });
+
         setTimeout(() => this.checkSize(), 300);
         if (this.item != null) {
           this.item.template_id = this.templateId;
