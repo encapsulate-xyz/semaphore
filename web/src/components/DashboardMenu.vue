@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-tabs show-arrows class="pl-4">
+    <v-tabs class="pl-4">
       <v-tab
         v-if="projectType === ''"
         key="history"
