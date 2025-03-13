@@ -70,14 +70,6 @@ We recommend using the [Container Configurator](https://semaphoreui.com/install/
 
 We offer a SaaS solution for using Semaphore UI without installation. Check it out at [Semaphore Cloud](https://portal.semaphoreui.com).
 
-### Deploy VM from Marketplace
-
-Supported cloud providers:
-* [Semaphore Run](https://cloud.semaphore.run/servers/new/semaphore)
-* [AWS](https://aws.amazon.com/marketplace/pp/prodview-5noeat2jipwca)
-* [Yandex Cloud](https://yandex.cloud/en-ru/marketplace/products/fastlix/semaphore)
-* DigitalOcean (coming soon)
-
 ### Other Installation Methods
 
 For more installation options, visit our [Installation page](https://semaphoreui.com/install).
