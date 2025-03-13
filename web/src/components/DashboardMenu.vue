@@ -47,6 +47,7 @@ export default {
   props: {
     projectId: Number,
     projectType: String,
+    canUpdateProject: Boolean,
   },
 
   data() {

@@ -1,5 +1,5 @@
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
-  <div v-if="items">
+  <div>
     <v-toolbar flat>
       <v-app-bar-nav-icon @click="showDrawer()"></v-app-bar-nav-icon>
       <v-toolbar-title>{{ $t('dashboard') }}</v-toolbar-title>
@@ -16,19 +16,34 @@
   </div>
 </template>
 <script>
-import ItemListPageBase from '@/components/ItemListPageBase';
 import DashboardMenu from '@/components/DashboardMenu.vue';
 import {
   TEMPLATE_TYPE_ACTION_TITLES,
   TEMPLATE_TYPE_ICONS,
   TEMPLATE_TYPE_TITLES,
+  USER_PERMISSIONS,
 } from '@/lib/constants';
 import TaskStats from '@/components/TaskStats.vue';
+import PermissionsCheck from '@/components/PermissionsCheck';
 
 export default {
+  computed: {
+    USER_PERMISSIONS() {
+      return USER_PERMISSIONS;
+    },
+  },
+
   components: { TaskStats, DashboardMenu },
 
-  mixins: [ItemListPageBase],
+  mixins: [PermissionsCheck],
+
+  props: {
+    projectId: Number,
+    projectType: String,
+    userId: Number,
+    userRole: String,
+    user: Object,
+  },
 
   data() {
     return {
@@ -46,7 +61,7 @@ export default {
         text: 'All users',
         value: null,
       }],
-      user: null,
+
       TEMPLATE_TYPE_ICONS,
       TEMPLATE_TYPE_TITLES,
       TEMPLATE_TYPE_ACTION_TITLES,
@@ -56,9 +71,6 @@ export default {
   },
 
   methods: {
-    getItemsUrl() {
-      return `/api/project/${this.projectId}/events/last`;
-    },
   },
 };
 </script>
