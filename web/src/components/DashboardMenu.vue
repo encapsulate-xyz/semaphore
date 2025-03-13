@@ -33,16 +33,8 @@
   </div>
 </template>
 <script>
-import PermissionsCheck from '@/components/PermissionsCheck';
-import {
-  TEMPLATE_TYPE_ACTION_TITLES,
-  TEMPLATE_TYPE_ICONS,
-  TEMPLATE_TYPE_TITLES,
-} from '@/lib/constants';
 
 export default {
-
-  mixins: [PermissionsCheck],
 
   props: {
     projectId: Number,
@@ -52,27 +44,9 @@ export default {
 
   data() {
     return {
-      dateRanges: [{
-        text: 'Past week',
-        value: 'last_week',
-      }, {
-        text: 'Past month',
-        value: 'last_month',
-      }, {
-        text: 'Past year',
-        value: 'last_year',
-      }],
-      users: [{
-        text: 'All users',
-        value: null,
-      }],
-      user: null,
-      TEMPLATE_TYPE_ICONS,
-      TEMPLATE_TYPE_TITLES,
-      TEMPLATE_TYPE_ACTION_TITLES,
-      stats: null,
-      dateRange: 'last_week',
+      id: null,
     };
   },
+
 };
 </script>
