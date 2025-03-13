@@ -212,6 +212,24 @@
         :add-arg-title="$t('addLimit')"
       />
 
+      <ArgsPicker
+        v-if="needField('tags')"
+        :vars="item.task_params.tags"
+        @change="setTags"
+        :title="$t('tags')"
+        :arg-title="$t('tag')"
+        :add-arg-title="$t('addTag')"
+      />
+
+      <ArgsPicker
+        v-if="needField('skip_tags')"
+        :vars="item.task_params.skip_tags"
+        @change="setSkipTags"
+        :title="$t('skipTags')"
+        :arg-title="$t('tag')"
+        :add-arg-title="$t('addTag')"
+      />
+
       <TemplateVaults
         v-if="needField('vault')"
         :project-id="this.projectId"
@@ -502,6 +520,14 @@ export default {
           width: this.$refs.formBody.scrollWidth,
         });
       }
+    },
+
+    setSkipTags(tags) {
+      this.item.task_params.skip_tags = tags;
+    },
+
+    setTags(tags) {
+      this.item.task_params.tags = tags;
     },
 
     setLimit(limit) {

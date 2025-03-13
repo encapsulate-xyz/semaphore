@@ -407,6 +407,14 @@ func (t *LocalJob) getPlaybookArgs(username string, incomingVersion *string) (ar
 		templateArgs = append(templateArgs, "--limit="+limit)
 	}
 
+	if len(tplParams.Tags) > 0 {
+		templateArgs = append(templateArgs, "--tags="+strings.Join(tplParams.Tags, ","))
+	}
+
+	if len(tplParams.SkipTags) > 0 {
+		templateArgs = append(templateArgs, "--skip-tags="+strings.Join(tplParams.SkipTags, ","))
+	}
+
 	args = append(args, templateArgs...)
 	args = append(args, taskArgs...)
 	args = append(args, playbookName)

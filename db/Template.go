@@ -66,6 +66,8 @@ type AnsibleTemplateParams struct {
 	AllowOverrideInventory bool     `json:"allow_override_inventory"`
 	AllowOverrideLimit     bool     `json:"allow_override_limit"`
 	Limit                  []string `json:"limit"`
+	Tags                   []string `json:"tags"`
+	SkipTags               []string `json:"skip_tags"`
 }
 
 type TerraformTemplateParams struct {

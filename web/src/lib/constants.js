@@ -163,6 +163,12 @@ export const ANSIBLE_FIELDS = {
   allow_debug: {
     label: 'allowDebug',
   },
+  tags: {
+    label: 'tags',
+  },
+  skip_tags: {
+    label: 'skipTags',
+  },
 };
 
 export const TERRAFORM_FIELDS = {
