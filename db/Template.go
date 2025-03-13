@@ -62,6 +62,7 @@ const (
 )
 
 type AnsibleTemplateParams struct {
+	AllowDebug             bool     `json:"allow_debug"`
 	AllowOverrideInventory bool     `json:"allow_override_inventory"`
 	AllowOverrideLimit     bool     `json:"allow_override_limit"`
 	Limit                  []string `json:"limit"`

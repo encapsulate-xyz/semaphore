@@ -300,6 +300,13 @@
           v-if="needField('allow_override_inventory')"
         />
 
+        <v-checkbox
+          class="mt-0"
+          :label="$t('allowDebug')"
+          v-model="item.task_params.allow_debug"
+          v-if="needField('allow_debug')"
+        />
+
 <!--        <v-checkbox-->
 <!--          class="mt-0"-->
 <!--          :label="$t('allowLimitInTask')"-->

@@ -349,7 +349,7 @@ func (t *LocalJob) getPlaybookArgs(username string, incomingVersion *string) (ar
 		return
 	}
 
-	if params.Debug {
+	if tplParams.AllowDebug && params.Debug {
 		args = append(args, "-vvvv")
 	}
 

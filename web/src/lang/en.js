@@ -312,4 +312,5 @@ export default {
   allowInventoryInTask: 'Ask Inventory on launch',
   allowLimitInTask: 'Ask Limit on launch',
   addLimit: 'Add limit',
+  allowDebug: 'Allow debug',
 };

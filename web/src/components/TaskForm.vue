@@ -108,8 +108,19 @@
       hide-details
     ></v-select>
 
-    <TaskParamsForm v-if="template.app === 'ansible'" v-model="item.params" :app="template.app" />
-    <TaskParamsForm v-else v-model="item.params" :app="template.app" />
+    <TaskParamsForm
+      v-if="template.app === 'ansible'"
+      v-model="item.params"
+      :app="template.app"
+      :template-params="template.task_params"
+    />
+
+    <TaskParamsForm
+      v-else
+      v-model="item.params"
+      :app="template.app"
+      :template-params="template.task_params"
+    />
 
     <ArgsPicker
       v-if="template.allow_override_args_in_task"
