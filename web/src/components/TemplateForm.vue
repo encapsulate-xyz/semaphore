@@ -428,6 +428,7 @@ export default {
 
   watch: {
     needReset(val) {
+      this.checkSize();
       if (val) {
         if (this.item != null) {
           this.item.template_id = this.templateId;
@@ -475,7 +476,13 @@ export default {
 
   },
 
-  activated() {
+  async mounted() {
+    while (!this.$refs.formBody) {
+      // eslint-disable-next-line no-await-in-loop
+      await new Promise((resolve) => {
+        setTimeout(resolve, 100);
+      });
+    }
     this.checkSize();
   },
 

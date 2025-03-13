@@ -35,6 +35,12 @@
     overflow-x: auto;
   }
 }
+
+@media #{map-get($display-breakpoints, 'sm-and-down')} {
+  .EditTemplateDialog {
+    width: auto !important;
+  }
+}
 </style>
 
 <script>
