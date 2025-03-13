@@ -11,7 +11,7 @@
       :can-update-project="can(USER_PERMISSIONS.updateProject)"
     />
 
-    <TaskStats :project-id="projectId"  />
+    <TaskStats class="mt-4" :project-id="projectId"  />
 
   </div>
 </template>
