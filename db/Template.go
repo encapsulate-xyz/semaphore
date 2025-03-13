@@ -157,9 +157,9 @@ func (tpl *Template) FillParams(target interface{}) error {
 
 func (tpl *Template) CanOverrideInventory() (ok bool, err error) {
 	switch tpl.App {
-	case AppAnsible:
+	case AppAnsible, "":
 		var params AnsibleTemplateParams
-		err = tpl.FillParams(params)
+		err = tpl.FillParams(&params)
 		if err != nil {
 			return
 		}
