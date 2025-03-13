@@ -408,7 +408,9 @@ export default {
         lint: true,
         indentWithTabs: false,
       },
-      item: {},
+      item: {
+        task_params: {},
+      },
       inventory: null,
       repositories: null,
       environment: null,
@@ -428,8 +430,8 @@ export default {
 
   watch: {
     needReset(val) {
-      this.checkSize();
       if (val) {
+        setTimeout(() => this.checkSize(), 300);
         if (this.item != null) {
           this.item.template_id = this.templateId;
         }

@@ -10,7 +10,7 @@
       :title="(itemId === 'new' ? $t('newTemplate') : $t('editTemplate')) +
         ' \'' + getAppTitle(itemApp) + '\''"
       @save="onSave"
-      content-class="EditTemplateDialog"
+      :content-class="`EditTemplateDialog EditTemplateDialog--${id}`"
   >
     <template v-slot:form="{ onSave, onError, needSave, needReset }">
       <TemplateForm
@@ -67,6 +67,7 @@ export default {
 
   data() {
     return {
+      id: Math.round(Math.random() * 1000000),
       dialog: false,
     };
   },
@@ -83,7 +84,7 @@ export default {
 
   methods: {
     onFormResize(e) {
-      const contentEl = document.querySelector('.EditTemplateDialog');
+      const contentEl = document.querySelector(`.EditTemplateDialog--${this.id}`);
       contentEl.style.width = `${e.width + 50}px`;
     },
 
