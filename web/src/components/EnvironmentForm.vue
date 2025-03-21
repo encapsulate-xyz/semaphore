@@ -21,10 +21,12 @@
       class="mb-2"
     ></v-text-field>
 
-    <v-tabs grow v-model="tab" class="mb-7">
+    <v-tabs grow v-model="tab">
       <v-tab key="variables">Variables</v-tab>
       <v-tab key="secrets">Secrets</v-tab>
     </v-tabs>
+
+    <v-divider style="margin-top: -1px;" class="mb-7" />
 
     <v-tabs-items v-model="tab">
       <v-tab-item key="variables">
@@ -320,6 +322,12 @@
 
   </v-form>
 </template>
+
+<style lang="scss">
+.v-data-table__wrapper {
+
+}
+</style>
 
 <script>
 /* eslint-disable import/no-extraneous-dependencies,import/extensions */

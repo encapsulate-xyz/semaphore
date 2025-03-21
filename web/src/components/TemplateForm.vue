@@ -310,7 +310,7 @@
       <v-checkbox
         class="mt-0"
         :label="$t('allowInventoryInTask')"
-        v-model="item.task_params.allow_override_inventory"
+        v-model="(item.task_params || {}).allow_override_inventory"
         v-if="needField('allow_override_inventory')"
       />
 
