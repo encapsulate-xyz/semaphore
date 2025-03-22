@@ -588,7 +588,7 @@ func (t *LocalJob) prepareRun(environmentVars []string, params interface{}) erro
 	}
 
 	if err := t.App.InstallRequirements(environmentVars, params); err != nil {
-		t.Log("Running galaxy failed: " + err.Error())
+		t.Log("Failed to install requirements: " + err.Error())
 		return err
 	}
 
