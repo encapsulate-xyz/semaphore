@@ -137,7 +137,7 @@ func createDemoProject(projectID int, noneKeyID int, emptyEnvID int, store db.St
 
 	desc = "Pings the website to provide a real-world example of using Semaphore."
 	_, err = store.CreateTemplate(db.Template{
-		Name:          "Ping google.com",
+		Name:          "Ping semaphoreui.com",
 		Playbook:      "ping.yml",
 		Description:   &desc,
 		ProjectID:     projectID,
