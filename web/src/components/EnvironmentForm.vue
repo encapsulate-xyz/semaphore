@@ -84,7 +84,7 @@
             v-if="extraVars != null"
             :items="extraVars"
             :items-per-page="-1"
-            class="elevation-1"
+            class="elevation-1 EnvironmentForm__fields"
             hide-default-footer
             :no-data-text="$t('noValues')"
             style="background: #8585850f"
@@ -142,7 +142,7 @@
           <v-data-table
             :items="env"
             :items-per-page="-1"
-            class="elevation-1"
+            class="elevation-1 EnvironmentForm__fields"
             hide-default-footer
             :no-data-text="$t('noValues')"
             style="background: #8585850f"
@@ -215,7 +215,7 @@
           <v-data-table
             :items="secrets.filter(s => !s.remove && s.type === 'var')"
             :items-per-page="-1"
-            class="elevation-1"
+            class="elevation-1 EnvironmentForm__fields"
             hide-default-footer
             :no-data-text="$t('noValues')"
             style="background: #8585850f"
@@ -274,7 +274,7 @@
           <v-data-table
             :items="secrets.filter(s => !s.remove && s.type === 'env')"
             :items-per-page="-1"
-            class="elevation-1"
+            class="elevation-1 EnvironmentForm__fields"
             hide-default-footer
             :no-data-text="$t('noValues')"
             style="background: #8585850f"
@@ -324,8 +324,26 @@
 </template>
 
 <style lang="scss">
-.v-data-table__wrapper {
-
+.vue-codemirror {
+  border-radius: 6px !important;
+}
+.CodeMirror {
+  border-radius: 5px !important;
+}
+.EnvironmentForm__fields {
+  .v-data-table__wrapper {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    td {
+      border-bottom: 0 !important;
+    }
+    td:last-child {
+      padding-right: 15px !important;
+    }
+    td:first-child {
+      padding-left: 5px !important;
+    }
+  }
 }
 </style>
 
