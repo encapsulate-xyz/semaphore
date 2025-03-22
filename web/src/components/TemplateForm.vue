@@ -350,7 +350,7 @@
   flex-direction: column;
   flex-wrap: wrap;
   height: 700px;
-  max-height: calc(90vh - 50px);
+  max-height: calc(90vh - 115px);
   padding-top: 10px;
   column-gap: 20px;
   & > * {
