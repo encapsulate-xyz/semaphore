@@ -233,7 +233,7 @@ func createDemoProject(projectID int, noneKeyID int, emptyEnvID int, store db.St
 	}
 
 	template, err = store.CreateTemplate(db.Template{
-		Name:            "Apply infrastructure",
+		Name:            "Apply infrastructure (OpenTofu)",
 		Type:            db.TemplateTask,
 		Playbook:        "",
 		ProjectID:       projectID,
