@@ -112,14 +112,14 @@
       v-if="template.app === 'ansible'"
       v-model="item.params"
       :app="template.app"
-      :template-params="template.task_params"
+      :template-params="template.task_params || {}"
     />
 
     <TaskParamsForm
       v-else
       v-model="item.params"
       :app="template.app"
-      :template-params="template.task_params"
+      :template-params="template.task_params || {}"
     />
 
     <ArgsPicker
