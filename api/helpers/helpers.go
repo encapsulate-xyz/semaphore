@@ -114,9 +114,12 @@ func WriteError(w http.ResponseWriter, err error) {
 		return
 	}
 
-	switch e := err.(type) {
-	case *db.ValidationError:
+	var e *db.ValidationError
+	switch {
+	case errors.As(err, &e):
 		WriteErrorStatus(w, e.Error(), http.StatusBadRequest)
+	case errors.As(err, &db.ErrNotFound):
+		WriteErrorStatus(w, e.Error(), http.StatusNotFound)
 	default:
 		log.Error(err)
 		debug.PrintStack()
