@@ -530,6 +530,8 @@ func getSystemInfo(w http.ResponseWriter, r *http.Request) {
 			"project_runners":   false,
 			"terraform_backend": false,
 		},
+
+		"git_client": util.Config.GitClientId,
 	}
 
 	helpers.WriteJSON(w, http.StatusOK, body)
