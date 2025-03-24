@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/semaphoreui/semaphore/pkg/random"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -165,20 +166,44 @@ func (p *TaskPool) Run() {
 				break
 			}
 
-			//get TaskRunner from top of queue
-			t := p.Queue[0]
-			if t.Task.Status == task_logger.TaskFailStatus {
-				//delete failed TaskRunner from queue
-				p.Queue = p.Queue[1:]
-				log.Info("Task " + strconv.Itoa(t.Task.ID) + " removed from queue")
+			var t *TaskRunner
+
+			for i := range p.Queue {
+				curr := p.Queue[i]
+
+				if curr.Task.Status == task_logger.TaskFailStatus {
+					//delete failed TaskRunner from queue
+					p.Queue = slices.Delete(p.Queue, i, i+1)
+					log.Info("Task " + strconv.Itoa(curr.Task.ID) + " removed from queue")
+					continue
+				}
+
+				if p.blocks(curr) {
+					continue
+				}
+
+				t = curr
 				break
 			}
 
-			if p.blocks(t) {
-				//move blocked TaskRunner to end of queue
-				p.Queue = append(p.Queue[1:], t)
+			if t == nil {
 				break
 			}
+
+			////get TaskRunner from top of queue
+			//t := p.Queue[0]
+			//if t.Task.Status == task_logger.TaskFailStatus {
+			//	//delete failed TaskRunner from queue
+			//	p.Queue = p.Queue[1:]
+			//	log.Info("Task " + strconv.Itoa(t.Task.ID) + " removed from queue")
+			//	break
+			//}
+			//
+			//if p.blocks(t) {
+			//	//move blocked TaskRunner to end of queue
+			//	//p.Queue = append(p.Queue[1:], t)
+			//	break
+			//}
 
 			log.Info("Set resource locker with TaskRunner " + strconv.Itoa(t.Task.ID))
 			p.resourceLocker <- &resourceLock{lock: true, holder: t}
