@@ -9,7 +9,7 @@ require (
 	github.com/go-git/go-git/v5 v5.13.0
 	github.com/go-gorp/gorp/v3 v3.1.0
 	github.com/go-ldap/ldap/v3 v3.4.10
-	github.com/go-sql-driver/mysql v1.8.1
+	github.com/go-sql-driver/mysql v1.9.1
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/gorilla/context v1.1.2
 	github.com/gorilla/handlers v1.5.2
