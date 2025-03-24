@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"runtime/debug"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -124,6 +125,24 @@ func WriteError(w http.ResponseWriter, err error) {
 	}
 }
 
+func QueryParamsForProps(url *url.URL, props db.ObjectProps) (params db.RetrieveQueryParams) {
+	sortBy := ""
+
+	if url.Query().Get("sort") != "" {
+		i := slices.Index(props.SortableColumns, url.Query().Get("sort"))
+		if i != -1 {
+			sortBy = props.SortableColumns[i]
+		}
+	}
+
+	params = db.RetrieveQueryParams{
+		SortBy:       sortBy,
+		SortInverted: url.Query().Get("order") == "desc",
+	}
+
+	return
+}
+
 func QueryParams(url *url.URL) db.RetrieveQueryParams {
 	return db.RetrieveQueryParams{
 		SortBy:       url.Query().Get("sort"),
@@ -132,7 +151,7 @@ func QueryParams(url *url.URL) db.RetrieveQueryParams {
 }
 
 func QueryParamsWithOwner(url *url.URL, props db.ObjectProps) db.RetrieveQueryParams {
-	res := QueryParams(url)
+	res := QueryParamsForProps(url, props)
 
 	hasOwnerFilter := false
 
@@ -142,8 +161,8 @@ func QueryParamsWithOwner(url *url.URL, props db.ObjectProps) db.RetrieveQueryPa
 			continue
 		}
 
-		id, err := strconv.Atoi(s)
-		if err != nil {
+		id, err2 := strconv.Atoi(s)
+		if err2 != nil {
 			continue
 		}
 
