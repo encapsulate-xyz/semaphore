@@ -223,17 +223,21 @@ func UpdateRunner(w http.ResponseWriter, r *http.Request) {
 		tsk := taskPool.GetTask(job.ID)
 
 		if tsk == nil {
-			// TODO: log
 			continue
 		}
 
 		if tsk.RunnerID != runner.ID {
-			// TODO: add error message
-			continue
+			helpers.WriteErrorStatus(w, "Task not assigned to this runner", http.StatusBadRequest)
+			return
 		}
 
 		for _, logRecord := range job.LogRecords {
 			tsk.LogWithTime(logRecord.Time, logRecord.Message)
+		}
+
+		if !job.Status.IsValid() {
+			helpers.WriteErrorStatus(w, "Invalid task status", http.StatusBadRequest)
+			return
 		}
 
 		tsk.SetStatus(job.Status)
