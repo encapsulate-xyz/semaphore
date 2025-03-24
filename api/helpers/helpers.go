@@ -118,7 +118,7 @@ func WriteError(w http.ResponseWriter, err error) {
 	switch {
 	case errors.As(err, &e):
 		WriteErrorStatus(w, e.Error(), http.StatusBadRequest)
-	case errors.As(err, &db.ErrNotFound):
+	case errors.Is(err, db.ErrNotFound):
 		WriteErrorStatus(w, e.Error(), http.StatusNotFound)
 	default:
 		log.Error(err)
