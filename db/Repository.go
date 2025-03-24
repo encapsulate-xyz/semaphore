@@ -70,13 +70,17 @@ func (r Repository) GetDirName(templateID int) string {
 
 func (r Repository) GetFullPath(templateID int) string {
 	if r.GetType() == RepositoryLocal {
-		return r.GetGitURL()
+		return r.GetGitURL(true)
 	}
 	return path.Join(util.Config.TmpPath, r.GetDirName(templateID))
 }
 
-func (r Repository) GetGitURL() string {
+func (r Repository) GetGitURL(secure bool) string {
 	url := r.GitURL
+
+	if secure {
+		return url
+	}
 
 	if r.GetType() == RepositoryHTTP {
 		auth := ""
