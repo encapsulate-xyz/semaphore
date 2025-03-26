@@ -130,6 +130,15 @@ type AuthConfig struct {
 	Totp *TotpConfig `json:"totp,omitempty"`
 }
 
+type EventLogType struct {
+	Enabled bool   `json:"enabled" env:"SEMAPHORE_EVENT_LOG_ENABLED"`
+	Path    string `json:"path,omitempty" env:"SEMAPHORE_EVENT_LOG_PATH"`
+}
+
+type ConfigLog struct {
+	Events *EventLogType `json:"events,omitempty"`
+}
+
 // ConfigType mapping between Config and the json file that sets it
 type ConfigType struct {
 	MySQL    *DbConfig `json:"mysql,omitempty"`
@@ -229,6 +238,8 @@ type ConfigType struct {
 	EnvVars map[string]string `json:"env_vars,omitempty" env:"SEMAPHORE_ENV_VARS"`
 
 	ForwardedEnvVars []string `json:"forwarded_env_vars,omitempty" env:"SEMAPHORE_FORWARDED_ENV_VARS"`
+
+	Log *ConfigLog `json:"log,omitempty"`
 }
 
 func NewConfigType() *ConfigType {
