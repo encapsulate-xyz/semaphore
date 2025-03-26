@@ -121,13 +121,18 @@ type TLSConfig struct {
 	HTTPRedirectPort *int   `json:"http_redirect_port,omitempty" env:"SEMAPHORE_TLS_HTTP_REDIRECT_PORT"`
 }
 
+type EmailAuthConfig struct {
+	Enabled bool `json:"enabled" env:"SEMAPHORE_EMAIL_AUTH_ENABLED"`
+}
+
 type TotpConfig struct {
 	Enabled       bool `json:"enabled" env:"SEMAPHORE_TOTP_ENABLED"`
 	AllowRecovery bool `json:"allow_recovery" env:"SEMAPHORE_TOTP_ALLOW_RECOVERY"`
 }
 
 type AuthConfig struct {
-	Totp *TotpConfig `json:"totp,omitempty"`
+	Totp  *TotpConfig      `json:"totp,omitempty"`
+	Email *EmailAuthConfig `json:"email,omitempty"`
 }
 
 type EventLogType struct {
