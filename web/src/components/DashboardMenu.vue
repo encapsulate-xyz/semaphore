@@ -8,7 +8,11 @@
       >{{ $t('history') }}
       </v-tab>
 
-      <v-tab key="stats" :to="`/project/${projectId}/stats`">{{ $t('stats') }}</v-tab>
+      <v-tab
+        v-if="projectType === ''"
+        key="stats"
+        :to="`/project/${projectId}/stats`"
+      >{{ $t('stats') }}</v-tab>
 
       <v-tab key="activity" :to="`/project/${projectId}/activity`">{{ $t('activity') }}</v-tab>
 
