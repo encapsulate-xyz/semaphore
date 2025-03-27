@@ -200,6 +200,11 @@
                 {{ $t('signIn') }}
               </v-btn>
 
+              <div
+                class="auth__divider"
+                v-if="loginWithPassword && oidcProviders.length > 0"
+              >or</div>
+
               <v-btn
                 large
                 v-for="provider in oidcProviders"
@@ -227,13 +232,33 @@
               </div>
 
             </div>
-      </v-form>
+          </v-form>
         </v-card-text>
       </v-card>
     </v-container>
   </div>
 </template>
 <style lang="scss">
+.auth__divider {
+  margin-top: 15px;
+  margin-bottom: 5px;
+
+  display: flex;
+  &:before, &:after {
+    margin-top: 10px;
+    width: 100%;
+    content: "";
+    border-top: 1px solid rgba(128, 128, 128, 0.51);
+  }
+
+  &:before {
+    margin-right: 10px;
+  }
+
+  &:after {
+    margin-left: 10px;
+  }
+}
 .auth {
   height: 100vh;
   background: #80808024;
