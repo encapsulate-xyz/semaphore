@@ -45,7 +45,10 @@ Semaphore UI allows you to:
 You can install Semaphore using the following methods:
 * Docker
 * SaaS ([Semaphore Cloud](https://portal.semaphoreui.com))
-* Deploy a VM from a marketplace (AWS, DigitalOcean, etc.)
+* Deploy a VM from a marketplace:
+  * [DigitalOcean](https://marketplace.digitalocean.com/apps/semaphore)
+  * [Vultr](https://www.vultr.com/marketplace/apps/semaphore)
+  * [Yandex Cloud](https://yandex.cloud/ru/marketplace/products/fastlix/semaphore)
 * Snap
 * Binary file
 * Debian or RPM package
