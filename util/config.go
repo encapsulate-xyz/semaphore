@@ -122,7 +122,7 @@ type TLSConfig struct {
 }
 
 type EmailAuthConfig struct {
-	Enabled bool `json:"enabled" env:"SEMAPHORE_EMAIL_AUTH_ENABLED"`
+	Enabled bool `json:"enabled" env:"SEMAPHORE_EMAIL_2TP_ENABLED"`
 }
 
 type TotpConfig struct {
@@ -130,9 +130,15 @@ type TotpConfig struct {
 	AllowRecovery bool `json:"allow_recovery" env:"SEMAPHORE_TOTP_ALLOW_RECOVERY"`
 }
 
+type RecaptchaConfig struct {
+	Enabled string `json:"enabled,omitempty" env:"SEMAPHORE_RECAPTCHA_ENABLED"`
+	SiteKey string `json:"site_key,omitempty" env:"SEMAPHORE_RECAPTCHA_SITE_KEY"`
+}
+
 type AuthConfig struct {
-	Totp  *TotpConfig      `json:"totp,omitempty"`
-	Email *EmailAuthConfig `json:"email,omitempty"`
+	Recaptcha *RecaptchaConfig `json:"recaptcha,omitempty"`
+	Totp      *TotpConfig      `json:"totp,omitempty"`
+	Email     *EmailAuthConfig `json:"email,omitempty"`
 }
 
 type EventLogType struct {
