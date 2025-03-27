@@ -81,6 +81,7 @@ For more installation options, visit our [Installation page](https://semaphoreui
 
 * [User Guide](https://docs.semaphoreui.com)
 * [API Reference](https://semaphoreui.com/api-docs)
+* [Postman Collection](https://www.postman.com/semaphoreui)
 
 ## Contribution
 * [Contribution Guide](https://github.com/semaphoreui/semaphore/blob/develop/CONTRIBUTING.md)
