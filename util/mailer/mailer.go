@@ -2,10 +2,10 @@ package mailer
 
 import (
 	"bytes"
+	"html/template"
 	"net"
 	"net/smtp"
 	"strings"
-	"html/template"
 	"time"
 )
 
@@ -60,7 +60,7 @@ func Send(
 		To:      r.Replace(to),
 		From:    r.Replace(from),
 		Subject: r.Replace(subject),
-		Body:    template.HTMLEscapeString(content),
+		Body:    content,
 	})
 
 	if err != nil {
