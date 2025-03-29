@@ -2,7 +2,9 @@ package sql
 
 import (
 	"database/sql"
+	"errors"
 	"github.com/semaphoreui/semaphore/db"
+	"regexp"
 	"time"
 )
 
@@ -37,11 +39,22 @@ func (d *SqlDb) ExpireAPIToken(userID int, tokenID string) error {
 	return validateMutationResult(d.exec("update user__token set expired=true where id=? and user_id=?", tokenID, userID))
 }
 
-func (d *SqlDb) DeleteAPIToken(userID int, tokenID string) (err error) {
-	_, err = d.sql.Delete(db.APIToken{
-		ID:     tokenID,
-		UserID: userID,
-	})
+func validateAPIToken(token string) error {
+	if matched, _ := regexp.MatchString(`^[a-zA-Z0-9-_=]{8,}$`, token); !matched {
+		return errors.New("invalid token format")
+	}
+	return nil
+}
+
+func (d *SqlDb) DeleteAPIToken(userID int, tokenPrefix string) (err error) {
+
+	err = validateAPIToken(tokenPrefix)
+	if err != nil {
+		return
+	}
+
+	_, err = d.exec("DELETE FROM user__token WHERE id LIKE ? AND user_id=?", tokenPrefix+"%", userID)
+
 	return
 }
 

@@ -39,6 +39,10 @@ func getAPITokens(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	for i := range tokens {
+		tokens[i].ID = tokens[i].ID[:8]
+	}
+
 	helpers.WriteJSON(w, http.StatusOK, tokens)
 }
 

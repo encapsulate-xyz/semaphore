@@ -24,12 +24,12 @@
       class="mt-4"
       :footer-props="{ itemsPerPageOptions: [20] }"
     >
-      <template v-slot:item.task_id="{ item }">
-        <router-link
-          :to="'/project/'"
-        >
-          #{{ item.task_id }}
-        </router-link>
+      <template v-slot:item.id="{ item }">
+        <code>{{ item.id }}***</code>
+      </template>
+
+      <template v-slot:item.created="{ item }">
+        {{ item.created | formatDate}}
       </template>
 
       <template v-slot:item.expired="{ item }">
@@ -49,9 +49,8 @@
             icon
             class="mr-1"
             @click="deleteItem(item.id)"
-            v-if="!item.expired"
           >
-            <v-icon>mdi-api-off</v-icon>
+            <v-icon>mdi-delete</v-icon>
           </v-btn>
         </div>
       </template>
@@ -89,6 +88,7 @@ export default {
         responseType: 'json',
         data: {},
       });
+      await this.loadItems();
     },
 
     getHeaders() {
