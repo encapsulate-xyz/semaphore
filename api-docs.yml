@@ -1,9 +1,11 @@
 ---
 swagger: '2.0'
 info:
-  title: SEMAPHORE
-  description: Semaphore API
-  version: "2.2.0"
+  title: Semaphore UI
+  description: |
+    Semaphore API provides endpoints for managing and interacting with the Semaphore UI.
+    This documentation outlines the available operations and data models.
+  version: "2.13.0"
 
 host: localhost:3000
 
