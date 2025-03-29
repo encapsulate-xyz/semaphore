@@ -10,7 +10,7 @@ When creating a pull-request you should:
 
 - Check out the `develop` branch
 - [Install Go](https://golang.org/doc/install). Go must be >= v1.21 for all the tools we use to work
-- Install MySQL / MariaDB (OPTIONAL!!!)
+- Install MySQL / MariaDB (Optional)
 - Install node.js
 
 1) Set up `GOPATH`
@@ -93,3 +93,8 @@ As Dredd and the application database config may differ it expects it's own conf
     ```
     dredd --config ./.dredd/dredd.local.yml
     ```
+
+## Goland Debug Configuration
+
+<img width="700" alt="image" src="https://github.com/user-attachments/assets/cc6132ee-b31e-424c-8ca9-4eba56bf7fb0" />
+
