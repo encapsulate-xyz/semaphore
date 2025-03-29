@@ -123,9 +123,13 @@ func (d *SqlDb) insert(primaryKeyColumnName string, query string, args ...interf
 
 	switch d.sql.Dialect.(type) {
 	case gorp.PostgresDialect:
-		query += " returning " + primaryKeyColumnName
-
-		err := d.sql.QueryRow(d.PrepareQuery(query), args...).Scan(&insertId)
+		var err error
+		if primaryKeyColumnName != "" {
+			query += " returning " + primaryKeyColumnName
+			err = d.sql.QueryRow(d.PrepareQuery(query), args...).Scan(&insertId)
+		} else {
+			_, err = d.sql.Exec(d.PrepareQuery(query), args...)
+		}
 
 		if err != nil {
 			return 0, err
