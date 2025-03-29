@@ -24,8 +24,28 @@
       class="mt-4"
       :footer-props="{ itemsPerPageOptions: [20] }"
     >
+
       <template v-slot:item.id="{ item }">
-        <code>{{ item.id }}***</code>
+
+        <code v-if="item.token_id && item.show_token_id" class="mr-2">{{ item.token_id }}</code>
+        <code v-else class="mr-2">{{ item.id }}***</code>
+
+        <v-btn
+          icon
+          v-if="item.token_id && !item.show_token_id"
+          @click="showToken(item.id)"
+        >
+          <v-icon>mdi-eye</v-icon>
+        </v-btn>
+
+        <v-btn
+          icon
+          v-if="item.token_id"
+          @click="copyToClipboard(item.token_id)"
+        >
+          <v-icon>mdi-content-copy</v-icon>
+        </v-btn>
+
       </template>
 
       <template v-slot:item.created="{ item }">
@@ -81,14 +101,37 @@ export default {
   },
 
   methods: {
+
+    async showToken(token) {
+      const i = this.items.findIndex((item) => item.id === token);
+      if (i === -1) {
+        return;
+      }
+
+      this.items.splice(i, 1, {
+        ...this.items[i],
+        show_token_id: true,
+      });
+    },
+
     async newToken() {
-      await axios({
+      const res = (await axios({
         method: 'post',
         url: '/api/user/tokens',
         responseType: 'json',
         data: {},
-      });
+      })).data;
       await this.loadItems();
+
+      const i = this.items.findIndex((item) => res.id.startsWith(item.id));
+      if (i === -1) {
+        return;
+      }
+
+      this.items.splice(i, 1, {
+        ...this.items[i],
+        token_id: res.id,
+      });
     },
 
     getHeaders() {
@@ -123,6 +166,21 @@ export default {
 
     getEventName() {
       return 'i-token';
+    },
+
+    async copyToClipboard(text) {
+      try {
+        await window.navigator.clipboard.writeText(text);
+        EventBus.$emit('i-snackbar', {
+          color: 'success',
+          text: 'The token has been copied to the clipboard.',
+        });
+      } catch (e) {
+        EventBus.$emit('i-snackbar', {
+          color: 'error',
+          text: `Can't copy the token: ${e.message}`,
+        });
+      }
     },
   },
 };
