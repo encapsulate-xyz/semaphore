@@ -15,11 +15,13 @@ When creating a pull-request you should:
 
 1) Set up `GOPATH`
    * Set `GOPATH` in your shell (for example, in your `.bashrc` or `.zshrc`):
+   
       ```bash
       export GOPATH=$HOME/go
       export PATH=$PATH:$GOPATH/bin
       ```
    * Create required directory and switch to it:
+   
       ```bash
       mkdir -p $GOPATH/src/github.com/semaphoreui
       cd $GOPATH/src/github.com/semaphoreui
@@ -68,10 +70,12 @@ As Dredd and the application database config may differ it expects it's own conf
 ### How to run Dredd tests locally
 
 1) Build Dredd hooks:
+
     ```bash
     task e2e:hooks
     ```
 2) Install Dredd globally
+
     ```bash
     npm install -g dredd
     ```
@@ -86,10 +90,12 @@ As Dredd and the application database config may differ it expects it's own conf
     }
     ```
 4) Start Semaphore server (add `--config` option if required):
-    ```bash
+
+5) ```bash
     ./bin/semaphore server
     ```
 5) Start Dredd tests
+
     ```
     dredd --config ./.dredd/dredd.local.yml
     ```
