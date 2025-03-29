@@ -20,7 +20,7 @@ When creating a pull-request you should:
 mkdir -p $GOPATH/src/github.com/semaphoreui && cd $GOPATH/src/github.com/semaphoreui
 ```
 
-2) Clone semaphore (with submodules)
+2) Clone Semaphore UI
 
 ```
 git clone --recursive git@github.com:semaphoreui/semaphore.git && cd semaphore
@@ -88,3 +88,7 @@ As Dredd and the application database config may differ it expects it's own conf
     ```
     dredd --config ./.dredd/dredd.local.yml
     ```
+
+## Goland Debug Configuration
+
+<img width="700" alt="image" src="https://github.com/user-attachments/assets/cc6132ee-b31e-424c-8ca9-4eba56bf7fb0" />
