@@ -11,8 +11,8 @@ When creating a pull-request you should:
 ## Installation in a development environment
 
 - Check out the `develop` branch
-- [Install Go](https://golang.org/doc/install). Go must be >= v1.10 for all the tools we use to work
-- Install MySQL / MariaDB (OPTIONAL!!!)
+- [Install Go](https://golang.org/doc/install). Go must be >= v1.21 for all the tools we use to work
+- Install MySQL / MariaDB (**OPTIONAL!**)
 - Install node.js
 
 1) Set up GOPATH, GOBIN and Workspace.
@@ -20,7 +20,7 @@ When creating a pull-request you should:
 mkdir -p $GOPATH/src/github.com/semaphoreui && cd $GOPATH/src/github.com/semaphoreui
 ```
 
-2) Clone semaphore (with submodules)
+2) Clone Semaphore UI
 
 ```
 git clone --recursive git@github.com:semaphoreui/semaphore.git && cd semaphore
@@ -63,7 +63,7 @@ As Dredd and the application database config may differ it expects it's own conf
 ### How to run Dredd tests locally
 
 1) Build Dredd hooks:
-    ````bash
+    ```bash
     task e2e:hooks
     ```
 2) Install Dredd globally
@@ -81,10 +81,14 @@ As Dredd and the application database config may differ it expects it's own conf
     }
     ```
 4) Start Semaphore server (add `--config` option if required):
-    ````bash
+    ```bash
     ./bin/semaphore server
     ```
 5) Start Dredd tests
     ```
     dredd --config ./.dredd/dredd.local.yml
     ```
+
+## Goland Debug Configuration
+
+<img width="700" alt="image" src="https://github.com/user-attachments/assets/cc6132ee-b31e-424c-8ca9-4eba56bf7fb0" />
