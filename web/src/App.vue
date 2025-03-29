@@ -500,6 +500,20 @@
                 </v-list-item-content>
               </v-list-item>
 
+              <v-list-item
+                key="tokens"
+                to="/tokens"
+                v-if="user.admin"
+              >
+                <v-list-item-icon>
+                  <v-icon>mdi-api</v-icon>
+                </v-list-item-icon>
+
+                <v-list-item-content>
+                  {{ $t('tokens') }}
+                </v-list-item-content>
+              </v-list-item>
+
               <v-list-item key="sign_out" @click="signOut()">
                 <v-list-item-icon>
                   <v-icon>mdi-exit-to-app</v-icon>
