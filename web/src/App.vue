@@ -503,7 +503,6 @@
               <v-list-item
                 key="tokens"
                 to="/tokens"
-                v-if="user.admin"
               >
                 <v-list-item-icon>
                   <v-icon>mdi-api</v-icon>
