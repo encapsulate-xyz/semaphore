@@ -2,6 +2,7 @@ package sockets
 
 import (
 	"fmt"
+	"github.com/semaphoreui/semaphore/api/helpers"
 	"github.com/semaphoreui/semaphore/db"
 	"net/http"
 	"time"
@@ -121,7 +122,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	user := usr.(*db.User)
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		panic(err)
+		log.Error(err)
+		helpers.WriteError(w, err)
 	}
 
 	c := &connection{
