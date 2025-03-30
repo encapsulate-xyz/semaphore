@@ -1,7 +1,6 @@
 package sql
 
 import (
-	"database/sql"
 	"github.com/Masterminds/squirrel"
 	"github.com/semaphoreui/semaphore/db"
 	"math/rand"
@@ -182,15 +181,6 @@ func (d *SqlDb) GetTask(projectID int, taskID int) (task db.Task, err error) {
 	}
 
 	err = d.selectOne(&task, query, args...)
-
-	if err == sql.ErrNoRows {
-		err = db.ErrNotFound
-		return
-	}
-
-	if err != nil {
-		return
-	}
 
 	return
 }

@@ -1,9 +1,7 @@
 package sql
 
 import (
-	"database/sql"
 	"encoding/json"
-
 	"github.com/Masterminds/squirrel"
 	"github.com/semaphoreui/semaphore/db"
 )
@@ -280,10 +278,6 @@ func (d *SqlDb) GetTemplate(projectID int, templateID int) (template db.Template
 		"select * from project__template where project_id=? and id=?",
 		projectID,
 		templateID)
-
-	if err == sql.ErrNoRows {
-		err = db.ErrNotFound
-	}
 
 	if err != nil {
 		return

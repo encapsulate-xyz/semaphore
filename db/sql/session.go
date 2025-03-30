@@ -28,10 +28,6 @@ func (d *SqlDb) CreateAPIToken(token db.APIToken) (db.APIToken, error) {
 func (d *SqlDb) GetAPIToken(tokenID string) (token db.APIToken, err error) {
 	err = d.selectOne(&token, d.PrepareQuery("select * from user__token where id=? and expired=false"), tokenID)
 
-	if err == sql.ErrNoRows {
-		err = db.ErrNotFound
-	}
-
 	return
 }
 
@@ -61,10 +57,6 @@ func (d *SqlDb) DeleteAPIToken(userID int, tokenPrefix string) (err error) {
 func (d *SqlDb) GetSession(userID int, sessionID int) (session db.Session, err error) {
 	err = d.selectOne(&session, "select * from session where id=? and user_id=? and expired=false", sessionID, userID)
 
-	if err == sql.ErrNoRows {
-		err = db.ErrNotFound
-	}
-
 	return
 }
 
@@ -83,7 +75,7 @@ func (d *SqlDb) TouchSession(userID int, sessionID int) error {
 func (d *SqlDb) GetAPITokens(userID int) (tokens []db.APIToken, err error) {
 	_, err = d.selectAll(&tokens, d.PrepareQuery("select * from user__token where user_id=? order by created desc"), userID)
 
-	if err == sql.ErrNoRows {
+	if errors.Is(err, sql.ErrNoRows) {
 		err = db.ErrNotFound
 	}
 

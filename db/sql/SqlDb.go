@@ -3,6 +3,7 @@ package sql
 import (
 	"database/sql"
 	"embed"
+	"errors"
 	"fmt"
 	"github.com/Masterminds/squirrel"
 	"github.com/go-gorp/gorp/v3"
@@ -157,7 +158,13 @@ func (d *SqlDb) exec(query string, args ...interface{}) (sql.Result, error) {
 }
 
 func (d *SqlDb) selectOne(holder interface{}, query string, args ...interface{}) error {
-	return d.sql.SelectOne(holder, d.PrepareQuery(query), args...)
+	err := d.sql.SelectOne(holder, d.PrepareQuery(query), args...)
+
+	if errors.Is(err, sql.ErrNoRows) {
+		err = db.ErrNotFound
+	}
+
+	return err
 }
 
 func (d *SqlDb) selectAll(i interface{}, query string, args ...interface{}) ([]interface{}, error) {
@@ -229,10 +236,6 @@ func (d *SqlDb) getObject(projectID int, props db.ObjectProps, objectID int, obj
 	}
 
 	err = d.selectOne(object, query, args...)
-
-	if err == sql.ErrNoRows {
-		err = db.ErrNotFound
-	}
 
 	return
 }
@@ -510,10 +513,6 @@ func (d *SqlDb) getObjectByReferrer(referrerID int, referringObjectProps db.Obje
 	}
 
 	err = d.selectOne(object, query, args...)
-
-	if err == sql.ErrNoRows {
-		err = db.ErrNotFound
-	}
 
 	return
 }
