@@ -205,7 +205,7 @@
 
       <ArgsPicker
         v-if="needField('limit')"
-        :vars="item.task_params.limit"
+        :vars="taskParams.limit"
         @change="setLimit"
         :title="$t('limit')"
         :arg-title="$t('limit')"
@@ -214,7 +214,7 @@
 
       <ArgsPicker
         v-if="needField('tags')"
-        :vars="item.task_params.tags"
+        :vars="taskParams.tags"
         @change="setTags"
         :title="$t('tags')"
         :arg-title="$t('tag')"
@@ -223,7 +223,7 @@
 
       <ArgsPicker
         v-if="needField('skip_tags')"
-        :vars="item.task_params.skip_tags"
+        :vars="taskParams.skip_tags"
         @change="setSkipTags"
         :title="$t('skipTags')"
         :arg-title="$t('tag')"
@@ -310,21 +310,21 @@
       <v-checkbox
         class="mt-0"
         :label="$t('allowInventoryInTask')"
-        v-model="(item.task_params || {}).allow_override_inventory"
+        v-model="taskParams.allow_override_inventory"
         v-if="needField('allow_override_inventory')"
       />
 
       <v-checkbox
         class="mt-0"
         :label="$t('allowLimitInTask')"
-        v-model="(item.task_params || {}).allow_override_limit"
+        v-model="taskParams.allow_override_limit"
         v-if="needField('allow_override_limit')"
       />
 
       <v-checkbox
         class="mt-0"
         :label="$t('allowDebug')"
-        v-model="item.task_params.allow_debug"
+        v-model="taskParams.allow_debug"
         v-if="needField('allow_debug')"
       />
 
@@ -433,9 +433,7 @@ export default {
         lint: true,
         indentWithTabs: false,
       },
-      item: {
-        task_params: {},
-      },
+      item: {},
       inventory: null,
       repositories: null,
       environment: null,
@@ -477,6 +475,9 @@ export default {
   },
 
   computed: {
+    taskParams() {
+      return this.item.task_params || {};
+    },
 
     surveyVars() {
       if (this.sourceItemId != null && this.item.survey_vars === undefined) {
@@ -530,15 +531,23 @@ export default {
     },
 
     setSkipTags(tags) {
-      this.item.task_params.skip_tags = tags;
+      this.setTaskParams({ skip_tags: tags });
     },
 
     setTags(tags) {
-      this.item.task_params.tags = tags;
+      this.setTaskParams({ tags });
     },
 
     setLimit(limit) {
-      this.item.task_params.limit = limit;
+      this.setTaskParams({ limit });
+    },
+
+    setTaskParams(params) {
+      if (!this.item.task_params) {
+        this.item.task_params = {};
+      }
+
+      Object.assign(this.item.task_params, params);
     },
 
     setArgs(args) {
@@ -559,10 +568,6 @@ export default {
     },
 
     async afterLoadData() {
-      if (!this.item.task_params) {
-        this.item.task_params = {};
-      }
-
       if (this.sourceItemId) {
         const item = (await axios({
           url: `/api/project/${this.projectId}/templates/${this.sourceItemId}`,

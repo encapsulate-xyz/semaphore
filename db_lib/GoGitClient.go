@@ -2,6 +2,7 @@ package db_lib
 
 import (
 	"errors"
+	"strings"
 
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/config"
@@ -24,6 +25,12 @@ type ProgressWrapper struct {
 }
 
 func (t ProgressWrapper) Write(p []byte) (n int, err error) {
+	s := string(p)
+
+	if strings.HasPrefix(s, "Counting objects:") || strings.HasPrefix(s, "Compressing objects:") {
+		return len(p), nil
+	}
+
 	t.Logger.Log(string(p))
 	return len(p), nil
 }
@@ -85,7 +92,7 @@ func (c GoGitClient) Clone(r GitRepository) error {
 	}
 
 	cloneOpt := &git.CloneOptions{
-		URL:               r.Repository.GetGitURL(),
+		URL:               r.Repository.GetGitURL(true),
 		Progress:          ProgressWrapper{r.Logger},
 		RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
 		ReferenceName:     plumbing.NewBranchReferenceName(r.Repository.GitBranch),

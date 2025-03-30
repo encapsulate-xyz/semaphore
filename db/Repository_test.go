@@ -61,7 +61,7 @@ func TestRepository_GetGitURL(t *testing.T) {
 			ExpectedGitUrl: "https://password@github.com/user/project.git",
 		},
 	} {
-		gitUrl := v.Repository.GetGitURL()
+		gitUrl := v.Repository.GetGitURL(false)
 		assert.Equal(t, v.ExpectedGitUrl, gitUrl, "wrong gitUrl")
 	}
 }
