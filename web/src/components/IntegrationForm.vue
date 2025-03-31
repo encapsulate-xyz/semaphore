@@ -105,7 +105,7 @@ export default {
 
   computed: {
     isLoaded() {
-      return this.keys != null;
+      return this.item && this.keys != null;
     },
 
     loginPasswordKeys() {
