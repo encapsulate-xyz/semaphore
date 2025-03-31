@@ -87,6 +87,9 @@ export default {
       }, {
         id: 'hmac',
         title: 'HMAC',
+      }, {
+        id: 'basic',
+        title: 'BasicAuth',
       }],
       keys: null,
     };
