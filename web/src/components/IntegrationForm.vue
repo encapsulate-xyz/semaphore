@@ -61,6 +61,7 @@
       v-if="item.template_id"
       v-model="item.task_params"
       :app="(template || {}).app"
+      :template-params="(template || {}).task_params || {}"
     />
   </v-form>
 </template>
