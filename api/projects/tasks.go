@@ -124,7 +124,7 @@ func GetTaskStages(w http.ResponseWriter, r *http.Request) {
 	project := context.Get(r, "project").(db.Project)
 
 	var output []db.TaskOutput
-	output, err := helpers.Store(r).GetTaskOutputs(project.ID, task.ID)
+	output, err := helpers.Store(r).GetTaskOutputs(project.ID, task.ID, db.RetrieveQueryParams{})
 
 	if err != nil {
 		util.LogErrorF(err, log.Fields{"error": "Bad request. Cannot get task output from database"})
@@ -141,7 +141,7 @@ func GetTaskOutput(w http.ResponseWriter, r *http.Request) {
 	project := context.Get(r, "project").(db.Project)
 
 	var output []db.TaskOutput
-	output, err := helpers.Store(r).GetTaskOutputs(project.ID, task.ID)
+	output, err := helpers.Store(r).GetTaskOutputs(project.ID, task.ID, db.RetrieveQueryParams{})
 
 	if err != nil {
 		util.LogErrorF(err, log.Fields{"error": "Bad request. Cannot get task output from database"})
@@ -172,7 +172,7 @@ func GetTaskRawOutput(w http.ResponseWriter, r *http.Request) {
 
 	for {
 		var output []db.TaskOutput
-		output, err := helpers.Store(r).GetTaskOutputRange(project.ID, task.ID, offset, chunkSize)
+		output, err := helpers.Store(r).GetTaskOutputs(project.ID, task.ID, db.RetrieveQueryParams{Offset: offset, Count: chunkSize})
 
 		if err != nil {
 			if offset == 0 {
