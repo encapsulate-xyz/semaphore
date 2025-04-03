@@ -1,6 +1,7 @@
 package projects
 
 import (
+	"bytes"
 	"errors"
 	"github.com/gorilla/context"
 	"github.com/semaphoreui/semaphore/api/helpers"
@@ -9,6 +10,7 @@ import (
 	"github.com/semaphoreui/semaphore/util"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	"runtime/debug"
 	"strconv"
 	"time"
 )
@@ -148,6 +150,61 @@ func GetTaskOutput(w http.ResponseWriter, r *http.Request) {
 	}
 
 	helpers.WriteJSON(w, http.StatusOK, output)
+}
+
+func outputToBytes(lines []db.TaskOutput) []byte {
+	var buffer bytes.Buffer
+	for i, line := range lines {
+		buffer.WriteString(line.Output)
+		if i < len(lines)-1 || len(lines) == 0 {
+			buffer.WriteByte('\n')
+		}
+	}
+	return buffer.Bytes()
+}
+
+func GetTaskRawOutput(w http.ResponseWriter, r *http.Request) {
+	task := context.Get(r, "task").(db.Task)
+	project := context.Get(r, "project").(db.Project)
+
+	const chunkSize = 10000
+	offset := 0
+
+	for {
+		var output []db.TaskOutput
+		output, err := helpers.Store(r).GetTaskOutputRange(project.ID, task.ID, offset, chunkSize)
+
+		if err != nil {
+			if offset == 0 {
+				util.LogErrorF(err, log.Fields{"error": "Bad request. Cannot get task output from database"})
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+
+			util.LogErrorF(err, log.Fields{"error": "Cannot get task output from database"})
+			return
+		}
+
+		if offset == 0 {
+			w.Header().Set("content-type", "text/plain; charset=utf-8")
+			w.WriteHeader(http.StatusOK)
+		}
+
+		readSize := len(output)
+		if readSize == 0 {
+			// eof
+			return
+		}
+
+		offset += readSize
+		data := outputToBytes(output)
+
+		if _, err := w.Write(data); err != nil {
+			log.Error(err)
+			debug.PrintStack()
+			return
+		}
+	}
 }
 
 func ConfirmTask(w http.ResponseWriter, r *http.Request) {

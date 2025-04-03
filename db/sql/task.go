@@ -1,6 +1,7 @@
 package sql
 
 import (
+	"fmt"
 	"github.com/Masterminds/squirrel"
 	"github.com/semaphoreui/semaphore/db"
 	"math/rand"
@@ -224,6 +225,20 @@ func (d *SqlDb) GetTaskOutputs(projectID int, taskID int) (output []db.TaskOutpu
 
 	_, err = d.selectAll(&output,
 		"select task_id, time, output from task__output where task_id=? order by id",
+		taskID)
+	return
+}
+
+func (d *SqlDb) GetTaskOutputRange(projectID int, taskID int, offset int, count int) (output []db.TaskOutput, err error) {
+	// check if task exists in the project
+	_, err = d.GetTask(projectID, taskID)
+
+	if err != nil {
+		return
+	}
+
+	_, err = d.selectAll(&output,
+		fmt.Sprintf("select task_id, time, output from task__output where task_id=? order by id limit %d offset %d", count, offset),
 		taskID)
 	return
 }

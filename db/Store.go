@@ -336,6 +336,8 @@ type Store interface {
 	GetTask(projectID int, taskID int) (Task, error)
 	DeleteTaskWithOutputs(projectID int, taskID int) error
 	GetTaskOutputs(projectID int, taskID int) ([]TaskOutput, error)
+	GetTaskOutputRange(projectID int, taskID int, offset int, count int) ([]TaskOutput, error)
+
 	CreateTaskOutput(output TaskOutput) (TaskOutput, error)
 	GetTaskStages(projectID int, taskID int) ([]TaskStage, error)
 	CreateTaskStage(stage TaskStage) (TaskStage, error)

@@ -241,3 +241,16 @@ func (d *BoltDb) GetTaskOutputs(projectID int, taskID int) (outputs []db.TaskOut
 
 	return
 }
+
+func (d *BoltDb) GetTaskOutputRange(projectID int, taskID int, offset int, count int) (outputs []db.TaskOutput, err error) {
+	// check if task exists in the project
+	_, err = d.GetTask(projectID, taskID)
+
+	if err != nil {
+		return
+	}
+
+	err = d.getObjects(taskID, db.TaskOutputProps, db.RetrieveQueryParams{Offset: offset, Count: count}, nil, &outputs)
+
+	return
+}
