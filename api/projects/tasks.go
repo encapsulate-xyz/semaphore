@@ -153,11 +153,9 @@ func GetTaskOutput(w http.ResponseWriter, r *http.Request) {
 
 func outputToBytes(lines []db.TaskOutput) []byte {
 	var buffer bytes.Buffer
-	for i, line := range lines {
+	for _, line := range lines {
 		buffer.WriteString(line.Output)
-		if i < len(lines)-1 || len(lines) == 0 {
-			buffer.WriteByte('\n')
-		}
+		buffer.WriteByte('\n')
 	}
 	return buffer.Bytes()
 }
@@ -169,7 +167,8 @@ func GetTaskRawOutput(w http.ResponseWriter, r *http.Request) {
 	const chunkSize = 10000
 	offset := 0
 
-	for {
+	eof := false
+	for !eof {
 		var output []db.TaskOutput
 		output, err := helpers.Store(r).GetTaskOutputs(project.ID, task.ID, db.RetrieveQueryParams{Offset: offset, Count: chunkSize})
 
@@ -190,17 +189,16 @@ func GetTaskRawOutput(w http.ResponseWriter, r *http.Request) {
 		}
 
 		readSize := len(output)
-		if readSize == 0 {
-			// eof
-			return
+
+		if readSize > 0 {
+			offset += readSize
+			data := outputToBytes(output)
+			if _, err := w.Write(data); err != nil {
+				return
+			}
 		}
 
-		offset += readSize
-		data := outputToBytes(output)
-
-		if _, err := w.Write(data); err != nil {
-			return
-		}
+		eof = readSize < chunkSize
 	}
 }
 
