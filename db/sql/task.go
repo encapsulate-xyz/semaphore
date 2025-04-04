@@ -1,7 +1,6 @@
 package sql
 
 import (
-	"fmt"
 	"github.com/Masterminds/squirrel"
 	"github.com/semaphoreui/semaphore/db"
 	"math/rand"
@@ -223,11 +222,19 @@ func (d *SqlDb) GetTaskOutputs(projectID int, taskID int, params db.RetrieveQuer
 		return
 	}
 
-	query := "select task_id, time, output from task__output where task_id=? order by id"
+	q := squirrel.Select("task_id", "time", "output").
+		From("task__output").
+		Where("task_id=? ", taskID)
+
 	if params.Count > 0 {
-		query += fmt.Sprintf(" limit %d offset %d", params.Count, params.Offset)
+		q = q.Limit(uint64(params.Count)).Offset(uint64(params.Offset))
 	}
 
-	_, err = d.selectAll(&output, query, taskID)
+	query, args, err := q.ToSql()
+	if err != nil {
+		return
+	}
+
+	_, err = d.selectAll(&output, query, args...)
 	return
 }

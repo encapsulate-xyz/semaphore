@@ -10,7 +10,6 @@ import (
 	"github.com/semaphoreui/semaphore/util"
 	log "github.com/sirupsen/logrus"
 	"net/http"
-	"runtime/debug"
 	"strconv"
 	"time"
 )
@@ -200,8 +199,6 @@ func GetTaskRawOutput(w http.ResponseWriter, r *http.Request) {
 		data := outputToBytes(output)
 
 		if _, err := w.Write(data); err != nil {
-			log.Error(err)
-			debug.PrintStack()
 			return
 		}
 	}
