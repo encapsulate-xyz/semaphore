@@ -2424,9 +2424,10 @@ paths:
       responses:
         200:
           description: output
-          schema:
-            type: string
-
+          headers:
+            content-type:
+              type: string
+              x-example: text/plain; charset=utf-8
 
 #  /runners:
 #    post:
