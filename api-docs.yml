@@ -2413,6 +2413,22 @@ paths:
             items:
               $ref: "#/definitions/TaskOutput"
 
+  /project/{project_id}/tasks/{task_id}/raw_output:
+    parameters:
+      - $ref: '#/parameters/project_id'
+      - $ref: '#/parameters/task_id'
+    get:
+      tags:
+        - project
+      summary: Get task raw output
+      responses:
+        200:
+          description: output
+          headers:
+            content-type:
+              type: string
+              x-example: text/plain; charset=utf-8
+
 #  /runners:
 #    post:
 #      tags:
