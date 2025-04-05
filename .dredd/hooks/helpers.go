@@ -6,13 +6,13 @@ import (
 	"os"
 	"time"
 
+	"github.com/go-gorp/gorp/v3"
 	"github.com/semaphoreui/semaphore/db"
 	"github.com/semaphoreui/semaphore/db/bolt"
 	"github.com/semaphoreui/semaphore/db/factory"
 	"github.com/semaphoreui/semaphore/db/sql"
 	"github.com/semaphoreui/semaphore/pkg/random"
 	"github.com/semaphoreui/semaphore/util"
-	"github.com/go-gorp/gorp/v3"
 	"github.com/snikch/goodman/transaction"
 )
 
@@ -217,7 +217,9 @@ func addTask() *db.Task {
 		UserID:     &userPathTestUser.ID,
 		Created:    db.GetParsedTime(time.Now()),
 	}
+
 	t, err := store.CreateTask(t, 0)
+
 	if err != nil {
 		fmt.Println("error during insertion of task:")
 		if j, err := json.Marshal(t); err == nil {
