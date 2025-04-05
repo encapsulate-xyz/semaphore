@@ -393,26 +393,49 @@ func (t *LocalJob) getPlaybookArgs(username string, incomingVersion *string) (ar
 	}
 
 	var limit string
+	var tags string
+	var skipTags string
 
+	// Fill fields from template
 	if len(tplParams.Limit) > 0 {
 		limit = strings.Join(tplParams.Limit, ",")
 	}
+
+	if len(tplParams.Tags) > 0 {
+		tags = strings.Join(tplParams.Tags, ",")
+	}
+
+	if len(tplParams.SkipTags) > 0 {
+		skipTags = strings.Join(tplParams.SkipTags, ",")
+	}
+
+	// Fill fields from task
 
 	if t.Task.Limit != "" && tplParams.AllowOverrideLimit {
 		t.Log("--limit=" + t.Task.Limit)
 		limit = t.Task.Limit
 	}
 
+	if tplParams.AllowOverrideTags {
+		tags = strings.Join(params.Tags, ",")
+	}
+
+	if tplParams.AllowOverrideSkipTags {
+		skipTags = strings.Join(params.SkipTags, ",")
+	}
+
+	// Add final args
+
 	if limit != "" {
 		templateArgs = append(templateArgs, "--limit="+limit)
 	}
 
-	if len(tplParams.Tags) > 0 {
-		templateArgs = append(templateArgs, "--tags="+strings.Join(tplParams.Tags, ","))
+	if tags != "" {
+		templateArgs = append(templateArgs, "--tags="+tags)
 	}
 
-	if len(tplParams.SkipTags) > 0 {
-		templateArgs = append(templateArgs, "--skip-tags="+strings.Join(tplParams.SkipTags, ","))
+	if skipTags != "" {
+		templateArgs = append(templateArgs, "--skip-tags="+skipTags)
 	}
 
 	args = append(args, templateArgs...)

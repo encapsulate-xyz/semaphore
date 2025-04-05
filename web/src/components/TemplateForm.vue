@@ -73,269 +73,281 @@
     </v-alert>
 
     <div class="TemplateFormBody" ref="formBody" @click="checkSize()">
-      <v-card
-        class="mb-6"
-        :color="$vuetify.theme.dark ? '#212121' : 'white'"
-        style="background: #8585850f"
-      >
-        <v-tabs
-          fixed-tabs
-          v-model="itemTypeIndex"
+        <v-card
+          class="mb-6"
+          :color="$vuetify.theme.dark ? '#212121' : 'white'"
+          style="background: #8585850f"
         >
-          <v-tab
-            style="padding: 0"
-            v-for="(key) in Object.keys(TEMPLATE_TYPE_ICONS)"
-            :key="key"
+          <v-tabs
+            fixed-tabs
+            v-model="itemTypeIndex"
           >
-            <v-icon small class="mr-2">{{ TEMPLATE_TYPE_ICONS[key] }}</v-icon>
-            {{ $t(TEMPLATE_TYPE_TITLES[key]) }}
-          </v-tab>
-        </v-tabs>
+            <v-tab
+              style="padding: 0"
+              v-for="(key) in Object.keys(TEMPLATE_TYPE_ICONS)"
+              :key="key"
+            >
+              <v-icon small class="mr-2">{{ TEMPLATE_TYPE_ICONS[key] }}</v-icon>
+              {{ $t(TEMPLATE_TYPE_TITLES[key]) }}
+            </v-tab>
+          </v-tabs>
 
-        <div class="ml-4 mr-4 mt-6" v-if="item.type">
-          <v-text-field
-            v-if="item.type === 'build'"
-            v-model="item.start_version"
-            :label="$t('startVersion')"
-            :rules="[v => !!v || $t('start_version_required')]"
-            required
-            :disabled="formSaving"
-            :placeholder="$t('example000')"
-            append-outer-icon="mdi-help-circle"
-            @click:append-outer="showHelpDialog('build_version')"
-          ></v-text-field>
+          <div class="ml-4 mr-4 mt-6" v-if="item.type">
+            <v-text-field
+              v-if="item.type === 'build'"
+              v-model="item.start_version"
+              :label="$t('startVersion')"
+              :rules="[v => !!v || $t('start_version_required')]"
+              required
+              :disabled="formSaving"
+              :placeholder="$t('example000')"
+              append-outer-icon="mdi-help-circle"
+              @click:append-outer="showHelpDialog('build_version')"
+            ></v-text-field>
 
-          <v-autocomplete
-            v-if="item.type === 'deploy'"
-            v-model="item.build_template_id"
-            :label="$t('buildTemplate')"
-            :items="buildTemplates"
-            item-value="id"
-            item-text="name"
-            :rules="[v => !!v || $t('build_template_required')]"
-            required
-            :disabled="formSaving"
-            append-outer-icon="mdi-help-circle"
-            @click:append-outer="showHelpDialog('build')"
-          ></v-autocomplete>
+            <v-autocomplete
+              v-if="item.type === 'deploy'"
+              v-model="item.build_template_id"
+              :label="$t('buildTemplate')"
+              :items="buildTemplates"
+              item-value="id"
+              item-text="name"
+              :rules="[v => !!v || $t('build_template_required')]"
+              required
+              :disabled="formSaving"
+              append-outer-icon="mdi-help-circle"
+              @click:append-outer="showHelpDialog('build')"
+            ></v-autocomplete>
+
+            <v-checkbox
+              v-if="item.type === 'deploy'"
+              class="mt-0"
+              :label="$t('autorun')"
+              v-model="item.autorun"
+            />
+          </div>
+
+        </v-card>
+
+        <v-text-field
+          v-model="item.name"
+          :label="$t('name2')"
+          :rules="[v => !!v || $t('name_required')]"
+          outlined
+          dense
+          required
+          :disabled="formSaving"
+        ></v-text-field>
+
+        <v-text-field
+          v-model="item.playbook"
+          :label="fieldLabel('playbook')"
+          :rules="isFieldRequired('playbook') ? [v => !!v || $t('playbook_filename_required')] : []"
+          outlined
+          dense
+          :required="isFieldRequired('playbook')"
+          :disabled="formSaving"
+          :placeholder="$t('exampleSiteyml')"
+          v-if="needField('playbook')"
+        ></v-text-field>
+
+        <v-select
+          v-model="item.inventory_id"
+          :label="fieldLabel('inventory')"
+          :items="inventory"
+          item-value="id"
+          item-text="name"
+          outlined
+          dense
+          required
+          :disabled="formSaving"
+          v-if="needField('inventory')"
+        ></v-select>
+
+        <v-select
+          v-model="item.repository_id"
+          :label="fieldLabel('repository') + ' *'"
+          :items="repositories"
+          item-value="id"
+          item-text="name"
+          :rules="isFieldRequired('repository') ? [v => !!v || $t('repository_required')] : []"
+          outlined
+          dense
+          :required="isFieldRequired('repository')"
+          :disabled="formSaving"
+          v-if="needField('repository')"
+        ></v-select>
+
+        <v-select
+          v-model="item.environment_id"
+          :label="fieldLabel('environment')"
+          :items="environment"
+          item-value="id"
+          item-text="name"
+          :rules="isFieldRequired('environment') ? [v => !!v || $t('environment_required')] : []"
+          outlined
+          dense
+          :required="isFieldRequired('environment')"
+          :disabled="formSaving"
+          v-if="needField('environment')"
+        ></v-select>
+
+        <v-select
+          class="mb-3"
+          style="max-height: 60px;"
+          v-model="item.view_id"
+          :label="$t('view')"
+          clearable
+          :items="views"
+          item-value="id"
+          item-text="title"
+          :disabled="formSaving"
+          outlined
+          dense
+        ></v-select>
+
+      <div class="mb-2">
+
+        <h2 class="mb-2">Ansible Playbook</h2>
+
+        <ArgsPicker
+          v-if="needField('limit')"
+          :vars="item.task_params.limit"
+          @change="setLimit"
+          :title="$t('limit')"
+          :arg-title="$t('limit')"
+          :add-arg-title="$t('addLimit')"
+        />
+
+        <ArgsPicker
+          v-if="needField('tags')"
+          :vars="item.task_params.tags"
+          @change="setTags"
+          :title="$t('tags')"
+          :arg-title="$t('tag')"
+          :add-arg-title="$t('addTag')"
+        />
+
+        <ArgsPicker
+          v-if="needField('skip_tags')"
+          :vars="item.task_params.skip_tags"
+          @change="setSkipTags"
+          :title="$t('skipTags')"
+          :arg-title="$t('tag')"
+          :add-arg-title="$t('addSkippedTag')"
+        />
+
+        <TemplateVaults
+          v-if="needField('vault')"
+          :project-id="this.projectId"
+          :vaults="vaults"
+          @change="setTemplateVaults"
+        ></TemplateVaults>
+      </div>
+
+      <div class="mb-3">
+        <h2 class="mb-3">Advanced</h2>
+
+        <SurveyVars
+          :vars="surveyVars"
+          @change="setSurveyVars"
+        />
+
+        <v-checkbox
+          class="mt-0"
+          :label="$t('iWantToRunATaskByTheCronOnlyForForNewCommitsOfSome')"
+          v-model="cronVisible"
+        />
+
+        <v-select
+          v-if="cronVisible"
+          v-model="cronRepositoryId"
+          :label="$t('repository2')"
+          :placeholder="$t('cronChecksNewCommitBeforeRun')"
+          :rules="[v => !!v || $t('repository_required')]"
+          :items="repositories"
+          item-value="id"
+          item-text="name"
+          clearable
+          :disabled="formSaving"
+          outlined
+          dense
+        ></v-select>
+
+        <v-select
+          v-if="cronVisible"
+          v-model="cronFormat"
+          :label="$t('checkInterval')"
+          :hint="$t('newCommitCheckInterval')"
+          item-value="cron"
+          item-text="title"
+          :items="cronFormats"
+          :disabled="formSaving"
+          outlined
+          dense
+        />
+
+        <v-checkbox
+          class="mt-0"
+          :label="$t('suppressSuccessAlerts')"
+          v-model="item.suppress_success_alerts"
+        />
+
+        <ArgsPicker
+          :vars="args"
+          @change="setArgs"
+          title="CLI args"
+        />
+
+      </div>
+
+      <div>
+        <h2 class="mb-3">Task prompts</h2>
+
+        <div class="d-flex" style="column-gap: 20px; flex-wrap: wrap">
+          <v-checkbox
+            class="mt-0"
+            :label="$t('allowCliArgsInTask')"
+            v-model="item.allow_override_args_in_task"
+          />
 
           <v-checkbox
-            v-if="item.type === 'deploy'"
             class="mt-0"
-            :label="$t('autorun')"
-            v-model="item.autorun"
+            :label="$t('allowInventoryInTask')"
+            v-model="(item.task_params || {}).allow_override_inventory"
+            v-if="needField('allow_override_inventory')"
           />
+
+          <v-checkbox
+            class="mt-0"
+            :label="$t('allowLimitInTask')"
+            v-model="(item.task_params || {}).allow_override_limit"
+            v-if="needField('allow_override_limit')"
+          />
+
+          <v-checkbox
+            class="mt-0"
+            :label="$t('tags')"
+            v-model="(item.task_params || {}).allow_override_tags"
+            v-if="needField('allow_override_tags')"
+          />
+
+          <v-checkbox
+            class="mt-0"
+            :label="$t('skipTags')"
+            v-model="(item.task_params || {}).allow_override_skip_tags"
+            v-if="needField('allow_override_skip_tags')"
+          />
+
+          <v-checkbox
+            class="mt-0"
+            :label="$t('allowDebug')"
+            v-model="item.task_params.allow_debug"
+            v-if="needField('allow_debug')"
+          />
+
         </div>
-
-      </v-card>
-
-      <v-text-field
-        v-model="item.name"
-        :label="$t('name2')"
-        :rules="[v => !!v || $t('name_required')]"
-        outlined
-        dense
-        required
-        :disabled="formSaving"
-      ></v-text-field>
-
-      <v-textarea
-        v-model="item.description"
-        :label="$t('description')"
-        :disabled="formSaving"
-        rows="1"
-        :auto-grow="true"
-        outlined
-        dense
-        @keyup="checkSize()"
-      ></v-textarea>
-
-      <v-text-field
-        v-model="item.playbook"
-        :label="fieldLabel('playbook')"
-        :rules="isFieldRequired('playbook') ? [v => !!v || $t('playbook_filename_required')] : []"
-        outlined
-        dense
-        :required="isFieldRequired('playbook')"
-        :disabled="formSaving"
-        :placeholder="$t('exampleSiteyml')"
-        v-if="needField('playbook')"
-      ></v-text-field>
-
-      <v-select
-        v-model="item.inventory_id"
-        :label="fieldLabel('inventory')"
-        :items="inventory"
-        item-value="id"
-        item-text="name"
-        outlined
-        dense
-        required
-        :disabled="formSaving"
-        v-if="needField('inventory')"
-      ></v-select>
-
-      <v-select
-        v-model="item.repository_id"
-        :label="fieldLabel('repository') + ' *'"
-        :items="repositories"
-        item-value="id"
-        item-text="name"
-        :rules="isFieldRequired('repository') ? [v => !!v || $t('repository_required')] : []"
-        outlined
-        dense
-        :required="isFieldRequired('repository')"
-        :disabled="formSaving"
-        v-if="needField('repository')"
-      ></v-select>
-
-      <v-select
-        v-model="item.environment_id"
-        :label="fieldLabel('environment')"
-        :items="environment"
-        item-value="id"
-        item-text="name"
-        :rules="isFieldRequired('environment') ? [v => !!v || $t('environment_required')] : []"
-        outlined
-        dense
-        :required="isFieldRequired('environment')"
-        :disabled="formSaving"
-        v-if="needField('environment')"
-      ></v-select>
-
-      <ArgsPicker
-        v-if="needField('limit')"
-        :vars="taskParams.limit"
-        @change="setLimit"
-        :title="$t('limit')"
-        :arg-title="$t('limit')"
-        :add-arg-title="$t('addLimit')"
-      />
-
-      <ArgsPicker
-        v-if="needField('tags')"
-        :vars="taskParams.tags"
-        @change="setTags"
-        :title="$t('tags')"
-        :arg-title="$t('tag')"
-        :add-arg-title="$t('addTag')"
-      />
-
-      <ArgsPicker
-        v-if="needField('skip_tags')"
-        :vars="taskParams.skip_tags"
-        @change="setSkipTags"
-        :title="$t('skipTags')"
-        :arg-title="$t('tag')"
-        :add-arg-title="$t('addSkippedTag')"
-      />
-
-      <TemplateVaults
-        v-if="needField('vault')"
-        :project-id="this.projectId"
-        :vaults="vaults"
-        @change="setTemplateVaults"
-      ></TemplateVaults>
-
-      <SurveyVars
-        style="margin-top: -10px;"
-        :vars="surveyVars"
-        @change="setSurveyVars"
-      />
-
-      <v-select
-        v-model="item.view_id"
-        :label="$t('view')"
-        clearable
-        :items="views"
-        item-value="id"
-        item-text="title"
-        :disabled="formSaving"
-        outlined
-        dense
-      ></v-select>
-
-      <v-checkbox
-        class="mt-0"
-        :label="$t('iWantToRunATaskByTheCronOnlyForForNewCommitsOfSome')"
-        v-model="cronVisible"
-      />
-
-      <v-select
-        v-if="cronVisible"
-        v-model="cronRepositoryId"
-        :label="$t('repository2')"
-        :placeholder="$t('cronChecksNewCommitBeforeRun')"
-        :rules="[v => !!v || $t('repository_required')]"
-        :items="repositories"
-        item-value="id"
-        item-text="name"
-        clearable
-        :disabled="formSaving"
-        outlined
-        dense
-      ></v-select>
-
-      <v-select
-        v-if="cronVisible"
-        v-model="cronFormat"
-        :label="$t('checkInterval')"
-        :hint="$t('newCommitCheckInterval')"
-        item-value="cron"
-        item-text="title"
-        :items="cronFormats"
-        :disabled="formSaving"
-        outlined
-        dense
-      />
-
-      <v-checkbox
-        class="mt-0"
-        :label="$t('suppressSuccessAlerts')"
-        v-model="item.suppress_success_alerts"
-      />
-
-      <ArgsPicker
-        :vars="args"
-        @change="setArgs"
-        title="CLI args"
-      />
-
-      <v-checkbox
-        class="mt-0"
-        :label="$t('allowCliArgsInTask')"
-        v-model="item.allow_override_args_in_task"
-      />
-
-      <v-checkbox
-        class="mt-0"
-        :label="$t('allowInventoryInTask')"
-        v-model="taskParams.allow_override_inventory"
-        v-if="needField('allow_override_inventory')"
-      />
-
-      <v-checkbox
-        class="mt-0"
-        :label="$t('allowLimitInTask')"
-        v-model="taskParams.allow_override_limit"
-        v-if="needField('allow_override_limit')"
-      />
-
-      <v-checkbox
-        class="mt-0"
-        :label="$t('allowDebug')"
-        v-model="taskParams.allow_debug"
-        v-if="needField('allow_debug')"
-      />
-
-      <!--        <v-checkbox-->
-      <!--          class="mt-0"-->
-      <!--          :label="$t('allowLimitInTask')"-->
-      <!--          v-model="item.task_params.allow_override_limit"-->
-      <!--          v-if="needField('allow_override_limit')"-->
-      <!--        />-->
-
-      <v-spacer style="flex-grow: 100 !important;" />
+      </div>
 
     </div>
   </v-form>
@@ -349,15 +361,16 @@
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  height: 700px;
-  max-height: calc(90vh - 115px);
+  max-height: min(calc(90vh - 115px), 800px);
   padding-top: 10px;
-  column-gap: 20px;
+  column-gap: 30px;
+
   & > * {
     max-width: 350px;
     min-width: 350px;
     width: 350px;
   }
+
   width: fit-content;
 }
 
@@ -366,6 +379,7 @@
     display: block;
     height: unset;
     max-height: unset;
+
     & > * {
       max-width: unset;
       min-width: unset;
@@ -433,7 +447,9 @@ export default {
         lint: true,
         indentWithTabs: false,
       },
-      item: {},
+      item: {
+        task_params: {},
+      },
       inventory: null,
       repositories: null,
       environment: null,
@@ -475,9 +491,6 @@ export default {
   },
 
   computed: {
-    taskParams() {
-      return this.item.task_params || {};
-    },
 
     surveyVars() {
       if (this.sourceItemId != null && this.item.survey_vars === undefined) {
@@ -531,23 +544,15 @@ export default {
     },
 
     setSkipTags(tags) {
-      this.setTaskParams({ skip_tags: tags });
+      this.item.task_params.skip_tags = tags;
     },
 
     setTags(tags) {
-      this.setTaskParams({ tags });
+      this.item.task_params.tags = tags;
     },
 
     setLimit(limit) {
-      this.setTaskParams({ limit });
-    },
-
-    setTaskParams(params) {
-      if (!this.item.task_params) {
-        this.item.task_params = {};
-      }
-
-      Object.assign(this.item.task_params, params);
+      this.item.task_params.limit = limit;
     },
 
     setArgs(args) {
@@ -568,6 +573,10 @@ export default {
     },
 
     async afterLoadData() {
+      if (!this.item.task_params) {
+        this.item.task_params = {};
+      }
+
       if (this.sourceItemId) {
         const item = (await axios({
           url: `/api/project/${this.projectId}/templates/${this.sourceItemId}`,

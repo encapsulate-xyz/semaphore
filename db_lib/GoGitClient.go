@@ -46,7 +46,6 @@ func getAuthMethod(r GitRepository) (transport.AuthMethod, error) {
 		publicKey, sshErr := ssh.NewPublicKeys(r.Repository.SSHKey.SshKey.Login, []byte(sshKeyBuff), r.Repository.SSHKey.SshKey.Passphrase)
 
 		if sshErr != nil {
-			r.Logger.Log("Unable to creating ssh auth method")
 			return nil, sshErr
 		}
 		publicKey.HostKeyCallback = ssh2.InsecureIgnoreHostKey()

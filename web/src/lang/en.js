@@ -189,7 +189,7 @@ export default {
   toLearnMoreAboutCron: 'to learn more about Cron.',
   suppressSuccessAlerts: 'Suppress success alerts',
   cliArgsJsonArrayExampleIMyinventoryshPrivatekeythe2: 'CLI Args (JSON array). Example: [ "-i", "@myinventory.sh", "--private-key=/there/id_rsa", "-vvvv" ]',
-  allowCliArgsInTask: 'Allow CLI args in Task',
+  allowCliArgsInTask: 'CLI args',
   docs: 'docs',
   editViews: 'Edit Views',
   newTemplate: 'New template',
@@ -309,10 +309,10 @@ export default {
 
   tag: 'Tag',
   tag_required: 'Tag is required',
-  allowInventoryInTask: 'Ask Inventory on launch',
-  allowLimitInTask: 'Ask Limit on launch',
+  allowInventoryInTask: 'Inventory',
+  allowLimitInTask: 'Limit',
   addLimit: 'Add limit',
-  allowDebug: 'Allow debug',
+  allowDebug: 'Debug',
 
   addTag: 'Add tag',
   skipTags: 'Skip tags',

@@ -24,9 +24,12 @@ type TerraformTaskParams struct {
 }
 
 type AnsibleTaskParams struct {
-	Debug  bool `json:"debug"`
-	DryRun bool `json:"dry_run"`
-	Diff   bool `json:"diff"`
+	Debug    bool     `json:"debug"`
+	DryRun   bool     `json:"dry_run"`
+	Diff     bool     `json:"diff"`
+	Limit    []string `json:"limit"`
+	Tags     []string `json:"tags"`
+	SkipTags []string `json:"skip_tags"`
 }
 
 // Task is a model of a task which will be executed by the runner
