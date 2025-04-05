@@ -169,6 +169,12 @@ export const ANSIBLE_FIELDS = {
   skip_tags: {
     label: 'skipTags',
   },
+  allow_override_tags: {
+    label: 'tags',
+  },
+  allow_override_skip_tags: {
+    label: 'skipTags',
+  },
 };
 
 export const TERRAFORM_FIELDS = {

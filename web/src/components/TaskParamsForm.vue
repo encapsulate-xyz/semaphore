@@ -1,6 +1,6 @@
 <template>
   <div v-if="app === 'ansible'">
-    <v-row no-gutters class="mt-6">
+    <v-row no-gutters>
       <v-col v-if="templateParams.allow_debug">
         <v-checkbox
           class="mt-0"
@@ -37,7 +37,7 @@
     </v-row>
   </div>
   <div v-else-if="app === 'terraform' || app === 'tofu'">
-    <v-row no-gutters class="mt-6">
+    <v-row no-gutters>
       <v-col>
         <v-checkbox
           class="mt-0"
@@ -111,7 +111,14 @@
 const APP_PARAMS = {
   terraform: ['plan', 'auto_approve', 'destroy', 'reconfigure'],
   tofu: ['plan', 'auto_approve', 'destroy', 'reconfigure'],
-  ansible: ['diff', 'debug', 'dry_run'],
+  ansible: [
+    'diff',
+    'debug',
+    'dry_run',
+    'tags',
+    'skip_tags',
+    'limit',
+  ],
 };
 
 export default {

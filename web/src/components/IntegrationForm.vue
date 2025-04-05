@@ -58,6 +58,7 @@
     ></v-select>
 
     <TaskParamsForm
+      class="mt-6"
       v-if="item.template_id"
       v-model="item.task_params"
       :app="(template || {}).app"
