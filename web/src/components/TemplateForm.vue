@@ -206,9 +206,9 @@
         dense
       ></v-select>
 
-      <div class="mb-2">
+      <div class="mb-3">
 
-        <h2 class="mb-2" v-if="['', 'ansible'].includes(item.app)">Ansible Playbook</h2>
+        <h2 class="mb-4" v-if="['', 'ansible'].includes(item.app)">Ansible Playbook</h2>
 
         <ArgsPicker
           v-if="needField('limit')"
@@ -246,7 +246,17 @@
       </div>
 
       <div class="mb-3">
-        <h2 class="mb-3">Advanced</h2>
+        <h2 class="mb-4">Advanced</h2>
+
+        <v-text-field
+          v-if="premiumFeatures.project_runners"
+          v-model="item.runner_tag"
+          :label="fieldLabel('runner_tag')"
+          outlined
+          dense
+          :disabled="formSaving"
+          :placeholder="$t('runner_tag')"
+        ></v-text-field>
 
         <v-text-field
           v-model="item.runner_tag"
@@ -311,7 +321,7 @@
       </div>
 
       <div>
-        <h2 class="mb-3">Task prompts</h2>
+        <h2 class="mb-4">Task prompts</h2>
 
         <div class="d-flex" style="column-gap: 20px; flex-wrap: wrap">
           <v-checkbox
