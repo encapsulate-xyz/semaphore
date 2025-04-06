@@ -343,7 +343,7 @@ export default {
 
       ['tags', 'limit', 'skip_tags'].forEach((param) => {
         if (!this.item.params[param]) {
-          this.item.params[param] = this.template.task_params[param];
+          this.item.params[param] = (this.template.task_params || {})[param];
         }
       });
     },
