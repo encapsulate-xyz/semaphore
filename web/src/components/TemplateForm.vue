@@ -258,15 +258,6 @@
           :placeholder="$t('runner_tag')"
         ></v-text-field>
 
-        <v-text-field
-          v-model="item.runner_tag"
-          :label="fieldLabel('runner_tag')"
-          outlined
-          dense
-          :disabled="formSaving"
-          :placeholder="$t('runner_tag')"
-        ></v-text-field>
-
         <SurveyVars
           :vars="surveyVars"
           @change="setSurveyVars"
