@@ -208,7 +208,7 @@
 
       <div class="mb-2">
 
-        <h2 class="mb-2">Ansible Playbook</h2>
+        <h2 class="mb-2" v-if="['', 'ansible'].includes(item.app)">Ansible Playbook</h2>
 
         <ArgsPicker
           v-if="needField('limit')"
