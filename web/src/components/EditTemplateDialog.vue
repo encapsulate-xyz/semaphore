@@ -23,6 +23,7 @@
           :source-item-id="sourceItemId"
           :app="itemApp"
           @resize="onFormResize"
+          :premium-features="premiumFeatures"
       />
     </template>
   </EditDialog>
@@ -63,6 +64,7 @@ export default {
     projectId: Number,
     itemId: [String, Number],
     sourceItemId: Number,
+    premiumFeatures: Object,
   },
 
   data() {
