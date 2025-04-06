@@ -411,9 +411,12 @@ func (t *LocalJob) getPlaybookArgs(username string, incomingVersion *string) (ar
 
 	// Fill fields from task
 
-	if t.Task.Limit != "" && tplParams.AllowOverrideLimit {
-		t.Log("--limit=" + t.Task.Limit)
-		limit = t.Task.Limit
+	if tplParams.AllowOverrideLimit {
+		limit = strings.Join(params.Limit, ",")
+
+		if limit == "" && t.Task.Limit != "" {
+			limit = t.Task.Limit
+		}
 	}
 
 	if tplParams.AllowOverrideTags {
