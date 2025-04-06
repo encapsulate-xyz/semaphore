@@ -321,4 +321,6 @@ export default {
   tags: 'Tags',
 
   limit: 'Limit',
+
+  runner_tag: 'Runner tag',
 };

@@ -73,142 +73,142 @@
     </v-alert>
 
     <div class="TemplateFormBody" ref="formBody" @click="checkSize()">
-        <v-card
-          class="mb-6"
-          :color="$vuetify.theme.dark ? '#212121' : 'white'"
-          style="background: #8585850f"
+      <v-card
+        class="mb-6"
+        :color="$vuetify.theme.dark ? '#212121' : 'white'"
+        style="background: #8585850f"
+      >
+        <v-tabs
+          fixed-tabs
+          v-model="itemTypeIndex"
         >
-          <v-tabs
-            fixed-tabs
-            v-model="itemTypeIndex"
+          <v-tab
+            style="padding: 0"
+            v-for="(key) in Object.keys(TEMPLATE_TYPE_ICONS)"
+            :key="key"
           >
-            <v-tab
-              style="padding: 0"
-              v-for="(key) in Object.keys(TEMPLATE_TYPE_ICONS)"
-              :key="key"
-            >
-              <v-icon small class="mr-2">{{ TEMPLATE_TYPE_ICONS[key] }}</v-icon>
-              {{ $t(TEMPLATE_TYPE_TITLES[key]) }}
-            </v-tab>
-          </v-tabs>
+            <v-icon small class="mr-2">{{ TEMPLATE_TYPE_ICONS[key] }}</v-icon>
+            {{ $t(TEMPLATE_TYPE_TITLES[key]) }}
+          </v-tab>
+        </v-tabs>
 
-          <div class="ml-4 mr-4 mt-6" v-if="item.type">
-            <v-text-field
-              v-if="item.type === 'build'"
-              v-model="item.start_version"
-              :label="$t('startVersion')"
-              :rules="[v => !!v || $t('start_version_required')]"
-              required
-              :disabled="formSaving"
-              :placeholder="$t('example000')"
-              append-outer-icon="mdi-help-circle"
-              @click:append-outer="showHelpDialog('build_version')"
-            ></v-text-field>
+        <div class="ml-4 mr-4 mt-6" v-if="item.type">
+          <v-text-field
+            v-if="item.type === 'build'"
+            v-model="item.start_version"
+            :label="$t('startVersion')"
+            :rules="[v => !!v || $t('start_version_required')]"
+            required
+            :disabled="formSaving"
+            :placeholder="$t('example000')"
+            append-outer-icon="mdi-help-circle"
+            @click:append-outer="showHelpDialog('build_version')"
+          ></v-text-field>
 
-            <v-autocomplete
-              v-if="item.type === 'deploy'"
-              v-model="item.build_template_id"
-              :label="$t('buildTemplate')"
-              :items="buildTemplates"
-              item-value="id"
-              item-text="name"
-              :rules="[v => !!v || $t('build_template_required')]"
-              required
-              :disabled="formSaving"
-              append-outer-icon="mdi-help-circle"
-              @click:append-outer="showHelpDialog('build')"
-            ></v-autocomplete>
+          <v-autocomplete
+            v-if="item.type === 'deploy'"
+            v-model="item.build_template_id"
+            :label="$t('buildTemplate')"
+            :items="buildTemplates"
+            item-value="id"
+            item-text="name"
+            :rules="[v => !!v || $t('build_template_required')]"
+            required
+            :disabled="formSaving"
+            append-outer-icon="mdi-help-circle"
+            @click:append-outer="showHelpDialog('build')"
+          ></v-autocomplete>
 
-            <v-checkbox
-              v-if="item.type === 'deploy'"
-              class="mt-0"
-              :label="$t('autorun')"
-              v-model="item.autorun"
-            />
-          </div>
+          <v-checkbox
+            v-if="item.type === 'deploy'"
+            class="mt-0"
+            :label="$t('autorun')"
+            v-model="item.autorun"
+          />
+        </div>
 
-        </v-card>
+      </v-card>
 
-        <v-text-field
-          v-model="item.name"
-          :label="$t('name2')"
-          :rules="[v => !!v || $t('name_required')]"
-          outlined
-          dense
-          required
-          :disabled="formSaving"
-        ></v-text-field>
+      <v-text-field
+        v-model="item.name"
+        :label="$t('name2')"
+        :rules="[v => !!v || $t('name_required')]"
+        outlined
+        dense
+        required
+        :disabled="formSaving"
+      ></v-text-field>
 
-        <v-text-field
-          v-model="item.playbook"
-          :label="fieldLabel('playbook')"
-          :rules="isFieldRequired('playbook') ? [v => !!v || $t('playbook_filename_required')] : []"
-          outlined
-          dense
-          :required="isFieldRequired('playbook')"
-          :disabled="formSaving"
-          :placeholder="$t('exampleSiteyml')"
-          v-if="needField('playbook')"
-        ></v-text-field>
+      <v-text-field
+        v-model="item.playbook"
+        :label="fieldLabel('playbook')"
+        :rules="isFieldRequired('playbook') ? [v => !!v || $t('playbook_filename_required')] : []"
+        outlined
+        dense
+        :required="isFieldRequired('playbook')"
+        :disabled="formSaving"
+        :placeholder="$t('exampleSiteyml')"
+        v-if="needField('playbook')"
+      ></v-text-field>
 
-        <v-select
-          v-model="item.inventory_id"
-          :label="fieldLabel('inventory')"
-          :items="inventory"
-          item-value="id"
-          item-text="name"
-          outlined
-          dense
-          required
-          :disabled="formSaving"
-          v-if="needField('inventory')"
-        ></v-select>
+      <v-select
+        v-model="item.inventory_id"
+        :label="fieldLabel('inventory')"
+        :items="inventory"
+        item-value="id"
+        item-text="name"
+        outlined
+        dense
+        required
+        :disabled="formSaving"
+        v-if="needField('inventory')"
+      ></v-select>
 
-        <v-select
-          v-model="item.repository_id"
-          :label="fieldLabel('repository') + ' *'"
-          :items="repositories"
-          item-value="id"
-          item-text="name"
-          :rules="isFieldRequired('repository') ? [v => !!v || $t('repository_required')] : []"
-          outlined
-          dense
-          :required="isFieldRequired('repository')"
-          :disabled="formSaving"
-          v-if="needField('repository')"
-        ></v-select>
+      <v-select
+        v-model="item.repository_id"
+        :label="fieldLabel('repository') + ' *'"
+        :items="repositories"
+        item-value="id"
+        item-text="name"
+        :rules="isFieldRequired('repository') ? [v => !!v || $t('repository_required')] : []"
+        outlined
+        dense
+        :required="isFieldRequired('repository')"
+        :disabled="formSaving"
+        v-if="needField('repository')"
+      ></v-select>
 
-        <v-select
-          v-model="item.environment_id"
-          :label="fieldLabel('environment')"
-          :items="environment"
-          item-value="id"
-          item-text="name"
-          :rules="isFieldRequired('environment') ? [v => !!v || $t('environment_required')] : []"
-          outlined
-          dense
-          :required="isFieldRequired('environment')"
-          :disabled="formSaving"
-          v-if="needField('environment')"
-        ></v-select>
+      <v-select
+        v-model="item.environment_id"
+        :label="fieldLabel('environment')"
+        :items="environment"
+        item-value="id"
+        item-text="name"
+        :rules="isFieldRequired('environment') ? [v => !!v || $t('environment_required')] : []"
+        outlined
+        dense
+        :required="isFieldRequired('environment')"
+        :disabled="formSaving"
+        v-if="needField('environment')"
+      ></v-select>
 
-        <v-select
-          class="mb-3"
-          style="max-height: 60px;"
-          v-model="item.view_id"
-          :label="$t('view')"
-          clearable
-          :items="views"
-          item-value="id"
-          item-text="title"
-          :disabled="formSaving"
-          outlined
-          dense
-        ></v-select>
+      <v-select
+        class="mb-3"
+        style="max-height: 60px;"
+        v-model="item.view_id"
+        :label="$t('view')"
+        clearable
+        :items="views"
+        item-value="id"
+        item-text="title"
+        :disabled="formSaving"
+        outlined
+        dense
+      ></v-select>
 
-      <div class="mb-2">
+      <div class="mb-3">
 
-        <h2 class="mb-2" v-if="['', 'ansible'].includes(item.app)">Ansible Playbook</h2>
+        <h2 class="mb-4" v-if="['', 'ansible'].includes(item.app)">Ansible Playbook</h2>
 
         <ArgsPicker
           v-if="needField('limit')"
@@ -246,7 +246,17 @@
       </div>
 
       <div class="mb-3">
-        <h2 class="mb-3">Advanced</h2>
+        <h2 class="mb-4">Advanced</h2>
+
+        <v-text-field
+          v-if="premiumFeatures.project_runners"
+          v-model="item.runner_tag"
+          :label="fieldLabel('runner_tag')"
+          outlined
+          dense
+          :disabled="formSaving"
+          :placeholder="$t('runner_tag')"
+        ></v-text-field>
 
         <SurveyVars
           :vars="surveyVars"
@@ -302,7 +312,7 @@
       </div>
 
       <div>
-        <h2 class="mb-3">Task prompts</h2>
+        <h2 class="mb-4">Task prompts</h2>
 
         <div class="d-flex" style="column-gap: 20px; flex-wrap: wrap">
           <v-checkbox
@@ -416,6 +426,7 @@ export default {
   props: {
     sourceItemId: Number,
     app: String,
+    premiumFeatures: Object,
   },
 
   data() {

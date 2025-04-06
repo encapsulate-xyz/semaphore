@@ -93,8 +93,9 @@
       />
     </div>
 
+    <div class="pt-3"></div>
+
     <v-select
-      class="mt-3 mb-3"
       v-model="inventory_id"
       :label="fieldLabel('inventory')"
       :items="inventory"
@@ -105,7 +106,6 @@
       required
       :disabled="formSaving"
       v-if="needField('inventory') && (template.task_params || {}).allow_override_inventory"
-      hide-details
     ></v-select>
 
     <ArgsPicker
@@ -136,7 +136,6 @@
     />
 
     <TaskParamsForm
-      class="mt-2"
       v-if="template.app === 'ansible'"
       v-model="item.params"
       :app="template.app"
@@ -144,7 +143,6 @@
     />
 
     <TaskParamsForm
-      class="mt-2"
       v-else
       v-model="item.params"
       :app="template.app"
