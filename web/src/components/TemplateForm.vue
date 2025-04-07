@@ -206,9 +206,9 @@
         dense
       ></v-select>
 
-      <div class="mb-3">
+      <div class="mb-3" v-if="needAppBlock">
 
-        <h2 class="mb-4" v-if="['', 'ansible'].includes(item.app)">Ansible Playbook</h2>
+        <h2 class="mb-4">{{ appBlockTitle }}</h2>
 
         <ArgsPicker
           v-if="needField('limit')"
@@ -243,6 +243,54 @@
           :vaults="vaults"
           @change="setTemplateVaults"
         ></TemplateVaults>
+      </div>
+
+      <div>
+        <h2 class="mb-4">Task prompts</h2>
+
+        <div class="d-flex" style="column-gap: 20px; flex-wrap: wrap">
+          <v-checkbox
+            class="mt-0"
+            :label="$t('allowCliArgsInTask')"
+            v-model="item.allow_override_args_in_task"
+          />
+
+          <v-checkbox
+            class="mt-0"
+            :label="$t('allowInventoryInTask')"
+            v-model="(item.task_params || {}).allow_override_inventory"
+            v-if="needField('allow_override_inventory')"
+          />
+
+          <v-checkbox
+            class="mt-0"
+            :label="$t('allowLimitInTask')"
+            v-model="(item.task_params || {}).allow_override_limit"
+            v-if="needField('allow_override_limit')"
+          />
+
+          <v-checkbox
+            class="mt-0"
+            :label="$t('tags')"
+            v-model="(item.task_params || {}).allow_override_tags"
+            v-if="needField('allow_override_tags')"
+          />
+
+          <v-checkbox
+            class="mt-0"
+            :label="$t('skipTags')"
+            v-model="(item.task_params || {}).allow_override_skip_tags"
+            v-if="needField('allow_override_skip_tags')"
+          />
+
+          <v-checkbox
+            class="mt-0"
+            :label="$t('allowDebug')"
+            v-model="item.task_params.allow_debug"
+            v-if="needField('allow_debug')"
+          />
+
+        </div>
       </div>
 
       <div class="mb-3">
@@ -309,54 +357,6 @@
           title="CLI args"
         />
 
-      </div>
-
-      <div>
-        <h2 class="mb-4">Task prompts</h2>
-
-        <div class="d-flex" style="column-gap: 20px; flex-wrap: wrap">
-          <v-checkbox
-            class="mt-0"
-            :label="$t('allowCliArgsInTask')"
-            v-model="item.allow_override_args_in_task"
-          />
-
-          <v-checkbox
-            class="mt-0"
-            :label="$t('allowInventoryInTask')"
-            v-model="(item.task_params || {}).allow_override_inventory"
-            v-if="needField('allow_override_inventory')"
-          />
-
-          <v-checkbox
-            class="mt-0"
-            :label="$t('allowLimitInTask')"
-            v-model="(item.task_params || {}).allow_override_limit"
-            v-if="needField('allow_override_limit')"
-          />
-
-          <v-checkbox
-            class="mt-0"
-            :label="$t('tags')"
-            v-model="(item.task_params || {}).allow_override_tags"
-            v-if="needField('allow_override_tags')"
-          />
-
-          <v-checkbox
-            class="mt-0"
-            :label="$t('skipTags')"
-            v-model="(item.task_params || {}).allow_override_skip_tags"
-            v-if="needField('allow_override_skip_tags')"
-          />
-
-          <v-checkbox
-            class="mt-0"
-            :label="$t('allowDebug')"
-            v-model="item.task_params.allow_debug"
-            v-if="needField('allow_debug')"
-          />
-
-        </div>
       </div>
 
     </div>
@@ -502,6 +502,20 @@ export default {
   },
 
   computed: {
+
+    appBlockTitle() {
+      switch (this.app) {
+        case '':
+        case 'ansible':
+          return 'Ansible Playbook';
+        default:
+          return this.app;
+      }
+    },
+
+    needAppBlock() {
+      return ['', 'ansible'].includes(this.app);
+    },
 
     surveyVars() {
       if (this.sourceItemId != null && this.item.survey_vars === undefined) {
