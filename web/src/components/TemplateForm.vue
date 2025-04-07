@@ -245,7 +245,7 @@
         ></TemplateVaults>
       </div>
 
-      <div>
+      <div class="mb-3">
         <h2 class="mb-4">Task prompts</h2>
 
         <div class="d-flex" style="column-gap: 20px; flex-wrap: wrap">
