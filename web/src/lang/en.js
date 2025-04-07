@@ -323,4 +323,14 @@ export default {
   limit: 'Limit',
 
   runner_tag: 'Runner tag',
+
+  task_prompts: 'Task prompts',
+  template_advanced: 'Advanced',
+  ansible_playbook_options: 'Ansible options',
+
+  general_settings: 'General',
+
+  danger_zone_settings: 'Danger Zone',
+
+  project_stats: 'Stats',
 };

@@ -22,7 +22,7 @@
       style="margin: auto; max-width: 600px; padding: 0 16px;"
       class="CenterToScreen"
     >
-      <h2 class="mt-8 mb-1">General</h2>
+      <h2 class="mt-8 mb-1">{{ $t('general_settings') }}</h2>
 
       <v-divider class="mb-8" />
 
@@ -36,7 +36,7 @@
         </div>
       </div>
 
-      <h2 class="mt-8 mb-1">Danger Zone</h2>
+      <h2 class="mt-8 mb-1">{{ $t('danger_zone_settings') }}</h2>
 
       <v-divider class="mb-8" />
 

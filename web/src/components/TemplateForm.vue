@@ -246,7 +246,7 @@
       </div>
 
       <div class="mb-3">
-        <h2 class="mb-4">Task prompts</h2>
+        <h2 class="mb-4">{{ $t('task_prompts') }}</h2>
 
         <div class="d-flex" style="column-gap: 20px; flex-wrap: wrap">
           <v-checkbox
@@ -294,7 +294,7 @@
       </div>
 
       <div class="mb-3">
-        <h2 class="mb-4">Advanced</h2>
+        <h2 class="mb-4">{{ $t('template_advanced') }}</h2>
 
         <v-text-field
           v-if="premiumFeatures.project_runners"
@@ -507,7 +507,7 @@ export default {
       switch (this.app) {
         case '':
         case 'ansible':
-          return 'Ansible Playbook';
+          return this.$t('ansible_playbook_options');
         default:
           return this.app;
       }
