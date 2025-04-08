@@ -1,6 +1,6 @@
 module github.com/semaphoreui/semaphore
 
-go 1.21.0
+go 1.24.0
 
 require (
 	github.com/Masterminds/squirrel v1.5.4
