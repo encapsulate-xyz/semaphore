@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM golang:1.22-alpine3.18 as builder
+FROM --platform=$BUILDPLATFORM golang:1.24-alpine3.21 as builder
 
 RUN apk add --no-cache -U \
     libc-dev curl nodejs npm git gcc zip unzip tar
@@ -45,7 +45,7 @@ RUN curl -O https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraf
 #RUN tar xf pulumi.tar.gz --strip-components=1 -C /usr/local/bin
 #RUN rm pulumi.tar.gz
 
-FROM alpine:3.19
+FROM alpine:3.21
 
 ARG TARGETARCH="amd64"
 

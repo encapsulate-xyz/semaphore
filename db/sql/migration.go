@@ -169,7 +169,7 @@ func (d *SqlDb) ApplyMigration(migration db.Migration) error {
 		if err != nil {
 			handleRollbackError(tx.Rollback())
 			log.Warnf("\n ERR! Query: %s\n\n", q)
-			log.Fatalf(err.Error())
+			log.Fatal(err.Error())
 			return err
 		}
 	}
