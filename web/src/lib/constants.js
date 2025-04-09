@@ -147,6 +147,12 @@ const BASE_FIELDS = {
   allow_override_inventory: {
     label: 'allowInventoryInTask',
   },
+  git_branch: {
+    label: 'git_branch',
+  },
+  allow_override_branch_in_task: {
+    label: 'allow_override_branch_in_task',
+  },
 };
 
 export const ANSIBLE_FIELDS = {

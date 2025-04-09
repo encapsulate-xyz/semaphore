@@ -333,4 +333,6 @@ export default {
   danger_zone_settings: 'Danger Zone',
 
   project_stats: 'Stats',
+
+  allow_override_branch_in_task: 'Branch',
 };

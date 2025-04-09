@@ -257,6 +257,12 @@
 
           <v-checkbox
             class="mt-0"
+            :label="$t('allow_override_branch_in_task')"
+            v-model="item.allow_override_branch_in_task"
+          />
+
+          <v-checkbox
+            class="mt-0"
             :label="$t('allowInventoryInTask')"
             v-model="(item.task_params || {}).allow_override_inventory"
             v-if="needField('allow_override_inventory')"
@@ -295,6 +301,15 @@
 
       <div class="mb-3">
         <h2 class="mb-4">{{ $t('template_advanced') }}</h2>
+
+        <v-text-field
+          v-model="item.git_branch"
+          :label="fieldLabel('git_branch')"
+          outlined
+          dense
+          :disabled="formSaving"
+          :placeholder="$t('git_branch')"
+        ></v-text-field>
 
         <v-text-field
           v-if="premiumFeatures.project_runners"
