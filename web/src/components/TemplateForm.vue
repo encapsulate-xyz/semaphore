@@ -304,11 +304,11 @@
 
         <v-text-field
           v-model="item.git_branch"
-          :label="fieldLabel('git_branch')"
+          :label="fieldLabel('branch')"
           outlined
           dense
           :disabled="formSaving"
-          :placeholder="$t('git_branch')"
+          :placeholder="$t('branch')"
         ></v-text-field>
 
         <v-text-field

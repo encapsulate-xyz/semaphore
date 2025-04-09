@@ -148,7 +148,7 @@ const BASE_FIELDS = {
     label: 'allowInventoryInTask',
   },
   git_branch: {
-    label: 'git_branch',
+    label: 'branch',
   },
   allow_override_branch_in_task: {
     label: 'allow_override_branch_in_task',
