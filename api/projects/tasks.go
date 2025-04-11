@@ -10,6 +10,7 @@ import (
 	"github.com/semaphoreui/semaphore/util"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	"regexp"
 	"strconv"
 	"time"
 )
@@ -151,10 +152,15 @@ func GetTaskOutput(w http.ResponseWriter, r *http.Request) {
 	helpers.WriteJSON(w, http.StatusOK, output)
 }
 
+// ansiCodeRE is a regex to remove ANSI escape sequences from a string.
+// ANSI escape sequences are typically in the form: \x1b[<parameters><letter>
+var ansiCodeRE = regexp.MustCompile("\x1b\\[[0-9;]*[a-zA-Z]")
+
 func outputToBytes(lines []db.TaskOutput) []byte {
 	var buffer bytes.Buffer
 	for _, line := range lines {
-		buffer.WriteString(line.Output)
+		output := ansiCodeRE.ReplaceAllString(line.Output, "")
+		buffer.WriteString(output)
 		buffer.WriteByte('\n')
 	}
 	return buffer.Bytes()

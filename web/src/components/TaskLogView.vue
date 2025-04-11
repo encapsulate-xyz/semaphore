@@ -97,7 +97,8 @@
 
     <v-btn
       color="success"
-      style="position: absolute; bottom: 10px; right: 250px; width: 70px;"
+      class="task-log-action-button"
+      style="right: 260px; width: 70px;"
       v-if="item.status === 'waiting_confirmation'"
       @click="confirmTask()"
     >
@@ -106,7 +107,8 @@
 
     <v-btn
       color="warning"
-      style="position: absolute; bottom: 10px; right: 170px; width: 70px;"
+      class="task-log-action-button"
+      style="right: 180px; width: 70px;"
       v-if="item.status === 'waiting_confirmation'"
       @click="rejectTask()"
     >
@@ -114,12 +116,24 @@
     </v-btn>
 
     <v-btn
-      color="error"
-      style="position: absolute; bottom: 10px; right: 10px; width: 150px;"
-      v-if="canStop"
+      target="_blank"
+      color="white"
+      class="task-log-action-button"
+      style="right: 20px; width: 150px;"
+      v-if="isTaskStopped"
       @click="stopTask(item.status === 'stopping')"
     >
       {{ item.status === 'stopping' ? $t('forceStop') : $t('stop') }}
+    </v-btn>
+
+    <v-btn
+      color="blue-grey"
+      :href="rawLogURL"
+      class="task-log-action-button"
+      style="right: 20px; width: 150px;"
+      target="_blank"
+    >
+      Raw log
     </v-btn>
 
   </div>
@@ -131,6 +145,11 @@
 
 $task-log-header-height: 62px + 64px + 8px;
 $task-log-message-height: 48px;
+
+.task-log-action-button {
+  position: absolute;
+  bottom: 10px;
+}
 
 .task-log-records {
   background: black;
@@ -220,6 +239,20 @@ export default {
   },
 
   computed: {
+    isTaskStopped() {
+      return [
+        'stopped',
+        'error',
+        'success',
+        'canceled',
+        'rejected',
+      ].includes(this.item.status);
+    },
+
+    rawLogURL() {
+      return `/api/project/${this.projectId}/tasks/${this.itemId}/raw_output`;
+    },
+
     canStop() {
       return [
         'running',
