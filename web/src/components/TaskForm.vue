@@ -95,6 +95,18 @@
 
     <div class="pt-3"></div>
 
+    <v-text-field
+      v-model="git_branch"
+      :label="fieldLabel('branch')"
+      outlined
+      dense
+      required
+      :disabled="formSaving"
+      v-if="
+        needField('allow_override_branch')
+        && template.allow_override_branch_in_task"
+    />
+
     <v-select
       v-model="inventory_id"
       :label="fieldLabel('inventory')"
@@ -214,6 +226,15 @@ export default {
       },
       set(newValue) {
         this.item.inventory_id = newValue;
+      },
+    },
+
+    git_branch: {
+      get() {
+        return (this.item || {}).git_branch || this.template.git_branch;
+      },
+      set(newValue) {
+        this.item.git_branch = newValue;
       },
     },
   },

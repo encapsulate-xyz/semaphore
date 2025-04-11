@@ -220,6 +220,8 @@ definitions:
               type:
                 - string
                 - 'null'
+            allow_override_branch_in_task:
+              type: boolean
       repositories:
         type: array
         items:

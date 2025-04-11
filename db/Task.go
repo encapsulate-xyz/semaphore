@@ -40,14 +40,9 @@ type Task struct {
 
 	Status task_logger.TaskStatus `db:"status" json:"status"`
 
-	Debug  bool `db:"debug" json:"debug"`
-	DryRun bool `db:"dry_run" json:"dry_run"`
-	Diff   bool `db:"diff" json:"diff"`
-
 	// override variables
 	Playbook    string  `db:"playbook" json:"playbook"`
 	Environment string  `db:"environment" json:"environment"`
-	Limit       string  `db:"hosts_limit" json:"limit"`
 	Secret      string  `db:"-" json:"secret"`
 	Arguments   *string `db:"arguments" json:"arguments"`
 	GitBranch   *string `db:"git_branch" json:"git_branch"`
@@ -89,21 +84,7 @@ func (task *Task) FillParams(target interface{}) (err error) {
 
 func (task *Task) PreInsert(gorp.SqlExecutor) error {
 	task.Created = task.Created.UTC()
-
-	// Init params from old fields for backward compatibility
-
-	if task.Debug {
-		task.Params["debug"] = true
-	}
-
-	if task.DryRun {
-		task.Params["dry_run"] = true
-	}
-
-	if task.Diff {
-		task.Params["diff"] = true
-	}
-
+	
 	return nil
 }
 

@@ -1,8 +1,7 @@
 <template>
   <EditDialog
       v-if="isAppsLoaded"
-      :max-width="1200"
-      :min-content-height="457"
+      :max-width="dialogWidth"
       v-model="dialog"
       :save-button-text="itemId === 'new' ? $t('create') : $t('save')"
       :icon="getAppIcon(itemApp)"
@@ -22,7 +21,6 @@
           :need-reset="needReset"
           :source-item-id="sourceItemId"
           :app="itemApp"
-          @resize="onFormResize"
           :premium-features="premiumFeatures"
       />
     </template>
@@ -30,18 +28,6 @@
 </template>
 
 <style lang="scss">
-.EditTemplateDialog {
-  width: auto;
-  .v-card__text {
-    overflow-x: auto;
-  }
-}
-
-@media #{map-get($display-breakpoints, 'sm-and-down')} {
-  .EditTemplateDialog {
-    width: auto !important;
-  }
-}
 </style>
 
 <script>
@@ -74,6 +60,16 @@ export default {
     };
   },
 
+  computed: {
+    dialogWidth() {
+      if (['ansible', 'terraform', 'tofu'].includes(this.itemApp)) {
+        return 1200;
+      }
+
+      return 800;
+    },
+  },
+
   watch: {
     async dialog(val) {
       this.$emit('input', val);
@@ -85,11 +81,6 @@ export default {
   },
 
   methods: {
-    onFormResize(e) {
-      const contentEl = document.querySelector(`.EditTemplateDialog--${this.id}`);
-      contentEl.style.width = `${e.width + 50}px`;
-    },
-
     onSave(e) {
       this.$emit('save', e);
     },

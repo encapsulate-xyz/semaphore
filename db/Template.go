@@ -75,6 +75,7 @@ type AnsibleTemplateParams struct {
 type TerraformTemplateParams struct {
 	AllowDestroy     bool `json:"allow_destroy"`
 	AllowAutoApprove bool `json:"allow_auto_approve"`
+	AutoApprove      bool `json:"auto_approve"`
 }
 
 type SurveyVarEnumValue struct {
@@ -148,6 +149,8 @@ type Template struct {
 	TaskParams MapStringAnyField `db:"task_params" json:"task_params"`
 
 	RunnerTag *string `db:"runner_tag" json:"runner_tag"`
+
+	AllowOverrideBranchInTask bool `db:"allow_override_branch_in_task" json:"allow_override_branch_in_task"`
 }
 
 func (tpl *Template) FillParams(target interface{}) error {

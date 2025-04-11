@@ -307,30 +307,32 @@ export default {
   status_failed: 'Failed',
   status_stopped: 'Stopped',
 
+  api_tokens: 'API Tokens',
+
+  // Terraform/OpenTofu
+  auto_approve: 'Auto approve',
+
+  // Ansible
   tag: 'Tag',
   tag_required: 'Tag is required',
   allowInventoryInTask: 'Inventory',
   allowLimitInTask: 'Limit',
   addLimit: 'Add limit',
   allowDebug: 'Debug',
-
   addTag: 'Add tag',
   skipTags: 'Skip tags',
   addSkippedTag: 'Add skipped tag',
-
   tags: 'Tags',
-
   limit: 'Limit',
 
   runner_tag: 'Runner tag',
-
-  task_prompts: 'Task prompts',
-  template_advanced: 'Advanced',
-  ansible_playbook_options: 'Ansible options',
-
+  task_prompts: 'Prompts',
+  template_advanced: 'Advanced options',
+  template_app_options: '{app} options',
+  template_app_prompts: '{app} prompts',
   general_settings: 'General',
-
   danger_zone_settings: 'Danger Zone',
-
   project_stats: 'Stats',
+  allow_override_branch: 'Branch',
+  template_common_options: 'Common options',
 };

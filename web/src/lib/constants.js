@@ -107,6 +107,16 @@ export const APP_ICONS = {
   },
 };
 
+export const APP_SHORT_TITLE = {
+  ansible: 'Ansible',
+  terraform: 'Terraform',
+  tofu: 'OpenTofu',
+  bash: 'Bash',
+  pulumi: 'Pulumi',
+  python: 'Python',
+  powershell: 'PowerShell',
+};
+
 export const APP_TITLE = {
   ansible: 'Ansible Playbook',
   terraform: 'Terraform Code',
@@ -147,6 +157,12 @@ const BASE_FIELDS = {
   allow_override_inventory: {
     label: 'allowInventoryInTask',
   },
+  git_branch: {
+    label: 'branch',
+  },
+  allow_override_branch: {
+    label: 'allow_override_branch',
+  },
 };
 
 export const ANSIBLE_FIELDS = {
@@ -185,6 +201,15 @@ export const TERRAFORM_FIELDS = {
   },
   inventory: {
     label: 'Workspace (Optional)',
+  },
+  auto_approve: {
+    label: 'auto_approve',
+  },
+  allow_auto_approve: {
+    label: 'auto_approve',
+  },
+  allow_destroy: {
+    label: 'auto_destroy',
   },
 };
 

@@ -256,13 +256,14 @@ func (t *TerraformApp) Run(args LocalAppRunningArgs) error {
 	}
 
 	params := args.TaskParams.(*db.TerraformTaskParams)
+	tplParams := args.TemplateParams.(*db.TerraformTemplateParams)
 
 	if t.PlanHasNoChanges || params.Plan {
 		t.Logger.SetStatus(task_logger.TaskSuccessStatus)
 		return nil
 	}
 
-	if params.AutoApprove {
+	if tplParams.AutoApprove || tplParams.AllowAutoApprove && params.AutoApprove {
 		t.Logger.SetStatus(task_logger.TaskRunningStatus)
 		return t.Apply(args.CliArgs, args.EnvironmentVars, args.Inputs, args.Callback)
 	}

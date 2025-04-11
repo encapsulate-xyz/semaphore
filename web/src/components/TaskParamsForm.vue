@@ -107,10 +107,17 @@
 </style>
 
 <script>
+const TERRAFORM_APP_PARAMS = [
+  'plan',
+  'auto_approve',
+  'destroy',
+  'reconfigure',
+  'upgrade',
+];
 
 const APP_PARAMS = {
-  terraform: ['plan', 'auto_approve', 'destroy', 'reconfigure'],
-  tofu: ['plan', 'auto_approve', 'destroy', 'reconfigure'],
+  terraform: TERRAFORM_APP_PARAMS,
+  tofu: TERRAFORM_APP_PARAMS,
   ansible: [
     'diff',
     'debug',
