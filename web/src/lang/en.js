@@ -307,6 +307,8 @@ export default {
   status_failed: 'Failed',
   status_stopped: 'Stopped',
 
+  api_tokens: 'API Tokens',
+
   // Terraform/OpenTofu
   auto_approve: 'Auto approve',
 

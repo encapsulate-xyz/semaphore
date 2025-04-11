@@ -8,7 +8,7 @@
       >
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
-      <v-toolbar-title>{{ $t('tokens') }}</v-toolbar-title>
+      <v-toolbar-title>{{ $t('api_tokens') }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn
         color="primary"

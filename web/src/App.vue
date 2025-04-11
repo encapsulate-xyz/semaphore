@@ -509,7 +509,7 @@
                 </v-list-item-icon>
 
                 <v-list-item-content>
-                  {{ $t('tokens') }}
+                  {{ $t('api_tokens') }}
                 </v-list-item-content>
               </v-list-item>
 
