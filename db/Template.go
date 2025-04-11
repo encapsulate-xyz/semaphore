@@ -75,6 +75,7 @@ type AnsibleTemplateParams struct {
 type TerraformTemplateParams struct {
 	AllowDestroy     bool `json:"allow_destroy"`
 	AllowAutoApprove bool `json:"allow_auto_approve"`
+	AutoApprove      bool `json:"auto_approve"`
 }
 
 type SurveyVarEnumValue struct {

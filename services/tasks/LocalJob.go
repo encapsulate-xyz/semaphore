@@ -473,6 +473,21 @@ func (t *LocalJob) getCLIArgs() (templateArgs []string, taskArgs []string, err e
 	return
 }
 
+func (t *LocalJob) getTemplateParams() (interface{}, error) {
+	var params interface{}
+	switch t.Template.App {
+	case db.AppAnsible:
+		params = &db.AnsibleTemplateParams{}
+	case db.AppTerraform, db.AppTofu:
+		params = &db.TerraformTemplateParams{}
+	default:
+		return nil, nil
+	}
+
+	err := t.Template.FillParams(params)
+	return params, err
+}
+
 func (t *LocalJob) getParams() (params interface{}, err error) {
 	switch t.Template.App {
 	case db.AppAnsible:
@@ -502,6 +517,11 @@ func (t *LocalJob) Run(username string, incomingVersion *string, alias string) (
 	t.SetStatus(task_logger.TaskRunningStatus) // It is required for local mode. Don't delete
 
 	environmentVariables, err := t.getEnvironmentENV()
+	if err != nil {
+		return
+	}
+
+	tplParams, err := t.getTemplateParams()
 	if err != nil {
 		return
 	}
@@ -562,6 +582,7 @@ func (t *LocalJob) Run(username string, incomingVersion *string, alias string) (
 		EnvironmentVars: environmentVariables,
 		Inputs:          inputs,
 		TaskParams:      params,
+		TemplateParams:  tplParams,
 		Callback: func(p *os.Process) {
 			t.Process = p
 		},
