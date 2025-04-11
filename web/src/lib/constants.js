@@ -150,8 +150,8 @@ const BASE_FIELDS = {
   git_branch: {
     label: 'branch',
   },
-  allow_override_branch_in_task: {
-    label: 'allow_override_branch_in_task',
+  allow_override_branch: {
+    label: 'allow_override_branch',
   },
 };
 
@@ -191,6 +191,15 @@ export const TERRAFORM_FIELDS = {
   },
   inventory: {
     label: 'Workspace (Optional)',
+  },
+  auto_approve: {
+    label: 'auto_approve',
+  },
+  allow_auto_approve: {
+    label: 'auto_approve',
+  },
+  allow_destroy: {
+    label: 'auto_destroy',
   },
 };
 

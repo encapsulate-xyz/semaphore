@@ -101,8 +101,8 @@ func (d *SqlDb) UpdateTemplate(template db.Template) error {
 		"app=?, "+
 		"`git_branch`=?, "+
 		"task_params=?, "+
-		"runner_tag=? "+
-		"allow_override_branch_in_task=?, "+
+		"runner_tag=?, "+
+		"allow_override_branch_in_task=? "+
 		"where id=? and project_id=?",
 		template.InventoryID,
 		template.RepositoryID,

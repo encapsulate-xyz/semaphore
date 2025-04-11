@@ -3,17 +3,38 @@
     <v-row>
       <v-col>
         <v-skeleton-loader
-          type="table-heading, list-item-two-line, image, table-tfoot"
+          type="
+            table-heading,
+            list-item-two-line,
+            list-item-two-line,
+            image,
+            table-tfoot"
         ></v-skeleton-loader>
       </v-col>
       <v-col>
         <v-skeleton-loader
-          type="table-heading, list-item-two-line, image, table-tfoot"
+          type="
+            table-heading,
+            list-item-two-line,
+            list-item-two-line,
+            image,
+            table-tfoot"
+        ></v-skeleton-loader>
+      </v-col>
+      <v-col v-if="needAppBlock">
+        <v-skeleton-loader
+          type="
+            table-heading,
+            list-item-two-line,
+            list-item-two-line,
+            image,
+            table-tfoot"
         ></v-skeleton-loader>
       </v-col>
     </v-row>
   </div>
   <v-form
+    class="mt-1"
     v-else
     ref="form"
     lazy-validation
@@ -68,186 +89,226 @@
     <v-alert
       :value="formError"
       color="error"
-      class="pb-2"
     >{{ formError }}
     </v-alert>
 
-    <div class="TemplateFormBody" ref="formBody" @click="checkSize()">
-      <v-card
-        class="mb-6"
-        :color="$vuetify.theme.dark ? '#212121' : 'white'"
-        style="background: #8585850f"
-      >
-        <v-tabs
-          fixed-tabs
-          v-model="itemTypeIndex"
-        >
-          <v-tab
-            style="padding: 0"
-            v-for="(key) in Object.keys(TEMPLATE_TYPE_ICONS)"
-            :key="key"
-          >
-            <v-icon small class="mr-2">{{ TEMPLATE_TYPE_ICONS[key] }}</v-icon>
-            {{ $t(TEMPLATE_TYPE_TITLES[key]) }}
-          </v-tab>
-        </v-tabs>
+    <v-row>
+      <v-col>
+        <h2 class="mb-4">{{ $t('template_common_options') }}</h2>
 
-        <div class="ml-4 mr-4 mt-6" v-if="item.type">
+        <v-card
+          class="mb-6"
+          :color="$vuetify.theme.dark ? '#212121' : 'white'"
+          style="background: #8585850f"
+        >
+          <v-tabs
+            fixed-tabs
+            v-model="itemTypeIndex"
+          >
+            <v-tab
+              style="padding: 0"
+              v-for="(key) in Object.keys(TEMPLATE_TYPE_ICONS)"
+              :key="key"
+            >
+              <v-icon small class="mr-2">{{ TEMPLATE_TYPE_ICONS[key] }}</v-icon>
+              {{ $t(TEMPLATE_TYPE_TITLES[key]) }}
+            </v-tab>
+          </v-tabs>
+
+          <div class="ml-4 mr-4 mt-6" v-if="item.type">
+            <v-text-field
+              v-if="item.type === 'build'"
+              v-model="item.start_version"
+              :label="$t('startVersion')"
+              :rules="[v => !!v || $t('start_version_required')]"
+              required
+              :disabled="formSaving"
+              :placeholder="$t('example000')"
+              append-outer-icon="mdi-help-circle"
+              @click:append-outer="showHelpDialog('build_version')"
+            ></v-text-field>
+
+            <v-autocomplete
+              v-if="item.type === 'deploy'"
+              v-model="item.build_template_id"
+              :label="$t('buildTemplate')"
+              :items="buildTemplates"
+              item-value="id"
+              item-text="name"
+              :rules="[v => !!v || $t('build_template_required')]"
+              required
+              :disabled="formSaving"
+              append-outer-icon="mdi-help-circle"
+              @click:append-outer="showHelpDialog('build')"
+            ></v-autocomplete>
+
+            <v-checkbox
+              v-if="item.type === 'deploy'"
+              class="mt-0"
+              :label="$t('autorun')"
+              v-model="item.autorun"
+            />
+          </div>
+
+        </v-card>
+
+        <v-text-field
+          v-model="item.name"
+          :label="$t('name2')"
+          :rules="[v => !!v || $t('name_required')]"
+          outlined
+          dense
+          required
+          :disabled="formSaving"
+        ></v-text-field>
+
+        <v-text-field
+          v-model="item.playbook"
+          :label="fieldLabel('playbook')"
+          :rules="
+              isFieldRequired('playbook')
+              ? [v => !!v || $t('playbook_filename_required')]
+              : []"
+          outlined
+          dense
+          :required="isFieldRequired('playbook')"
+          :disabled="formSaving"
+          :placeholder="$t('exampleSiteyml')"
+          v-if="needField('playbook')"
+        ></v-text-field>
+
+        <v-select
+          v-model="item.inventory_id"
+          :label="fieldLabel('inventory')"
+          :items="inventory"
+          item-value="id"
+          item-text="name"
+          outlined
+          dense
+          required
+          :disabled="formSaving"
+          v-if="needField('inventory')"
+        ></v-select>
+
+        <v-select
+          v-model="item.repository_id"
+          :label="fieldLabel('repository') + ' *'"
+          :items="repositories"
+          item-value="id"
+          item-text="name"
+          :rules="isFieldRequired('repository') ? [v => !!v || $t('repository_required')] : []"
+          outlined
+          dense
+          :required="isFieldRequired('repository')"
+          :disabled="formSaving"
+          v-if="needField('repository')"
+        ></v-select>
+
+        <v-select
+          v-model="item.environment_id"
+          :label="fieldLabel('environment')"
+          :items="environment"
+          item-value="id"
+          item-text="name"
+          :rules="isFieldRequired('environment') ? [v => !!v || $t('environment_required')] : []"
+          outlined
+          dense
+          :required="isFieldRequired('environment')"
+          :disabled="formSaving"
+          v-if="needField('environment')"
+        ></v-select>
+
+        <v-select
+          class="mb-3"
+          style="max-height: 60px;"
+          v-model="item.view_id"
+          :label="$t('view')"
+          clearable
+          :items="views"
+          item-value="id"
+          item-text="title"
+          :disabled="formSaving"
+          outlined
+          dense
+        ></v-select>
+      </v-col>
+
+      <v-col>
+        <h2 class="mb-4">{{ $t('template_advanced') }}</h2>
+
+        <div class="mb-4">
           <v-text-field
-            v-if="item.type === 'build'"
-            v-model="item.start_version"
-            :label="$t('startVersion')"
-            :rules="[v => !!v || $t('start_version_required')]"
-            required
+            v-model="item.git_branch"
+            :label="fieldLabel('branch')"
+            outlined
+            dense
             :disabled="formSaving"
-            :placeholder="$t('example000')"
-            append-outer-icon="mdi-help-circle"
-            @click:append-outer="showHelpDialog('build_version')"
+            :placeholder="$t('branch')"
           ></v-text-field>
 
-          <v-autocomplete
-            v-if="item.type === 'deploy'"
-            v-model="item.build_template_id"
-            :label="$t('buildTemplate')"
-            :items="buildTemplates"
-            item-value="id"
-            item-text="name"
-            :rules="[v => !!v || $t('build_template_required')]"
-            required
+          <v-text-field
+            v-if="premiumFeatures.project_runners"
+            v-model="item.runner_tag"
+            :label="fieldLabel('runner_tag')"
+            outlined
+            dense
             :disabled="formSaving"
-            append-outer-icon="mdi-help-circle"
-            @click:append-outer="showHelpDialog('build')"
-          ></v-autocomplete>
+            :placeholder="$t('runner_tag')"
+          ></v-text-field>
+
+          <SurveyVars
+            :vars="surveyVars"
+            @change="setSurveyVars"
+          />
 
           <v-checkbox
-            v-if="item.type === 'deploy'"
             class="mt-0"
-            :label="$t('autorun')"
-            v-model="item.autorun"
+            :label="$t('iWantToRunATaskByTheCronOnlyForForNewCommitsOfSome')"
+            v-model="cronVisible"
+          />
+
+          <v-select
+            v-if="cronVisible"
+            v-model="cronRepositoryId"
+            :label="$t('repository2')"
+            :placeholder="$t('cronChecksNewCommitBeforeRun')"
+            :rules="[v => !!v || $t('repository_required')]"
+            :items="repositories"
+            item-value="id"
+            item-text="name"
+            clearable
+            :disabled="formSaving"
+            outlined
+            dense
+          ></v-select>
+
+          <v-select
+            v-if="cronVisible"
+            v-model="cronFormat"
+            :label="$t('checkInterval')"
+            :hint="$t('newCommitCheckInterval')"
+            item-value="cron"
+            item-text="title"
+            :items="cronFormats"
+            :disabled="formSaving"
+            outlined
+            dense
+          />
+
+          <v-checkbox
+            class="mt-0"
+            :label="$t('suppressSuccessAlerts')"
+            v-model="item.suppress_success_alerts"
+          />
+
+          <ArgsPicker
+            :vars="args"
+            @change="setArgs"
+            title="CLI args"
           />
         </div>
 
-      </v-card>
-
-      <v-text-field
-        v-model="item.name"
-        :label="$t('name2')"
-        :rules="[v => !!v || $t('name_required')]"
-        outlined
-        dense
-        required
-        :disabled="formSaving"
-      ></v-text-field>
-
-      <v-text-field
-        v-model="item.playbook"
-        :label="fieldLabel('playbook')"
-        :rules="isFieldRequired('playbook') ? [v => !!v || $t('playbook_filename_required')] : []"
-        outlined
-        dense
-        :required="isFieldRequired('playbook')"
-        :disabled="formSaving"
-        :placeholder="$t('exampleSiteyml')"
-        v-if="needField('playbook')"
-      ></v-text-field>
-
-      <v-select
-        v-model="item.inventory_id"
-        :label="fieldLabel('inventory')"
-        :items="inventory"
-        item-value="id"
-        item-text="name"
-        outlined
-        dense
-        required
-        :disabled="formSaving"
-        v-if="needField('inventory')"
-      ></v-select>
-
-      <v-select
-        v-model="item.repository_id"
-        :label="fieldLabel('repository') + ' *'"
-        :items="repositories"
-        item-value="id"
-        item-text="name"
-        :rules="isFieldRequired('repository') ? [v => !!v || $t('repository_required')] : []"
-        outlined
-        dense
-        :required="isFieldRequired('repository')"
-        :disabled="formSaving"
-        v-if="needField('repository')"
-      ></v-select>
-
-      <v-select
-        v-model="item.environment_id"
-        :label="fieldLabel('environment')"
-        :items="environment"
-        item-value="id"
-        item-text="name"
-        :rules="isFieldRequired('environment') ? [v => !!v || $t('environment_required')] : []"
-        outlined
-        dense
-        :required="isFieldRequired('environment')"
-        :disabled="formSaving"
-        v-if="needField('environment')"
-      ></v-select>
-
-      <v-select
-        class="mb-3"
-        style="max-height: 60px;"
-        v-model="item.view_id"
-        :label="$t('view')"
-        clearable
-        :items="views"
-        item-value="id"
-        item-text="title"
-        :disabled="formSaving"
-        outlined
-        dense
-      ></v-select>
-
-      <div class="mb-3" v-if="needAppBlock">
-
-        <h2 class="mb-4">{{ appBlockTitle }}</h2>
-
-        <ArgsPicker
-          v-if="needField('limit')"
-          :vars="item.task_params.limit"
-          @change="setLimit"
-          :title="$t('limit')"
-          :arg-title="$t('limit')"
-          :add-arg-title="$t('addLimit')"
-        />
-
-        <ArgsPicker
-          v-if="needField('tags')"
-          :vars="item.task_params.tags"
-          @change="setTags"
-          :title="$t('tags')"
-          :arg-title="$t('tag')"
-          :add-arg-title="$t('addTag')"
-        />
-
-        <ArgsPicker
-          v-if="needField('skip_tags')"
-          :vars="item.task_params.skip_tags"
-          @change="setSkipTags"
-          :title="$t('skipTags')"
-          :arg-title="$t('tag')"
-          :add-arg-title="$t('addSkippedTag')"
-        />
-
-        <TemplateVaults
-          v-if="needField('vault')"
-          :project-id="this.projectId"
-          :vaults="vaults"
-          @change="setTemplateVaults"
-        ></TemplateVaults>
-      </div>
-
-      <div class="mb-3">
         <h2 class="mb-4">{{ $t('task_prompts') }}</h2>
-
         <div class="d-flex" style="column-gap: 20px; flex-wrap: wrap">
           <v-checkbox
             class="mt-0"
@@ -257,7 +318,7 @@
 
           <v-checkbox
             class="mt-0"
-            :label="$t('allow_override_branch_in_task')"
+            :label="$t('allow_override_branch')"
             v-model="item.allow_override_branch_in_task"
           />
 
@@ -267,7 +328,62 @@
             v-model="(item.task_params || {}).allow_override_inventory"
             v-if="needField('allow_override_inventory')"
           />
+        </div>
+      </v-col>
 
+      <v-col v-if="needAppBlock">
+        <div class="mb-3">
+          <h2 class="mb-4">
+            {{ $t('template_app_options', {app: getAppTitle(app)}) }}
+          </h2>
+
+          <ArgsPicker
+            v-if="needField('limit')"
+            :vars="item.task_params.limit"
+            @change="setLimit"
+            :title="$t('limit')"
+            :arg-title="$t('limit')"
+            :add-arg-title="$t('addLimit')"
+          />
+
+          <ArgsPicker
+            v-if="needField('tags')"
+            :vars="item.task_params.tags"
+            @change="setTags"
+            :title="$t('tags')"
+            :arg-title="$t('tag')"
+            :add-arg-title="$t('addTag')"
+          />
+
+          <ArgsPicker
+            v-if="needField('skip_tags')"
+            :vars="item.task_params.skip_tags"
+            @change="setSkipTags"
+            :title="$t('skipTags')"
+            :arg-title="$t('tag')"
+            :add-arg-title="$t('addSkippedTag')"
+          />
+
+          <TemplateVaults
+            v-if="needField('vault')"
+            :project-id="this.projectId"
+            :vaults="vaults"
+            @change="setTemplateVaults"
+          ></TemplateVaults>
+
+          <v-checkbox
+            class="mt-0"
+            :label="$t('auto_approve')"
+            v-model="(item.task_params || {}).auto_approve"
+            v-if="needField('auto_approve')"
+          />
+
+        </div>
+
+        <h2 class="mb-4">
+          {{ $t('template_app_prompts', {app: getAppTitle(app)}) }}
+        </h2>
+        <div class="d-flex" style="column-gap: 20px; flex-wrap: wrap">
           <v-checkbox
             class="mt-0"
             :label="$t('allowLimitInTask')"
@@ -296,121 +412,22 @@
             v-if="needField('allow_debug')"
           />
 
+          <v-checkbox
+            class="mt-0"
+            :label="$t('auto_approve')"
+            v-model="item.task_params.allow_auto_approve"
+            v-if="needField('allow_auto_approve')"
+          />
+
         </div>
-      </div>
+      </v-col>
 
-      <div class="mb-3">
-        <h2 class="mb-4">{{ $t('template_advanced') }}</h2>
-
-        <v-text-field
-          v-model="item.git_branch"
-          :label="fieldLabel('branch')"
-          outlined
-          dense
-          :disabled="formSaving"
-          :placeholder="$t('branch')"
-        ></v-text-field>
-
-        <v-text-field
-          v-if="premiumFeatures.project_runners"
-          v-model="item.runner_tag"
-          :label="fieldLabel('runner_tag')"
-          outlined
-          dense
-          :disabled="formSaving"
-          :placeholder="$t('runner_tag')"
-        ></v-text-field>
-
-        <SurveyVars
-          :vars="surveyVars"
-          @change="setSurveyVars"
-        />
-
-        <v-checkbox
-          class="mt-0"
-          :label="$t('iWantToRunATaskByTheCronOnlyForForNewCommitsOfSome')"
-          v-model="cronVisible"
-        />
-
-        <v-select
-          v-if="cronVisible"
-          v-model="cronRepositoryId"
-          :label="$t('repository2')"
-          :placeholder="$t('cronChecksNewCommitBeforeRun')"
-          :rules="[v => !!v || $t('repository_required')]"
-          :items="repositories"
-          item-value="id"
-          item-text="name"
-          clearable
-          :disabled="formSaving"
-          outlined
-          dense
-        ></v-select>
-
-        <v-select
-          v-if="cronVisible"
-          v-model="cronFormat"
-          :label="$t('checkInterval')"
-          :hint="$t('newCommitCheckInterval')"
-          item-value="cron"
-          item-text="title"
-          :items="cronFormats"
-          :disabled="formSaving"
-          outlined
-          dense
-        />
-
-        <v-checkbox
-          class="mt-0"
-          :label="$t('suppressSuccessAlerts')"
-          v-model="item.suppress_success_alerts"
-        />
-
-        <ArgsPicker
-          :vars="args"
-          @change="setArgs"
-          title="CLI args"
-        />
-
-      </div>
-
-    </div>
+    </v-row>
   </v-form>
 </template>
 <style lang="scss">
 .CodeMirror-placeholder {
   color: #a4a4a4 !important;
-}
-
-.TemplateFormBody {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  max-height: min(calc(90vh - 115px), 800px);
-  padding-top: 10px;
-  column-gap: 30px;
-
-  & > * {
-    max-width: 350px;
-    min-width: 350px;
-    width: 350px;
-  }
-
-  width: fit-content;
-}
-
-@media #{map-get($display-breakpoints, 'sm-and-down')} {
-  .TemplateFormBody {
-    display: block;
-    height: unset;
-    max-height: unset;
-
-    & > * {
-      max-width: unset;
-      min-width: unset;
-      width: unset;
-    }
-  }
 }
 </style>
 <script>
@@ -427,10 +444,11 @@ import ArgsPicker from '@/components/ArgsPicker.vue';
 import TemplateVaults from '@/components/TemplateVaults.vue';
 import { TEMPLATE_TYPE_ICONS, TEMPLATE_TYPE_TITLES } from '@/lib/constants';
 import AppFieldsMixin from '@/components/AppFieldsMixin';
+import AppsMixin from '@/components/AppsMixin';
 import SurveyVars from './SurveyVars';
 
 export default {
-  mixins: [ItemFormBase, AppFieldsMixin],
+  mixins: [ItemFormBase, AppFieldsMixin, AppsMixin],
 
   components: {
     TemplateVaults,
@@ -496,11 +514,6 @@ export default {
   watch: {
     needReset(val) {
       if (val) {
-        this.$emit('resize', {
-          width: 770,
-        });
-
-        setTimeout(() => this.checkSize(), 300);
         if (this.item != null) {
           this.item.template_id = this.templateId;
         }
@@ -529,7 +542,7 @@ export default {
     },
 
     needAppBlock() {
-      return ['', 'ansible'].includes(this.app);
+      return ['', 'ansible', 'ansible', 'tofu'].includes(this.app);
     },
 
     surveyVars() {
@@ -561,28 +574,7 @@ export default {
 
   },
 
-  async mounted() {
-    while (!this.$refs.formBody) {
-      // eslint-disable-next-line no-await-in-loop
-      await new Promise((resolve) => {
-        setTimeout(resolve, 100);
-      });
-    }
-    this.checkSize();
-  },
-
   methods: {
-    checkSize() {
-      if (
-        this.$refs.formBody.clientWidth !== this.$refs.formBody.scrollWidth
-        || this.$refs.formBody.clientWidth < this.$refs.form.$el.clientWidth
-      ) {
-        this.$emit('resize', {
-          width: this.$refs.formBody.scrollWidth,
-        });
-      }
-    },
-
     setSkipTags(tags) {
       this.item.task_params.skip_tags = tags;
     },
