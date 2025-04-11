@@ -107,6 +107,16 @@ export const APP_ICONS = {
   },
 };
 
+export const APP_SHORT_TITLE = {
+  ansible: 'Ansible',
+  terraform: 'Terraform',
+  tofu: 'OpenTofu',
+  bash: 'Bash',
+  pulumi: 'Pulumi',
+  python: 'Python',
+  powershell: 'PowerShell',
+};
+
 export const APP_TITLE = {
   ansible: 'Ansible Playbook',
   terraform: 'Terraform Code',

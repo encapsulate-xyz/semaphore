@@ -334,7 +334,7 @@
       <v-col v-if="needAppBlock">
         <div class="mb-3">
           <h2 class="mb-4">
-            {{ $t('template_app_options', {app: getAppTitle(app)}) }}
+            {{ $t('template_app_options', {app: getAppTitle(app, true)}) }}
           </h2>
 
           <ArgsPicker
@@ -381,7 +381,7 @@
         </div>
 
         <h2 class="mb-4">
-          {{ $t('template_app_prompts', {app: getAppTitle(app)}) }}
+          {{ $t('template_app_prompts', {app: getAppTitle(app, true)}) }}
         </h2>
         <div class="d-flex" style="column-gap: 20px; flex-wrap: wrap">
           <v-checkbox
