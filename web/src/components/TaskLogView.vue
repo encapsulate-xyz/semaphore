@@ -116,25 +116,23 @@
     </v-btn>
 
     <v-btn
-      target="_blank"
-      color="white"
+      color="error"
       class="task-log-action-button"
       style="right: 20px; width: 150px;"
-      v-if="isTaskStopped"
+      v-if="canStop"
       @click="stopTask(item.status === 'stopping')"
     >
       {{ item.status === 'stopping' ? $t('forceStop') : $t('stop') }}
     </v-btn>
 
     <v-btn
+      v-if="isTaskStopped"
       color="blue-grey"
       :href="rawLogURL"
       class="task-log-action-button"
       style="right: 20px; width: 150px;"
       target="_blank"
-    >
-      Raw log
-    </v-btn>
+    >{{ $t('rawLog') }}</v-btn>
 
   </div>
 </template>

@@ -154,6 +154,8 @@ export default {
   duration: 'Duration',
   stop: 'Stop',
   forceStop: 'Force Stop',
+  rawLog: 'Raw log',
+
   confirmTask: 'Confirm',
   deleteTeamMember: 'Delete team member',
   team2: 'Team',
