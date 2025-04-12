@@ -34,10 +34,11 @@ type Repository struct {
 }
 
 func (r Repository) ClearCache() error {
-	dir, err := os.Open(util.Config.TmpPath)
+	dir, err := os.Open(util.Config.GetProjectTmpDir(r.ProjectID))
 	if err != nil {
 		return err
 	}
+
 	defer dir.Close()
 
 	files, err := dir.ReadDir(0)
@@ -50,7 +51,7 @@ func (r Repository) ClearCache() error {
 			continue
 		}
 		if strings.HasPrefix(f.Name(), r.getDirNamePrefix()) {
-			err = os.RemoveAll(path.Join(util.Config.TmpPath, f.Name()))
+			err = os.RemoveAll(path.Join(util.Config.GetProjectTmpDir(r.ProjectID), f.Name()))
 			if err != nil {
 				return err
 			}
@@ -65,14 +66,14 @@ func (r Repository) getDirNamePrefix() string {
 }
 
 func (r Repository) GetDirName(templateID int) string {
-	return r.getDirNamePrefix() + strconv.Itoa(templateID)
+	return r.getDirNamePrefix() + "template_" + strconv.Itoa(templateID)
 }
 
 func (r Repository) GetFullPath(templateID int) string {
 	if r.GetType() == RepositoryLocal {
 		return r.GetGitURL(true)
 	}
-	return path.Join(util.Config.TmpPath, r.GetDirName(templateID))
+	return path.Join(util.Config.GetProjectTmpDir(r.ProjectID), r.GetDirName(templateID))
 }
 
 func (r Repository) GetGitURL(secure bool) string {

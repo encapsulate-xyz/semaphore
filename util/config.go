@@ -262,6 +262,10 @@ func NewConfigType() *ConfigType {
 // Config exposes the application configuration storage for use in the application
 var Config *ConfigType
 
+func (conf *ConfigType) GetProjectTmpDir(projectID int) string {
+	return path.Join(conf.TmpPath, fmt.Sprintf("project_%d", projectID))
+}
+
 // ToJSON returns a JSON string of the config
 func (conf *ConfigType) ToJSON() ([]byte, error) {
 	return json.MarshalIndent(&conf, " ", "\t")

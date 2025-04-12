@@ -340,7 +340,7 @@ func checkTmpDir(path string) error {
 	var err error
 	if _, err = os.Stat(path); err != nil {
 		if os.IsNotExist(err) {
-			return os.MkdirAll(path, 0700)
+			return os.MkdirAll(path, 0755)
 		}
 	}
 	return err

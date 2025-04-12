@@ -20,7 +20,7 @@ func (c CmdGitClient) makeCmd(r GitRepository, targetDir GitRepositoryDirType, a
 
 	switch targetDir {
 	case GitRepositoryTmpPath:
-		cmd.Dir = util.Config.TmpPath
+		cmd.Dir = util.Config.GetProjectTmpDir(r.Repository.ProjectID)
 	case GitRepositoryFullPath:
 		cmd.Dir = r.GetFullPath()
 	default:
