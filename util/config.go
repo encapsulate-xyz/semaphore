@@ -610,7 +610,7 @@ func setConfigValue(attribute reflect.Value, value string) {
 			}
 			attribute.Set(mapValue)
 		default:
-			newValue, _ := CastValueToKind(value, attribute.Kind())
+			newValue, _ := CastValueToKind(value, kind)
 			attribute.Set(reflect.ValueOf(newValue))
 		}
 
