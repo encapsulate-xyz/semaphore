@@ -259,20 +259,16 @@
       color="hsl(348deg, 86%, 61%)"
       style="border-radius: 0;"
     >
-      <span v-if="projectId">
-        Project-level runners are only available in the <b>PRO</b> version.
-      </span>
+      <span v-if="projectId" v-html="$t('project_runners_only_pro')"></span>
 
-      <span v-else>
-        The open-source version has limited functionality;
-        full functionality is in the <b>PRO</b> version.
-      </span>
+      <span v-else v-html="$t('foss_runners_limited')"></span>
+
       <v-btn
         class="ml-2 pr-2"
         color="hsl(348deg, 86%, 61%)"
         href="https://semaphoreui.com/pro"
       >
-        Learn more
+        {{ $t('learn_more_about_pro') }}
         <v-icon>mdi-chevron-right</v-icon>
       </v-btn>
     </v-alert>

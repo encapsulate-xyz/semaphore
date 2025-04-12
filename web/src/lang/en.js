@@ -296,6 +296,10 @@ export default {
   deleteRunner: 'Delete Runner',
   newRunnerToken: 'New Runner',
   askDeleteRunner: 'Do you really want to delete runner {runner}?',
+  project_runners_only_pro: 'Project-level runners are only available in the <b>PRO</b> version.',
+  foss_runners_limited: 'The open-source version has limited functionality; full functionality is in the <b>PRO</b> version.',
+  learn_more_about_pro: 'Learn more',
+
   projectRestoreResult: 'Project restore results',
   projectWithNameRestored: 'Project {projectName} successfully restored.',
   pleaseUpdateAccessKeys: 'Please update them before running tasks.',
