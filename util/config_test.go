@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"reflect"
+	"strconv"
 	"testing"
 )
 
@@ -259,8 +260,8 @@ func TestSetConfigValue(t *testing.T) {
 
 	setConfigValue(configValue.FieldByName("Port"), testPort)
 	setConfigValue(configValue.FieldByName("CookieHash"), testCookieHash)
-	//setConfigValue(configValue.FieldByName("MaxParallelTasks"), testMaxParallelTasks)
-	//setConfigValue(configValue.FieldByName("LdapNeedTLS"), testLdapNeedTls)
+	setConfigValue(configValue.FieldByName("MaxParallelTasks"), strconv.Itoa(testMaxParallelTasks))
+	setConfigValue(configValue.FieldByName("LdapNeedTLS"), "true")
 	//setConfigValue(configValue.FieldByName("BoltDb.Hostname"), testDbHost)
 	setConfigValue(configValue.FieldByName("EmailSecure"), testEmailSecure)
 
