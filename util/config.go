@@ -262,7 +262,7 @@ func NewConfigType() *ConfigType {
 // Config exposes the application configuration storage for use in the application
 var Config *ConfigType
 
-func clearDir(dir string) error {
+func ClearDir(dir string, preserveFiles bool, prefix string) error {
 	d, err := os.Open(dir)
 
 	if os.IsNotExist(err) {
@@ -275,13 +275,21 @@ func clearDir(dir string) error {
 
 	defer d.Close()
 
-	entries, err := d.Readdirnames(-1)
+	files, err := d.ReadDir(0)
 	if err != nil {
 		return err
 	}
 
-	for _, entry := range entries {
-		err = os.RemoveAll(filepath.Join(dir, entry))
+	for _, f := range files {
+		if preserveFiles && !f.IsDir() {
+			continue
+		}
+
+		if prefix != "" && !strings.HasPrefix(f.Name(), prefix) {
+			continue
+		}
+
+		err = os.RemoveAll(path.Join(dir, f.Name()))
 		if err != nil {
 			return err
 		}
@@ -291,7 +299,7 @@ func clearDir(dir string) error {
 }
 
 func (conf *ConfigType) ClearTmpDir() error {
-	return clearDir(conf.TmpPath)
+	return ClearDir(conf.TmpPath, false, "")
 }
 
 func (conf *ConfigType) GetProjectTmpDir(projectID int) string {
@@ -299,7 +307,7 @@ func (conf *ConfigType) GetProjectTmpDir(projectID int) string {
 }
 
 func (conf *ConfigType) ClearProjectTmpDir(projectID int) error {
-	return clearDir(conf.GetProjectTmpDir(projectID))
+	return ClearDir(conf.GetProjectTmpDir(projectID), false, "")
 }
 
 // ToJSON returns a JSON string of the config

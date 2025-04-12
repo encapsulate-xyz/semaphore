@@ -340,7 +340,7 @@
           <v-btn
             icon
             class="mr-1"
-            @click="editItem(item.id)"
+            @click="clearCache(item)"
           >
             <v-icon>mdi-broom</v-icon>
           </v-btn>
@@ -431,6 +431,20 @@ semaphore runner start --no-config`;
   },
 
   methods: {
+    clearCache(runner) {
+      const projectId = this.projectId || this.getProjectIdOfItem(runner.id);
+
+      const url = projectId
+        ? `/api/project/${projectId}/runners/${runner.id}/cache`
+        : `/api/runners/${runner.id}/cache`;
+
+      axios({
+        method: 'delete',
+        url,
+        responseType: 'json',
+      });
+    },
+
     getStatusColor(runner) {
       if (!runner.touched) {
         return 'grey';

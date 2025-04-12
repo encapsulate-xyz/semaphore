@@ -2,7 +2,6 @@ package db
 
 import (
 	"fmt"
-	"os"
 	"path"
 	"regexp"
 	"strconv"
@@ -34,31 +33,7 @@ type Repository struct {
 }
 
 func (r Repository) ClearCache() error {
-	dir, err := os.Open(util.Config.GetProjectTmpDir(r.ProjectID))
-	if err != nil {
-		return err
-	}
-
-	defer dir.Close()
-
-	files, err := dir.ReadDir(0)
-	if err != nil {
-		return err
-	}
-
-	for _, f := range files {
-		if !f.IsDir() {
-			continue
-		}
-		if strings.HasPrefix(f.Name(), r.getDirNamePrefix()) {
-			err = os.RemoveAll(path.Join(util.Config.GetProjectTmpDir(r.ProjectID), f.Name()))
-			if err != nil {
-				return err
-			}
-		}
-	}
-
-	return nil
+	return util.ClearDir(util.Config.GetProjectTmpDir(r.ProjectID), true, r.getDirNamePrefix())
 }
 
 func (r Repository) getDirNamePrefix() string {
