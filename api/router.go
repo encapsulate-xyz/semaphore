@@ -144,6 +144,8 @@ func Route() *mux.Router {
 	adminAPI.Path("/runners").HandlerFunc(getAllRunners).Methods("GET", "HEAD")
 	adminAPI.Path("/runners").HandlerFunc(addGlobalRunner).Methods("POST", "HEAD")
 
+	adminAPI.Path("/cache").HandlerFunc(clearCache).Methods("DELETE", "HEAD")
+
 	globalRunnersAPI := adminAPI.PathPrefix("/runners").Subrouter()
 	globalRunnersAPI.Use(globalRunnerMiddleware)
 	globalRunnersAPI.Path("/{runner_id}").HandlerFunc(getGlobalRunner).Methods("GET", "HEAD")
