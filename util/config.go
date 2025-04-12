@@ -224,7 +224,7 @@ type ConfigType struct {
 	GotifyToken         string `json:"gotify_token,omitempty" env:"SEMAPHORE_GOTIFY_TOKEN"`
 
 	// oidc settings
-	OidcProviders map[string]OidcProvider `json:"oidc_providers,omitempty"`
+	OidcProviders map[string]OidcProvider `json:"oidc_providers,omitempty" env:"SEMAPHORE_OIDC_PROVIDERS"`
 
 	MaxTaskDurationSec  int `json:"max_task_duration_sec,omitempty" env:"SEMAPHORE_MAX_TASK_DURATION_SEC"`
 	MaxTasksPerTemplate int `json:"max_tasks_per_template,omitempty" env:"SEMAPHORE_MAX_TASKS_PER_TEMPLATE"`
@@ -602,13 +602,13 @@ func setConfigValue(attribute reflect.Value, value string) {
 			}
 			attribute.Set(reflect.ValueOf(arr))
 		case reflect.Map:
-			mapType := reflect.MapOf(reflect.TypeOf(""), attribute.Type().Elem())
-			mapValue := reflect.MakeMap(mapType)
-			err := json.Unmarshal([]byte(value), &mapValue)
+			mapType := attribute.Type()
+			mapValue := reflect.New(mapType)
+			err := json.Unmarshal([]byte(value), mapValue.Interface())
 			if err != nil {
 				panic(err)
 			}
-			attribute.Set(mapValue)
+			attribute.Set(mapValue.Elem())
 		default:
 			newValue, _ := CastValueToKind(value, kind)
 			attribute.Set(reflect.ValueOf(newValue))
