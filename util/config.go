@@ -264,9 +264,15 @@ var Config *ConfigType
 
 func clearDir(dir string) error {
 	d, err := os.Open(dir)
+
+	if os.IsNotExist(err) {
+		return nil
+	}
+
 	if err != nil {
 		return err
 	}
+
 	defer d.Close()
 
 	entries, err := d.Readdirnames(-1)
