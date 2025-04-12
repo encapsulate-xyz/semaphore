@@ -6,7 +6,7 @@ export default {
   deleteSchedule: 'Excluir Agenda',
   editSchedule: 'Editar Agenda',
   backup: 'Backup do Projeto',
-  downloadTheProjectBackupFile: 'Baixar o arquivo de backup do projeto (em json)',
+  downloadTheProjectBackupFile: 'Baixar o arquivo de backup do projeto.',
   restoreProject: 'Restaurar Projeto...',
   incorrectUsrPwd: 'Login ou senha incorretos',
   askDeleteUser: 'Você realmente deseja excluir este usuário?',
@@ -57,7 +57,7 @@ export default {
   howToFixSigninIssues: 'Como corrigir problemas de login',
   firstlyYouNeedAccessToTheServerWhereSemaphoreRunni: 'Primeiro, você precisa de acesso ao servidor onde o Semaphore está em execução.',
   executeTheFollowingCommandOnTheServerToSeeExisting: 'Execute o seguinte comando no servidor para ver os usuários existentes:',
-  semaphoreUserList: 'semaphore user list',
+  semaphoreUserList: 'lista de usuários semaphore',
   youCanChangePasswordOfExistingUser: 'Você pode alterar a senha do usuário existente:',
   semaphoreUserChangebyloginLoginUser123Password: 'semaphore user change-by-login --login user123 --password {makePasswordExample}',
   orCreateNewAdminUser: 'Ou crie um novo usuário administrador:',
@@ -72,9 +72,9 @@ export default {
   deleteEnvironment: 'Excluir grupo de variáveis',
   newEnvironment: 'Novo Grupo',
   environmentName: 'Nome do Grupo',
-  extraVariables: 'Variáveis extras',
+  extraVariables: 'Variáveis Extras',
   enterExtraVariablesJson: 'Insira variáveis extras em JSON...',
-  environmentVariables: 'Variáveis de ambiente',
+  environmentVariables: 'Variáveis de Ambiente',
   enterEnvJson: 'Insira JSON do ambiente...',
   environmentAndExtraVariablesMustBeValidJsonExample: 'As variáveis de ambiente e extras devem ser JSON válidos. Exemplo:',
   dashboard2: 'Painel',
@@ -121,6 +121,10 @@ export default {
   save: 'Salvar',
   deleteProject2: 'Excluir Projeto',
   onceYouDeleteAProjectThereIsNoGoingBackPleaseBeCer: 'Uma vez que você exclui um projeto, não há como voltar. Por favor, tenha certeza.',
+
+  clear_cache: 'Limpar cache',
+  clear_cache_message: 'Excluir todos os arquivos de cache relacionados a este projeto. Esta ação é irreversível.',
+
   name2: 'Nome *',
   title: 'Título *',
   description: 'Descrição',
@@ -154,6 +158,8 @@ export default {
   duration: 'Duração',
   stop: 'Parar',
   forceStop: 'Parar Forçadamente',
+  rawLog: 'Log Bruto',
+
   confirmTask: 'Confirmar',
   deleteTeamMember: 'Excluir membro da equipe',
   team2: 'Equipe',
@@ -173,7 +179,7 @@ export default {
   example000: 'Exemplo: 0.0.0',
   buildTemplate: 'Modelo de Construção',
   autorun: 'Execução Automática',
-  playbookFilename: 'Caminho para o arquivo playbook *',
+  playbookFilename: 'Caminho para o arquivo do playbook *',
   exampleSiteyml: 'Exemplo: deploy/site.yml',
   inventory2: 'Inventário *',
   repository: 'Repositório',
@@ -267,9 +273,9 @@ export default {
   AddAlias: 'Adicionar Alias',
   LoadAlias: 'Carregando aliases...',
   globalAlias: 'Usar alias do projeto',
-  matcher: 'Comparador',
-  matchType: 'Tipo de Comparação',
-  newMatcher: 'Novo Comparador',
+  matcher: 'Correspondente',
+  matchType: 'Tipo de Correspondência',
+  newMatcher: 'Novo Correspondente',
   matchMethod: 'Método de Comparação',
   matchBodyDataType: 'Tipo de Dados do Corpo',
   extractValue: 'Extrair Valor',
@@ -277,7 +283,7 @@ export default {
   extractedValueSource: 'Fonte do Valor',
   matchKey: 'Chave',
   matchValue: 'Valor',
-  matchOn: 'Comparar em',
+  matchOn: 'Correspondência em',
   runners: 'Executores',
   newRunner: 'Novo Executor',
   enabled: 'Habilitado',
@@ -290,9 +296,13 @@ export default {
   deleteRunner: 'Excluir Executor',
   newRunnerToken: 'Novo Executor',
   askDeleteRunner: 'Você realmente deseja excluir o executor {runner}?',
+  project_runners_only_pro: 'Executores em nível de projeto estão disponíveis apenas na versão <b>PRO</b>.',
+  foss_runners_limited: 'A versão de código aberto tem funcionalidade limitada; a funcionalidade completa está na versão <b>PRO</b>.',
+  learn_more_about_pro: 'Saiba mais',
+
   projectRestoreResult: 'Resultados da restauração do projeto',
   projectWithNameRestored: 'Projeto {projectName} restaurado com sucesso.',
-  pleaseUpdateAccessKeys: 'Por favor, atualize as chaves de acesso antes de executar tarefas.',
+  pleaseUpdateAccessKeys: 'Por favor, atualize-os antes de executar tarefas.',
   emptyKeysRestored: '{emptyKeys} chaves vazias adicionadas.',
   template: 'Modelo',
   aliasUrlCopied: 'A URL do alias foi copiada para a área de transferência.',
@@ -307,30 +317,32 @@ export default {
   status_failed: 'Falhou',
   status_stopped: 'Parado',
 
+  api_tokens: 'Tokens de API',
+
+  // Terraform/OpenTofu
+  auto_approve: 'Aprovação automática',
+
+  // Ansible
   tag: 'Tag',
   tag_required: 'Tag é obrigatória',
   allowInventoryInTask: 'Inventário',
   allowLimitInTask: 'Limite',
   addLimit: 'Adicionar limite',
   allowDebug: 'Depurar',
-
   addTag: 'Adicionar tag',
-  skipTags: 'Ignorar tags',
-  addSkippedTag: 'Adicionar tag ignorada',
-
+  skipTags: 'Pular tags',
+  addSkippedTag: 'Adicionar tag pulada',
   tags: 'Tags',
-
   limit: 'Limite',
 
   runner_tag: 'Tag do Executor',
-
-  task_prompts: 'Solicitações de Tarefa',
-  template_advanced: 'Avançado',
-  ansible_playbook_options: 'Opções do Ansible',
-
+  task_prompts: 'Solicitações',
+  template_advanced: 'Opções avançadas',
+  template_app_options: 'Opções de {app}',
+  template_app_prompts: 'Solicitações de {app}',
   general_settings: 'Geral',
-
   danger_zone_settings: 'Zona de Perigo',
-
   project_stats: 'Estatísticas',
+  allow_override_branch: 'Ramo',
+  template_common_options: 'Opções comuns',
 };

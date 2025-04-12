@@ -123,7 +123,7 @@ export default {
   onceYouDeleteAProjectThereIsNoGoingBackPleaseBeCer: 'Once you delete a project, there is no going back. Please be certain.',
 
   clear_cache: 'Clear cache',
-  clear_cache_message: 'Delete all cached files related to this project. This action is irreversible.',
+  clear_cache_message: 'Delete all cache files related to this project. This action is irreversible.',
 
   name2: 'Name *',
   title: 'Title *',
