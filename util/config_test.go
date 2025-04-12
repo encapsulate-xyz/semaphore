@@ -83,6 +83,27 @@ func TestLoadEnvironmentToObject(t *testing.T) {
 	}
 }
 
+func TestLoadEnvironmentToObject_Map(t *testing.T) {
+	type User struct {
+		Name string `json:"name"`
+		Age  int    `json:"age"`
+	}
+	var val struct {
+		Users map[string]User `env:"TEST_USERS"`
+	}
+
+	err := os.Setenv("TEST_USERS", "{\"test\":{\"name\":\"test\",\"age\":5}}")
+	if err != nil {
+		panic(err)
+	}
+
+	err = loadEnvironmentToObject(&val)
+
+	if val.Users["test"].Name != "test" {
+		t.Error("Invalid field value")
+	}
+}
+
 func TestCastStringToInt(t *testing.T) {
 
 	var errMsg = "Cast string => int failed"
