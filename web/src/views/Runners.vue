@@ -299,6 +299,17 @@
         {{ item.max_parallel_tasks || '∞' }}
       </template>
 
+      <template v-slot:item.touched="{ item }">
+        <v-chip
+          v-if="item.touched"
+          :color="getStatusColor(item)"
+          style="font-weight: bold;"
+        >
+          <span v-if="item.touched">{{ item.touched | formatDate }}</span>
+          <span v-else>{{ $t('never') }}</span>
+        </v-chip>
+      </template>
+
       <template v-slot:item.project_id="{ item }">
         {{ item.project_id ? `#${item.project_id}` : '&mdash;' }}
       </template>
@@ -324,6 +335,14 @@
             @click="editItem(item.id)"
           >
             <v-icon>mdi-pencil</v-icon>
+          </v-btn>
+
+          <v-btn
+            icon
+            class="mr-1"
+            @click="editItem(item.id)"
+          >
+            <v-icon>mdi-broom</v-icon>
           </v-btn>
         </div>
       </template>
@@ -412,6 +431,24 @@ semaphore runner start --no-config`;
   },
 
   methods: {
+    getStatusColor(runner) {
+      if (!runner.touched) {
+        return 'grey';
+      }
+
+      const d = Date.now() - new Date(runner.touched);
+
+      if (d < 1000 * 60 * 5) {
+        return 'success';
+      }
+
+      if (d < 1000 * 60 * 60) {
+        return 'warning';
+      }
+
+      return 'grey';
+    },
+
     getProjectIdOfItem(itemId) {
       if (!itemId || itemId === 'new') {
         return null;
@@ -494,9 +531,9 @@ semaphore runner start --no-config`;
         }, {
           text: this.$i18n.t('tag'),
           value: 'tag',
-        // }, {
-        //   text: this.$i18n.t('maxNumberOfParallelTasks'),
-        //   value: 'max_parallel_tasks',
+        }, {
+          text: this.$i18n.t('activity'),
+          value: 'touched',
         }, {
           text: this.$i18n.t('actions'),
           value: 'actions',

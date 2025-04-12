@@ -95,8 +95,19 @@ func chunkRSAEncrypt(pub *rsa.PublicKey, plaintext []byte) ([]byte, error) {
 func GetRunner(w http.ResponseWriter, r *http.Request) {
 	runner := context.Get(r, "runner").(db.Runner)
 
+	clearCache := false
+
+	if runner.CleaningRequested != nil && (runner.Touched == nil || runner.CleaningRequested.Before(*runner.Touched)) {
+		clearCache = true
+	}
+
 	data := runners.RunnerState{
 		AccessKeys: make(map[int]db.AccessKey),
+		ClearCache: clearCache,
+	}
+
+	if clearCache {
+		data.CacheCleanProjectID = runner.ProjectID
 	}
 
 	tasks := helpers.TaskPool(r).GetRunningTasks()

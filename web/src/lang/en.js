@@ -6,7 +6,7 @@ export default {
   deleteSchedule: 'Delete Schedule',
   editSchedule: 'Edit Schedule',
   backup: 'Backup Project',
-  downloadTheProjectBackupFile: 'Download the project backup file (in json)',
+  downloadTheProjectBackupFile: 'Download the project backup file.',
   restoreProject: 'Restore Project...',
   incorrectUsrPwd: 'Incorrect login or password',
   askDeleteUser: 'Do you really want to delete this user?',
@@ -121,6 +121,10 @@ export default {
   save: 'Save',
   deleteProject2: 'Delete Project',
   onceYouDeleteAProjectThereIsNoGoingBackPleaseBeCer: 'Once you delete a project, there is no going back. Please be certain.',
+
+  clear_cache: 'Clear cache',
+  clear_cache_message: 'Delete all cached files related to this project. This action is irreversible.',
+
   name2: 'Name *',
   title: 'Title *',
   description: 'Description',

@@ -79,7 +79,7 @@
               @click="clearCache"
               :disabled="clearCacheProgress"
               min-width="170"
-            >Clear cache</v-btn>
+            >{{ $t('clear_cache') }}</v-btn>
 
             <v-progress-linear
               v-if="clearCacheProgress"
@@ -93,7 +93,7 @@
           </v-col>
           <v-col class="grow">
             <div style="font-size: 14px">
-              {{ $t('onceYouDeleteAProjectThereIsNoGoingBackPleaseBeCer') }}
+              {{ $t('clear_cache_message') }}
             </div>
           </v-col>
         </v-row>

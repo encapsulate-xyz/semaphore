@@ -1,15 +1,13 @@
 package projects
 
 import (
+	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
 	"github.com/semaphoreui/semaphore/api/helpers"
 	"github.com/semaphoreui/semaphore/db"
 	"github.com/semaphoreui/semaphore/util"
 	log "github.com/sirupsen/logrus"
 	"net/http"
-	"os"
-
-	"github.com/gorilla/context"
 )
 
 // ProjectMiddleware ensures a project exists and loads it to the context
@@ -108,7 +106,7 @@ func UpdateProject(w http.ResponseWriter, r *http.Request) {
 func ClearCache(w http.ResponseWriter, r *http.Request) {
 	project := context.Get(r, "project").(db.Project)
 
-	err := os.RemoveAll(util.Config.GetProjectTmpDir(project.ID))
+	err := util.Config.ClearProjectTmpDir(project.ID)
 	if err != nil {
 		helpers.WriteError(w, err)
 		return
@@ -128,7 +126,7 @@ func DeleteProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = os.RemoveAll(util.Config.GetProjectTmpDir(project.ID))
+	err = util.Config.ClearProjectTmpDir(project.ID)
 	if err != nil {
 		log.Error(err)
 	}
