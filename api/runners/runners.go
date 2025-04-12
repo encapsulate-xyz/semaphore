@@ -97,7 +97,14 @@ func GetRunner(w http.ResponseWriter, r *http.Request) {
 
 	clearCache := false
 
-	if runner.CleaningRequested != nil && (runner.Touched == nil || runner.CleaningRequested.Before(*runner.Touched)) {
+	err := helpers.Store(r).TouchRunner(runner)
+	if err != nil {
+		log.Error(err)
+		helpers.WriteError(w, err)
+		return
+	}
+
+	if runner.CleaningRequested != nil && (runner.Touched == nil || runner.CleaningRequested.After(*runner.Touched)) {
 		clearCache = true
 	}
 
@@ -221,13 +228,6 @@ func UpdateRunner(w http.ResponseWriter, r *http.Request) {
 		helpers.WriteJSON(w, http.StatusBadRequest, map[string]string{
 			"error": "Invalid format",
 		})
-		return
-	}
-
-	err := helpers.Store(r).TouchRunner(runner)
-	if err != nil {
-		log.Error(err)
-		helpers.WriteError(w, err)
 		return
 	}
 

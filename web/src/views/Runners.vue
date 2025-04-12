@@ -333,13 +333,31 @@
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
 
-          <v-btn
-            icon
-            class="mr-1"
-            @click="clearCache(item)"
-          >
-            <v-icon>mdi-broom</v-icon>
-          </v-btn>
+          <v-tooltip bottom :max-width="150">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                v-bind="attrs"
+                v-on="on"
+                icon
+                class="mr-1"
+                @click="clearCache(item)"
+              >
+                <v-icon>mdi-broom</v-icon>
+              </v-btn>
+            </template>
+            <div style="font-weight: bold;">
+              {{ $t('clear_cache') }}
+            </div>
+
+            <div v-if="item.cleaning_requested" style="font-size: 12px; line-height: 1.2">
+              <span v-if="item.touched < item.cleaning_requested">
+                Already requested {{ item.cleaning_requested | formatDate }}.
+              </span>
+              <span v-else>
+                Last cleaned {{ item.cleaning_requested | formatDate }}.
+              </span>
+            </div>
+          </v-tooltip>
         </div>
       </template>
     </v-data-table>
@@ -427,18 +445,26 @@ semaphore runner start --no-config`;
   },
 
   methods: {
-    clearCache(runner) {
+    async clearCache(runner) {
       const projectId = this.projectId || this.getProjectIdOfItem(runner.id);
 
       const url = projectId
         ? `/api/project/${projectId}/runners/${runner.id}/cache`
         : `/api/runners/${runner.id}/cache`;
 
-      axios({
-        method: 'delete',
-        url,
-        responseType: 'json',
-      });
+      try {
+        await axios({
+          method: 'delete',
+          url,
+          responseType: 'json',
+        });
+        await this.loadItems();
+      } catch (e) {
+        EventBus.$emit('i-snackbar', {
+          color: 'error',
+          text: `Cannot clear cache: ${e.message}`,
+        });
+      }
     },
 
     getStatusColor(runner) {
