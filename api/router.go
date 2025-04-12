@@ -259,6 +259,10 @@ func Route() *mux.Router {
 	meAPI.Use(projects.ProjectMiddleware)
 	meAPI.HandleFunc("", projects.LeftProject).Methods("DELETE")
 
+	cacheAPI := authenticatedAPI.Path("/project/{project_id}/cache").Subrouter()
+	cacheAPI.Use(projects.ProjectMiddleware)
+	cacheAPI.HandleFunc("", projects.ClearCache).Methods("DELETE")
+
 	//
 	// Manage project users
 	projectAdminUsersAPI := authenticatedAPI.PathPrefix("/project/{project_id}").Subrouter()
