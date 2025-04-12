@@ -589,30 +589,31 @@ func CastValueToKind(value interface{}, kind reflect.Kind) (res interface{}, ok 
 }
 
 func setConfigValue(attribute reflect.Value, value string) {
-	var newValue any
+
 	if attribute.IsValid() {
 		kind := attribute.Kind()
 
 		switch kind {
-		case reflect.Map:
+		case reflect.Slice:
 			var arr []string
 			err := json.Unmarshal([]byte(value), &arr)
 			if err != nil {
 				panic(err)
 			}
-			newValue = arr
-		case reflect.Slice:
-			mapValue := make(map[string]string)
+			attribute.Set(reflect.ValueOf(arr))
+		case reflect.Map:
+			mapType := reflect.MapOf(reflect.TypeOf(""), attribute.Type().Elem())
+			mapValue := reflect.MakeMap(mapType)
 			err := json.Unmarshal([]byte(value), &mapValue)
 			if err != nil {
 				panic(err)
 			}
-			newValue = mapValue
+			attribute.Set(mapValue)
 		default:
-			newValue, _ = CastValueToKind(value, attribute.Kind())
+			newValue, _ := CastValueToKind(value, attribute.Kind())
+			attribute.Set(reflect.ValueOf(newValue))
 		}
 
-		attribute.Set(reflect.ValueOf(newValue))
 	} else {
 		panic(fmt.Errorf("got non-existent config attribute"))
 	}
