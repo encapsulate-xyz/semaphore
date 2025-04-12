@@ -55,6 +55,24 @@ func (d *SqlDb) DeleteGlobalRunner(runnerID int) (err error) {
 	return
 }
 
+func (d *SqlDb) ClearRunnerCache(runner db.Runner) (err error) {
+	if runner.ProjectID == nil {
+		_, err = d.exec(
+			"update `runner` set `cleaning_requested`=? where id=?",
+			time.Now().UTC(),
+			runner.ID)
+		return
+	}
+
+	_, err = d.exec(
+		"update `runner` set `cleaning_requested`=? where id=? and project_id=?",
+		time.Now().UTC(),
+		runner.ID,
+		runner.ProjectID)
+
+	return
+}
+
 func (d *SqlDb) TouchRunner(runner db.Runner) (err error) {
 	if runner.ProjectID == nil {
 		_, err = d.exec(
