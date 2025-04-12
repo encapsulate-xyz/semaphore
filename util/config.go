@@ -262,6 +262,54 @@ func NewConfigType() *ConfigType {
 // Config exposes the application configuration storage for use in the application
 var Config *ConfigType
 
+func ClearDir(dir string, preserveFiles bool, prefix string) error {
+	d, err := os.Open(dir)
+
+	if os.IsNotExist(err) {
+		return nil
+	}
+
+	if err != nil {
+		return err
+	}
+
+	defer d.Close()
+
+	files, err := d.ReadDir(0)
+	if err != nil {
+		return err
+	}
+
+	for _, f := range files {
+		if preserveFiles && !f.IsDir() {
+			continue
+		}
+
+		if prefix != "" && !strings.HasPrefix(f.Name(), prefix) {
+			continue
+		}
+
+		err = os.RemoveAll(path.Join(dir, f.Name()))
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (conf *ConfigType) ClearTmpDir() error {
+	return ClearDir(conf.TmpPath, false, "")
+}
+
+func (conf *ConfigType) GetProjectTmpDir(projectID int) string {
+	return path.Join(conf.TmpPath, fmt.Sprintf("project_%d", projectID))
+}
+
+func (conf *ConfigType) ClearProjectTmpDir(projectID int) error {
+	return ClearDir(conf.GetProjectTmpDir(projectID), false, "")
+}
+
 // ToJSON returns a JSON string of the config
 func (conf *ConfigType) ToJSON() ([]byte, error) {
 	return json.MarshalIndent(&conf, " ", "\t")

@@ -6,7 +6,7 @@ export default {
   deleteSchedule: 'Excluir Agenda',
   editSchedule: 'Editar Agenda',
   backup: 'Backup do Projeto',
-  downloadTheProjectBackupFile: 'Baixar o arquivo de backup do projeto (em json)',
+  downloadTheProjectBackupFile: 'Baixar o arquivo de backup do projeto.',
   restoreProject: 'Restaurar Projeto...',
   incorrectUsrPwd: 'Login ou senha incorretos',
   askDeleteUser: 'Você realmente deseja excluir este usuário?',
@@ -37,7 +37,7 @@ export default {
   newProject: 'Novo Projeto',
   close: 'Fechar',
   newProject2: 'Novo Projeto...',
-  demoMode: 'MODO DEMONSTRAÇÃO',
+  demoMode: 'MODO DEMO',
   task: 'Tarefa #{expr}',
   youCanRunAnyTasks: 'Você pode executar qualquer tarefa',
   youHaveReadonlyAccess: 'Você tem acesso somente leitura',
@@ -121,6 +121,10 @@ export default {
   save: 'Salvar',
   deleteProject2: 'Excluir Projeto',
   onceYouDeleteAProjectThereIsNoGoingBackPleaseBeCer: 'Uma vez que você exclui um projeto, não há como voltar. Por favor, tenha certeza.',
+
+  clear_cache: 'Limpar cache',
+  clear_cache_message: 'Excluir todos os arquivos de cache relacionados a este projeto. Esta ação é irreversível.',
+
   name2: 'Nome *',
   title: 'Título *',
   description: 'Descrição',
@@ -153,7 +157,9 @@ export default {
   author: 'Autor',
   duration: 'Duração',
   stop: 'Parar',
-  forceStop: 'Parada Forçada',
+  forceStop: 'Parar Forçadamente',
+  rawLog: 'Log Bruto',
+
   confirmTask: 'Confirmar',
   deleteTeamMember: 'Excluir membro da equipe',
   team2: 'Equipe',
@@ -184,7 +190,7 @@ export default {
   cron: 'Cron',
   iWantToRunATaskByTheCronOnlyForForNewCommitsOfSome: 'Quero executar uma tarefa pelo cron apenas para novos commits de algum repositório',
   repository2: 'Repositório',
-  cronChecksNewCommitBeforeRun: 'Cron verifica novo commit antes de executar',
+  cronChecksNewCommitBeforeRun: 'O cron verifica novos commits antes de executar',
   readThe: 'Leia o',
   toLearnMoreAboutCron: 'para saber mais sobre Cron.',
   suppressSuccessAlerts: 'Suprimir alertas de sucesso',
@@ -256,7 +262,7 @@ export default {
   ReBuild: 'Reconstruir',
   ReDeploy: 'Reimplantar',
   ReRun: 'Reexecutar',
-  CreateDemoProject: 'Criar Projeto de Demonstração',
+  CreateDemoProject: 'Criar Projeto Demo',
   LeaveProject: 'Sair do Projeto',
   integration: 'Integração',
   integrations: 'Integrações',
@@ -290,9 +296,13 @@ export default {
   deleteRunner: 'Excluir Executor',
   newRunnerToken: 'Novo Executor',
   askDeleteRunner: 'Você realmente deseja excluir o executor {runner}?',
+  project_runners_only_pro: 'Executores em nível de projeto estão disponíveis apenas na versão <b>PRO</b>.',
+  foss_runners_limited: 'A versão de código aberto tem funcionalidade limitada; a funcionalidade completa está na versão <b>PRO</b>.',
+  learn_more_about_pro: 'Saiba mais',
+
   projectRestoreResult: 'Resultados da restauração do projeto',
   projectWithNameRestored: 'Projeto {projectName} restaurado com sucesso.',
-  pleaseUpdateAccessKeys: 'Por favor, atualize-os antes de executar tarefas.',
+  pleaseUpdateAccessKeys: 'Por favor, atualize-as antes de executar tarefas.',
   emptyKeysRestored: '{emptyKeys} chaves vazias adicionadas.',
   template: 'Modelo',
   aliasUrlCopied: 'A URL do alias foi copiada para a área de transferência.',
@@ -307,30 +317,32 @@ export default {
   status_failed: 'Falhou',
   status_stopped: 'Parado',
 
+  api_tokens: 'Tokens de API',
+
+  // Terraform/OpenTofu
+  auto_approve: 'Aprovação automática',
+
+  // Ansible
   tag: 'Tag',
   tag_required: 'Tag é obrigatória',
   allowInventoryInTask: 'Inventário',
   allowLimitInTask: 'Limite',
   addLimit: 'Adicionar limite',
-  allowDebug: 'Depuração',
-
+  allowDebug: 'Depurar',
   addTag: 'Adicionar tag',
-  skipTags: 'Ignorar tags',
-  addSkippedTag: 'Adicionar tag ignorada',
-
+  skipTags: 'Pular tags',
+  addSkippedTag: 'Adicionar tag pulada',
   tags: 'Tags',
-
   limit: 'Limite',
 
   runner_tag: 'Tag do Executor',
-
-  task_prompts: 'Solicitações de Tarefa',
-  template_advanced: 'Avançado',
-  ansible_playbook_options: 'Opções do Ansible',
-
+  task_prompts: 'Solicitações',
+  template_advanced: 'Opções avançadas',
+  template_app_options: 'Opções de {app}',
+  template_app_prompts: 'Solicitações de {app}',
   general_settings: 'Geral',
-
   danger_zone_settings: 'Zona de Perigo',
-
   project_stats: 'Estatísticas',
+  allow_override_branch: 'Ramo',
+  template_common_options: 'Opções comuns',
 };

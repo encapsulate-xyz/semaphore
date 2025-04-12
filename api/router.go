@@ -144,12 +144,15 @@ func Route() *mux.Router {
 	adminAPI.Path("/runners").HandlerFunc(getAllRunners).Methods("GET", "HEAD")
 	adminAPI.Path("/runners").HandlerFunc(addGlobalRunner).Methods("POST", "HEAD")
 
+	adminAPI.Path("/cache").HandlerFunc(clearCache).Methods("DELETE", "HEAD")
+
 	globalRunnersAPI := adminAPI.PathPrefix("/runners").Subrouter()
 	globalRunnersAPI.Use(globalRunnerMiddleware)
 	globalRunnersAPI.Path("/{runner_id}").HandlerFunc(getGlobalRunner).Methods("GET", "HEAD")
 	globalRunnersAPI.Path("/{runner_id}").HandlerFunc(updateGlobalRunner).Methods("PUT", "POST")
 	globalRunnersAPI.Path("/{runner_id}/active").HandlerFunc(setGlobalRunnerActive).Methods("POST")
 	globalRunnersAPI.Path("/{runner_id}").HandlerFunc(deleteGlobalRunner).Methods("DELETE")
+	globalRunnersAPI.Path("/{runner_id}/cache").HandlerFunc(clearGlobalRunnerCache).Methods("DELETE")
 
 	appsAPI := adminAPI.PathPrefix("/apps").Subrouter()
 	appsAPI.Use(appMiddleware)
@@ -247,6 +250,7 @@ func Route() *mux.Router {
 	projectRunnersAPI.Path("/{runner_id}").HandlerFunc(projects.UpdateRunner).Methods("PUT", "POST")
 	projectRunnersAPI.Path("/{runner_id}/active").HandlerFunc(projects.SetRunnerActive).Methods("POST")
 	projectRunnersAPI.Path("/{runner_id}").HandlerFunc(projects.DeleteRunner).Methods("DELETE")
+	projectRunnersAPI.Path("/{runner_id}/cache").HandlerFunc(projects.ClearRunnerCache).Methods("DELETE")
 
 	//
 	// Updating and deleting project
@@ -258,6 +262,10 @@ func Route() *mux.Router {
 	meAPI := authenticatedAPI.Path("/project/{project_id}/me").Subrouter()
 	meAPI.Use(projects.ProjectMiddleware)
 	meAPI.HandleFunc("", projects.LeftProject).Methods("DELETE")
+
+	cacheAPI := authenticatedAPI.Path("/project/{project_id}/cache").Subrouter()
+	cacheAPI.Use(projects.ProjectMiddleware)
+	cacheAPI.HandleFunc("", projects.ClearCache).Methods("DELETE")
 
 	//
 	// Manage project users

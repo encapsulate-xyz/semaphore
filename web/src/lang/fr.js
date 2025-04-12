@@ -1,12 +1,12 @@
 export default {
-  checkInterval: 'intervalDeVérification',
+  checkInterval: 'intervalleDeVérification',
   newCommitCheckInterval: 'Nouvel intervalle de vérification des commits',
   schedule: 'Calendrier',
   newSchedule: 'Nouveau calendrier',
   deleteSchedule: 'Supprimer le calendrier',
   editSchedule: 'Modifier le calendrier',
-  backup: 'Sauvegarder le projet',
-  downloadTheProjectBackupFile: 'Télécharger le fichier de sauvegarde du projet (au format json)',
+  backup: 'Sauvegarde du projet',
+  downloadTheProjectBackupFile: 'Télécharger le fichier de sauvegarde du projet.',
   restoreProject: 'Restaurer le projet...',
   incorrectUsrPwd: 'Identifiant ou mot de passe incorrect',
   askDeleteUser: 'Voulez-vous vraiment supprimer cet utilisateur ?',
@@ -73,9 +73,9 @@ export default {
   newEnvironment: 'Nouveau groupe',
   environmentName: 'Nom du groupe',
   extraVariables: 'Variables supplémentaires',
-  enterExtraVariablesJson: 'Entrez les variables supplémentaires au format JSON...',
+  enterExtraVariablesJson: 'Entrez les variables supplémentaires JSON...',
   environmentVariables: 'Variables d\'environnement',
-  enterEnvJson: 'Entrez le JSON de l\'environnement...',
+  enterEnvJson: 'Entrez le JSON d\'environnement...',
   environmentAndExtraVariablesMustBeValidJsonExample: 'L\'environnement et les variables supplémentaires doivent être un JSON valide. Exemple :',
   dashboard2: 'Tableau de bord',
   ansibleSemaphore: 'Interface Semaphore',
@@ -121,6 +121,10 @@ export default {
   save: 'Enregistrer',
   deleteProject2: 'Supprimer le projet',
   onceYouDeleteAProjectThereIsNoGoingBackPleaseBeCer: 'Une fois que vous avez supprimé un projet, il n\'y a pas de retour en arrière. Veuillez en être certain.',
+
+  clear_cache: 'Effacer le cache',
+  clear_cache_message: 'Supprimer tous les fichiers de cache liés à ce projet. Cette action est irréversible.',
+
   name2: 'Nom *',
   title: 'Titre *',
   description: 'Description',
@@ -154,6 +158,8 @@ export default {
   duration: 'Durée',
   stop: 'Arrêter',
   forceStop: 'Arrêt forcé',
+  rawLog: 'Journal brut',
+
   confirmTask: 'Confirmer',
   deleteTeamMember: 'Supprimer le membre de l\'équipe',
   team2: 'Équipe',
@@ -207,7 +213,7 @@ export default {
   deleteUser: 'Supprimer l\'utilisateur',
   newUser: 'Nouvel utilisateur',
   re: 'Re{getActionButtonTitle}',
-  teamMember: '{expr} Membre de l\'équipe',
+  teamMember: '{expr} membre de l\'équipe',
   taskId: 'ID de tâche',
   version: 'Version',
   status: 'Statut',
@@ -274,7 +280,7 @@ export default {
   matchBodyDataType: 'Type de données du corps',
   extractValue: 'Extraire la valeur',
   newExtractedValue: 'Nouvelle valeur extraite',
-  extractedValueSource: 'Source de la valeur',
+  extractedValueSource: 'Source de valeur',
   matchKey: 'Clé',
   matchValue: 'Valeur',
   matchOn: 'Correspondre sur',
@@ -290,6 +296,10 @@ export default {
   deleteRunner: 'Supprimer l\'exécuteur',
   newRunnerToken: 'Nouvel exécuteur',
   askDeleteRunner: 'Voulez-vous vraiment supprimer l\'exécuteur {runner} ?',
+  project_runners_only_pro: 'Les exécuteurs au niveau du projet ne sont disponibles que dans la version <b>PRO</b>.',
+  foss_runners_limited: 'La version open-source a des fonctionnalités limitées ; la fonctionnalité complète est dans la version <b>PRO</b>.',
+  learn_more_about_pro: 'En savoir plus',
+
   projectRestoreResult: 'Résultats de la restauration du projet',
   projectWithNameRestored: 'Projet {projectName} restauré avec succès.',
   pleaseUpdateAccessKeys: 'Veuillez les mettre à jour avant d\'exécuter des tâches.',
@@ -307,30 +317,32 @@ export default {
   status_failed: 'Échoué',
   status_stopped: 'Arrêté',
 
+  api_tokens: 'Jetons API',
+
+  // Terraform/OpenTofu
+  auto_approve: 'Approbation automatique',
+
+  // Ansible
   tag: 'Étiquette',
   tag_required: 'L\'étiquette est requise',
   allowInventoryInTask: 'Inventaire',
   allowLimitInTask: 'Limite',
   addLimit: 'Ajouter une limite',
   allowDebug: 'Déboguer',
-
   addTag: 'Ajouter une étiquette',
   skipTags: 'Ignorer les étiquettes',
   addSkippedTag: 'Ajouter une étiquette ignorée',
-
   tags: 'Étiquettes',
-
   limit: 'Limite',
 
   runner_tag: 'Étiquette de l\'exécuteur',
-
-  task_prompts: 'Invites de tâche',
-  template_advanced: 'Avancé',
-  ansible_playbook_options: 'Options Ansible',
-
+  task_prompts: 'Invites',
+  template_advanced: 'Options avancées',
+  template_app_options: 'Options {app}',
+  template_app_prompts: 'Invites {app}',
   general_settings: 'Général',
-
   danger_zone_settings: 'Zone de danger',
-
   project_stats: 'Statistiques',
+  allow_override_branch: 'Branche',
+  template_common_options: 'Options communes',
 };

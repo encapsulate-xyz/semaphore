@@ -259,20 +259,16 @@
       color="hsl(348deg, 86%, 61%)"
       style="border-radius: 0;"
     >
-      <span v-if="projectId">
-        Project-level runners are only available in the <b>PRO</b> version.
-      </span>
+      <span v-if="projectId" v-html="$t('project_runners_only_pro')"></span>
 
-      <span v-else>
-        The open-source version has limited functionality;
-        full functionality is in the <b>PRO</b> version.
-      </span>
+      <span v-else v-html="$t('foss_runners_limited')"></span>
+
       <v-btn
         class="ml-2 pr-2"
         color="hsl(348deg, 86%, 61%)"
         href="https://semaphoreui.com/pro"
       >
-        Learn more
+        {{ $t('learn_more_about_pro') }}
         <v-icon>mdi-chevron-right</v-icon>
       </v-btn>
     </v-alert>
@@ -297,6 +293,17 @@
 
       <template v-slot:item.max_parallel_tasks="{ item }">
         {{ item.max_parallel_tasks || '∞' }}
+      </template>
+
+      <template v-slot:item.touched="{ item }">
+        <v-chip
+          v-if="item.touched"
+          :color="getStatusColor(item)"
+          style="font-weight: bold;"
+        >
+          <span v-if="item.touched">{{ item.touched | formatDate }}</span>
+          <span v-else>{{ $t('never') }}</span>
+        </v-chip>
       </template>
 
       <template v-slot:item.project_id="{ item }">
@@ -325,6 +332,32 @@
           >
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
+
+          <v-tooltip bottom :max-width="150">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                v-bind="attrs"
+                v-on="on"
+                icon
+                class="mr-1"
+                @click="clearCache(item)"
+              >
+                <v-icon>mdi-broom</v-icon>
+              </v-btn>
+            </template>
+            <div style="font-weight: bold;">
+              {{ $t('clear_cache') }}
+            </div>
+
+            <div v-if="item.cleaning_requested" style="font-size: 12px; line-height: 1.2">
+              <span v-if="item.touched < item.cleaning_requested">
+                Already requested {{ item.cleaning_requested | formatDate }}.
+              </span>
+              <span v-else>
+                Last cleaned {{ item.cleaning_requested | formatDate }}.
+              </span>
+            </div>
+          </v-tooltip>
         </div>
       </template>
     </v-data-table>
@@ -412,6 +445,46 @@ semaphore runner start --no-config`;
   },
 
   methods: {
+    async clearCache(runner) {
+      const projectId = this.projectId || this.getProjectIdOfItem(runner.id);
+
+      const url = projectId
+        ? `/api/project/${projectId}/runners/${runner.id}/cache`
+        : `/api/runners/${runner.id}/cache`;
+
+      try {
+        await axios({
+          method: 'delete',
+          url,
+          responseType: 'json',
+        });
+        await this.loadItems();
+      } catch (e) {
+        EventBus.$emit('i-snackbar', {
+          color: 'error',
+          text: `Cannot clear cache: ${e.message}`,
+        });
+      }
+    },
+
+    getStatusColor(runner) {
+      if (!runner.touched) {
+        return 'grey';
+      }
+
+      const d = Date.now() - new Date(runner.touched);
+
+      if (d < 1000 * 60 * 5) {
+        return 'success';
+      }
+
+      if (d < 1000 * 60 * 60) {
+        return 'warning';
+      }
+
+      return 'grey';
+    },
+
     getProjectIdOfItem(itemId) {
       if (!itemId || itemId === 'new') {
         return null;
@@ -494,9 +567,9 @@ semaphore runner start --no-config`;
         }, {
           text: this.$i18n.t('tag'),
           value: 'tag',
-        // }, {
-        //   text: this.$i18n.t('maxNumberOfParallelTasks'),
-        //   value: 'max_parallel_tasks',
+        }, {
+          text: this.$i18n.t('activity'),
+          value: 'touched',
         }, {
           text: this.$i18n.t('actions'),
           value: 'actions',

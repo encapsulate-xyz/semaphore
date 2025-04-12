@@ -2,6 +2,7 @@ package bolt
 
 import (
 	"encoding/base64"
+	"time"
 
 	"github.com/gorilla/securecookie"
 	"github.com/semaphoreui/semaphore/db"
@@ -59,8 +60,7 @@ func (d *BoltDb) DeleteGlobalRunner(runnerID int) (err error) {
 	})
 }
 
-func (d *BoltDb) UpdateRunner(runner db.Runner) (err error) {
-
+func (d *BoltDb) updateRunner(runner db.Runner, updater func(targetRunner *db.Runner, foundRunner db.Runner)) (err error) {
 	var origRunner db.Runner
 
 	if runner.ProjectID == nil {
@@ -73,14 +73,34 @@ func (d *BoltDb) UpdateRunner(runner db.Runner) (err error) {
 		return
 	}
 
-	runner.PublicKey = origRunner.PublicKey
-	runner.Token = origRunner.Token
+	updater(&runner, origRunner)
 
 	if runner.ProjectID == nil {
 		return d.updateObject(0, db.GlobalRunnerProps, runner)
 	} else {
 		return d.updateObject(*runner.ProjectID, db.RunnerProps, runner)
 	}
+}
+
+func (d *BoltDb) ClearRunnerCache(runner db.Runner) (err error) {
+	return d.updateRunner(runner, func(targetRunner *db.Runner, foundRunner db.Runner) {
+		now := time.Now().UTC()
+		targetRunner.CleaningRequested = &now
+	})
+}
+
+func (d *BoltDb) TouchRunner(runner db.Runner) (err error) {
+	return d.updateRunner(runner, func(targetRunner *db.Runner, foundRunner db.Runner) {
+		now := time.Now().UTC()
+		targetRunner.Touched = &now
+	})
+}
+
+func (d *BoltDb) UpdateRunner(runner db.Runner) (err error) {
+	return d.updateRunner(runner, func(targetRunner *db.Runner, foundRunner db.Runner) {
+		targetRunner.PublicKey = foundRunner.PublicKey
+		targetRunner.Token = foundRunner.Token
+	})
 }
 
 func (d *BoltDb) CreateRunner(runner db.Runner) (newRunner db.Runner, err error) {

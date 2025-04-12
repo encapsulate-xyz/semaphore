@@ -136,6 +136,21 @@ func updateGlobalRunner(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+func clearGlobalRunnerCache(w http.ResponseWriter, r *http.Request) {
+	runner := context.Get(r, "runner").(*db.Runner)
+
+	store := helpers.Store(r)
+
+	err := store.ClearRunnerCache(*runner)
+
+	if err != nil {
+		helpers.WriteError(w, err)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
 func deleteGlobalRunner(w http.ResponseWriter, r *http.Request) {
 	runner := context.Get(r, "runner").(*db.Runner)
 

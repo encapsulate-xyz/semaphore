@@ -46,3 +46,7 @@ func DeleteRunner(w http.ResponseWriter, r *http.Request) {
 func SetRunnerActive(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotFound)
 }
+
+func ClearRunnerCache(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotFound)
+}

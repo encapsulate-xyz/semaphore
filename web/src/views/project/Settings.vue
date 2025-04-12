@@ -41,7 +41,6 @@
       <v-divider class="mb-8" />
 
       <div class="project-backup project-settings-button" v-if="projectType === ''">
-
         <v-row align="center">
           <v-col class="shrink">
 
@@ -70,6 +69,36 @@
           </v-col>
         </v-row>
       </div>
+
+      <div class="project-backup project-settings-button" v-if="projectType === ''">
+        <v-row align="center">
+          <v-col class="shrink">
+
+            <v-btn
+              color="blue-grey"
+              @click="clearCache"
+              :disabled="clearCacheProgress"
+              min-width="170"
+            >{{ $t('clear_cache') }}</v-btn>
+
+            <v-progress-linear
+              v-if="clearCacheProgress"
+              color="blue-grey darken-1"
+              indeterminate
+              rounded
+              height="36"
+              style="margin-top: -36px"
+            ></v-progress-linear>
+
+          </v-col>
+          <v-col class="grow">
+            <div style="font-size: 14px">
+              {{ $t('clear_cache_message') }}
+            </div>
+          </v-col>
+        </v-row>
+      </div>
+
       <div class="project-delete-form project-settings-button">
         <v-row align="center">
           <v-col class="shrink">
@@ -127,6 +156,7 @@ export default {
     return {
       deleteProjectDialog: null,
       backupProgress: false,
+      clearCacheProgress: false,
     };
   },
 
@@ -151,6 +181,34 @@ export default {
 
     async saveProject() {
       await this.$refs.form.save();
+    },
+
+    async clearCache() {
+      this.clearCacheProgress = true;
+      await delay(1000);
+
+      try {
+        await axios({
+          method: 'delete',
+          url: `/api/project/${this.projectId}/cache`,
+          transformResponse: (res) => res, // Necessary to not parse json
+          responseType: 'json',
+        });
+
+        await delay(1000);
+
+        EventBus.$emit('i-snackbar', {
+          color: 'success',
+          text: 'Project cache cleaned.',
+        });
+      } catch (err) {
+        EventBus.$emit('i-snackbar', {
+          color: 'error',
+          text: getErrorMessage(err),
+        });
+      } finally {
+        this.clearCacheProgress = false;
+      }
     },
 
     async backupProject() {

@@ -593,8 +593,8 @@ func (t *LocalJob) Run(username string, incomingVersion *string, alias string) (
 func (t *LocalJob) prepareRun(environmentVars []string, params interface{}) error {
 
 	t.Log("Preparing: " + strconv.Itoa(t.Task.ID))
-
-	if err := checkTmpDir(util.Config.TmpPath); err != nil {
+	
+	if err := checkTmpDir(util.Config.GetProjectTmpDir(t.Template.ProjectID)); err != nil {
 		t.Log("Creating tmp dir failed: " + err.Error())
 		return err
 	}

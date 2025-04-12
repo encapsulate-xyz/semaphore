@@ -6,7 +6,7 @@ export default {
   deleteSchedule: '일정 삭제',
   editSchedule: '일정 수정',
   backup: '프로젝트 백업',
-  downloadTheProjectBackupFile: '프로젝트 백업 파일 다운로드 (json 형식)',
+  downloadTheProjectBackupFile: '프로젝트 백업 파일을 다운로드합니다.',
   restoreProject: '프로젝트 복원...',
   incorrectUsrPwd: '잘못된 로그인 또는 비밀번호',
   askDeleteUser: '정말로 이 사용자를 삭제하시겠습니까?',
@@ -55,7 +55,7 @@ export default {
   refreshPage: '페이지 새로 고침',
   relogin: '다시 로그인',
   howToFixSigninIssues: '로그인 문제를 해결하는 방법',
-  firstlyYouNeedAccessToTheServerWhereSemaphoreRunni: '먼저 Semaphore가 실행되는 서버에 대한 액세스 권한이 필요합니다.',
+  firstlyYouNeedAccessToTheServerWhereSemaphoreRunni: '먼저 Semaphore가 실행되는 서버에 대한 액세스가 필요합니다.',
   executeTheFollowingCommandOnTheServerToSeeExisting: '서버에서 다음 명령을 실행하여 기존 사용자를 확인하십시오:',
   semaphoreUserList: 'semaphore user list',
   youCanChangePasswordOfExistingUser: '기존 사용자의 비밀번호를 변경할 수 있습니다:',
@@ -121,6 +121,10 @@ export default {
   save: '저장',
   deleteProject2: '프로젝트 삭제',
   onceYouDeleteAProjectThereIsNoGoingBackPleaseBeCer: '프로젝트를 삭제하면 되돌릴 수 없습니다. 확실히 하십시오.',
+
+  clear_cache: '캐시 지우기',
+  clear_cache_message: '이 프로젝트와 관련된 모든 캐시 파일을 삭제합니다. 이 작업은 되돌릴 수 없습니다.',
+
   name2: '이름 *',
   title: '제목 *',
   description: '설명',
@@ -143,7 +147,7 @@ export default {
   buildVersion: '빌드 버전',
   messageOptional: '메시지 (선택 사항)',
   debug: '디버그',
-  dryRun: 'Dry Run',
+  dryRun: '드라이 런',
   diff: '차이',
   advanced: '고급',
   hide: '숨기기',
@@ -154,6 +158,8 @@ export default {
   duration: '지속 시간',
   stop: '중지',
   forceStop: '강제 중지',
+  rawLog: '원시 로그',
+
   confirmTask: '확인',
   deleteTeamMember: '팀 멤버 삭제',
   team2: '팀',
@@ -163,12 +169,12 @@ export default {
   definesStartVersionOfYourArtifactEachRunIncrements: '아티팩트의 시작 버전을 정의합니다. 각 실행은 아티팩트 버전을 증가시킵니다.',
   forMoreInformationAboutBuildingSeeThe: '빌드에 대한 자세한 정보는 다음을 참조하십시오',
   taskTemplateReference: '작업 템플릿 참조',
-  definesWhatArtifactShouldBeDeployedWhenTheTaskRun: '작업이 실행될 때 배포해야 할 아티팩트를 정의합니다.',
+  definesWhatArtifactShouldBeDeployedWhenTheTaskRun: '작업 실행 시 배포해야 할 아티팩트를 정의합니다.',
   forMoreInformationAboutDeployingSeeThe: '배포에 대한 자세한 정보는 다음을 참조하십시오',
   taskTemplateReference2: '작업 템플릿 참조',
   definesAutorunSchedule: '자동 실행 일정을 정의합니다.',
-  forMoreInformationAboutCronSeeThe: 'Cron에 대한 자세한 정보는 다음을 참조하십시오',
-  cronExpressionFormatReference: 'Cron 표현식 형식 참조',
+  forMoreInformationAboutCronSeeThe: '크론에 대한 자세한 정보는 다음을 참조하십시오',
+  cronExpressionFormatReference: '크론 표현식 형식 참조',
   startVersion: '시작 버전',
   example000: '예: 0.0.0',
   buildTemplate: '빌드 템플릿',
@@ -182,11 +188,11 @@ export default {
   vaultPassword2: '금고 비밀번호',
   view: '보기',
   cron: '크론',
-  iWantToRunATaskByTheCronOnlyForForNewCommitsOfSome: '특정 리포지토리의 새 커밋에 대해서만 크론으로 작업을 실행하고 싶습니다',
+  iWantToRunATaskByTheCronOnlyForForNewCommitsOfSome: '저는 특정 리포지토리의 새로운 커밋에 대해서만 크론으로 작업을 실행하고 싶습니다',
   repository2: '리포지토리',
-  cronChecksNewCommitBeforeRun: '크론이 실행 전에 새 커밋을 확인합니다',
+  cronChecksNewCommitBeforeRun: '크론은 실행 전에 새로운 커밋을 확인합니다',
   readThe: '읽기',
-  toLearnMoreAboutCron: '크론에 대해 더 알아보려면',
+  toLearnMoreAboutCron: '크론에 대해 더 알아보려면.',
   suppressSuccessAlerts: '성공 알림 억제',
   cliArgsJsonArrayExampleIMyinventoryshPrivatekeythe2: 'CLI 인수 (JSON 배열). 예: [ "-i", "@myinventory.sh", "--private-key=/there/id_rsa", "-vvvv" ]',
   allowCliArgsInTask: 'CLI 인수',
@@ -290,8 +296,12 @@ export default {
   deleteRunner: '러너 삭제',
   newRunnerToken: '새 러너',
   askDeleteRunner: '정말로 러너 {runner}를 삭제하시겠습니까?',
+  project_runners_only_pro: '프로젝트 수준의 러너는 <b>PRO</b> 버전에서만 사용할 수 있습니다.',
+  foss_runners_limited: '오픈 소스 버전은 기능이 제한되어 있으며, 전체 기능은 <b>PRO</b> 버전에서 사용할 수 있습니다.',
+  learn_more_about_pro: '자세히 알아보기',
+
   projectRestoreResult: '프로젝트 복원 결과',
-  projectWithNameRestored: '프로젝트 {projectName}이(가) 성공적으로 복원되었습니다.',
+  projectWithNameRestored: '프로젝트 {projectName}가 성공적으로 복원되었습니다.',
   pleaseUpdateAccessKeys: '작업을 실행하기 전에 액세스 키를 업데이트하십시오.',
   emptyKeysRestored: '{emptyKeys} 개의 빈 키가 추가되었습니다.',
   template: '템플릿',
@@ -307,30 +317,32 @@ export default {
   status_failed: '실패',
   status_stopped: '중지됨',
 
+  api_tokens: 'API 토큰',
+
+  // Terraform/OpenTofu
+  auto_approve: '자동 승인',
+
+  // Ansible
   tag: '태그',
   tag_required: '태그는 필수입니다',
   allowInventoryInTask: '인벤토리',
   allowLimitInTask: '제한',
   addLimit: '제한 추가',
   allowDebug: '디버그',
-
   addTag: '태그 추가',
   skipTags: '태그 건너뛰기',
   addSkippedTag: '건너뛴 태그 추가',
-
   tags: '태그',
-
   limit: '제한',
 
   runner_tag: '러너 태그',
-
-  task_prompts: '작업 프롬프트',
-  template_advanced: '고급',
-  ansible_playbook_options: 'Ansible 옵션',
-
+  task_prompts: '프롬프트',
+  template_advanced: '고급 옵션',
+  template_app_options: '{app} 옵션',
+  template_app_prompts: '{app} 프롬프트',
   general_settings: '일반',
-
   danger_zone_settings: '위험 구역',
-
   project_stats: '통계',
+  allow_override_branch: '브랜치',
+  template_common_options: '공통 옵션',
 };

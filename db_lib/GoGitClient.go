@@ -71,7 +71,7 @@ func openRepository(r GitRepository, targetDir GitRepositoryDirType) (*git.Repos
 
 	switch targetDir {
 	case GitRepositoryTmpPath:
-		dir = util.Config.TmpPath
+		dir = util.Config.GetProjectTmpDir(r.Repository.ProjectID)
 	case GitRepositoryFullPath:
 		dir = r.GetFullPath()
 	default:

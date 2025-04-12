@@ -100,9 +100,9 @@ func Migrate(d Store) error {
 		}
 
 		didRun = true
-		fmt.Printf("Executing migration %s (at %v)...\n", version.HumanoidVersion(), time.Now())
+		fmt.Printf("Executing migration %s (at %v)...\n", version.HumanoidVersion(), time.Now().UTC())
 		if err := d.ApplyMigration(version); err != nil {
-			fmt.Printf("Rolling back %s (time: %v)...\n", version.HumanoidVersion(), time.Now())
+			fmt.Printf("Rolling back %s (time: %v)...\n", version.HumanoidVersion(), time.Now().UTC())
 			d.TryRollbackMigration(version)
 			return err
 		}
