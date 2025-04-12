@@ -119,7 +119,7 @@ func (d *BoltDb) TouchSession(userID int, sessionID int) (err error) {
 	if err != nil {
 		return
 	}
-	session.LastActive = time.Now()
+	session.LastActive = time.Now().UTC()
 	err = d.updateObject(userID, db.SessionProps, session)
 	return
 }

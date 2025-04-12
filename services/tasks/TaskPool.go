@@ -342,7 +342,7 @@ func getNextBuildVersion(startVersion string, currentVersion string) string {
 }
 
 func (p *TaskPool) AddTask(taskObj db.Task, userID *int, projectID int, needAlias bool) (newTask db.Task, err error) {
-	taskObj.Created = time.Now()
+	taskObj.Created = time.Now().UTC()
 	taskObj.Status = task_logger.TaskWaitingStatus
 	taskObj.UserID = userID
 	taskObj.ProjectID = projectID

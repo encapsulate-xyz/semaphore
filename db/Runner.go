@@ -1,5 +1,7 @@
 package db
 
+import "time"
+
 type RunnerState string
 
 //const (
@@ -12,11 +14,12 @@ type Runner struct {
 	Token     string `db:"token" json:"-"`
 	ProjectID *int   `db:"project_id" json:"project_id"`
 	//State            RunnerState `db:"state" json:"state"`
-	Webhook          string `db:"webhook" json:"webhook"`
-	MaxParallelTasks int    `db:"max_parallel_tasks" json:"max_parallel_tasks"`
-	Active           bool   `db:"active" json:"active"`
-	Name             string `db:"name" json:"name"`
-	Tag              string `db:"tag" json:"tag"`
+	Webhook          string     `db:"webhook" json:"webhook"`
+	MaxParallelTasks int        `db:"max_parallel_tasks" json:"max_parallel_tasks"`
+	Active           bool       `db:"active" json:"active"`
+	Name             string     `db:"name" json:"name"`
+	Tag              string     `db:"tag" json:"tag"`
+	Touched          *time.Time `db:"touched" json:"touched"`
 
 	PublicKey *string `db:"public_key" json:"-"`
 }

@@ -128,7 +128,7 @@ func tryFindLDAPUser(username, password string) (*db.User, error) {
 
 	ldapUser := db.User{
 		Username: strings.ToLower(claims.username),
-		Created:  time.Now(),
+		Created:  time.Now().UTC(),
 		Name:     claims.name,
 		Email:    claims.email,
 		External: true,
@@ -162,8 +162,8 @@ func createSession(w http.ResponseWriter, r *http.Request, user db.User) {
 
 	newSession, err := helpers.Store(r).CreateSession(db.Session{
 		UserID:             user.ID,
-		Created:            time.Now(),
-		LastActive:         time.Now(),
+		Created:            time.Now().UTC(),
+		LastActive:         time.Now().UTC(),
 		IP:                 r.Header.Get("X-Real-IP"),
 		UserAgent:          r.Header.Get("user-agent"),
 		Expired:            false,

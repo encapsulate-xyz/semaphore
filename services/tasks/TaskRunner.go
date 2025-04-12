@@ -111,7 +111,7 @@ func (t *TaskRunner) run() {
 		log.Info("Release resource locker with TaskRunner " + strconv.Itoa(t.Task.ID))
 		t.pool.resourceLocker <- &resourceLock{lock: false, holder: t}
 
-		now := time.Now()
+		now := time.Now().UTC()
 		t.Task.End = &now
 		t.saveStatus()
 		t.createTaskEvent()

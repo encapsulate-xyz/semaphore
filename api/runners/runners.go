@@ -14,6 +14,7 @@ import (
 	"github.com/semaphoreui/semaphore/pkg/task_logger"
 	"github.com/semaphoreui/semaphore/services/runners"
 	"github.com/semaphoreui/semaphore/util"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 )
 
@@ -209,6 +210,13 @@ func UpdateRunner(w http.ResponseWriter, r *http.Request) {
 		helpers.WriteJSON(w, http.StatusBadRequest, map[string]string{
 			"error": "Invalid format",
 		})
+		return
+	}
+
+	err := helpers.Store(r).TouchRunner(runner)
+	if err != nil {
+		log.Error(err)
+		helpers.WriteError(w, err)
 		return
 	}
 
