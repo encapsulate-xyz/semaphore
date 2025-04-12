@@ -582,26 +582,6 @@ func CastValueToKind(value interface{}, kind reflect.Kind) (res interface{}, ok 
 			res = castStringToBool(fmt.Sprintf("%v", reflect.ValueOf(value)))
 			ok = true
 		}
-	case reflect.Slice:
-		if reflect.ValueOf(value).Kind() == reflect.String {
-			var arr []string
-			err := json.Unmarshal([]byte(value.(string)), &arr)
-			if err != nil {
-				panic(err)
-			}
-			res = arr
-			ok = true
-		}
-	case reflect.Map:
-		if reflect.ValueOf(value).Kind() == reflect.String {
-			mapValue := make(map[string]string)
-			err := json.Unmarshal([]byte(value.(string)), &mapValue)
-			if err != nil {
-				panic(err)
-			}
-			res = mapValue
-			ok = true
-		}
 	default:
 	}
 
@@ -609,9 +589,28 @@ func CastValueToKind(value interface{}, kind reflect.Kind) (res interface{}, ok 
 }
 
 func setConfigValue(attribute reflect.Value, value string) {
-
+	var newValue any
 	if attribute.IsValid() {
-		newValue, _ := CastValueToKind(value, attribute.Kind())
+		kind := attribute.Kind()
+
+		switch kind {
+		case reflect.Map:
+			var arr []string
+			err := json.Unmarshal([]byte(value), &arr)
+			if err != nil {
+				panic(err)
+			}
+			newValue = arr
+		case reflect.Slice:
+			mapValue := make(map[string]string)
+			err := json.Unmarshal([]byte(value), &mapValue)
+			if err != nil {
+				panic(err)
+			}
+			newValue = mapValue
+		default:
+			newValue, _ = CastValueToKind(value, attribute.Kind())
+		}
 
 		attribute.Set(reflect.ValueOf(newValue))
 	} else {
