@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "27a890fc-4f53-4acd-86e0-2af7c6dcb067",
+		"_postman_id": "3d96a8d7-604d-47ec-832c-2876f64dbc1f",
 		"name": "Semaphore API",
 		"description": "Semaphore API provides endpoints for managing and interacting with the Semaphore UI.\nThis documentation outlines the available operations and data models.\n",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_uid": "2979975-27a890fc-4f53-4acd-86e0-2af7c6dcb067"
+		"_uid": "2979975-3d96a8d7-604d-47ec-832c-2876f64dbc1f"
 	},
 	"item": [
 		{
@@ -12,7 +12,7 @@
 			"item": [
 				{
 					"name": "PING test",
-					"id": "7a9f3c8f-24eb-4d06-a5ca-5a14f5ee71f4",
+					"id": "bf5268d0-7ded-46a5-81c6-e1ab34af548f",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -36,7 +36,7 @@
 					},
 					"response": [
 						{
-							"id": "1b66c3cd-a19c-4842-9f79-bd28e52f36f4",
+							"id": "3bb6eb99-c489-4c1d-8c58-24943b3944fa",
 							"name": "Successful \"PONG\" reply",
 							"originalRequest": {
 								"method": "GET",
@@ -85,14 +85,14 @@
 					]
 				}
 			],
-			"id": "e3925e2a-f5f3-41ee-99eb-a6bb9bc98b41"
+			"id": "42b892bf-1031-4529-aaad-fc9cb0f0b39b"
 		},
 		{
 			"name": "ws",
 			"item": [
 				{
 					"name": "Websocket handler",
-					"id": "a4afbd57-7123-4858-b734-c977d9fb49c0",
+					"id": "0c5fb481-c1ae-4749-922b-9c204542ebe5",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -111,7 +111,7 @@
 					},
 					"response": [
 						{
-							"id": "cd71400d-c14b-49e2-8ff8-b9486cac770f",
+							"id": "806acad8-300d-49d7-b90d-efa215abf78b",
 							"name": "OK",
 							"originalRequest": {
 								"method": "GET",
@@ -139,7 +139,7 @@
 							"cookie": []
 						},
 						{
-							"id": "14f81aa0-e41f-49f6-bd9a-31fc1430509b",
+							"id": "3ddd1e5f-77ca-4004-a6df-6fba17dd91e3",
 							"name": "not authenticated",
 							"originalRequest": {
 								"method": "GET",
@@ -169,14 +169,14 @@
 					]
 				}
 			],
-			"id": "0db753b4-718b-482e-a613-081f91c2bc2d"
+			"id": "c4ce3efb-64a9-419e-ae7b-710d8daa6559"
 		},
 		{
 			"name": "info",
 			"item": [
 				{
 					"name": "Fetches information about semaphore",
-					"id": "c901f49b-e63f-458d-a1e1-10de25530660",
+					"id": "b24f5bef-31a9-4b6b-a88b-7335708054b4",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -201,7 +201,7 @@
 					},
 					"response": [
 						{
-							"id": "1f051582-6666-4cc0-8296-d78d52712c13",
+							"id": "528e9198-1331-47b6-8683-26a4dee42897",
 							"name": "ok",
 							"originalRequest": {
 								"method": "GET",
@@ -241,7 +241,7 @@
 					]
 				}
 			],
-			"id": "f4eb4841-c281-4634-b561-a566bd959fb8"
+			"id": "f3b4c4c0-0266-46de-bfd9-ec0ca92cb8ed"
 		},
 		{
 			"name": "auth",
@@ -251,7 +251,7 @@
 					"item": [
 						{
 							"name": "Fetches login metadata",
-							"id": "e143f5ce-a8c7-47c4-a765-1049718ee2cb",
+							"id": "e54ef912-9074-4d4b-ac87-4a139deaae7e",
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
 							},
@@ -277,7 +277,7 @@
 							},
 							"response": [
 								{
-									"id": "4495e5e1-8034-4b6d-ac44-4dec436f3701",
+									"id": "88c4efe4-14a7-4995-9f4e-5d799df9691c",
 									"name": "Login metadata",
 									"originalRequest": {
 										"method": "GET",
@@ -319,7 +319,7 @@
 						},
 						{
 							"name": "Performs Login",
-							"id": "e6d69af6-24a5-4208-8fbc-a6cf1131bcd8",
+							"id": "8e4e1cca-d595-4648-9926-cc59aa0d01c0",
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
 							},
@@ -355,7 +355,7 @@
 							},
 							"response": [
 								{
-									"id": "3f581619-7ffc-42ca-b090-c66fd9da4e3b",
+									"id": "d46ea9c6-566d-4797-8257-481ea3ac387d",
 									"name": "You are logged in",
 									"originalRequest": {
 										"method": "POST",
@@ -398,7 +398,7 @@
 									"cookie": []
 								},
 								{
-									"id": "90f5a4b4-dfbf-4ea1-bb8d-43a7ba5574f6",
+									"id": "d924516a-a87b-4e37-b0ee-37b861d55e44",
 									"name": "something in body is missing / is invalid",
 									"originalRequest": {
 										"method": "POST",
@@ -443,14 +443,14 @@
 							]
 						}
 					],
-					"id": "f599afad-aa42-4242-bf9c-3687dc1492d2"
+					"id": "aed9631c-e197-4069-85fd-d104db4a2935"
 				},
 				{
 					"name": "logout",
 					"item": [
 						{
 							"name": "Destroys current session",
-							"id": "de7accc1-501b-4aeb-9727-0bbb0dc79b8e",
+							"id": "40410efc-af5e-427e-a028-f97718cb6836",
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
 							},
@@ -470,7 +470,7 @@
 							},
 							"response": [
 								{
-									"id": "5cc81d15-4a02-48c6-bba7-31b5e5cc2a93",
+									"id": "67a542a6-eeab-4de1-8c4d-f4c97f061b40",
 									"name": "Your session was successfully nuked",
 									"originalRequest": {
 										"method": "POST",
@@ -501,7 +501,7 @@
 							]
 						}
 					],
-					"id": "6dd00fe5-41a8-4495-bbfb-ccce0ba3a86d"
+					"id": "56f5320b-b581-4f77-bc09-c6ff2b6650fe"
 				},
 				{
 					"name": "oidc",
@@ -514,7 +514,7 @@
 									"item": [
 										{
 											"name": "Begin OIDC authentication flow and redirect to OIDC provider",
-											"id": "52ad807e-0656-4642-adc4-4fd0a6e2f25c",
+											"id": "e89b42ec-0f75-424d-983f-ec083a25629e",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -544,7 +544,7 @@
 											},
 											"response": [
 												{
-													"id": "4115f3f5-6755-4e8c-b832-7e456b368c02",
+													"id": "dc9ff176-1520-4d23-870e-6de15f0f0bfb",
 													"name": "Redirection to the OIDC provider on success, or to the login page on error",
 													"originalRequest": {
 														"method": "GET",
@@ -582,14 +582,14 @@
 											]
 										}
 									],
-									"id": "57c42e25-e342-4134-907d-2b45099a2b3b"
+									"id": "02b6aaf2-f76d-4f7e-9eef-7c1969106934"
 								},
 								{
 									"name": "redirect",
 									"item": [
 										{
 											"name": "Finish OIDC authentication flow, upon succes you will be logged in",
-											"id": "805c1356-cf05-45ba-ae27-a4d941dd4d40",
+											"id": "a3f83744-c4b2-444d-b67d-0b9e1719b579",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -619,7 +619,7 @@
 											},
 											"response": [
 												{
-													"id": "d52d1ea8-b1d2-46d8-b234-30ca52b5fa64",
+													"id": "c961634e-53b3-464d-8700-1f7a50bd8930",
 													"name": "Redirection to the Semaphore root URL on success, or to the login page on error",
 													"originalRequest": {
 														"method": "GET",
@@ -657,16 +657,16 @@
 											]
 										}
 									],
-									"id": "9be0ed07-2cd9-4898-aead-ba0d203352df"
+									"id": "09c8fe31-4e03-4951-9cfc-b35eb5788fdc"
 								}
 							],
-							"id": "fd86593a-78c7-48d4-8a1b-42f9d3d3b9f2"
+							"id": "4eb69a41-dc94-4d9a-ac10-b4052fefa5e0"
 						}
 					],
-					"id": "37963d69-f6dd-4f19-a7cc-cf0b2850f204"
+					"id": "4097fae7-9877-4776-a607-4a91236eb004"
 				}
 			],
-			"id": "91bb3c76-943e-4f44-ad37-db61237e1763"
+			"id": "1c92c5b1-ef55-4bf0-8b0e-942fd4dbd4d6"
 		},
 		{
 			"name": "user",
@@ -679,7 +679,7 @@
 							"item": [
 								{
 									"name": "Expires API token",
-									"id": "0a899617-8292-4c62-9a29-ac33fdcb83c5",
+									"id": "b73a8391-ac14-4de1-96e4-46211d2695a3",
 									"protocolProfileBehavior": {
 										"disableBodyPruning": true
 									},
@@ -707,7 +707,7 @@
 									},
 									"response": [
 										{
-											"id": "48fb6064-64b6-46ca-8dc6-77a762e3ffe9",
+											"id": "b065338e-0893-4b2e-a114-0fbebe9df480",
 											"name": "Expired API Token",
 											"originalRequest": {
 												"method": "DELETE",
@@ -744,11 +744,11 @@
 									]
 								}
 							],
-							"id": "dd143fc3-61ce-4022-9417-3f27a9a4b914"
+							"id": "16a03dcb-86f4-4b13-9b0b-2ee6e40f277f"
 						},
 						{
 							"name": "Fetch API tokens for user",
-							"id": "2ea5955a-4119-479e-8d7b-eb178994c392",
+							"id": "72430204-c78a-404d-a8b5-cf9b9535e8ec",
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
 							},
@@ -773,7 +773,7 @@
 							},
 							"response": [
 								{
-									"id": "0bbe447d-7eb5-4c63-9c6c-ffb35f20f97a",
+									"id": "a29abb44-c40e-4170-8715-7355facafe4f",
 									"name": "API Tokens",
 									"originalRequest": {
 										"method": "GET",
@@ -815,7 +815,7 @@
 						},
 						{
 							"name": "Create an API token",
-							"id": "32a3703e-e70a-42ee-81ea-a290e92d4a3b",
+							"id": "cfba220e-2ace-4bcd-8e8d-790ecc4c161b",
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
 							},
@@ -840,7 +840,7 @@
 							},
 							"response": [
 								{
-									"id": "892d0987-1327-4e64-bb3d-14861d3f51b7",
+									"id": "ab320df0-a87c-4d98-8c66-b746965d8703",
 									"name": "API Token",
 									"originalRequest": {
 										"method": "POST",
@@ -881,11 +881,11 @@
 							]
 						}
 					],
-					"id": "1e1d85c1-cd04-49dd-a190-0814aeed6ccf"
+					"id": "1dbfa3fd-5095-40b3-b767-9905075c41cc"
 				},
 				{
 					"name": "Fetch logged in user",
-					"id": "1d122c5b-8a4a-4ed8-8ca5-2b2eeaa46037",
+					"id": "fef2dcea-c231-4700-86e3-352a7509428f",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -910,7 +910,7 @@
 					},
 					"response": [
 						{
-							"id": "b5240c76-7cba-4c1f-9f80-f41f3866bca3",
+							"id": "8ac63913-9e63-4e07-9ce1-14e07dc34d20",
 							"name": "User",
 							"originalRequest": {
 								"method": "GET",
@@ -951,7 +951,7 @@
 					]
 				}
 			],
-			"id": "37f8e76b-c7eb-4205-8f71-4beab12d89c2"
+			"id": "320427cd-4a4a-4466-a69a-32854273b1b2"
 		},
 		{
 			"name": "users",
@@ -964,7 +964,7 @@
 							"item": [
 								{
 									"name": "Updates user password",
-									"id": "14d71a87-5ca8-45e5-a3ee-4743fe529c25",
+									"id": "049ff59a-80e1-4b3d-b5c8-c153f0876b94",
 									"protocolProfileBehavior": {
 										"disableBodyPruning": true
 									},
@@ -1007,7 +1007,7 @@
 									},
 									"response": [
 										{
-											"id": "633f1197-dbd6-4752-8e36-e497d4f91c2a",
+											"id": "86c57d98-9b33-442d-be6e-700f3374685d",
 											"name": "Password updated",
 											"originalRequest": {
 												"method": "POST",
@@ -1058,11 +1058,11 @@
 									]
 								}
 							],
-							"id": "f958ef66-f7a3-407a-95e1-b53899f8ec12"
+							"id": "ff5732a1-5d72-4dcf-8d13-cb1a0352d82b"
 						},
 						{
 							"name": "Fetches a user profile",
-							"id": "677203e5-0730-4a43-9f0c-559643496b84",
+							"id": "0ea82762-7ab3-4be4-a7bc-07c12c6443cd",
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
 							},
@@ -1095,7 +1095,7 @@
 							},
 							"response": [
 								{
-									"id": "ed9ffa89-bad8-48d5-b1f3-b644a7c05144",
+									"id": "5a9e436e-a27e-490c-aa04-2931ec671450",
 									"name": "User profile",
 									"originalRequest": {
 										"method": "GET",
@@ -1143,7 +1143,7 @@
 						},
 						{
 							"name": "Updates user details",
-							"id": "5b454c52-7e25-400e-a254-30f57296cbea",
+							"id": "f16b9520-e006-4f1c-a1d6-e1c112a6c737",
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
 							},
@@ -1186,7 +1186,7 @@
 							},
 							"response": [
 								{
-									"id": "dee2384e-9af8-4d75-b5c2-e0f7b43008b3",
+									"id": "8ecb3f54-ba8a-454a-af8a-bd45b3487d81",
 									"name": "User Updated",
 									"originalRequest": {
 										"method": "PUT",
@@ -1238,7 +1238,7 @@
 						},
 						{
 							"name": "Deletes user",
-							"id": "ffb8011a-fce9-486a-8b25-e9e42fbc7953",
+							"id": "ab4724a5-0e60-4c1a-a097-cb43677e968f",
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
 							},
@@ -1266,7 +1266,7 @@
 							},
 							"response": [
 								{
-									"id": "10ad5f97-115d-4722-b055-5c040d02d447",
+									"id": "f7a4e7b7-740f-425c-b9bb-238c1e77a2b2",
 									"name": "User deleted",
 									"originalRequest": {
 										"method": "DELETE",
@@ -1303,11 +1303,11 @@
 							]
 						}
 					],
-					"id": "50d3bfb0-5426-4672-a35b-3d4d28927184"
+					"id": "a1b50f3a-4823-4aec-a930-4dc2eb3e0d5d"
 				},
 				{
 					"name": "Fetches all users",
-					"id": "24d2a5a2-e56b-4526-8f47-5442a55b8718",
+					"id": "507c369c-033e-4267-8bf2-ae66c9ac3599",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -1331,7 +1331,7 @@
 					},
 					"response": [
 						{
-							"id": "ad20e724-9e6a-4668-bf1f-e17a0265d66f",
+							"id": "99e6869a-f9a1-4255-9000-bddace414eed",
 							"name": "Users",
 							"originalRequest": {
 								"method": "GET",
@@ -1372,7 +1372,7 @@
 				},
 				{
 					"name": "Creates a user",
-					"id": "d9d6a79a-907a-4e22-b0f8-7bfc2d991914",
+					"id": "1f9aeee5-29d9-45a5-a8c2-85cc1837a96a",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -1410,7 +1410,7 @@
 					},
 					"response": [
 						{
-							"id": "394c9fb1-acb3-4c02-ae92-d50b1dc7b6c6",
+							"id": "5056ee51-12cb-45ac-97ec-2007d3ea55c1",
 							"name": "User created",
 							"originalRequest": {
 								"method": "POST",
@@ -1462,7 +1462,7 @@
 							"body": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"username\": \"<string>\",\n  \"email\": \"<string>\",\n  \"created\": \"<string>\",\n  \"alert\": \"<boolean>\",\n  \"admin\": \"<boolean>\",\n  \"external\": \"<boolean>\"\n}"
 						},
 						{
-							"id": "e2a64649-752c-4a59-a7d2-28baa35dd7ab",
+							"id": "07889849-9235-4c9b-b0a1-8f208cfe0f68",
 							"name": "User creation failed",
 							"originalRequest": {
 								"method": "POST",
@@ -1506,7 +1506,7 @@
 					]
 				}
 			],
-			"id": "834fe8f4-b6ea-464f-a7aa-74e02e5b36ab"
+			"id": "daedae70-868f-4c67-b451-92b64d11f389"
 		},
 		{
 			"name": "projects",
@@ -1516,7 +1516,7 @@
 					"item": [
 						{
 							"name": "Restore Project",
-							"id": "cfa79574-3158-48b5-b994-db06a438e2ec",
+							"id": "ad7d9848-0a4c-4429-8f00-a9c41d0b8b65",
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
 							},
@@ -1534,7 +1534,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n  \"meta\": {\n    \"name\": \"<string>\",\n    \"alert\": \"<boolean>\",\n    \"max_parallel_tasks\": \"<integer>\"\n  },\n  \"templates\": [\n    {\n      \"inventory\": \"<string>\",\n      \"repository\": \"<string>\",\n      \"environment\": \"<string>\",\n      \"view\": \"<string>\",\n      \"name\": \"<string>\",\n      \"playbook\": \"<string>\",\n      \"description\": \"<string>\",\n      \"allow_override_args_in_task\": \"<boolean>\",\n      \"suppress_success_alerts\": \"<boolean>\",\n      \"autorun\": \"<boolean>\",\n      \"type\": \"<string>\",\n      \"allow_override_branch_in_task\": \"<boolean>\"\n    },\n    {\n      \"inventory\": \"<string>\",\n      \"repository\": \"<string>\",\n      \"environment\": \"<string>\",\n      \"view\": \"<string>\",\n      \"name\": \"<string>\",\n      \"playbook\": \"<string>\",\n      \"description\": \"<string>\",\n      \"allow_override_args_in_task\": \"<boolean>\",\n      \"suppress_success_alerts\": \"<boolean>\",\n      \"autorun\": \"<boolean>\",\n      \"type\": \"<string>\",\n      \"allow_override_branch_in_task\": \"<boolean>\"\n    }\n  ],\n  \"repositories\": [\n    {\n      \"name\": \"<string>\",\n      \"git_url\": \"<string>\",\n      \"git_branch\": \"<string>\",\n      \"ssh_key\": \"<string>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"git_url\": \"<string>\",\n      \"git_branch\": \"<string>\",\n      \"ssh_key\": \"<string>\"\n    }\n  ],\n  \"keys\": [\n    {\n      \"name\": \"<string>\",\n      \"type\": \"login_password\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"type\": \"ssh\"\n    }\n  ],\n  \"views\": [\n    {\n      \"name\": \"<string>\",\n      \"position\": \"<integer>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"position\": \"<integer>\"\n    }\n  ],\n  \"inventories\": [\n    {\n      \"name\": \"<string>\",\n      \"inventory\": \"<string>\",\n      \"type\": \"file\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"inventory\": \"<string>\",\n      \"type\": \"file\"\n    }\n  ],\n  \"environments\": [\n    {\n      \"name\": \"<string>\",\n      \"json\": \"<string>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"json\": \"<string>\"\n    }\n  ]\n}",
+									"raw": "{\n  \"meta\": {\n    \"name\": \"<string>\",\n    \"alert\": \"<boolean>\",\n    \"max_parallel_tasks\": \"<integer>\"\n  },\n  \"templates\": [\n    {\n      \"inventory\": \"<string>\",\n      \"repository\": \"<string>\",\n      \"environment\": \"<string>\",\n      \"view\": \"<string>\",\n      \"name\": \"<string>\",\n      \"playbook\": \"<string>\",\n      \"description\": \"<string>\",\n      \"allow_override_args_in_task\": \"<boolean>\",\n      \"suppress_success_alerts\": \"<boolean>\",\n      \"autorun\": \"<boolean>\",\n      \"type\": \"<string>\",\n      \"allow_override_branch_in_task\": \"<boolean>\"\n    },\n    {\n      \"inventory\": \"<string>\",\n      \"repository\": \"<string>\",\n      \"environment\": \"<string>\",\n      \"view\": \"<string>\",\n      \"name\": \"<string>\",\n      \"playbook\": \"<string>\",\n      \"description\": \"<string>\",\n      \"allow_override_args_in_task\": \"<boolean>\",\n      \"suppress_success_alerts\": \"<boolean>\",\n      \"autorun\": \"<boolean>\",\n      \"type\": \"<string>\",\n      \"allow_override_branch_in_task\": \"<boolean>\"\n    }\n  ],\n  \"repositories\": [\n    {\n      \"name\": \"<string>\",\n      \"git_url\": \"<string>\",\n      \"git_branch\": \"<string>\",\n      \"ssh_key\": \"<string>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"git_url\": \"<string>\",\n      \"git_branch\": \"<string>\",\n      \"ssh_key\": \"<string>\"\n    }\n  ],\n  \"keys\": [\n    {\n      \"name\": \"<string>\",\n      \"type\": \"login_password\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"type\": \"ssh\"\n    }\n  ],\n  \"views\": [\n    {\n      \"name\": \"<string>\",\n      \"position\": \"<integer>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"position\": \"<integer>\"\n    }\n  ],\n  \"inventories\": [\n    {\n      \"name\": \"<string>\",\n      \"inventory\": \"<string>\",\n      \"type\": \"static-yaml\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"inventory\": \"<string>\",\n      \"type\": \"static\"\n    }\n  ],\n  \"environments\": [\n    {\n      \"name\": \"<string>\",\n      \"json\": \"<string>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"json\": \"<string>\"\n    }\n  ]\n}",
 									"options": {
 										"raw": {
 											"headerFamily": "json",
@@ -1555,7 +1555,7 @@
 							},
 							"response": [
 								{
-									"id": "c3ec3977-a19b-42e4-9119-3266d88cf569",
+									"id": "8120a0a7-787f-47f5-b595-dd8dab10efd4",
 									"name": "Created project",
 									"originalRequest": {
 										"method": "POST",
@@ -1576,7 +1576,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n  \"meta\": {\n    \"name\": \"<string>\",\n    \"alert\": \"<boolean>\",\n    \"max_parallel_tasks\": \"<integer>\"\n  },\n  \"templates\": [\n    {\n      \"inventory\": \"<string>\",\n      \"repository\": \"<string>\",\n      \"environment\": \"<string>\",\n      \"view\": \"<string>\",\n      \"name\": \"<string>\",\n      \"playbook\": \"<string>\",\n      \"description\": \"<string>\",\n      \"allow_override_args_in_task\": \"<boolean>\",\n      \"suppress_success_alerts\": \"<boolean>\",\n      \"autorun\": \"<boolean>\",\n      \"type\": \"<string>\",\n      \"allow_override_branch_in_task\": \"<boolean>\"\n    },\n    {\n      \"inventory\": \"<string>\",\n      \"repository\": \"<string>\",\n      \"environment\": \"<string>\",\n      \"view\": \"<string>\",\n      \"name\": \"<string>\",\n      \"playbook\": \"<string>\",\n      \"description\": \"<string>\",\n      \"allow_override_args_in_task\": \"<boolean>\",\n      \"suppress_success_alerts\": \"<boolean>\",\n      \"autorun\": \"<boolean>\",\n      \"type\": \"<string>\",\n      \"allow_override_branch_in_task\": \"<boolean>\"\n    }\n  ],\n  \"repositories\": [\n    {\n      \"name\": \"<string>\",\n      \"git_url\": \"<string>\",\n      \"git_branch\": \"<string>\",\n      \"ssh_key\": \"<string>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"git_url\": \"<string>\",\n      \"git_branch\": \"<string>\",\n      \"ssh_key\": \"<string>\"\n    }\n  ],\n  \"keys\": [\n    {\n      \"name\": \"<string>\",\n      \"type\": \"login_password\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"type\": \"ssh\"\n    }\n  ],\n  \"views\": [\n    {\n      \"name\": \"<string>\",\n      \"position\": \"<integer>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"position\": \"<integer>\"\n    }\n  ],\n  \"inventories\": [\n    {\n      \"name\": \"<string>\",\n      \"inventory\": \"<string>\",\n      \"type\": \"file\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"inventory\": \"<string>\",\n      \"type\": \"file\"\n    }\n  ],\n  \"environments\": [\n    {\n      \"name\": \"<string>\",\n      \"json\": \"<string>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"json\": \"<string>\"\n    }\n  ]\n}",
+											"raw": "{\n  \"meta\": {\n    \"name\": \"<string>\",\n    \"alert\": \"<boolean>\",\n    \"max_parallel_tasks\": \"<integer>\"\n  },\n  \"templates\": [\n    {\n      \"inventory\": \"<string>\",\n      \"repository\": \"<string>\",\n      \"environment\": \"<string>\",\n      \"view\": \"<string>\",\n      \"name\": \"<string>\",\n      \"playbook\": \"<string>\",\n      \"description\": \"<string>\",\n      \"allow_override_args_in_task\": \"<boolean>\",\n      \"suppress_success_alerts\": \"<boolean>\",\n      \"autorun\": \"<boolean>\",\n      \"type\": \"<string>\",\n      \"allow_override_branch_in_task\": \"<boolean>\"\n    },\n    {\n      \"inventory\": \"<string>\",\n      \"repository\": \"<string>\",\n      \"environment\": \"<string>\",\n      \"view\": \"<string>\",\n      \"name\": \"<string>\",\n      \"playbook\": \"<string>\",\n      \"description\": \"<string>\",\n      \"allow_override_args_in_task\": \"<boolean>\",\n      \"suppress_success_alerts\": \"<boolean>\",\n      \"autorun\": \"<boolean>\",\n      \"type\": \"<string>\",\n      \"allow_override_branch_in_task\": \"<boolean>\"\n    }\n  ],\n  \"repositories\": [\n    {\n      \"name\": \"<string>\",\n      \"git_url\": \"<string>\",\n      \"git_branch\": \"<string>\",\n      \"ssh_key\": \"<string>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"git_url\": \"<string>\",\n      \"git_branch\": \"<string>\",\n      \"ssh_key\": \"<string>\"\n    }\n  ],\n  \"keys\": [\n    {\n      \"name\": \"<string>\",\n      \"type\": \"login_password\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"type\": \"ssh\"\n    }\n  ],\n  \"views\": [\n    {\n      \"name\": \"<string>\",\n      \"position\": \"<integer>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"position\": \"<integer>\"\n    }\n  ],\n  \"inventories\": [\n    {\n      \"name\": \"<string>\",\n      \"inventory\": \"<string>\",\n      \"type\": \"static-yaml\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"inventory\": \"<string>\",\n      \"type\": \"static\"\n    }\n  ],\n  \"environments\": [\n    {\n      \"name\": \"<string>\",\n      \"json\": \"<string>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"json\": \"<string>\"\n    }\n  ]\n}",
 											"options": {
 												"raw": {
 													"headerFamily": "json",
@@ -1610,11 +1610,11 @@
 							]
 						}
 					],
-					"id": "ca23b2c8-a492-4e5e-88e9-9957fe829c98"
+					"id": "75f5f172-970b-46f9-9749-ea60fe0de02f"
 				},
 				{
 					"name": "Get projects",
-					"id": "893a2abf-1aca-406c-9add-a0ad5df01cf2",
+					"id": "db08f6e5-34e8-4cce-b433-a8e001649532",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -1638,7 +1638,7 @@
 					},
 					"response": [
 						{
-							"id": "e6eb3d81-2e29-44f5-8e95-92176f89b83b",
+							"id": "4465385b-232d-49e1-b0ba-f076805edba2",
 							"name": "List of projects",
 							"originalRequest": {
 								"method": "GET",
@@ -1679,7 +1679,7 @@
 				},
 				{
 					"name": "Create a new project",
-					"id": "99889141-eb92-4a16-85a2-2ec4be78e669",
+					"id": "d836bcbc-10a2-48fd-a189-f7e2d546f7a0",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -1717,7 +1717,7 @@
 					},
 					"response": [
 						{
-							"id": "ba2c5b85-564b-4f3b-ad37-62749d8fc9dc",
+							"id": "85c1a2ae-bfcb-410e-9ef1-10f33ce9a4a3",
 							"name": "Created project",
 							"originalRequest": {
 								"method": "POST",
@@ -1771,7 +1771,7 @@
 					]
 				}
 			],
-			"id": "776190a2-9c3a-42f6-88ac-30eae89d10f8"
+			"id": "1ca11787-296e-4f18-8098-b3863a3697ae"
 		},
 		{
 			"name": "events",
@@ -1781,7 +1781,7 @@
 					"item": [
 						{
 							"name": "Get last 200 Events related to Semaphore and projects you are part of",
-							"id": "550e1aa8-8ebe-47de-869c-06050d706ae3",
+							"id": "716eed97-b5c6-436b-9815-13ee33dfb791",
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
 							},
@@ -1806,7 +1806,7 @@
 							},
 							"response": [
 								{
-									"id": "356277bb-65cd-43c2-a4cc-1270d0318434",
+									"id": "194afa5f-39ef-4da7-8f57-f3646379e74c",
 									"name": "Array of events in chronological order",
 									"originalRequest": {
 										"method": "GET",
@@ -1847,11 +1847,11 @@
 							]
 						}
 					],
-					"id": "1af74052-a2f0-4def-8f91-e4ba1672c5a6"
+					"id": "9aa87430-581f-4df2-b5b0-0e907eb51d8c"
 				},
 				{
 					"name": "Get Events related to Semaphore and projects you are part of",
-					"id": "0d835f26-abd4-4bee-b8ca-cc8ac47306a9",
+					"id": "8892a736-a9e9-4e04-9fbf-7318e18bcb69",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -1875,7 +1875,7 @@
 					},
 					"response": [
 						{
-							"id": "71dcb915-93c2-445f-a33d-5999c369346b",
+							"id": "0df3b266-9969-4b81-9c49-5365b5718f7c",
 							"name": "Array of events in chronological order",
 							"originalRequest": {
 								"method": "GET",
@@ -1915,7 +1915,7 @@
 					]
 				}
 			],
-			"id": "f299955b-5c7c-47b2-ad10-932165cb625e"
+			"id": "633c1663-c41d-4cbe-813e-c86e157d7b1f"
 		},
 		{
 			"name": "project",
@@ -1928,7 +1928,7 @@
 							"item": [
 								{
 									"name": "Backup A Project",
-									"id": "dbe02226-7e70-408d-9981-366a37053853",
+									"id": "cf6cb225-f9c2-4834-9966-fba7247c941c",
 									"protocolProfileBehavior": {
 										"disableBodyPruning": true
 									},
@@ -1961,7 +1961,7 @@
 									},
 									"response": [
 										{
-											"id": "078e7eca-34c0-4f7b-993d-501dfed969cb",
+											"id": "9ed64511-9b95-4241-b139-521f01d7a9fe",
 											"name": "Backup",
 											"originalRequest": {
 												"method": "GET",
@@ -2003,19 +2003,19 @@
 												}
 											],
 											"cookie": [],
-											"body": "{\n  \"meta\": {\n    \"name\": \"<string>\",\n    \"alert\": \"<boolean>\",\n    \"max_parallel_tasks\": \"<integer>\"\n  },\n  \"templates\": [\n    {\n      \"inventory\": \"<string>\",\n      \"repository\": \"<string>\",\n      \"environment\": \"<string>\",\n      \"view\": \"<string>\",\n      \"name\": \"<string>\",\n      \"playbook\": \"<string>\",\n      \"description\": \"<string>\",\n      \"allow_override_args_in_task\": \"<boolean>\",\n      \"suppress_success_alerts\": \"<boolean>\",\n      \"autorun\": \"<boolean>\",\n      \"type\": \"<string>\",\n      \"allow_override_branch_in_task\": \"<boolean>\"\n    },\n    {\n      \"inventory\": \"<string>\",\n      \"repository\": \"<string>\",\n      \"environment\": \"<string>\",\n      \"view\": \"<string>\",\n      \"name\": \"<string>\",\n      \"playbook\": \"<string>\",\n      \"description\": \"<string>\",\n      \"allow_override_args_in_task\": \"<boolean>\",\n      \"suppress_success_alerts\": \"<boolean>\",\n      \"autorun\": \"<boolean>\",\n      \"type\": \"<string>\",\n      \"allow_override_branch_in_task\": \"<boolean>\"\n    }\n  ],\n  \"repositories\": [\n    {\n      \"name\": \"<string>\",\n      \"git_url\": \"<string>\",\n      \"git_branch\": \"<string>\",\n      \"ssh_key\": \"<string>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"git_url\": \"<string>\",\n      \"git_branch\": \"<string>\",\n      \"ssh_key\": \"<string>\"\n    }\n  ],\n  \"keys\": [\n    {\n      \"name\": \"<string>\",\n      \"type\": \"login_password\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"type\": \"ssh\"\n    }\n  ],\n  \"views\": [\n    {\n      \"name\": \"<string>\",\n      \"position\": \"<integer>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"position\": \"<integer>\"\n    }\n  ],\n  \"inventories\": [\n    {\n      \"name\": \"<string>\",\n      \"inventory\": \"<string>\",\n      \"type\": \"file\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"inventory\": \"<string>\",\n      \"type\": \"file\"\n    }\n  ],\n  \"environments\": [\n    {\n      \"name\": \"<string>\",\n      \"json\": \"<string>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"json\": \"<string>\"\n    }\n  ]\n}"
+											"body": "{\n  \"meta\": {\n    \"name\": \"<string>\",\n    \"alert\": \"<boolean>\",\n    \"max_parallel_tasks\": \"<integer>\"\n  },\n  \"templates\": [\n    {\n      \"inventory\": \"<string>\",\n      \"repository\": \"<string>\",\n      \"environment\": \"<string>\",\n      \"view\": \"<string>\",\n      \"name\": \"<string>\",\n      \"playbook\": \"<string>\",\n      \"description\": \"<string>\",\n      \"allow_override_args_in_task\": \"<boolean>\",\n      \"suppress_success_alerts\": \"<boolean>\",\n      \"autorun\": \"<boolean>\",\n      \"type\": \"<string>\",\n      \"allow_override_branch_in_task\": \"<boolean>\"\n    },\n    {\n      \"inventory\": \"<string>\",\n      \"repository\": \"<string>\",\n      \"environment\": \"<string>\",\n      \"view\": \"<string>\",\n      \"name\": \"<string>\",\n      \"playbook\": \"<string>\",\n      \"description\": \"<string>\",\n      \"allow_override_args_in_task\": \"<boolean>\",\n      \"suppress_success_alerts\": \"<boolean>\",\n      \"autorun\": \"<boolean>\",\n      \"type\": \"<string>\",\n      \"allow_override_branch_in_task\": \"<boolean>\"\n    }\n  ],\n  \"repositories\": [\n    {\n      \"name\": \"<string>\",\n      \"git_url\": \"<string>\",\n      \"git_branch\": \"<string>\",\n      \"ssh_key\": \"<string>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"git_url\": \"<string>\",\n      \"git_branch\": \"<string>\",\n      \"ssh_key\": \"<string>\"\n    }\n  ],\n  \"keys\": [\n    {\n      \"name\": \"<string>\",\n      \"type\": \"login_password\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"type\": \"ssh\"\n    }\n  ],\n  \"views\": [\n    {\n      \"name\": \"<string>\",\n      \"position\": \"<integer>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"position\": \"<integer>\"\n    }\n  ],\n  \"inventories\": [\n    {\n      \"name\": \"<string>\",\n      \"inventory\": \"<string>\",\n      \"type\": \"static-yaml\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"inventory\": \"<string>\",\n      \"type\": \"static\"\n    }\n  ],\n  \"environments\": [\n    {\n      \"name\": \"<string>\",\n      \"json\": \"<string>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"json\": \"<string>\"\n    }\n  ]\n}"
 										}
 									]
 								}
 							],
-							"id": "0b3d337b-974c-4cab-94a4-c6377d948f42"
+							"id": "5d358a00-f511-471c-abfe-4fa03d4aae12"
 						},
 						{
 							"name": "role",
 							"item": [
 								{
 									"name": "Fetch permissions of the current user for project",
-									"id": "f15068bb-c953-4820-bf7c-f97843a78b26",
+									"id": "acf0720e-0c03-4c38-b272-c9465782f650",
 									"protocolProfileBehavior": {
 										"disableBodyPruning": true
 									},
@@ -2048,7 +2048,7 @@
 									},
 									"response": [
 										{
-											"id": "7e6d1bbe-b836-4134-861d-9bdd3e91b52e",
+											"id": "6ebbb1a2-26f5-49bd-95c1-eb91f9ce555c",
 											"name": "Permissions",
 											"originalRequest": {
 												"method": "GET",
@@ -2095,14 +2095,14 @@
 									]
 								}
 							],
-							"id": "b0b0dcd9-1e7b-4c37-b80a-6af6a63901be"
+							"id": "f38f0344-5967-413a-afc9-3b23f8f29ff9"
 						},
 						{
 							"name": "events",
 							"item": [
 								{
 									"name": "Get Events related to this project",
-									"id": "656aa412-2775-45c4-91bd-d1f104ced86e",
+									"id": "b0e3b287-b69c-4164-9e5f-99285e393c7f",
 									"protocolProfileBehavior": {
 										"disableBodyPruning": true
 									},
@@ -2135,7 +2135,7 @@
 									},
 									"response": [
 										{
-											"id": "de751cf4-262d-448b-b52c-99fe7694e434",
+											"id": "bb0b55e4-3368-4841-beb9-fdcf9194bc6c",
 											"name": "Array of events in chronological order",
 											"originalRequest": {
 												"method": "GET",
@@ -2182,7 +2182,7 @@
 									]
 								}
 							],
-							"id": "19f537ad-6c3c-4b3e-8a7e-12fe05e293b9"
+							"id": "59ab5972-7a4b-4796-b0b9-c3b3409533d8"
 						},
 						{
 							"name": "users",
@@ -2192,7 +2192,7 @@
 									"item": [
 										{
 											"name": "Update user role",
-											"id": "bdfaf0dd-3ce3-4925-9ec4-f2c2032b7d27",
+											"id": "ed021401-fce4-4cd5-8bbd-3ac2bcd23f8f",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -2206,7 +2206,7 @@
 												],
 												"body": {
 													"mode": "raw",
-													"raw": "{\n  \"role\": \"guest\"\n}",
+													"raw": "{\n  \"role\": \"manager\"\n}",
 													"options": {
 														"raw": {
 															"headerFamily": "json",
@@ -2241,7 +2241,7 @@
 											},
 											"response": [
 												{
-													"id": "ac725cd9-9eaf-44bf-bf57-d63cc393ad5f",
+													"id": "8159e830-af1a-4567-9427-59a8c19b1022",
 													"name": "User updated",
 													"originalRequest": {
 														"method": "PUT",
@@ -2258,7 +2258,7 @@
 														],
 														"body": {
 															"mode": "raw",
-															"raw": "{\n  \"role\": \"guest\"\n}",
+															"raw": "{\n  \"role\": \"manager\"\n}",
 															"options": {
 																"raw": {
 																	"headerFamily": "json",
@@ -2297,7 +2297,7 @@
 										},
 										{
 											"name": "Removes user from project",
-											"id": "62a23511-5998-4af5-8142-3aab044a80f9",
+											"id": "12114ff7-c872-4699-ae98-535db41cbab0",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -2331,7 +2331,7 @@
 											},
 											"response": [
 												{
-													"id": "741fa4d7-5be1-47fe-a1b5-492101a7b0f7",
+													"id": "65245997-98d2-4ca9-b5f7-bbe8a54c5f07",
 													"name": "User removed",
 													"originalRequest": {
 														"method": "DELETE",
@@ -2372,11 +2372,11 @@
 											]
 										}
 									],
-									"id": "2c2bd188-9069-4fe7-a7b4-6d39a9773744"
+									"id": "93b0c15b-1858-42e0-9a4b-d5714fde836b"
 								},
 								{
 									"name": "Get users linked to project",
-									"id": "26ae9291-c795-4dcb-8d4a-9601b65b1a35",
+									"id": "0fbedd92-e7f1-4207-9952-1fa11841630d",
 									"protocolProfileBehavior": {
 										"disableBodyPruning": true
 									},
@@ -2389,7 +2389,7 @@
 											}
 										],
 										"url": {
-											"raw": "{{baseUrl}}/project/:project_id/users?sort=email&order=desc",
+											"raw": "{{baseUrl}}/project/:project_id/users?sort=email&order=asc",
 											"host": [
 												"{{baseUrl}}"
 											],
@@ -2406,7 +2406,7 @@
 												},
 												{
 													"key": "order",
-													"value": "desc",
+													"value": "asc",
 													"description": "(Required) ordering manner"
 												}
 											],
@@ -2421,7 +2421,7 @@
 									},
 									"response": [
 										{
-											"id": "73370778-e31b-4430-b9ea-756de6fda080",
+											"id": "ee4a34bb-2053-461c-bdef-479d47ca6586",
 											"name": "Users",
 											"originalRequest": {
 												"method": "GET",
@@ -2437,7 +2437,7 @@
 													}
 												],
 												"url": {
-													"raw": "{{baseUrl}}/project/:project_id/users?sort=email&order=desc",
+													"raw": "{{baseUrl}}/project/:project_id/users?sort=email&order=asc",
 													"host": [
 														"{{baseUrl}}"
 													],
@@ -2455,7 +2455,7 @@
 														{
 															"description": "(Required) ordering manner",
 															"key": "order",
-															"value": "desc"
+															"value": "asc"
 														}
 													],
 													"variable": [
@@ -2475,13 +2475,13 @@
 												}
 											],
 											"cookie": [],
-											"body": "[\n  {\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"username\": \"<string>\",\n    \"role\": \"owner\"\n  },\n  {\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"username\": \"<string>\",\n    \"role\": \"task_runner\"\n  }\n]"
+											"body": "[\n  {\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"username\": \"<string>\",\n    \"role\": \"task_runner\"\n  },\n  {\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"username\": \"<string>\",\n    \"role\": \"guest\"\n  }\n]"
 										}
 									]
 								},
 								{
 									"name": "Link user to project",
-									"id": "108a6051-89e8-4e6c-b3f7-43692b5de693",
+									"id": "97f0f4f1-d226-43d8-8c77-ffd4ac2baa2d",
 									"protocolProfileBehavior": {
 										"disableBodyPruning": true
 									},
@@ -2524,7 +2524,7 @@
 									},
 									"response": [
 										{
-											"id": "473d080f-cc10-477c-b7bc-09aabfbcc69d",
+											"id": "53628ba9-1548-4f99-8d47-3de43502cba4",
 											"name": "User added",
 											"originalRequest": {
 												"method": "POST",
@@ -2575,7 +2575,7 @@
 									]
 								}
 							],
-							"id": "224d894e-0a19-4ea9-a13d-e28af0cd1ffa"
+							"id": "b25959e0-7fde-4233-a588-4685ccef8d96"
 						},
 						{
 							"name": "integrations",
@@ -2591,7 +2591,7 @@
 													"item": [
 														{
 															"name": "Updates Integration ExtractValue",
-															"id": "c5b98289-c8f8-4b57-b405-2438937d52c4",
+															"id": "7bc07454-80f6-4b60-ba54-2d2a7f1a41c4",
 															"protocolProfileBehavior": {
 																"disableBodyPruning": true
 															},
@@ -2605,7 +2605,7 @@
 																],
 																"body": {
 																	"mode": "raw",
-																	"raw": "{\n  \"name\": \"<string>\",\n  \"value_source\": \"header\",\n  \"body_data_type\": \"json\",\n  \"key\": \"<string>\",\n  \"variable\": \"<string>\"\n}",
+																	"raw": "{\n  \"name\": \"<string>\",\n  \"value_source\": \"body\",\n  \"body_data_type\": \"xml\",\n  \"key\": \"<string>\",\n  \"variable\": \"<string>\"\n}",
 																	"options": {
 																		"raw": {
 																			"headerFamily": "json",
@@ -2647,7 +2647,7 @@
 															},
 															"response": [
 																{
-																	"id": "31348f1e-500b-4050-a0f9-dddd5fe06166",
+																	"id": "bf03df0a-7546-4864-97f9-2ccf4a741e0e",
 																	"name": "Integration Extract Value updated",
 																	"originalRequest": {
 																		"method": "PUT",
@@ -2664,7 +2664,7 @@
 																		],
 																		"body": {
 																			"mode": "raw",
-																			"raw": "{\n  \"name\": \"<string>\",\n  \"value_source\": \"header\",\n  \"body_data_type\": \"json\",\n  \"key\": \"<string>\",\n  \"variable\": \"<string>\"\n}",
+																			"raw": "{\n  \"name\": \"<string>\",\n  \"value_source\": \"body\",\n  \"body_data_type\": \"xml\",\n  \"key\": \"<string>\",\n  \"variable\": \"<string>\"\n}",
 																			"options": {
 																				"raw": {
 																					"headerFamily": "json",
@@ -2705,7 +2705,7 @@
 																	"cookie": []
 																},
 																{
-																	"id": "7b766e7e-7c0c-4267-8a14-0dc3e137d343",
+																	"id": "aea21b21-fbef-4bdd-8101-c9caeeaf438c",
 																	"name": "Bad integration extract value parameter",
 																	"originalRequest": {
 																		"method": "PUT",
@@ -2722,7 +2722,7 @@
 																		],
 																		"body": {
 																			"mode": "raw",
-																			"raw": "{\n  \"name\": \"<string>\",\n  \"value_source\": \"header\",\n  \"body_data_type\": \"json\",\n  \"key\": \"<string>\",\n  \"variable\": \"<string>\"\n}",
+																			"raw": "{\n  \"name\": \"<string>\",\n  \"value_source\": \"body\",\n  \"body_data_type\": \"xml\",\n  \"key\": \"<string>\",\n  \"variable\": \"<string>\"\n}",
 																			"options": {
 																				"raw": {
 																					"headerFamily": "json",
@@ -2766,7 +2766,7 @@
 														},
 														{
 															"name": "Removes integration extract value",
-															"id": "0b9e093d-8203-4de8-8b9a-f9020e3d173c",
+															"id": "2ca39f14-a5e8-49ff-b133-c6c1bca56451",
 															"protocolProfileBehavior": {
 																"disableBodyPruning": true
 															},
@@ -2807,7 +2807,7 @@
 															},
 															"response": [
 																{
-																	"id": "ce505eb5-2169-4f4d-a033-e91ff93634ad",
+																	"id": "c94d1edb-7b83-4549-b097-3c9c0bac7976",
 																	"name": "integration extract value removed",
 																	"originalRequest": {
 																		"method": "DELETE",
@@ -2853,11 +2853,11 @@
 															]
 														}
 													],
-													"id": "4984e9c7-cf9d-42ab-99a8-c847f9c305db"
+													"id": "aa589140-c673-4193-8546-efcc1b05f69f"
 												},
 												{
 													"name": "Get Integration Extracted Values linked to integration extractor",
-													"id": "2eb24de4-ba9b-438d-98d5-95f5ea76fd89",
+													"id": "5cf57ab1-acbb-46cd-a6b2-d8e6bc40daf2",
 													"protocolProfileBehavior": {
 														"disableBodyPruning": true
 													},
@@ -2897,7 +2897,7 @@
 													},
 													"response": [
 														{
-															"id": "2cf4750c-341a-471b-b4d6-71e838065e66",
+															"id": "bd8a3fa9-b988-4e23-8ed2-6b7367bc8e1d",
 															"name": "Integration Extracted Value",
 															"originalRequest": {
 																"method": "GET",
@@ -2944,13 +2944,13 @@
 																}
 															],
 															"cookie": [],
-															"body": "[\n  {\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"value_source\": \"body\",\n    \"body_data_type\": \"json\",\n    \"key\": \"<string>\",\n    \"variable\": \"<string>\",\n    \"integration_id\": \"<integer>\"\n  },\n  {\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"value_source\": \"body\",\n    \"body_data_type\": \"xml\",\n    \"key\": \"<string>\",\n    \"variable\": \"<string>\",\n    \"integration_id\": \"<integer>\"\n  }\n]"
+															"body": "[\n  {\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"value_source\": \"header\",\n    \"body_data_type\": \"xml\",\n    \"key\": \"<string>\",\n    \"variable\": \"<string>\",\n    \"integration_id\": \"<integer>\"\n  },\n  {\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"value_source\": \"body\",\n    \"body_data_type\": \"json\",\n    \"key\": \"<string>\",\n    \"variable\": \"<string>\",\n    \"integration_id\": \"<integer>\"\n  }\n]"
 														}
 													]
 												},
 												{
 													"name": "Add Integration Extracted Value",
-													"id": "29cd1617-1f38-42c3-8d6e-befb8740bdc0",
+													"id": "6bdc4a7f-e460-469c-a469-0341b8370ac7",
 													"protocolProfileBehavior": {
 														"disableBodyPruning": true
 													},
@@ -3000,7 +3000,7 @@
 													},
 													"response": [
 														{
-															"id": "7b1cac51-c49c-4ac2-839a-097b4288f698",
+															"id": "1f5d1e06-c87a-4ca8-989d-739850fca285",
 															"name": "Integration Extract Value Created",
 															"originalRequest": {
 																"method": "POST",
@@ -3054,7 +3054,7 @@
 															"cookie": []
 														},
 														{
-															"id": "f9c31aa3-afef-4d98-9511-c79909d855ad",
+															"id": "c6e6f7ce-d622-4b6e-953e-7a1583b9c1e8",
 															"name": "Bad Integration Extract Value params",
 															"originalRequest": {
 																"method": "POST",
@@ -3110,7 +3110,7 @@
 													]
 												}
 											],
-											"id": "433dc857-5803-4365-8b56-86c828725950"
+											"id": "f13b63ad-1ac9-421b-af74-d434f6ec2229"
 										},
 										{
 											"name": "matchers",
@@ -3120,7 +3120,7 @@
 													"item": [
 														{
 															"name": "Updates Integration Matcher",
-															"id": "48f40199-3e91-4cfe-8699-cf2ad8cd6653",
+															"id": "5a5a6603-e57d-4069-b8dd-92a81587a48b",
 															"protocolProfileBehavior": {
 																"disableBodyPruning": true
 															},
@@ -3134,7 +3134,7 @@
 																],
 																"body": {
 																	"mode": "raw",
-																	"raw": "{\n  \"name\": \"<string>\",\n  \"match_type\": \"body\",\n  \"method\": \"equals\",\n  \"body_data_type\": \"xml\",\n  \"key\": \"<string>\",\n  \"value\": \"<string>\"\n}",
+																	"raw": "{\n  \"name\": \"<string>\",\n  \"match_type\": \"header\",\n  \"method\": \"unequals\",\n  \"body_data_type\": \"string\",\n  \"key\": \"<string>\",\n  \"value\": \"<string>\"\n}",
 																	"options": {
 																		"raw": {
 																			"headerFamily": "json",
@@ -3176,7 +3176,7 @@
 															},
 															"response": [
 																{
-																	"id": "e8f2bc97-e93e-449a-a399-d7a405944e37",
+																	"id": "1de952e3-9106-49aa-9d98-24726337831c",
 																	"name": "Integration Matcher updated",
 																	"originalRequest": {
 																		"method": "PUT",
@@ -3193,7 +3193,7 @@
 																		],
 																		"body": {
 																			"mode": "raw",
-																			"raw": "{\n  \"name\": \"<string>\",\n  \"match_type\": \"body\",\n  \"method\": \"equals\",\n  \"body_data_type\": \"xml\",\n  \"key\": \"<string>\",\n  \"value\": \"<string>\"\n}",
+																			"raw": "{\n  \"name\": \"<string>\",\n  \"match_type\": \"header\",\n  \"method\": \"unequals\",\n  \"body_data_type\": \"string\",\n  \"key\": \"<string>\",\n  \"value\": \"<string>\"\n}",
 																			"options": {
 																				"raw": {
 																					"headerFamily": "json",
@@ -3234,7 +3234,7 @@
 																	"cookie": []
 																},
 																{
-																	"id": "ed17586c-1591-4fc9-b32c-39e07b0414de",
+																	"id": "8bd5c3dd-b348-4907-bf8b-05b45ff4be64",
 																	"name": "Bad integration matcher parameter",
 																	"originalRequest": {
 																		"method": "PUT",
@@ -3251,7 +3251,7 @@
 																		],
 																		"body": {
 																			"mode": "raw",
-																			"raw": "{\n  \"name\": \"<string>\",\n  \"match_type\": \"body\",\n  \"method\": \"equals\",\n  \"body_data_type\": \"xml\",\n  \"key\": \"<string>\",\n  \"value\": \"<string>\"\n}",
+																			"raw": "{\n  \"name\": \"<string>\",\n  \"match_type\": \"header\",\n  \"method\": \"unequals\",\n  \"body_data_type\": \"string\",\n  \"key\": \"<string>\",\n  \"value\": \"<string>\"\n}",
 																			"options": {
 																				"raw": {
 																					"headerFamily": "json",
@@ -3295,7 +3295,7 @@
 														},
 														{
 															"name": "Removes integration matcher",
-															"id": "7f5f0632-d7c4-4f12-ad74-562872ba4ef8",
+															"id": "7e0f2c38-30f7-4143-aaac-6484f9471488",
 															"protocolProfileBehavior": {
 																"disableBodyPruning": true
 															},
@@ -3336,7 +3336,7 @@
 															},
 															"response": [
 																{
-																	"id": "e402b688-39fe-4699-910f-ad8b874ab9bc",
+																	"id": "31eb06ac-981e-4f60-8df3-f8db9920209b",
 																	"name": "integration matcher removed",
 																	"originalRequest": {
 																		"method": "DELETE",
@@ -3382,11 +3382,11 @@
 															]
 														}
 													],
-													"id": "6b92237e-0b70-4548-ae61-7c3eb8a5cc18"
+													"id": "eaed6943-5538-4a01-b11d-3578b07d22f9"
 												},
 												{
 													"name": "Get Integration Matcher linked to integration extractor",
-													"id": "d8f75d35-1857-40cf-a4dd-e6e7c46a4d8b",
+													"id": "b56401dd-3f7c-4254-ba23-df7b3be86fba",
 													"protocolProfileBehavior": {
 														"disableBodyPruning": true
 													},
@@ -3426,7 +3426,7 @@
 													},
 													"response": [
 														{
-															"id": "6b819e53-63ab-4ac9-9a06-00362c576ae8",
+															"id": "4bc110c9-378e-4301-bea4-a844247976b4",
 															"name": "Integration Matcher",
 															"originalRequest": {
 																"method": "GET",
@@ -3473,13 +3473,13 @@
 																}
 															],
 															"cookie": [],
-															"body": "[\n  {\n    \"id\": \"<integer>\",\n    \"integration_id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"match_type\": \"body\",\n    \"method\": \"equals\",\n    \"body_data_type\": \"xml\",\n    \"key\": \"<string>\",\n    \"value\": \"<string>\"\n  },\n  {\n    \"id\": \"<integer>\",\n    \"integration_id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"match_type\": \"header\",\n    \"method\": \"contains\",\n    \"body_data_type\": \"xml\",\n    \"key\": \"<string>\",\n    \"value\": \"<string>\"\n  }\n]"
+															"body": "[\n  {\n    \"id\": \"<integer>\",\n    \"integration_id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"match_type\": \"header\",\n    \"method\": \"contains\",\n    \"body_data_type\": \"xml\",\n    \"key\": \"<string>\",\n    \"value\": \"<string>\"\n  },\n  {\n    \"id\": \"<integer>\",\n    \"integration_id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"match_type\": \"header\",\n    \"method\": \"contains\",\n    \"body_data_type\": \"string\",\n    \"key\": \"<string>\",\n    \"value\": \"<string>\"\n  }\n]"
 														}
 													]
 												},
 												{
 													"name": "Add Integration Matcher",
-													"id": "dd9e856d-e25f-4074-a0c5-4c672d4a65e1",
+													"id": "5ca5997a-7a11-436b-9247-dcb9c673e5c0",
 													"protocolProfileBehavior": {
 														"disableBodyPruning": true
 													},
@@ -3493,7 +3493,7 @@
 														],
 														"body": {
 															"mode": "raw",
-															"raw": "{\n  \"id\": \"<integer>\",\n  \"integration_id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"match_type\": \"body\",\n  \"method\": \"equals\",\n  \"body_data_type\": \"string\",\n  \"key\": \"<string>\",\n  \"value\": \"<string>\"\n}",
+															"raw": "{\n  \"id\": \"<integer>\",\n  \"integration_id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"match_type\": \"body\",\n  \"method\": \"unequals\",\n  \"body_data_type\": \"string\",\n  \"key\": \"<string>\",\n  \"value\": \"<string>\"\n}",
 															"options": {
 																"raw": {
 																	"headerFamily": "json",
@@ -3529,7 +3529,7 @@
 													},
 													"response": [
 														{
-															"id": "bcc28a7e-3889-446c-8f1d-ed06f3111bfd",
+															"id": "4e1dfc52-7d79-4f61-a42f-ea4e6573d77d",
 															"name": "Integration Matcher Created",
 															"originalRequest": {
 																"method": "POST",
@@ -3546,7 +3546,7 @@
 																],
 																"body": {
 																	"mode": "raw",
-																	"raw": "{\n  \"id\": \"<integer>\",\n  \"integration_id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"match_type\": \"body\",\n  \"method\": \"equals\",\n  \"body_data_type\": \"string\",\n  \"key\": \"<string>\",\n  \"value\": \"<string>\"\n}",
+																	"raw": "{\n  \"id\": \"<integer>\",\n  \"integration_id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"match_type\": \"body\",\n  \"method\": \"unequals\",\n  \"body_data_type\": \"string\",\n  \"key\": \"<string>\",\n  \"value\": \"<string>\"\n}",
 																	"options": {
 																		"raw": {
 																			"headerFamily": "json",
@@ -3583,7 +3583,7 @@
 															"cookie": []
 														},
 														{
-															"id": "1344fd4d-9f0a-40a8-bad9-864e9be2a996",
+															"id": "36f62c44-29f8-4bf0-bd79-55d60c05db75",
 															"name": "Bad Integration Matcher params",
 															"originalRequest": {
 																"method": "POST",
@@ -3600,7 +3600,7 @@
 																],
 																"body": {
 																	"mode": "raw",
-																	"raw": "{\n  \"id\": \"<integer>\",\n  \"integration_id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"match_type\": \"body\",\n  \"method\": \"equals\",\n  \"body_data_type\": \"string\",\n  \"key\": \"<string>\",\n  \"value\": \"<string>\"\n}",
+																	"raw": "{\n  \"id\": \"<integer>\",\n  \"integration_id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"match_type\": \"body\",\n  \"method\": \"unequals\",\n  \"body_data_type\": \"string\",\n  \"key\": \"<string>\",\n  \"value\": \"<string>\"\n}",
 																	"options": {
 																		"raw": {
 																			"headerFamily": "json",
@@ -3639,11 +3639,11 @@
 													]
 												}
 											],
-											"id": "5df6dbe3-9412-425b-83ab-709387252f9f"
+											"id": "3c6158f6-91c7-4fc0-a482-f5c229a25b1b"
 										},
 										{
 											"name": "Update Integration",
-											"id": "2a678ac3-1cac-4440-9a03-50a19baebd89",
+											"id": "dfd20cf5-7786-414b-8b77-453def5d4f2a",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -3692,7 +3692,7 @@
 											},
 											"response": [
 												{
-													"id": "7427095f-5db7-4d37-988c-efd42102ef84",
+													"id": "b39b6e3b-11b0-4395-8dea-3f59cb9731fd",
 													"name": "Integration updated",
 													"originalRequest": {
 														"method": "PUT",
@@ -3748,7 +3748,7 @@
 										},
 										{
 											"name": "Remove integration",
-											"id": "a5039ed5-9a3b-4210-8588-a055fb1c66d1",
+											"id": "3eddc27b-b7ad-4637-9fb7-94a4b3d6c20d",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -3782,7 +3782,7 @@
 											},
 											"response": [
 												{
-													"id": "21f065c6-7a13-4701-ba7f-ef4a4393f8f7",
+													"id": "312dcf9b-dfa2-4f40-99eb-b577202e13fb",
 													"name": "integration removed",
 													"originalRequest": {
 														"method": "DELETE",
@@ -3823,11 +3823,11 @@
 											]
 										}
 									],
-									"id": "e01674be-7918-4a3a-a442-925062b148ea"
+									"id": "957493da-989f-4e03-b3a0-5304f986484c"
 								},
 								{
 									"name": "get all integrations",
-									"id": "60185ce3-3219-4549-ba24-d8a36b547192",
+									"id": "b56e2c78-362f-4c1b-bf81-ef13810ccebf",
 									"protocolProfileBehavior": {
 										"disableBodyPruning": true
 									},
@@ -3860,7 +3860,7 @@
 									},
 									"response": [
 										{
-											"id": "e22b6c83-0054-4ebe-8f02-4cd11221d16f",
+											"id": "b0b3686a-3546-4ea2-b61a-c546247869fd",
 											"name": "integration",
 											"originalRequest": {
 												"method": "GET",
@@ -3908,7 +3908,7 @@
 								},
 								{
 									"name": "create a new integration",
-									"id": "9d09eeb3-5def-4915-9ab7-2731bd52fbe8",
+									"id": "668408ed-f5a3-4d28-b781-251757a1e8c1",
 									"protocolProfileBehavior": {
 										"disableBodyPruning": true
 									},
@@ -3955,7 +3955,7 @@
 									},
 									"response": [
 										{
-											"id": "94239a39-f6c9-4987-bfac-4aa855d00379",
+											"id": "2247a74b-77f8-44ef-8641-f09deb85cbbc",
 											"name": "Integration Created",
 											"originalRequest": {
 												"method": "POST",
@@ -4016,7 +4016,7 @@
 									]
 								}
 							],
-							"id": "4d47b485-0016-4987-9631-e1da45b6a8c7"
+							"id": "cc77f4b2-985f-47dd-b66b-2a193f624821"
 						},
 						{
 							"name": "keys",
@@ -4026,7 +4026,7 @@
 									"item": [
 										{
 											"name": "Updates access key",
-											"id": "19316959-243d-4ebb-91af-5fc1c17ebde4",
+											"id": "1c962787-570e-43a6-ba2e-4d1e6c0d275e",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -4040,7 +4040,7 @@
 												],
 												"body": {
 													"mode": "raw",
-													"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"type\": \"ssh\",\n  \"project_id\": \"<integer>\",\n  \"override_secret\": \"<boolean>\",\n  \"login_password\": {\n    \"password\": \"<string>\",\n    \"login\": \"<string>\"\n  },\n  \"ssh\": {\n    \"login\": \"<string>\",\n    \"passphrase\": \"<string>\",\n    \"private_key\": \"<string>\"\n  }\n}",
+													"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"type\": \"none\",\n  \"project_id\": \"<integer>\",\n  \"override_secret\": \"<boolean>\",\n  \"login_password\": {\n    \"password\": \"<string>\",\n    \"login\": \"<string>\"\n  },\n  \"ssh\": {\n    \"login\": \"<string>\",\n    \"passphrase\": \"<string>\",\n    \"private_key\": \"<string>\"\n  }\n}",
 													"options": {
 														"raw": {
 															"headerFamily": "json",
@@ -4075,7 +4075,7 @@
 											},
 											"response": [
 												{
-													"id": "81f3a5e0-a438-4310-b05d-df3eb21173e9",
+													"id": "5efe88c0-5ff6-4efd-a4f2-659b2853775c",
 													"name": "Key updated",
 													"originalRequest": {
 														"method": "PUT",
@@ -4092,7 +4092,7 @@
 														],
 														"body": {
 															"mode": "raw",
-															"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"type\": \"ssh\",\n  \"project_id\": \"<integer>\",\n  \"override_secret\": \"<boolean>\",\n  \"login_password\": {\n    \"password\": \"<string>\",\n    \"login\": \"<string>\"\n  },\n  \"ssh\": {\n    \"login\": \"<string>\",\n    \"passphrase\": \"<string>\",\n    \"private_key\": \"<string>\"\n  }\n}",
+															"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"type\": \"none\",\n  \"project_id\": \"<integer>\",\n  \"override_secret\": \"<boolean>\",\n  \"login_password\": {\n    \"password\": \"<string>\",\n    \"login\": \"<string>\"\n  },\n  \"ssh\": {\n    \"login\": \"<string>\",\n    \"passphrase\": \"<string>\",\n    \"private_key\": \"<string>\"\n  }\n}",
 															"options": {
 																"raw": {
 																	"headerFamily": "json",
@@ -4128,7 +4128,7 @@
 													"cookie": []
 												},
 												{
-													"id": "1a1d39bc-e592-49a1-85ed-83007478caaf",
+													"id": "1cf9aa9c-cb98-4f7c-8403-9f1f7a5567c3",
 													"name": "Bad type",
 													"originalRequest": {
 														"method": "PUT",
@@ -4145,7 +4145,7 @@
 														],
 														"body": {
 															"mode": "raw",
-															"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"type\": \"ssh\",\n  \"project_id\": \"<integer>\",\n  \"override_secret\": \"<boolean>\",\n  \"login_password\": {\n    \"password\": \"<string>\",\n    \"login\": \"<string>\"\n  },\n  \"ssh\": {\n    \"login\": \"<string>\",\n    \"passphrase\": \"<string>\",\n    \"private_key\": \"<string>\"\n  }\n}",
+															"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"type\": \"none\",\n  \"project_id\": \"<integer>\",\n  \"override_secret\": \"<boolean>\",\n  \"login_password\": {\n    \"password\": \"<string>\",\n    \"login\": \"<string>\"\n  },\n  \"ssh\": {\n    \"login\": \"<string>\",\n    \"passphrase\": \"<string>\",\n    \"private_key\": \"<string>\"\n  }\n}",
 															"options": {
 																"raw": {
 																	"headerFamily": "json",
@@ -4184,7 +4184,7 @@
 										},
 										{
 											"name": "Removes access key",
-											"id": "03abbf99-c89c-48c0-b0e2-abeb8ed1b79b",
+											"id": "d2b3a57f-5d9c-49cf-8f15-8c6963c7c455",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -4218,7 +4218,7 @@
 											},
 											"response": [
 												{
-													"id": "000f4f1c-d28b-4452-8f00-d15096d9435c",
+													"id": "30d1c47b-485b-4ec1-85b0-77473b2d685b",
 													"name": "access key removed",
 													"originalRequest": {
 														"method": "DELETE",
@@ -4259,11 +4259,11 @@
 											]
 										}
 									],
-									"id": "ddd1de1b-0c1e-4f6a-b3ed-dde98838203c"
+									"id": "fab6ac75-0c50-44b3-95d0-5b9812d14e4d"
 								},
 								{
 									"name": "Get access keys linked to project",
-									"id": "08b1f2b9-c5ab-42e8-b378-e0bb07e06baa",
+									"id": "19a11020-22d0-4f44-b9ba-a1fab45a4011",
 									"protocolProfileBehavior": {
 										"disableBodyPruning": true
 									},
@@ -4276,7 +4276,7 @@
 											}
 										],
 										"url": {
-											"raw": "{{baseUrl}}/project/:project_id/keys?Key type=login_password&sort=name&order=desc",
+											"raw": "{{baseUrl}}/project/:project_id/keys?Key type=ssh&sort=name&order=asc",
 											"host": [
 												"{{baseUrl}}"
 											],
@@ -4288,7 +4288,7 @@
 											"query": [
 												{
 													"key": "Key type",
-													"value": "login_password",
+													"value": "ssh",
 													"description": "Filter by key type"
 												},
 												{
@@ -4298,7 +4298,7 @@
 												},
 												{
 													"key": "order",
-													"value": "desc",
+													"value": "asc",
 													"description": "(Required) ordering manner"
 												}
 											],
@@ -4313,7 +4313,7 @@
 									},
 									"response": [
 										{
-											"id": "965f29b7-fdae-4f7e-9b92-5ed057fc4faf",
+											"id": "4f2cef7f-81ae-409f-b9be-c50737a6a2bb",
 											"name": "Access Keys",
 											"originalRequest": {
 												"method": "GET",
@@ -4329,7 +4329,7 @@
 													}
 												],
 												"url": {
-													"raw": "{{baseUrl}}/project/:project_id/keys?Key type=login_password&sort=name&order=desc",
+													"raw": "{{baseUrl}}/project/:project_id/keys?Key type=ssh&sort=name&order=asc",
 													"host": [
 														"{{baseUrl}}"
 													],
@@ -4342,7 +4342,7 @@
 														{
 															"description": "Filter by key type",
 															"key": "Key type",
-															"value": "login_password"
+															"value": "ssh"
 														},
 														{
 															"description": "(Required) sorting name",
@@ -4352,7 +4352,7 @@
 														{
 															"description": "(Required) ordering manner",
 															"key": "order",
-															"value": "desc"
+															"value": "asc"
 														}
 													],
 													"variable": [
@@ -4372,13 +4372,13 @@
 												}
 											],
 											"cookie": [],
-											"body": "[\n  {\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"type\": \"ssh\",\n    \"project_id\": \"<integer>\"\n  },\n  {\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"type\": \"login_password\",\n    \"project_id\": \"<integer>\"\n  }\n]"
+											"body": "[\n  {\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"type\": \"ssh\",\n    \"project_id\": \"<integer>\"\n  },\n  {\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"type\": \"none\",\n    \"project_id\": \"<integer>\"\n  }\n]"
 										}
 									]
 								},
 								{
 									"name": "Add access key",
-									"id": "3dd8e287-e507-47ba-9bec-eda1f79159ed",
+									"id": "f4c4e359-0bd2-41ec-9624-2a9877f6cba3",
 									"protocolProfileBehavior": {
 										"disableBodyPruning": true
 									},
@@ -4396,7 +4396,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"type\": \"ssh\",\n  \"project_id\": \"<integer>\",\n  \"override_secret\": \"<boolean>\",\n  \"login_password\": {\n    \"password\": \"<string>\",\n    \"login\": \"<string>\"\n  },\n  \"ssh\": {\n    \"login\": \"<string>\",\n    \"passphrase\": \"<string>\",\n    \"private_key\": \"<string>\"\n  }\n}",
+											"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"type\": \"none\",\n  \"project_id\": \"<integer>\",\n  \"override_secret\": \"<boolean>\",\n  \"login_password\": {\n    \"password\": \"<string>\",\n    \"login\": \"<string>\"\n  },\n  \"ssh\": {\n    \"login\": \"<string>\",\n    \"passphrase\": \"<string>\",\n    \"private_key\": \"<string>\"\n  }\n}",
 											"options": {
 												"raw": {
 													"headerFamily": "json",
@@ -4425,7 +4425,7 @@
 									},
 									"response": [
 										{
-											"id": "e00c1385-7798-4625-9297-e923d4edb502",
+											"id": "a6fc4ed8-aac4-4877-98ab-03c13f8e72e7",
 											"name": "Access Key created",
 											"originalRequest": {
 												"method": "POST",
@@ -4446,7 +4446,7 @@
 												],
 												"body": {
 													"mode": "raw",
-													"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"type\": \"ssh\",\n  \"project_id\": \"<integer>\",\n  \"override_secret\": \"<boolean>\",\n  \"login_password\": {\n    \"password\": \"<string>\",\n    \"login\": \"<string>\"\n  },\n  \"ssh\": {\n    \"login\": \"<string>\",\n    \"passphrase\": \"<string>\",\n    \"private_key\": \"<string>\"\n  }\n}",
+													"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"type\": \"none\",\n  \"project_id\": \"<integer>\",\n  \"override_secret\": \"<boolean>\",\n  \"login_password\": {\n    \"password\": \"<string>\",\n    \"login\": \"<string>\"\n  },\n  \"ssh\": {\n    \"login\": \"<string>\",\n    \"passphrase\": \"<string>\",\n    \"private_key\": \"<string>\"\n  }\n}",
 													"options": {
 														"raw": {
 															"headerFamily": "json",
@@ -4481,10 +4481,10 @@
 												}
 											],
 											"cookie": [],
-											"body": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"type\": \"none\",\n  \"project_id\": \"<integer>\"\n}"
+											"body": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"type\": \"ssh\",\n  \"project_id\": \"<integer>\"\n}"
 										},
 										{
-											"id": "7ae641bd-4726-4a0b-bd45-cb63f2baafba",
+											"id": "59b6d52e-da84-44c9-851e-d4393afa9a46",
 											"name": "Bad type",
 											"originalRequest": {
 												"method": "POST",
@@ -4501,7 +4501,7 @@
 												],
 												"body": {
 													"mode": "raw",
-													"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"type\": \"ssh\",\n  \"project_id\": \"<integer>\",\n  \"override_secret\": \"<boolean>\",\n  \"login_password\": {\n    \"password\": \"<string>\",\n    \"login\": \"<string>\"\n  },\n  \"ssh\": {\n    \"login\": \"<string>\",\n    \"passphrase\": \"<string>\",\n    \"private_key\": \"<string>\"\n  }\n}",
+													"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"type\": \"none\",\n  \"project_id\": \"<integer>\",\n  \"override_secret\": \"<boolean>\",\n  \"login_password\": {\n    \"password\": \"<string>\",\n    \"login\": \"<string>\"\n  },\n  \"ssh\": {\n    \"login\": \"<string>\",\n    \"passphrase\": \"<string>\",\n    \"private_key\": \"<string>\"\n  }\n}",
 													"options": {
 														"raw": {
 															"headerFamily": "json",
@@ -4535,7 +4535,7 @@
 									]
 								}
 							],
-							"id": "c8fbc464-6548-45d9-81d1-0fbcdf52c361"
+							"id": "c880a7dd-6b66-40a7-adf2-d065646a2946"
 						},
 						{
 							"name": "repositories",
@@ -4545,7 +4545,7 @@
 									"item": [
 										{
 											"name": "Get repository",
-											"id": "1c402a46-a1c0-480d-b25d-06701cbd17d2",
+											"id": "872bcd9d-c4a9-4969-ae1c-910fd0c8ef1b",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -4584,7 +4584,7 @@
 											},
 											"response": [
 												{
-													"id": "d7854f73-2158-4ac6-bbdd-d13ef97b1e61",
+													"id": "90366237-fdd2-43a4-94ca-c069a339eaf4",
 													"name": "repository object",
 													"originalRequest": {
 														"method": "GET",
@@ -4636,7 +4636,7 @@
 										},
 										{
 											"name": "Updates repository",
-											"id": "358e02f1-72bf-4eca-9d50-dda466d23fae",
+											"id": "cd6dc4a3-e081-4e8e-90b7-f30c538a32a8",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -4685,7 +4685,7 @@
 											},
 											"response": [
 												{
-													"id": "bb311703-e744-420a-a21a-0bb6dd591ea0",
+													"id": "b6e72d6f-17b3-42fa-9982-ba4a235da1ba",
 													"name": "Repository updated",
 													"originalRequest": {
 														"method": "PUT",
@@ -4738,7 +4738,7 @@
 													"cookie": []
 												},
 												{
-													"id": "135d3e64-2402-43fa-9495-c5cbc96ef05e",
+													"id": "be0a890a-de74-4e2d-ac29-c96031c6cc97",
 													"name": "Bad request",
 													"originalRequest": {
 														"method": "PUT",
@@ -4794,7 +4794,7 @@
 										},
 										{
 											"name": "Removes repository",
-											"id": "f71ff0f5-5d06-4899-be1d-a9b8fbe30d3e",
+											"id": "9d84b566-30bd-41d0-b3b8-b3cbbaae5f7b",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -4828,7 +4828,7 @@
 											},
 											"response": [
 												{
-													"id": "db129651-2e8d-472d-ba52-2c16b69638c1",
+													"id": "d420f1b5-beeb-4299-bd2c-e250b485d09c",
 													"name": "repository removed",
 													"originalRequest": {
 														"method": "DELETE",
@@ -4869,11 +4869,11 @@
 											]
 										}
 									],
-									"id": "bec3b0e4-b0f4-4dbe-ad53-a3e32c478ceb"
+									"id": "327fb141-5c84-448f-bbaa-6b383df1b468"
 								},
 								{
 									"name": "Get repositories",
-									"id": "2b47c490-2d3b-4f95-bead-7431a5e77ada",
+									"id": "53ca0d32-ac28-4715-9e2c-d17296d19564",
 									"protocolProfileBehavior": {
 										"disableBodyPruning": true
 									},
@@ -4886,7 +4886,7 @@
 											}
 										],
 										"url": {
-											"raw": "{{baseUrl}}/project/:project_id/repositories?sort=git_url&order=desc",
+											"raw": "{{baseUrl}}/project/:project_id/repositories?sort=ssh_key&order=asc",
 											"host": [
 												"{{baseUrl}}"
 											],
@@ -4898,12 +4898,12 @@
 											"query": [
 												{
 													"key": "sort",
-													"value": "git_url",
+													"value": "ssh_key",
 													"description": "(Required) sorting name"
 												},
 												{
 													"key": "order",
-													"value": "desc",
+													"value": "asc",
 													"description": "(Required) ordering manner"
 												}
 											],
@@ -4918,7 +4918,7 @@
 									},
 									"response": [
 										{
-											"id": "37341381-8dec-4d23-95a0-87fb0e4c1c24",
+											"id": "42b8cdb1-d0b8-4d42-8540-41adef65476a",
 											"name": "repositories",
 											"originalRequest": {
 												"method": "GET",
@@ -4934,7 +4934,7 @@
 													}
 												],
 												"url": {
-													"raw": "{{baseUrl}}/project/:project_id/repositories?sort=git_url&order=desc",
+													"raw": "{{baseUrl}}/project/:project_id/repositories?sort=ssh_key&order=asc",
 													"host": [
 														"{{baseUrl}}"
 													],
@@ -4947,12 +4947,12 @@
 														{
 															"description": "(Required) sorting name",
 															"key": "sort",
-															"value": "git_url"
+															"value": "ssh_key"
 														},
 														{
 															"description": "(Required) ordering manner",
 															"key": "order",
-															"value": "desc"
+															"value": "asc"
 														}
 													],
 													"variable": [
@@ -4978,7 +4978,7 @@
 								},
 								{
 									"name": "Add repository",
-									"id": "a3f7ebea-5281-4479-bbcc-45022d7b4711",
+									"id": "0c8f0684-42b5-4ea9-8ac1-8c37c7f71298",
 									"protocolProfileBehavior": {
 										"disableBodyPruning": true
 									},
@@ -5025,7 +5025,7 @@
 									},
 									"response": [
 										{
-											"id": "381f9322-ba29-43f2-abfc-589a45e9c491",
+											"id": "a493b80e-2207-4770-9be2-d34d602ee639",
 											"name": "Repository created",
 											"originalRequest": {
 												"method": "POST",
@@ -5086,7 +5086,7 @@
 									]
 								}
 							],
-							"id": "508e3e58-1203-4cc3-b11c-fe8432a6e5d2"
+							"id": "6d392179-addc-4252-9a34-daedcf6d09a0"
 						},
 						{
 							"name": "inventory",
@@ -5096,7 +5096,7 @@
 									"item": [
 										{
 											"name": "Get inventory",
-											"id": "9d37a3d2-21bd-4920-b508-f0e506ca492a",
+											"id": "7d723843-fd62-48f4-a29a-fbeae54cee7d",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -5135,7 +5135,7 @@
 											},
 											"response": [
 												{
-													"id": "500fe984-b1fb-4cf9-bc65-092031bde1c8",
+													"id": "9f0a6546-326f-43cb-90f3-8807271704d0",
 													"name": "inventory object",
 													"originalRequest": {
 														"method": "GET",
@@ -5181,13 +5181,13 @@
 														}
 													],
 													"cookie": [],
-													"body": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"project_id\": \"<integer>\",\n  \"inventory\": \"<string>\",\n  \"ssh_key_id\": \"<integer>\",\n  \"become_key_id\": \"<integer>\",\n  \"repository_id\": \"<integer>\",\n  \"type\": \"static-yaml\"\n}"
+													"body": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"project_id\": \"<integer>\",\n  \"inventory\": \"<string>\",\n  \"ssh_key_id\": \"<integer>\",\n  \"become_key_id\": \"<integer>\",\n  \"repository_id\": \"<integer>\",\n  \"type\": \"static\"\n}"
 												}
 											]
 										},
 										{
 											"name": "Updates inventory",
-											"id": "35be6943-1ea9-4817-a621-5ae68b91b836",
+											"id": "709e9a94-8876-4d32-94cc-d600d21e3cf9",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -5201,7 +5201,7 @@
 												],
 												"body": {
 													"mode": "raw",
-													"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"project_id\": \"<integer>\",\n  \"inventory\": \"<string>\",\n  \"ssh_key_id\": \"<integer>\",\n  \"become_key_id\": \"<integer>\",\n  \"repository_id\": \"<integer>\",\n  \"type\": \"file\"\n}",
+													"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"project_id\": \"<integer>\",\n  \"inventory\": \"<string>\",\n  \"ssh_key_id\": \"<integer>\",\n  \"become_key_id\": \"<integer>\",\n  \"repository_id\": \"<integer>\",\n  \"type\": \"static\"\n}",
 													"options": {
 														"raw": {
 															"headerFamily": "json",
@@ -5236,7 +5236,7 @@
 											},
 											"response": [
 												{
-													"id": "4f512039-e9d8-428a-a856-aedf678c843d",
+													"id": "fcabbd06-a18f-4a1c-b69c-046173f60b0a",
 													"name": "Inventory updated",
 													"originalRequest": {
 														"method": "PUT",
@@ -5253,7 +5253,7 @@
 														],
 														"body": {
 															"mode": "raw",
-															"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"project_id\": \"<integer>\",\n  \"inventory\": \"<string>\",\n  \"ssh_key_id\": \"<integer>\",\n  \"become_key_id\": \"<integer>\",\n  \"repository_id\": \"<integer>\",\n  \"type\": \"file\"\n}",
+															"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"project_id\": \"<integer>\",\n  \"inventory\": \"<string>\",\n  \"ssh_key_id\": \"<integer>\",\n  \"become_key_id\": \"<integer>\",\n  \"repository_id\": \"<integer>\",\n  \"type\": \"static\"\n}",
 															"options": {
 																"raw": {
 																	"headerFamily": "json",
@@ -5292,7 +5292,7 @@
 										},
 										{
 											"name": "Removes inventory",
-											"id": "a09bbb46-4a32-4d68-8a9b-e968c48ec0e8",
+											"id": "ee7ecd8a-5fd9-4aea-b54e-abcecd137a60",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -5326,7 +5326,7 @@
 											},
 											"response": [
 												{
-													"id": "50da87c0-ae8e-4d21-b394-b7b9dd3fa4b9",
+													"id": "c282c49b-a279-4c2f-80d6-398cfdca1cc8",
 													"name": "inventory removed",
 													"originalRequest": {
 														"method": "DELETE",
@@ -5367,11 +5367,11 @@
 											]
 										}
 									],
-									"id": "85a8cd67-d4e3-4378-a747-a12dc13d986e"
+									"id": "e34a0ff9-8cf0-41f6-8301-17b2ca43a702"
 								},
 								{
 									"name": "Get inventory",
-									"id": "22be50b0-ba48-421d-afd9-8340ca387704",
+									"id": "6f0c2597-d220-4e2f-ae84-089432c4dcb9",
 									"protocolProfileBehavior": {
 										"disableBodyPruning": true
 									},
@@ -5384,7 +5384,7 @@
 											}
 										],
 										"url": {
-											"raw": "{{baseUrl}}/project/:project_id/inventory?sort=name&order=desc",
+											"raw": "{{baseUrl}}/project/:project_id/inventory?sort=name&order=asc",
 											"host": [
 												"{{baseUrl}}"
 											],
@@ -5401,7 +5401,7 @@
 												},
 												{
 													"key": "order",
-													"value": "desc",
+													"value": "asc",
 													"description": "(Required) ordering manner"
 												}
 											],
@@ -5416,7 +5416,7 @@
 									},
 									"response": [
 										{
-											"id": "b4082ae6-ee91-4d9c-89a4-0323336b7acf",
+											"id": "f26dd388-68b3-4ca5-8ddd-b120f35ef51f",
 											"name": "inventory",
 											"originalRequest": {
 												"method": "GET",
@@ -5432,7 +5432,7 @@
 													}
 												],
 												"url": {
-													"raw": "{{baseUrl}}/project/:project_id/inventory?sort=name&order=desc",
+													"raw": "{{baseUrl}}/project/:project_id/inventory?sort=name&order=asc",
 													"host": [
 														"{{baseUrl}}"
 													],
@@ -5450,7 +5450,7 @@
 														{
 															"description": "(Required) ordering manner",
 															"key": "order",
-															"value": "desc"
+															"value": "asc"
 														}
 													],
 													"variable": [
@@ -5470,13 +5470,13 @@
 												}
 											],
 											"cookie": [],
-											"body": "[\n  {\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"project_id\": \"<integer>\",\n    \"inventory\": \"<string>\",\n    \"ssh_key_id\": \"<integer>\",\n    \"become_key_id\": \"<integer>\",\n    \"repository_id\": \"<integer>\",\n    \"type\": \"static-yaml\"\n  },\n  {\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"project_id\": \"<integer>\",\n    \"inventory\": \"<string>\",\n    \"ssh_key_id\": \"<integer>\",\n    \"become_key_id\": \"<integer>\",\n    \"repository_id\": \"<integer>\",\n    \"type\": \"terraform-workspace\"\n  }\n]"
+											"body": "[\n  {\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"project_id\": \"<integer>\",\n    \"inventory\": \"<string>\",\n    \"ssh_key_id\": \"<integer>\",\n    \"become_key_id\": \"<integer>\",\n    \"repository_id\": \"<integer>\",\n    \"type\": \"terraform-workspace\"\n  },\n  {\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"project_id\": \"<integer>\",\n    \"inventory\": \"<string>\",\n    \"ssh_key_id\": \"<integer>\",\n    \"become_key_id\": \"<integer>\",\n    \"repository_id\": \"<integer>\",\n    \"type\": \"static-yaml\"\n  }\n]"
 										}
 									]
 								},
 								{
 									"name": "create inventory",
-									"id": "e229b128-a5cb-4ce1-b98c-28687423728d",
+									"id": "56c4bcfc-069f-4182-ae99-7878b7aa0896",
 									"protocolProfileBehavior": {
 										"disableBodyPruning": true
 									},
@@ -5494,7 +5494,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"project_id\": \"<integer>\",\n  \"inventory\": \"<string>\",\n  \"ssh_key_id\": \"<integer>\",\n  \"become_key_id\": \"<integer>\",\n  \"repository_id\": \"<integer>\",\n  \"type\": \"file\"\n}",
+											"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"project_id\": \"<integer>\",\n  \"inventory\": \"<string>\",\n  \"ssh_key_id\": \"<integer>\",\n  \"become_key_id\": \"<integer>\",\n  \"repository_id\": \"<integer>\",\n  \"type\": \"static\"\n}",
 											"options": {
 												"raw": {
 													"headerFamily": "json",
@@ -5523,7 +5523,7 @@
 									},
 									"response": [
 										{
-											"id": "6d9db97d-e978-40ca-bf33-6f5af1fd9080",
+											"id": "170f0c0d-fd4a-48a7-8730-e0bb2789a661",
 											"name": "inventory created",
 											"originalRequest": {
 												"method": "POST",
@@ -5544,7 +5544,7 @@
 												],
 												"body": {
 													"mode": "raw",
-													"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"project_id\": \"<integer>\",\n  \"inventory\": \"<string>\",\n  \"ssh_key_id\": \"<integer>\",\n  \"become_key_id\": \"<integer>\",\n  \"repository_id\": \"<integer>\",\n  \"type\": \"file\"\n}",
+													"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"project_id\": \"<integer>\",\n  \"inventory\": \"<string>\",\n  \"ssh_key_id\": \"<integer>\",\n  \"become_key_id\": \"<integer>\",\n  \"repository_id\": \"<integer>\",\n  \"type\": \"static\"\n}",
 													"options": {
 														"raw": {
 															"headerFamily": "json",
@@ -5579,12 +5579,12 @@
 												}
 											],
 											"cookie": [],
-											"body": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"project_id\": \"<integer>\",\n  \"inventory\": \"<string>\",\n  \"ssh_key_id\": \"<integer>\",\n  \"become_key_id\": \"<integer>\",\n  \"repository_id\": \"<integer>\",\n  \"type\": \"static-yaml\"\n}"
+											"body": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"project_id\": \"<integer>\",\n  \"inventory\": \"<string>\",\n  \"ssh_key_id\": \"<integer>\",\n  \"become_key_id\": \"<integer>\",\n  \"repository_id\": \"<integer>\",\n  \"type\": \"static\"\n}"
 										}
 									]
 								}
 							],
-							"id": "65a275ff-a192-49de-a9a6-0e97073708a0"
+							"id": "68b2c9da-f46e-4140-9e66-c4cb0960c938"
 						},
 						{
 							"name": "environment",
@@ -5594,7 +5594,7 @@
 									"item": [
 										{
 											"name": "Get environment",
-											"id": "fd566b91-ab5f-46c5-a603-30c388caeb7d",
+											"id": "bb14e4a5-1395-4a3c-bd60-f3d24ec85385",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -5633,7 +5633,7 @@
 											},
 											"response": [
 												{
-													"id": "98a64a43-fe9d-4eac-9324-defec1e9ec8e",
+													"id": "8e0eb9d5-48ec-4959-ab9c-167d9204e260",
 													"name": "environment object",
 													"originalRequest": {
 														"method": "GET",
@@ -5679,13 +5679,13 @@
 														}
 													],
 													"cookie": [],
-													"body": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"project_id\": \"<integer>\",\n  \"password\": \"<string>\",\n  \"json\": \"<string>\",\n  \"env\": \"<string>\",\n  \"secrets\": [\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"var\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"env\"\n    }\n  ]\n}"
+													"body": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"project_id\": \"<integer>\",\n  \"password\": \"<string>\",\n  \"json\": \"<string>\",\n  \"env\": \"<string>\",\n  \"secrets\": [\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"env\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"env\"\n    }\n  ]\n}"
 												}
 											]
 										},
 										{
 											"name": "Update environment",
-											"id": "4a7ae49d-c4b9-488b-b9f7-59bd1eaf1abd",
+											"id": "ee85eded-0bf2-4f2e-b8a0-6c36d7691823",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -5699,7 +5699,7 @@
 												],
 												"body": {
 													"mode": "raw",
-													"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"project_id\": \"<integer>\",\n  \"password\": \"<string>\",\n  \"json\": \"<string>\",\n  \"env\": \"<string>\",\n  \"secrets\": [\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"secret\": \"<string>\",\n      \"type\": \"var\",\n      \"operation\": \"delete\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"secret\": \"<string>\",\n      \"type\": \"env\",\n      \"operation\": \"update\"\n    }\n  ]\n}",
+													"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"project_id\": \"<integer>\",\n  \"password\": \"<string>\",\n  \"json\": \"<string>\",\n  \"env\": \"<string>\",\n  \"secrets\": [\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"secret\": \"<string>\",\n      \"type\": \"env\",\n      \"operation\": \"update\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"secret\": \"<string>\",\n      \"type\": \"var\",\n      \"operation\": \"create\"\n    }\n  ]\n}",
 													"options": {
 														"raw": {
 															"headerFamily": "json",
@@ -5734,7 +5734,7 @@
 											},
 											"response": [
 												{
-													"id": "1589559e-f9b1-4f74-a6da-fb4bf14ed29c",
+													"id": "c8d7184a-98fe-4988-ac25-34d367956c50",
 													"name": "Environment Updated",
 													"originalRequest": {
 														"method": "PUT",
@@ -5751,7 +5751,7 @@
 														],
 														"body": {
 															"mode": "raw",
-															"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"project_id\": \"<integer>\",\n  \"password\": \"<string>\",\n  \"json\": \"<string>\",\n  \"env\": \"<string>\",\n  \"secrets\": [\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"secret\": \"<string>\",\n      \"type\": \"var\",\n      \"operation\": \"delete\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"secret\": \"<string>\",\n      \"type\": \"env\",\n      \"operation\": \"update\"\n    }\n  ]\n}",
+															"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"project_id\": \"<integer>\",\n  \"password\": \"<string>\",\n  \"json\": \"<string>\",\n  \"env\": \"<string>\",\n  \"secrets\": [\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"secret\": \"<string>\",\n      \"type\": \"env\",\n      \"operation\": \"update\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"secret\": \"<string>\",\n      \"type\": \"var\",\n      \"operation\": \"create\"\n    }\n  ]\n}",
 															"options": {
 																"raw": {
 																	"headerFamily": "json",
@@ -5790,7 +5790,7 @@
 										},
 										{
 											"name": "Removes environment",
-											"id": "46c6b8dc-04c0-43d8-9b5b-c8b28fcfd16a",
+											"id": "98ceba89-88f4-49cb-a9ec-e162e0908045",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -5824,7 +5824,7 @@
 											},
 											"response": [
 												{
-													"id": "3ad305b8-134c-4c3d-92df-1589d3436b9a",
+													"id": "9aa29a4c-8c47-4509-884c-2a46ac8edf74",
 													"name": "environment removed",
 													"originalRequest": {
 														"method": "DELETE",
@@ -5865,11 +5865,11 @@
 											]
 										}
 									],
-									"id": "e8152d27-d6de-431d-8c91-89ba784b50a0"
+									"id": "0bf894f6-e139-4ff8-8dd1-55f4c17cd54d"
 								},
 								{
 									"name": "Get environment",
-									"id": "89ee5ff3-d14d-49ad-86f0-b0fdbd39ea1a",
+									"id": "b30a4604-8606-4f8b-8bd5-6ca9b424985f",
 									"protocolProfileBehavior": {
 										"disableBodyPruning": true
 									},
@@ -5914,7 +5914,7 @@
 									},
 									"response": [
 										{
-											"id": "75d998b6-c547-49c8-861e-486998405b63",
+											"id": "00eb66ba-8c4a-46d3-a2d5-da0e260619dd",
 											"name": "environment",
 											"originalRequest": {
 												"method": "GET",
@@ -5968,13 +5968,13 @@
 												}
 											],
 											"cookie": [],
-											"body": "[\n  {\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"project_id\": \"<integer>\",\n    \"password\": \"<string>\",\n    \"json\": \"<string>\",\n    \"env\": \"<string>\",\n    \"secrets\": [\n      {\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"type\": \"env\"\n      },\n      {\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"type\": \"env\"\n      }\n    ]\n  },\n  {\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"project_id\": \"<integer>\",\n    \"password\": \"<string>\",\n    \"json\": \"<string>\",\n    \"env\": \"<string>\",\n    \"secrets\": [\n      {\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"type\": \"var\"\n      },\n      {\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"type\": \"env\"\n      }\n    ]\n  }\n]"
+											"body": "[\n  {\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"project_id\": \"<integer>\",\n    \"password\": \"<string>\",\n    \"json\": \"<string>\",\n    \"env\": \"<string>\",\n    \"secrets\": [\n      {\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"type\": \"var\"\n      },\n      {\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"type\": \"var\"\n      }\n    ]\n  },\n  {\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"project_id\": \"<integer>\",\n    \"password\": \"<string>\",\n    \"json\": \"<string>\",\n    \"env\": \"<string>\",\n    \"secrets\": [\n      {\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"type\": \"env\"\n      },\n      {\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"type\": \"var\"\n      }\n    ]\n  }\n]"
 										}
 									]
 								},
 								{
 									"name": "Add environment",
-									"id": "62f7cb67-eb8c-4039-9a4a-37f304d2d2da",
+									"id": "f4fa5c06-6af3-4b75-8ed5-2ef4d4e8e66e",
 									"protocolProfileBehavior": {
 										"disableBodyPruning": true
 									},
@@ -5992,7 +5992,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"project_id\": \"<integer>\",\n  \"password\": \"<string>\",\n  \"json\": \"<string>\",\n  \"env\": \"<string>\",\n  \"secrets\": [\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"secret\": \"<string>\",\n      \"type\": \"var\",\n      \"operation\": \"delete\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"secret\": \"<string>\",\n      \"type\": \"env\",\n      \"operation\": \"update\"\n    }\n  ]\n}",
+											"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"project_id\": \"<integer>\",\n  \"password\": \"<string>\",\n  \"json\": \"<string>\",\n  \"env\": \"<string>\",\n  \"secrets\": [\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"secret\": \"<string>\",\n      \"type\": \"env\",\n      \"operation\": \"update\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"secret\": \"<string>\",\n      \"type\": \"var\",\n      \"operation\": \"create\"\n    }\n  ]\n}",
 											"options": {
 												"raw": {
 													"headerFamily": "json",
@@ -6021,7 +6021,7 @@
 									},
 									"response": [
 										{
-											"id": "c76c1808-534e-4716-b123-04cbc0208ffc",
+											"id": "5e0a2865-0a27-4777-a8c0-86c0fce63a7b",
 											"name": "Environment created",
 											"originalRequest": {
 												"method": "POST",
@@ -6042,7 +6042,7 @@
 												],
 												"body": {
 													"mode": "raw",
-													"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"project_id\": \"<integer>\",\n  \"password\": \"<string>\",\n  \"json\": \"<string>\",\n  \"env\": \"<string>\",\n  \"secrets\": [\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"secret\": \"<string>\",\n      \"type\": \"var\",\n      \"operation\": \"delete\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"secret\": \"<string>\",\n      \"type\": \"env\",\n      \"operation\": \"update\"\n    }\n  ]\n}",
+													"raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"project_id\": \"<integer>\",\n  \"password\": \"<string>\",\n  \"json\": \"<string>\",\n  \"env\": \"<string>\",\n  \"secrets\": [\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"secret\": \"<string>\",\n      \"type\": \"env\",\n      \"operation\": \"update\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"secret\": \"<string>\",\n      \"type\": \"var\",\n      \"operation\": \"create\"\n    }\n  ]\n}",
 													"options": {
 														"raw": {
 															"headerFamily": "json",
@@ -6077,12 +6077,12 @@
 												}
 											],
 											"cookie": [],
-											"body": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"project_id\": \"<integer>\",\n  \"password\": \"<string>\",\n  \"json\": \"<string>\",\n  \"env\": \"<string>\",\n  \"secrets\": [\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"var\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"env\"\n    }\n  ]\n}"
+											"body": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"project_id\": \"<integer>\",\n  \"password\": \"<string>\",\n  \"json\": \"<string>\",\n  \"env\": \"<string>\",\n  \"secrets\": [\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"env\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"env\"\n    }\n  ]\n}"
 										}
 									]
 								}
 							],
-							"id": "1185a478-8344-44b0-9a00-79ee6463c27d"
+							"id": "c5e31002-3b4f-47f7-b348-0ccee09582f7"
 						},
 						{
 							"name": "templates",
@@ -6092,7 +6092,7 @@
 									"item": [
 										{
 											"name": "Get template",
-											"id": "f329630e-e6dc-40a4-bf8c-7336e2027dd5",
+											"id": "104660cc-eda5-4562-ba18-657d17c1ad72",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -6131,7 +6131,7 @@
 											},
 											"response": [
 												{
-													"id": "ece3a6e9-0e45-424f-9c95-dc45c0ba4d83",
+													"id": "63c823fa-e752-472d-8ae8-5bc484f3c22f",
 													"name": "template object",
 													"originalRequest": {
 														"method": "GET",
@@ -6177,13 +6177,13 @@
 														}
 													],
 													"cookie": [],
-													"body": "{\n  \"id\": \"<integer>\",\n  \"project_id\": \"<integer>\",\n  \"inventory_id\": \"<integer>\",\n  \"repository_id\": \"<integer>\",\n  \"environment_id\": \"<integer>\",\n  \"view_id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"playbook\": \"<string>\",\n  \"arguments\": \"<string>\",\n  \"description\": \"<string>\",\n  \"allow_override_args_in_task\": \"<boolean>\",\n  \"suppress_success_alerts\": \"<boolean>\",\n  \"app\": \"<string>\",\n  \"git_branch\": \"<string>\",\n  \"type\": \"\",\n  \"autorun\": \"<boolean>\",\n  \"survey_vars\": [\n    {\n      \"name\": \"<string>\",\n      \"title\": \"<string>\",\n      \"description\": \"<string>\",\n      \"type\": \"secret\",\n      \"required\": \"<boolean>\",\n      \"values\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    },\n    {\n      \"name\": \"<string>\",\n      \"title\": \"<string>\",\n      \"description\": \"<string>\",\n      \"type\": \"int\",\n      \"required\": \"<boolean>\",\n      \"values\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    }\n  ],\n  \"vaults\": [\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"password\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"password\"\n    }\n  ]\n}"
+													"body": "{\n  \"id\": \"<integer>\",\n  \"project_id\": \"<integer>\",\n  \"inventory_id\": \"<integer>\",\n  \"repository_id\": \"<integer>\",\n  \"environment_id\": \"<integer>\",\n  \"view_id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"playbook\": \"<string>\",\n  \"arguments\": \"<string>\",\n  \"description\": \"<string>\",\n  \"allow_override_args_in_task\": \"<boolean>\",\n  \"suppress_success_alerts\": \"<boolean>\",\n  \"app\": \"<string>\",\n  \"git_branch\": \"<string>\",\n  \"type\": \"\",\n  \"autorun\": \"<boolean>\",\n  \"survey_vars\": [\n    {\n      \"name\": \"<string>\",\n      \"title\": \"<string>\",\n      \"description\": \"<string>\",\n      \"type\": \"enum\",\n      \"required\": \"<boolean>\",\n      \"values\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    },\n    {\n      \"name\": \"<string>\",\n      \"title\": \"<string>\",\n      \"description\": \"<string>\",\n      \"type\": \"int\",\n      \"required\": \"<boolean>\",\n      \"values\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    }\n  ],\n  \"vaults\": [\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"script\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"script\"\n    }\n  ]\n}"
 												}
 											]
 										},
 										{
 											"name": "Updates template",
-											"id": "7fbae13e-3481-4d1a-98e3-bde191427086",
+											"id": "63b251a6-9c9f-4862-a367-96c33f832154",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -6197,7 +6197,7 @@
 												],
 												"body": {
 													"mode": "raw",
-													"raw": "{\n  \"id\": \"<integer>\",\n  \"project_id\": \"<integer>\",\n  \"inventory_id\": \"<integer>\",\n  \"repository_id\": \"<integer>\",\n  \"environment_id\": \"<integer>\",\n  \"view_id\": \"<integer>\",\n  \"vaults\": [\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"script\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"script\"\n    }\n  ],\n  \"name\": \"<string>\",\n  \"playbook\": \"<string>\",\n  \"arguments\": \"<string>\",\n  \"description\": \"<string>\",\n  \"allow_override_args_in_task\": \"<boolean>\",\n  \"limit\": \"<string>\",\n  \"suppress_success_alerts\": \"<boolean>\",\n  \"app\": \"<string>\",\n  \"git_branch\": \"<string>\",\n  \"survey_vars\": [\n    {\n      \"name\": \"<string>\",\n      \"title\": \"<string>\",\n      \"description\": \"<string>\",\n      \"type\": \"int\",\n      \"required\": \"<boolean>\",\n      \"values\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    },\n    {\n      \"name\": \"<string>\",\n      \"title\": \"<string>\",\n      \"description\": \"<string>\",\n      \"type\": \"secret\",\n      \"required\": \"<boolean>\",\n      \"values\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    }\n  ],\n  \"type\": \"deploy\",\n  \"start_version\": \"<string>\",\n  \"build_template_id\": \"<integer>\",\n  \"autorun\": \"<boolean>\"\n}",
+													"raw": "{\n  \"id\": \"<integer>\",\n  \"project_id\": \"<integer>\",\n  \"inventory_id\": \"<integer>\",\n  \"repository_id\": \"<integer>\",\n  \"environment_id\": \"<integer>\",\n  \"view_id\": \"<integer>\",\n  \"vaults\": [\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"script\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"script\"\n    }\n  ],\n  \"name\": \"<string>\",\n  \"playbook\": \"<string>\",\n  \"arguments\": \"<string>\",\n  \"description\": \"<string>\",\n  \"allow_override_args_in_task\": \"<boolean>\",\n  \"limit\": \"<string>\",\n  \"suppress_success_alerts\": \"<boolean>\",\n  \"app\": \"<string>\",\n  \"git_branch\": \"<string>\",\n  \"survey_vars\": [\n    {\n      \"name\": \"<string>\",\n      \"title\": \"<string>\",\n      \"description\": \"<string>\",\n      \"type\": \"\",\n      \"required\": \"<boolean>\",\n      \"values\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    },\n    {\n      \"name\": \"<string>\",\n      \"title\": \"<string>\",\n      \"description\": \"<string>\",\n      \"type\": \"int\",\n      \"required\": \"<boolean>\",\n      \"values\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    }\n  ],\n  \"type\": \"deploy\",\n  \"start_version\": \"<string>\",\n  \"build_template_id\": \"<integer>\",\n  \"autorun\": \"<boolean>\"\n}",
 													"options": {
 														"raw": {
 															"headerFamily": "json",
@@ -6232,7 +6232,7 @@
 											},
 											"response": [
 												{
-													"id": "31e3eefd-e418-4b76-bcaa-cd1ce3aa501c",
+													"id": "2d3dc5b2-8443-43e9-a552-e0df9d827944",
 													"name": "template updated",
 													"originalRequest": {
 														"method": "PUT",
@@ -6249,7 +6249,7 @@
 														],
 														"body": {
 															"mode": "raw",
-															"raw": "{\n  \"id\": \"<integer>\",\n  \"project_id\": \"<integer>\",\n  \"inventory_id\": \"<integer>\",\n  \"repository_id\": \"<integer>\",\n  \"environment_id\": \"<integer>\",\n  \"view_id\": \"<integer>\",\n  \"vaults\": [\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"script\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"script\"\n    }\n  ],\n  \"name\": \"<string>\",\n  \"playbook\": \"<string>\",\n  \"arguments\": \"<string>\",\n  \"description\": \"<string>\",\n  \"allow_override_args_in_task\": \"<boolean>\",\n  \"limit\": \"<string>\",\n  \"suppress_success_alerts\": \"<boolean>\",\n  \"app\": \"<string>\",\n  \"git_branch\": \"<string>\",\n  \"survey_vars\": [\n    {\n      \"name\": \"<string>\",\n      \"title\": \"<string>\",\n      \"description\": \"<string>\",\n      \"type\": \"int\",\n      \"required\": \"<boolean>\",\n      \"values\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    },\n    {\n      \"name\": \"<string>\",\n      \"title\": \"<string>\",\n      \"description\": \"<string>\",\n      \"type\": \"secret\",\n      \"required\": \"<boolean>\",\n      \"values\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    }\n  ],\n  \"type\": \"deploy\",\n  \"start_version\": \"<string>\",\n  \"build_template_id\": \"<integer>\",\n  \"autorun\": \"<boolean>\"\n}",
+															"raw": "{\n  \"id\": \"<integer>\",\n  \"project_id\": \"<integer>\",\n  \"inventory_id\": \"<integer>\",\n  \"repository_id\": \"<integer>\",\n  \"environment_id\": \"<integer>\",\n  \"view_id\": \"<integer>\",\n  \"vaults\": [\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"script\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"script\"\n    }\n  ],\n  \"name\": \"<string>\",\n  \"playbook\": \"<string>\",\n  \"arguments\": \"<string>\",\n  \"description\": \"<string>\",\n  \"allow_override_args_in_task\": \"<boolean>\",\n  \"limit\": \"<string>\",\n  \"suppress_success_alerts\": \"<boolean>\",\n  \"app\": \"<string>\",\n  \"git_branch\": \"<string>\",\n  \"survey_vars\": [\n    {\n      \"name\": \"<string>\",\n      \"title\": \"<string>\",\n      \"description\": \"<string>\",\n      \"type\": \"\",\n      \"required\": \"<boolean>\",\n      \"values\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    },\n    {\n      \"name\": \"<string>\",\n      \"title\": \"<string>\",\n      \"description\": \"<string>\",\n      \"type\": \"int\",\n      \"required\": \"<boolean>\",\n      \"values\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    }\n  ],\n  \"type\": \"deploy\",\n  \"start_version\": \"<string>\",\n  \"build_template_id\": \"<integer>\",\n  \"autorun\": \"<boolean>\"\n}",
 															"options": {
 																"raw": {
 																	"headerFamily": "json",
@@ -6288,7 +6288,7 @@
 										},
 										{
 											"name": "Removes template",
-											"id": "a6d6fe46-6511-4a81-a26c-6c968b4565af",
+											"id": "31a2f18c-594d-487b-ac4e-88de98d7d94c",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -6322,7 +6322,7 @@
 											},
 											"response": [
 												{
-													"id": "4f985d8b-a11e-444b-acc6-c51b03175a6a",
+													"id": "f0cac3e9-f1c9-42ba-9bfc-1409d707f935",
 													"name": "template removed",
 													"originalRequest": {
 														"method": "DELETE",
@@ -6363,11 +6363,11 @@
 											]
 										}
 									],
-									"id": "23d79b31-a1a1-418d-99a1-cef1e2bd5ebf"
+									"id": "139525b7-c9fe-4fa1-b7eb-5b3d15aa21ea"
 								},
 								{
 									"name": "Get template",
-									"id": "a69b8f4a-ed67-4022-b52f-7a509e60e980",
+									"id": "f4a3de02-10a4-4663-af97-95ed6bedae2f",
 									"protocolProfileBehavior": {
 										"disableBodyPruning": true
 									},
@@ -6380,7 +6380,7 @@
 											}
 										],
 										"url": {
-											"raw": "{{baseUrl}}/project/:project_id/templates?sort=repository&order=desc",
+											"raw": "{{baseUrl}}/project/:project_id/templates?sort=ssh_key&order=asc",
 											"host": [
 												"{{baseUrl}}"
 											],
@@ -6392,12 +6392,12 @@
 											"query": [
 												{
 													"key": "sort",
-													"value": "repository",
+													"value": "ssh_key",
 													"description": "(Required) sorting name"
 												},
 												{
 													"key": "order",
-													"value": "desc",
+													"value": "asc",
 													"description": "(Required) ordering manner"
 												}
 											],
@@ -6412,7 +6412,7 @@
 									},
 									"response": [
 										{
-											"id": "e81d1c8c-517f-4131-add6-3aee628cdabe",
+											"id": "0a0cd102-5c86-4b89-9b91-79128e81b042",
 											"name": "template",
 											"originalRequest": {
 												"method": "GET",
@@ -6428,7 +6428,7 @@
 													}
 												],
 												"url": {
-													"raw": "{{baseUrl}}/project/:project_id/templates?sort=repository&order=desc",
+													"raw": "{{baseUrl}}/project/:project_id/templates?sort=ssh_key&order=asc",
 													"host": [
 														"{{baseUrl}}"
 													],
@@ -6441,12 +6441,12 @@
 														{
 															"description": "(Required) sorting name",
 															"key": "sort",
-															"value": "repository"
+															"value": "ssh_key"
 														},
 														{
 															"description": "(Required) ordering manner",
 															"key": "order",
-															"value": "desc"
+															"value": "asc"
 														}
 													],
 													"variable": [
@@ -6466,13 +6466,13 @@
 												}
 											],
 											"cookie": [],
-											"body": "[\n  {\n    \"id\": \"<integer>\",\n    \"project_id\": \"<integer>\",\n    \"inventory_id\": \"<integer>\",\n    \"repository_id\": \"<integer>\",\n    \"environment_id\": \"<integer>\",\n    \"view_id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"playbook\": \"<string>\",\n    \"arguments\": \"<string>\",\n    \"description\": \"<string>\",\n    \"allow_override_args_in_task\": \"<boolean>\",\n    \"suppress_success_alerts\": \"<boolean>\",\n    \"app\": \"<string>\",\n    \"git_branch\": \"<string>\",\n    \"type\": \"\",\n    \"autorun\": \"<boolean>\",\n    \"survey_vars\": [\n      {\n        \"name\": \"<string>\",\n        \"title\": \"<string>\",\n        \"description\": \"<string>\",\n        \"type\": \"secret\",\n        \"required\": \"<boolean>\",\n        \"values\": [\n          {\n            \"name\": \"<string>\",\n            \"value\": \"<string>\"\n          },\n          {\n            \"name\": \"<string>\",\n            \"value\": \"<string>\"\n          }\n        ]\n      },\n      {\n        \"name\": \"<string>\",\n        \"title\": \"<string>\",\n        \"description\": \"<string>\",\n        \"type\": \"secret\",\n        \"required\": \"<boolean>\",\n        \"values\": [\n          {\n            \"name\": \"<string>\",\n            \"value\": \"<string>\"\n          },\n          {\n            \"name\": \"<string>\",\n            \"value\": \"<string>\"\n          }\n        ]\n      }\n    ],\n    \"vaults\": [\n      {\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"type\": \"password\"\n      },\n      {\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"type\": \"password\"\n      }\n    ]\n  },\n  {\n    \"id\": \"<integer>\",\n    \"project_id\": \"<integer>\",\n    \"inventory_id\": \"<integer>\",\n    \"repository_id\": \"<integer>\",\n    \"environment_id\": \"<integer>\",\n    \"view_id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"playbook\": \"<string>\",\n    \"arguments\": \"<string>\",\n    \"description\": \"<string>\",\n    \"allow_override_args_in_task\": \"<boolean>\",\n    \"suppress_success_alerts\": \"<boolean>\",\n    \"app\": \"<string>\",\n    \"git_branch\": \"<string>\",\n    \"type\": \"deploy\",\n    \"autorun\": \"<boolean>\",\n    \"survey_vars\": [\n      {\n        \"name\": \"<string>\",\n        \"title\": \"<string>\",\n        \"description\": \"<string>\",\n        \"type\": \"secret\",\n        \"required\": \"<boolean>\",\n        \"values\": [\n          {\n            \"name\": \"<string>\",\n            \"value\": \"<string>\"\n          },\n          {\n            \"name\": \"<string>\",\n            \"value\": \"<string>\"\n          }\n        ]\n      },\n      {\n        \"name\": \"<string>\",\n        \"title\": \"<string>\",\n        \"description\": \"<string>\",\n        \"type\": \"\",\n        \"required\": \"<boolean>\",\n        \"values\": [\n          {\n            \"name\": \"<string>\",\n            \"value\": \"<string>\"\n          },\n          {\n            \"name\": \"<string>\",\n            \"value\": \"<string>\"\n          }\n        ]\n      }\n    ],\n    \"vaults\": [\n      {\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"type\": \"password\"\n      },\n      {\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"type\": \"password\"\n      }\n    ]\n  }\n]"
+											"body": "[\n  {\n    \"id\": \"<integer>\",\n    \"project_id\": \"<integer>\",\n    \"inventory_id\": \"<integer>\",\n    \"repository_id\": \"<integer>\",\n    \"environment_id\": \"<integer>\",\n    \"view_id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"playbook\": \"<string>\",\n    \"arguments\": \"<string>\",\n    \"description\": \"<string>\",\n    \"allow_override_args_in_task\": \"<boolean>\",\n    \"suppress_success_alerts\": \"<boolean>\",\n    \"app\": \"<string>\",\n    \"git_branch\": \"<string>\",\n    \"type\": \"\",\n    \"autorun\": \"<boolean>\",\n    \"survey_vars\": [\n      {\n        \"name\": \"<string>\",\n        \"title\": \"<string>\",\n        \"description\": \"<string>\",\n        \"type\": \"int\",\n        \"required\": \"<boolean>\",\n        \"values\": [\n          {\n            \"name\": \"<string>\",\n            \"value\": \"<string>\"\n          },\n          {\n            \"name\": \"<string>\",\n            \"value\": \"<string>\"\n          }\n        ]\n      },\n      {\n        \"name\": \"<string>\",\n        \"title\": \"<string>\",\n        \"description\": \"<string>\",\n        \"type\": \"secret\",\n        \"required\": \"<boolean>\",\n        \"values\": [\n          {\n            \"name\": \"<string>\",\n            \"value\": \"<string>\"\n          },\n          {\n            \"name\": \"<string>\",\n            \"value\": \"<string>\"\n          }\n        ]\n      }\n    ],\n    \"vaults\": [\n      {\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"type\": \"script\"\n      },\n      {\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"type\": \"script\"\n      }\n    ]\n  },\n  {\n    \"id\": \"<integer>\",\n    \"project_id\": \"<integer>\",\n    \"inventory_id\": \"<integer>\",\n    \"repository_id\": \"<integer>\",\n    \"environment_id\": \"<integer>\",\n    \"view_id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"playbook\": \"<string>\",\n    \"arguments\": \"<string>\",\n    \"description\": \"<string>\",\n    \"allow_override_args_in_task\": \"<boolean>\",\n    \"suppress_success_alerts\": \"<boolean>\",\n    \"app\": \"<string>\",\n    \"git_branch\": \"<string>\",\n    \"type\": \"deploy\",\n    \"autorun\": \"<boolean>\",\n    \"survey_vars\": [\n      {\n        \"name\": \"<string>\",\n        \"title\": \"<string>\",\n        \"description\": \"<string>\",\n        \"type\": \"secret\",\n        \"required\": \"<boolean>\",\n        \"values\": [\n          {\n            \"name\": \"<string>\",\n            \"value\": \"<string>\"\n          },\n          {\n            \"name\": \"<string>\",\n            \"value\": \"<string>\"\n          }\n        ]\n      },\n      {\n        \"name\": \"<string>\",\n        \"title\": \"<string>\",\n        \"description\": \"<string>\",\n        \"type\": \"\",\n        \"required\": \"<boolean>\",\n        \"values\": [\n          {\n            \"name\": \"<string>\",\n            \"value\": \"<string>\"\n          },\n          {\n            \"name\": \"<string>\",\n            \"value\": \"<string>\"\n          }\n        ]\n      }\n    ],\n    \"vaults\": [\n      {\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"type\": \"script\"\n      },\n      {\n        \"id\": \"<integer>\",\n        \"name\": \"<string>\",\n        \"type\": \"password\"\n      }\n    ]\n  }\n]"
 										}
 									]
 								},
 								{
 									"name": "create template",
-									"id": "8b753d93-1b46-4c4d-b969-d1d4b955abce",
+									"id": "7fa27285-92fe-48c2-bbb6-74730edf4fbb",
 									"protocolProfileBehavior": {
 										"disableBodyPruning": true
 									},
@@ -6490,7 +6490,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n  \"id\": \"<integer>\",\n  \"project_id\": \"<integer>\",\n  \"inventory_id\": \"<integer>\",\n  \"repository_id\": \"<integer>\",\n  \"environment_id\": \"<integer>\",\n  \"view_id\": \"<integer>\",\n  \"vaults\": [\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"script\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"script\"\n    }\n  ],\n  \"name\": \"<string>\",\n  \"playbook\": \"<string>\",\n  \"arguments\": \"<string>\",\n  \"description\": \"<string>\",\n  \"allow_override_args_in_task\": \"<boolean>\",\n  \"limit\": \"<string>\",\n  \"suppress_success_alerts\": \"<boolean>\",\n  \"app\": \"<string>\",\n  \"git_branch\": \"<string>\",\n  \"survey_vars\": [\n    {\n      \"name\": \"<string>\",\n      \"title\": \"<string>\",\n      \"description\": \"<string>\",\n      \"type\": \"int\",\n      \"required\": \"<boolean>\",\n      \"values\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    },\n    {\n      \"name\": \"<string>\",\n      \"title\": \"<string>\",\n      \"description\": \"<string>\",\n      \"type\": \"secret\",\n      \"required\": \"<boolean>\",\n      \"values\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    }\n  ],\n  \"type\": \"deploy\",\n  \"start_version\": \"<string>\",\n  \"build_template_id\": \"<integer>\",\n  \"autorun\": \"<boolean>\"\n}",
+											"raw": "{\n  \"id\": \"<integer>\",\n  \"project_id\": \"<integer>\",\n  \"inventory_id\": \"<integer>\",\n  \"repository_id\": \"<integer>\",\n  \"environment_id\": \"<integer>\",\n  \"view_id\": \"<integer>\",\n  \"vaults\": [\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"script\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"script\"\n    }\n  ],\n  \"name\": \"<string>\",\n  \"playbook\": \"<string>\",\n  \"arguments\": \"<string>\",\n  \"description\": \"<string>\",\n  \"allow_override_args_in_task\": \"<boolean>\",\n  \"limit\": \"<string>\",\n  \"suppress_success_alerts\": \"<boolean>\",\n  \"app\": \"<string>\",\n  \"git_branch\": \"<string>\",\n  \"survey_vars\": [\n    {\n      \"name\": \"<string>\",\n      \"title\": \"<string>\",\n      \"description\": \"<string>\",\n      \"type\": \"\",\n      \"required\": \"<boolean>\",\n      \"values\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    },\n    {\n      \"name\": \"<string>\",\n      \"title\": \"<string>\",\n      \"description\": \"<string>\",\n      \"type\": \"int\",\n      \"required\": \"<boolean>\",\n      \"values\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    }\n  ],\n  \"type\": \"deploy\",\n  \"start_version\": \"<string>\",\n  \"build_template_id\": \"<integer>\",\n  \"autorun\": \"<boolean>\"\n}",
 											"options": {
 												"raw": {
 													"headerFamily": "json",
@@ -6519,7 +6519,7 @@
 									},
 									"response": [
 										{
-											"id": "462e93b0-b0f9-4a1a-9283-538fe0693bce",
+											"id": "bf21b47e-88ad-4842-8adf-71a874f2b264",
 											"name": "template created",
 											"originalRequest": {
 												"method": "POST",
@@ -6540,7 +6540,7 @@
 												],
 												"body": {
 													"mode": "raw",
-													"raw": "{\n  \"id\": \"<integer>\",\n  \"project_id\": \"<integer>\",\n  \"inventory_id\": \"<integer>\",\n  \"repository_id\": \"<integer>\",\n  \"environment_id\": \"<integer>\",\n  \"view_id\": \"<integer>\",\n  \"vaults\": [\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"script\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"script\"\n    }\n  ],\n  \"name\": \"<string>\",\n  \"playbook\": \"<string>\",\n  \"arguments\": \"<string>\",\n  \"description\": \"<string>\",\n  \"allow_override_args_in_task\": \"<boolean>\",\n  \"limit\": \"<string>\",\n  \"suppress_success_alerts\": \"<boolean>\",\n  \"app\": \"<string>\",\n  \"git_branch\": \"<string>\",\n  \"survey_vars\": [\n    {\n      \"name\": \"<string>\",\n      \"title\": \"<string>\",\n      \"description\": \"<string>\",\n      \"type\": \"int\",\n      \"required\": \"<boolean>\",\n      \"values\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    },\n    {\n      \"name\": \"<string>\",\n      \"title\": \"<string>\",\n      \"description\": \"<string>\",\n      \"type\": \"secret\",\n      \"required\": \"<boolean>\",\n      \"values\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    }\n  ],\n  \"type\": \"deploy\",\n  \"start_version\": \"<string>\",\n  \"build_template_id\": \"<integer>\",\n  \"autorun\": \"<boolean>\"\n}",
+													"raw": "{\n  \"id\": \"<integer>\",\n  \"project_id\": \"<integer>\",\n  \"inventory_id\": \"<integer>\",\n  \"repository_id\": \"<integer>\",\n  \"environment_id\": \"<integer>\",\n  \"view_id\": \"<integer>\",\n  \"vaults\": [\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"script\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"script\"\n    }\n  ],\n  \"name\": \"<string>\",\n  \"playbook\": \"<string>\",\n  \"arguments\": \"<string>\",\n  \"description\": \"<string>\",\n  \"allow_override_args_in_task\": \"<boolean>\",\n  \"limit\": \"<string>\",\n  \"suppress_success_alerts\": \"<boolean>\",\n  \"app\": \"<string>\",\n  \"git_branch\": \"<string>\",\n  \"survey_vars\": [\n    {\n      \"name\": \"<string>\",\n      \"title\": \"<string>\",\n      \"description\": \"<string>\",\n      \"type\": \"\",\n      \"required\": \"<boolean>\",\n      \"values\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    },\n    {\n      \"name\": \"<string>\",\n      \"title\": \"<string>\",\n      \"description\": \"<string>\",\n      \"type\": \"int\",\n      \"required\": \"<boolean>\",\n      \"values\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    }\n  ],\n  \"type\": \"deploy\",\n  \"start_version\": \"<string>\",\n  \"build_template_id\": \"<integer>\",\n  \"autorun\": \"<boolean>\"\n}",
 													"options": {
 														"raw": {
 															"headerFamily": "json",
@@ -6575,12 +6575,12 @@
 												}
 											],
 											"cookie": [],
-											"body": "{\n  \"id\": \"<integer>\",\n  \"project_id\": \"<integer>\",\n  \"inventory_id\": \"<integer>\",\n  \"repository_id\": \"<integer>\",\n  \"environment_id\": \"<integer>\",\n  \"view_id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"playbook\": \"<string>\",\n  \"arguments\": \"<string>\",\n  \"description\": \"<string>\",\n  \"allow_override_args_in_task\": \"<boolean>\",\n  \"suppress_success_alerts\": \"<boolean>\",\n  \"app\": \"<string>\",\n  \"git_branch\": \"<string>\",\n  \"type\": \"\",\n  \"autorun\": \"<boolean>\",\n  \"survey_vars\": [\n    {\n      \"name\": \"<string>\",\n      \"title\": \"<string>\",\n      \"description\": \"<string>\",\n      \"type\": \"secret\",\n      \"required\": \"<boolean>\",\n      \"values\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    },\n    {\n      \"name\": \"<string>\",\n      \"title\": \"<string>\",\n      \"description\": \"<string>\",\n      \"type\": \"int\",\n      \"required\": \"<boolean>\",\n      \"values\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    }\n  ],\n  \"vaults\": [\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"password\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"password\"\n    }\n  ]\n}"
+											"body": "{\n  \"id\": \"<integer>\",\n  \"project_id\": \"<integer>\",\n  \"inventory_id\": \"<integer>\",\n  \"repository_id\": \"<integer>\",\n  \"environment_id\": \"<integer>\",\n  \"view_id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"playbook\": \"<string>\",\n  \"arguments\": \"<string>\",\n  \"description\": \"<string>\",\n  \"allow_override_args_in_task\": \"<boolean>\",\n  \"suppress_success_alerts\": \"<boolean>\",\n  \"app\": \"<string>\",\n  \"git_branch\": \"<string>\",\n  \"type\": \"\",\n  \"autorun\": \"<boolean>\",\n  \"survey_vars\": [\n    {\n      \"name\": \"<string>\",\n      \"title\": \"<string>\",\n      \"description\": \"<string>\",\n      \"type\": \"enum\",\n      \"required\": \"<boolean>\",\n      \"values\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    },\n    {\n      \"name\": \"<string>\",\n      \"title\": \"<string>\",\n      \"description\": \"<string>\",\n      \"type\": \"int\",\n      \"required\": \"<boolean>\",\n      \"values\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\"\n        }\n      ]\n    }\n  ],\n  \"vaults\": [\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"script\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"type\": \"script\"\n    }\n  ]\n}"
 										}
 									]
 								}
 							],
-							"id": "72981179-bb0e-4d75-b82c-430d99d26125"
+							"id": "68b7154b-7174-420c-8659-d198191455fa"
 						},
 						{
 							"name": "schedules",
@@ -6590,7 +6590,7 @@
 									"item": [
 										{
 											"name": "Get schedule",
-											"id": "f2aa1eaa-1cda-401a-9ecb-a96acb99c0d7",
+											"id": "65c16c30-9d22-4410-846f-debceac2b745",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -6629,7 +6629,7 @@
 											},
 											"response": [
 												{
-													"id": "f750519e-9df2-4ebb-978c-e63f930ee1a1",
+													"id": "0d37ff14-9e52-4668-8c2a-0ef7243abdd2",
 													"name": "Schedule",
 													"originalRequest": {
 														"method": "GET",
@@ -6681,7 +6681,7 @@
 										},
 										{
 											"name": "Updates schedule",
-											"id": "763570c0-5d29-4f64-b73c-c7fd5b6085c2",
+											"id": "83df279b-afd4-4dce-bc75-d08b29ae42eb",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -6730,7 +6730,7 @@
 											},
 											"response": [
 												{
-													"id": "c8c59bd0-7641-4165-a219-5b0e2c6014d9",
+													"id": "9264c4a4-db34-4933-afa5-e024f7f7cb2e",
 													"name": "schedule updated",
 													"originalRequest": {
 														"method": "PUT",
@@ -6786,7 +6786,7 @@
 										},
 										{
 											"name": "Deletes schedule",
-											"id": "8a6dbed2-75ba-4edf-8142-4d4476884f17",
+											"id": "b075b5c5-0a22-4041-b372-c7a3774575a3",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -6820,7 +6820,7 @@
 											},
 											"response": [
 												{
-													"id": "6ba18c59-42f3-4048-aade-0637184a3093",
+													"id": "7d206099-71b9-4644-a3ba-0e1fc79c0a8a",
 													"name": "schedule deleted",
 													"originalRequest": {
 														"method": "DELETE",
@@ -6861,11 +6861,11 @@
 											]
 										}
 									],
-									"id": "d3ef5e02-2502-4c3e-ae24-713d074e380d"
+									"id": "fd3ae42c-4cd6-43d5-a2c6-cf62f55e504f"
 								},
 								{
 									"name": "create schedule",
-									"id": "0ab7dc2a-4663-4266-aaf4-6e904aeb9072",
+									"id": "4b2e5541-b4b1-4bf8-bc3c-051e98456ea8",
 									"protocolProfileBehavior": {
 										"disableBodyPruning": true
 									},
@@ -6912,7 +6912,7 @@
 									},
 									"response": [
 										{
-											"id": "25bfc11a-d375-4689-939f-0f3b59719962",
+											"id": "a2c71909-8d45-4c52-ad26-c0a52f903205",
 											"name": "schedule created",
 											"originalRequest": {
 												"method": "POST",
@@ -6973,7 +6973,7 @@
 									]
 								}
 							],
-							"id": "b2812a2e-ff13-4b80-aca0-626bc361bfe6"
+							"id": "0e1ab1e1-0a47-4016-9381-208f69f3aac3"
 						},
 						{
 							"name": "views",
@@ -6983,7 +6983,7 @@
 									"item": [
 										{
 											"name": "Get view",
-											"id": "86aa3056-cdd8-4a98-8885-d77e87be77e2",
+											"id": "d3340dc1-7c34-4fc1-b9e8-620deb2176d7",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -7022,7 +7022,7 @@
 											},
 											"response": [
 												{
-													"id": "12386cfd-d105-4b4b-b9d7-454d31ed2672",
+													"id": "89a245aa-8f3f-4fa0-b428-736d21d44b08",
 													"name": "view object",
 													"originalRequest": {
 														"method": "GET",
@@ -7074,7 +7074,7 @@
 										},
 										{
 											"name": "Updates view",
-											"id": "916d4997-caf5-493f-9200-9a0a03abf26a",
+											"id": "dd0e4697-0753-4c35-be75-9e3afc004381",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -7123,7 +7123,7 @@
 											},
 											"response": [
 												{
-													"id": "258dff44-4e5e-4491-9e9e-631e9499b196",
+													"id": "fbaf6219-0ddf-49c6-a755-05e4381120ad",
 													"name": "view updated",
 													"originalRequest": {
 														"method": "PUT",
@@ -7179,7 +7179,7 @@
 										},
 										{
 											"name": "Removes view",
-											"id": "f79c913b-39d2-4e55-b9a1-4ad93ca30a10",
+											"id": "e6495c34-79a7-4809-ada5-ed5b668a0458",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -7213,7 +7213,7 @@
 											},
 											"response": [
 												{
-													"id": "2d46e07e-93be-4b82-bb1c-3dfd7a0eb944",
+													"id": "ad5a11cb-56db-4969-aa54-adca4cc8208f",
 													"name": "view removed",
 													"originalRequest": {
 														"method": "DELETE",
@@ -7254,11 +7254,11 @@
 											]
 										}
 									],
-									"id": "41029b19-a4c5-4d7f-a35e-7762e819ce1b"
+									"id": "cfa391bb-784b-4ba1-8df5-1350918bf061"
 								},
 								{
 									"name": "Get view",
-									"id": "5c8265ae-3124-4189-bf1e-a692e3973701",
+									"id": "29ca97a9-c34d-41df-ab09-067e78b4c257",
 									"protocolProfileBehavior": {
 										"disableBodyPruning": true
 									},
@@ -7291,7 +7291,7 @@
 									},
 									"response": [
 										{
-											"id": "54997120-42ef-4d50-b563-6df6c0905058",
+											"id": "15243995-542e-4963-a403-6f9c276c2bdf",
 											"name": "view",
 											"originalRequest": {
 												"method": "GET",
@@ -7339,7 +7339,7 @@
 								},
 								{
 									"name": "create view",
-									"id": "61d0d49d-880b-4718-8fd3-86a2c9a4a20a",
+									"id": "61d2d149-2936-4274-a1a2-26b835c57839",
 									"protocolProfileBehavior": {
 										"disableBodyPruning": true
 									},
@@ -7386,7 +7386,7 @@
 									},
 									"response": [
 										{
-											"id": "beff0a11-2a34-4887-b217-5b1261d20b9e",
+											"id": "3a6133df-7c5f-4e39-8315-18a3d5229e34",
 											"name": "view created",
 											"originalRequest": {
 												"method": "POST",
@@ -7447,7 +7447,7 @@
 									]
 								}
 							],
-							"id": "703f0aaa-318e-42c1-b599-b95bf424a976"
+							"id": "5af42808-2c2a-4a54-94d2-4a537c140f0a"
 						},
 						{
 							"name": "tasks",
@@ -7457,7 +7457,7 @@
 									"item": [
 										{
 											"name": "Get last 200 Tasks related to current project",
-											"id": "d4f94426-9497-47bb-94ed-5f702f7166cf",
+											"id": "39af373b-f117-48ef-9adc-fc164dd8982a",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -7491,7 +7491,7 @@
 											},
 											"response": [
 												{
-													"id": "a519bc19-88aa-4020-996a-7b870392bae6",
+													"id": "4ba7fd9f-7ce6-4533-9ff6-251c9489dfa3",
 													"name": "Array of tasks in chronological order",
 													"originalRequest": {
 														"method": "GET",
@@ -7539,7 +7539,7 @@
 											]
 										}
 									],
-									"id": "a2d398c5-3fda-42d3-a111-6ffbb0dd6665"
+									"id": "659b921d-20e1-4ebf-a31d-932a2bd0424e"
 								},
 								{
 									"name": "{task_id}",
@@ -7549,7 +7549,7 @@
 											"item": [
 												{
 													"name": "Stop a job",
-													"id": "f60661d1-79bb-4b02-8265-3b0b771595d3",
+													"id": "cb2d3afc-c82d-48c9-a7f3-148bed58547a",
 													"protocolProfileBehavior": {
 														"disableBodyPruning": true
 													},
@@ -7584,7 +7584,7 @@
 													},
 													"response": [
 														{
-															"id": "16be5ecc-9fe0-433d-b35c-fcaf234d7ee8",
+															"id": "9e9dbcc6-2252-4284-a9b6-baa0cc13a8ba",
 															"name": "Task queued",
 															"originalRequest": {
 																"method": "POST",
@@ -7626,14 +7626,14 @@
 													]
 												}
 											],
-											"id": "4361e5db-f26b-4e0b-95f9-dafaec3bcd6f"
+											"id": "8dad53c7-e78b-48c3-a33f-895f642c4f62"
 										},
 										{
 											"name": "output",
 											"item": [
 												{
 													"name": "Get task output",
-													"id": "be282180-602a-46ab-a0c0-b532287d96be",
+													"id": "8df8642f-0e71-42d5-8ff3-6d45f6e88c6c",
 													"protocolProfileBehavior": {
 														"disableBodyPruning": true
 													},
@@ -7673,7 +7673,7 @@
 													},
 													"response": [
 														{
-															"id": "76b4b7d8-6260-4ba7-abef-258bf757dd24",
+															"id": "cc08bfb5-bd10-4c18-940f-2194c9567d07",
 															"name": "output",
 															"originalRequest": {
 																"method": "GET",
@@ -7725,14 +7725,14 @@
 													]
 												}
 											],
-											"id": "48bc8c5d-f5ce-45d3-8ee0-7c8abe881559"
+											"id": "3b429255-22f0-4e3b-8280-ac4a32805cbd"
 										},
 										{
 											"name": "raw_output",
 											"item": [
 												{
 													"name": "Get task raw output",
-													"id": "16ce9ac3-1585-44fa-933b-4081577e46a9",
+													"id": "328dca7d-e259-49aa-8b71-f39515b09e15",
 													"protocolProfileBehavior": {
 														"disableBodyPruning": true
 													},
@@ -7767,7 +7767,7 @@
 													},
 													"response": [
 														{
-															"id": "7c63b2e5-0eac-4a2a-bd63-c90608b6ba16",
+															"id": "9f6cd61a-17f9-43e3-b08d-2780c4873926",
 															"name": "output",
 															"originalRequest": {
 																"method": "GET",
@@ -7819,11 +7819,11 @@
 													]
 												}
 											],
-											"id": "081be9d2-6c5d-44bd-b176-89461fa9b4d6"
+											"id": "890592eb-ee91-434c-8f96-5c1900964ad2"
 										},
 										{
 											"name": "Get a single task",
-											"id": "5b1a27ee-5642-4e09-bf39-9f5662654507",
+											"id": "0d0dcc7b-60e7-4328-8768-b88d600230eb",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -7862,7 +7862,7 @@
 											},
 											"response": [
 												{
-													"id": "a3670968-acfe-4cc9-825e-c5f360ec26c2",
+													"id": "ad5d835b-71b8-4993-8759-34b8d1ee456d",
 													"name": "Task",
 													"originalRequest": {
 														"method": "GET",
@@ -7914,7 +7914,7 @@
 										},
 										{
 											"name": "Deletes task (including output)",
-											"id": "838cc63c-bba0-4987-9fcf-667a8cb771af",
+											"id": "36b22ee0-aee3-4006-9ad6-774bcd54475e",
 											"protocolProfileBehavior": {
 												"disableBodyPruning": true
 											},
@@ -7948,7 +7948,7 @@
 											},
 											"response": [
 												{
-													"id": "22f7c3f9-6809-4607-b4bb-0fe3859b75c3",
+													"id": "37a671c8-36c4-4ee1-b90e-be545ee45270",
 													"name": "task deleted",
 													"originalRequest": {
 														"method": "DELETE",
@@ -7989,11 +7989,11 @@
 											]
 										}
 									],
-									"id": "fbe2f084-760f-47e1-8a23-4af6acae9cfa"
+									"id": "a2742d7d-b84b-4d89-8bd8-f60140d15e3b"
 								},
 								{
 									"name": "Get Tasks related to current project",
-									"id": "87a194c2-c78e-41f2-8715-a1156291626f",
+									"id": "53013abf-22ff-45d3-a694-79a0ab5932fe",
 									"protocolProfileBehavior": {
 										"disableBodyPruning": true
 									},
@@ -8026,7 +8026,7 @@
 									},
 									"response": [
 										{
-											"id": "ea17e04f-2231-45ce-9b53-db7127877119",
+											"id": "c0581133-5871-42f6-81c0-fe3b70df095e",
 											"name": "Array of tasks in chronological order",
 											"originalRequest": {
 												"method": "GET",
@@ -8074,7 +8074,7 @@
 								},
 								{
 									"name": "Starts a job",
-									"id": "c00b548d-e9a5-4738-8866-60c13f667f42",
+									"id": "fd7ac7eb-1a40-497e-8526-c4c43b8e5be8",
 									"protocolProfileBehavior": {
 										"disableBodyPruning": true
 									},
@@ -8121,7 +8121,7 @@
 									},
 									"response": [
 										{
-											"id": "fda52b80-089e-4e3c-b976-90c38709ce72",
+											"id": "10c09cae-bebc-4b76-b187-a081e5edef44",
 											"name": "Task queued",
 											"originalRequest": {
 												"method": "POST",
@@ -8182,11 +8182,11 @@
 									]
 								}
 							],
-							"id": "a9e1afb9-8b6c-442b-8000-6390630a6b27"
+							"id": "24236c3c-5fc9-4524-9502-a96042d391a5"
 						},
 						{
 							"name": "Fetch project",
-							"id": "decb658d-4b8d-4e20-8911-ec7ba824fcf3",
+							"id": "6c6b380d-104e-422a-841d-5c9aab5ab00d",
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
 							},
@@ -8219,7 +8219,7 @@
 							},
 							"response": [
 								{
-									"id": "16633b77-8b03-4e05-9137-02777fe04d11",
+									"id": "7b9968a9-8ab3-4f69-84fa-e1ecacaeefcc",
 									"name": "Project",
 									"originalRequest": {
 										"method": "GET",
@@ -8267,7 +8267,7 @@
 						},
 						{
 							"name": "Update project",
-							"id": "75d31671-bc65-40d0-9061-cb06f977aa53",
+							"id": "064758e8-1c30-47bf-9168-c5752e6c9ae5",
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
 							},
@@ -8310,7 +8310,7 @@
 							},
 							"response": [
 								{
-									"id": "d1ac2829-9f35-4e68-8ea2-e722d7dc5ab8",
+									"id": "0e61e34d-a322-481a-9b4a-390a6059671f",
 									"name": "Project saved",
 									"originalRequest": {
 										"method": "PUT",
@@ -8362,7 +8362,7 @@
 						},
 						{
 							"name": "Delete project",
-							"id": "cd04feaf-32d4-42b9-bbf4-0abc32f97395",
+							"id": "bb3f76a1-0ed3-49de-8098-3c12b65d7d34",
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
 							},
@@ -8390,7 +8390,7 @@
 							},
 							"response": [
 								{
-									"id": "59c47c0a-156f-4065-8043-b50f5fe00566",
+									"id": "cf929784-e50f-42d5-9990-28f3b9a5168e",
 									"name": "Project deleted",
 									"originalRequest": {
 										"method": "DELETE",
@@ -8427,17 +8427,17 @@
 							]
 						}
 					],
-					"id": "65717a34-681e-43b4-abcb-cd5f9be4dda1"
+					"id": "e62e02fc-6769-4246-ac10-4edc9bcdc04d"
 				}
 			],
-			"id": "efc37df6-654e-4837-aec9-812fce13cab5"
+			"id": "27661c38-165d-4b9b-91d0-1885b8130bfc"
 		},
 		{
 			"name": "apps",
 			"item": [
 				{
 					"name": "Get apps",
-					"id": "678e0b68-1191-45d2-a4a2-049a3f599fba",
+					"id": "6664f5e2-42f6-45a3-9b8a-69a751c94922",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -8461,7 +8461,7 @@
 					},
 					"response": [
 						{
-							"id": "4f773bd2-ee09-48ea-9927-a1a229e81183",
+							"id": "f6fb260d-d723-4803-87f8-fed63798520f",
 							"name": "Apps",
 							"originalRequest": {
 								"method": "GET",
@@ -8501,39 +8501,48 @@
 					]
 				}
 			],
-			"id": "191dde74-0c63-459c-a1ef-585fb0ee659f"
+			"id": "a972b945-e9f9-40e6-b26a-1d5d056a0cac"
 		}
 	],
 	"auth": {
-		"type": "apikey",
-		"apikey": [
+		"type": "bearer",
+		"bearer": [
 			{
-				"key": "key",
-				"value": "Authorization",
-				"type": "string"
-			},
-			{
-				"key": "value",
+				"key": "token",
 				"value": "{{apiKey}}",
-				"type": "string"
-			},
-			{
-				"key": "in",
-				"value": "header",
 				"type": "string"
 			}
 		]
 	},
-	"variable": [
+	"event": [
 		{
-			"id": "58cfd529-35c7-4654-b02c-af11441f2a5e",
-			"key": "baseUrl",
-			"value": "http://localhost:3000/api"
+			"listen": "prerequest",
+			"script": {
+				"id": "50738f66-a31b-4749-8930-0bc96ba6c2ae",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
 		},
 		{
-			"id": "43f7e8c6-9c1f-487b-b88a-3b01ce72dee2",
-			"key": "apiKey",
-			"value": ""
+			"listen": "test",
+			"script": {
+				"id": "88b8e162-2675-4bda-8bc9-245a51b2ad29",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "ccc1b51e-356a-429b-aaa8-082bc2487fad",
+			"key": "baseUrl",
+			"value": "http://localhost:3000/api"
 		}
 	]
 }
