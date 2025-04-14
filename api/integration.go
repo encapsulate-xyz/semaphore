@@ -235,7 +235,8 @@ func RunIntegration(integration db.Integration, project db.Project, r *http.Requ
 
 	log.Info(fmt.Sprintf("Running integration %d", integration.ID))
 
-	var extractValues = make([]db.IntegrationExtractValue, 0)
+	var envValues  = make([]db.IntegrationExtractValue, 0)
+	var taskValues  = make([]db.IntegrationExtractValue, 0)
 
 	extractValuesForExtractor, err := helpers.Store(r).GetIntegrationExtractValues(project.ID, db.RetrieveQueryParams{}, integration.ID)
 	if err != nil {
@@ -243,15 +244,24 @@ func RunIntegration(integration db.Integration, project db.Project, r *http.Requ
 		return
 	}
 
-	extractValues = append(extractValues, extractValuesForExtractor...)
+	for _, val := range extractValuesForExtractor {
+		switch val.VariableType {
+	    case "", db.IntegrationVariableEnvironment: // "" handles null/empty for backward compatibility
+			envValues = append(envValues, val)
+		case db.IntegrationVariableTaskParam:
+			taskValues = append(taskValues, val)
+		}
+	}
 
-	var extractedResults = Extract(extractValues, r, payload)
+	var extractedEnvResults = Extract(envValues, r, payload)
 
-	environmentJSONBytes, err := json.Marshal(extractedResults)
+	environmentJSONBytes, err := json.Marshal(extractedEnvResults)
 	if err != nil {
 		log.Error(err)
 		return
 	}
+
+	var extractedTaskResults = Extract(taskValues, r, payload)
 
 	var environmentJSONString = string(environmentJSONBytes)
 	var taskDefinition = db.Task{
@@ -259,6 +269,11 @@ func RunIntegration(integration db.Integration, project db.Project, r *http.Requ
 		ProjectID:     integration.ProjectID,
 		Environment:   environmentJSONString,
 		IntegrationID: &integration.ID,
+	}
+
+	// Only assign extractedTaskResults to Params if it's not empty
+	if len(extractedTaskResults) > 0 {
+		taskDefinition.Params = extractedTaskResults
 	}
 
 	tpl, err := helpers.Store(r).GetTemplate(integration.ProjectID, integration.TemplateID)

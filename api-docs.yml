@@ -586,6 +586,9 @@ definitions:
       variable:
         type: string
         example: variable
+      variable_type:
+        type: string
+        enum: [environment, task]
 
   IntegrationExtractValue:
     type: object
@@ -607,6 +610,9 @@ definitions:
       variable:
         type: string
         example: variable
+      variable_type:
+        type: string
+        enum: [environment, task]
       integration_id:
         type: integer
 
