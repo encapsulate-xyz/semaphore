@@ -273,7 +273,11 @@ func RunIntegration(integration db.Integration, project db.Project, r *http.Requ
 
 	// Only assign extractedTaskResults to Params if it's not empty
 	if len(extractedTaskResults) > 0 {
-		taskDefinition.Params = extractedTaskResults
+		params := make(db.MapStringAnyField)
+		for k, v := range extractedTaskResults {
+			params[k] = v
+		}
+		taskDefinition.Params = params
 	}
 
 	tpl, err := helpers.Store(r).GetTemplate(integration.ProjectID, integration.TemplateID)
