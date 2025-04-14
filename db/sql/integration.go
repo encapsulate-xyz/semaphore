@@ -88,7 +88,7 @@ func (d *SqlDb) CreateIntegrationExtractValue(projectId int, value db.Integratio
 	insertID, err := d.insert("id",
 		"insert into project__integration_extract_value "+
 			"(value_source, body_data_type, `key`, `variable`, `name`, integration_id, variable_type) values "+
-			"(?, ?, ?, ?, ?, ?)",
+			"(?, ?, ?, ?, ?, ?, ?)",
 		value.ValueSource,
 		value.BodyDataType,
 		value.Key,

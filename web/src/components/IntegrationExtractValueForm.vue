@@ -54,7 +54,7 @@
           >
         </v-text-field>
         <v-select v-model="item.variable_type"
-                  label="Variable Usage"
+                  label="Variable Usage *"
                   :items="variableTypes"
                   item-value="id"
                   item-text="text"
