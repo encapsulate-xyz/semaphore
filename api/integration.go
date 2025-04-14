@@ -271,6 +271,7 @@ func RunIntegration(integration db.Integration, project db.Project, r *http.Requ
 		IntegrationID: &integration.ID,
 	}
 
+	log.Info("extractedTaskResults:", extractedTaskResults)
 	// Only assign extractedTaskResults to Params if it's not empty
 	if len(extractedTaskResults) > 0 {
 		params := make(db.MapStringAnyField)
