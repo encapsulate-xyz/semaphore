@@ -261,7 +261,7 @@ func RunIntegration(integration db.Integration, project db.Project, r *http.Requ
 		return
 	}
 
-	var extractedTaskResults = Extract(taskValues, r, payload)
+	var extractedTaskResults = ExtractAsAnyForTaskParams(taskValues, r, payload)
 
 	var environmentJSONString = string(environmentJSONBytes)
 	var taskDefinition = db.Task{
@@ -274,13 +274,7 @@ func RunIntegration(integration db.Integration, project db.Project, r *http.Requ
 	log.Info("extractedTaskResults: %+v", extractedTaskResults)
 	// Only assign extractedTaskResults to Params if it's not empty
 	if len(extractedTaskResults) > 0 {
-		params := make(db.MapStringAnyField)
-		for k, v := range extractedTaskResults {
-			params[k] = v
-		}
-
-		log.Info("params: %+v", params)
-		taskDefinition.Params = params
+		taskDefinition.Params = extractedTaskResults
 	}
 
 	tpl, err := helpers.Store(r).GetTemplate(integration.ProjectID, integration.TemplateID)
@@ -314,4 +308,30 @@ func Extract(extractValues []db.IntegrationExtractValue, r *http.Request, payloa
 		}
 	}
 	return
+}
+
+func ExtractAsAnyForTaskParams(extractValues []db.IntegrationExtractValue, r *http.Request, payload []byte) db.MapStringAnyField {
+    // Create a result map that accepts any type
+    result := make(db.MapStringAnyField)
+
+    for _, extractValue := range extractValues {
+        switch extractValue.ValueSource {
+        case db.IntegrationExtractHeaderValue:
+            // Extract the header value
+            result[extractValue.Variable] = r.Header.Get(extractValue.Key)
+
+        case db.IntegrationExtractBodyValue:
+            switch extractValue.BodyDataType {
+            case db.IntegrationBodyDataJSON:
+                // Query the JSON payload for the key using gojsonq
+                rawValue := gojsonq.New().JSONString(string(payload)).Find(extractValue.Key)
+                result[extractValue.Variable] = rawValue
+
+            case db.IntegrationBodyDataString:
+                // Simply use the entire payload as a string
+                result[extractValue.Variable] = string(payload)
+            }
+        }
+    }
+    return result
 }
