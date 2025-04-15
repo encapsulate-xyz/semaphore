@@ -34,7 +34,7 @@ var (
 // Send simply sends the defined mail via SMTP.
 func Send(
 	secure bool,
-	userTls bool,
+	useTls bool,
 	host string,
 	port string,
 	username,
@@ -70,7 +70,7 @@ func Send(
 	}
 
 	if secure {
-		if userTls {
+		if useTls {
 			return sendSSL(
 				host,
 				port,
@@ -142,7 +142,7 @@ func sendSSL(
 	// Here is the key, you need to call tls.Dial instead of smtp.Dial
 	// for smtp servers running on 465 that require an ssl connection
 	// from the very beginning (no starttls)
-	conn, err := tls.Dial("tcp", host+":"+port, tlsConfig)
+	conn, err := tls.Dial("tcp", net.JoinHostPort(host, port), tlsConfig)
 	if err != nil {
 		return err
 	}
