@@ -2,10 +2,11 @@ package mailer
 
 import (
 	"bytes"
-	"html/template"
+	"crypto/tls"
 	"net"
 	"net/smtp"
 	"strings"
+	"text/template"
 	"time"
 )
 
@@ -33,6 +34,7 @@ var (
 // Send simply sends the defined mail via SMTP.
 func Send(
 	secure bool,
+	userTls bool,
 	host string,
 	port string,
 	username,
@@ -68,15 +70,27 @@ func Send(
 	}
 
 	if secure {
-		return plainauth(
-			host,
-			port,
-			username,
-			password,
-			from,
-			to,
-			body,
-		)
+		if userTls {
+			return sendSSL(
+				host,
+				port,
+				username,
+				password,
+				from,
+				to,
+				body,
+			)
+		} else {
+			return plainauth(
+				host,
+				port,
+				username,
+				password,
+				from,
+				to,
+				body,
+			)
+		}
 	}
 
 	return anonymous(
@@ -107,6 +121,70 @@ func plainauth(
 		[]string{to},
 		body.Bytes(),
 	)
+}
+
+func sendSSL(
+	host,
+	port,
+	username,
+	password,
+	from,
+	to string,
+	body *bytes.Buffer,
+) error {
+	auth := PlainOrLoginAuth(username, password, host)
+
+	tlsConfig := &tls.Config{
+		InsecureSkipVerify: true,
+		ServerName:         host,
+	}
+
+	// Here is the key, you need to call tls.Dial instead of smtp.Dial
+	// for smtp servers running on 465 that require an ssl connection
+	// from the very beginning (no starttls)
+	conn, err := tls.Dial("tcp", host+":"+port, tlsConfig)
+	if err != nil {
+		return err
+	}
+
+	c, err := smtp.NewClient(conn, host)
+	if err != nil {
+		return err
+	}
+
+	if err = c.Auth(auth); err != nil {
+		return err
+	}
+
+	if err = c.Mail(from); err != nil {
+		return err
+	}
+
+	if err = c.Rcpt(to); err != nil {
+		return err
+	}
+
+	w, err := c.Data()
+	if err != nil {
+		return err
+	}
+
+	_, err = w.Write(body.Bytes())
+	if err != nil {
+		return err
+	}
+
+	err = w.Close()
+	if err != nil {
+		return err
+	}
+
+	err = c.Quit()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func anonymous(

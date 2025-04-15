@@ -196,6 +196,7 @@ type ConfigType struct {
 	EmailUsername string `json:"email_username,omitempty" env:"SEMAPHORE_EMAIL_USERNAME"`
 	EmailPassword string `json:"email_password,omitempty" env:"SEMAPHORE_EMAIL_PASSWORD"`
 	EmailSecure   bool   `json:"email_secure,omitempty" env:"SEMAPHORE_EMAIL_SECURE"`
+	EmailTls      bool   `json:"email_tls,omitempty" env:"SEMAPHORE_EMAIL_TLS"`
 
 	// ldap settings
 	LdapEnable       bool          `json:"ldap_enable,omitempty" env:"SEMAPHORE_LDAP_ENABLE"`
