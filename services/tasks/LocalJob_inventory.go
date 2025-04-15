@@ -37,6 +37,9 @@ func (t *LocalJob) installInventory() (err error) {
 }
 
 func (t *LocalJob) tmpInventoryFilename() string {
+	if t.Inventory.Repository == nil {
+		return "inventory_" + strconv.Itoa(t.Inventory.ID)
+	}
 	return t.Inventory.Repository.GetDirName(t.Template.ID) + "_inventory_" + strconv.Itoa(t.Inventory.ID)
 }
 
