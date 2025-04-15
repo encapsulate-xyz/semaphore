@@ -253,6 +253,7 @@ func addIntegrationExtractValue() *db.IntegrationExtractValue {
 		BodyDataType:  db.IntegrationBodyDataJSON,
 		Key:           "key",
 		Variable:      "var",
+		VariableType:  db.IntegrationVariableEnvironment,
 	})
 
 	if err != nil {

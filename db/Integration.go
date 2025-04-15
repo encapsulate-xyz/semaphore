@@ -37,6 +37,13 @@ const (
 	IntegrationBodyDataString IntegrationBodyDataType = "string"
 )
 
+type IntegrationVariableType string
+
+const (
+	IntegrationVariableEnvironment   IntegrationVariableType = "environment"
+	IntegrationVariableTaskParam 	 IntegrationVariableType = "task"
+)
+
 type IntegrationMatcher struct {
 	ID            int                        `db:"id" json:"id" backup:"-"`
 	IntegrationID int                        `db:"integration_id" json:"integration_id" backup:"-"`
@@ -63,6 +70,7 @@ type IntegrationExtractValue struct {
 	BodyDataType  IntegrationBodyDataType       `db:"body_data_type" json:"body_data_type"`
 	Key           string                        `db:"key" json:"key"`
 	Variable      string                        `db:"variable" json:"variable"`
+	VariableType  IntegrationVariableType       `db:"variable_type" json:"variable_type"`
 }
 
 type IntegrationAlias struct {
