@@ -37,7 +37,7 @@ func (t *LocalJob) installInventory() (err error) {
 }
 
 func (t *LocalJob) tmpInventoryFilename() string {
-	return t.Inventory.Repository.GetDirName(t.Template.ID) + "_inventory_" + strconv.Itoa(t.Inventory.ID)
+	return "inventory_" + strconv.Itoa(t.Task.ID)
 }
 
 func (t *LocalJob) tmpInventoryFullPath() string {
@@ -57,7 +57,7 @@ func (t *LocalJob) cloneInventoryRepo() error {
 
 	repo := db_lib.GitRepository{
 		Logger:     t.Logger,
-		TmpDirName: t.tmpInventoryFilename(),
+		TmpDirName: t.Inventory.Repository.GetDirName(t.Template.ID) + "_inventory_" + strconv.Itoa(t.Inventory.ID),
 		Repository: *t.Inventory.Repository,
 		Client:     db_lib.CreateDefaultGitClient(),
 	}
