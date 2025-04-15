@@ -135,8 +135,9 @@ func sendSSL(
 	auth := PlainOrLoginAuth(username, password, host)
 
 	tlsConfig := &tls.Config{
-		InsecureSkipVerify: true,
+		InsecureSkipVerify: false,
 		ServerName:         host,
+		MinVersion:         tls.VersionTLS10,
 	}
 
 	// Here is the key, you need to call tls.Dial instead of smtp.Dial
