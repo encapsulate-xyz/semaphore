@@ -84,12 +84,13 @@ type SurveyVarEnumValue struct {
 }
 
 type SurveyVar struct {
-	Name        string               `json:"name" backup:"name"`
-	Title       string               `json:"title" backup:"title"`
-	Required    bool                 `json:"required" backup:"required"`
-	Type        SurveyVarType        `json:"type" backup:"type"`
-	Description string               `json:"description" backup:"description"`
-	Values      []SurveyVarEnumValue `json:"values" backup:"values"`
+	Name         string               `json:"name" backup:"name"`
+	Title        string               `json:"title" backup:"title"`
+	Required     bool                 `json:"required,omitempty" backup:"required"`
+	Type         SurveyVarType        `json:"type,omitempty" backup:"type"`
+	Description  string               `json:"description,omitempty" backup:"description"`
+	Values       []SurveyVarEnumValue `json:"values,omitempty" backup:"values"`
+	DefaultValue string               `json:"default_value,omitempty" backup:"default_value"`
 }
 
 type TemplateFilter struct {

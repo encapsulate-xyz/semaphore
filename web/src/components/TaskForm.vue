@@ -365,6 +365,18 @@ export default {
           this.item.params[param] = (this.template.task_params || {})[param];
         }
       });
+
+      const defaultVars = (this.template.survey_vars || [])
+        .filter((s) => s.default_value)
+        .reduce((res, curr) => ({
+          ...res,
+          [curr.name]: curr.default_value,
+        }), {});
+
+      this.editedEnvironment = {
+        ...defaultVars,
+        ...this.editedEnvironment,
+      };
     },
 
     getInventoryUrl() {
