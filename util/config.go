@@ -156,6 +156,7 @@ type ConfigLog struct {
 type ConfigProcess struct {
 	User   string `json:"user,omitempty" env:"SEMAPHORE_PROCESS_USER"`
 	Chroot string `json:"chroot,omitempty" env:"SEMAPHORE_PROCESS_CHROOT"`
+	GID    *int   `json:"gid,omitempty" env:"SEMAPHORE_PROCESS_GID"`
 }
 
 // ConfigType mapping between Config and the json file that sets it
@@ -315,22 +316,40 @@ func (conf *ConfigType) GetSysProcAttr() (res *syscall.SysProcAttr) {
 		res.Chroot = conf.Process.Chroot
 	}
 
-	if conf.Process.User != "" {
-		if res == nil {
-			res = &syscall.SysProcAttr{}
-		}
+	var uid *int
+	var gid *int
 
-		u, err := user.Lookup(conf.Process.User)
+	uid = nil
+	gid = conf.Process.GID
+
+	if conf.Process.User != "" {
+		usr, err := user.Lookup(conf.Process.User)
 		if err != nil {
 			return
 		}
 
-		uid, _ := strconv.Atoi(u.Uid)
-		gid, _ := strconv.Atoi(u.Gid)
+		u, err := strconv.Atoi(usr.Uid)
+		if err != nil {
+			return
+		}
+
+		g, err := strconv.Atoi(usr.Gid)
+		if err != nil {
+			return
+		}
+
+		uid = &u
+		gid = &g
+	}
+
+	if uid != nil && gid != nil {
+		if res == nil {
+			res = &syscall.SysProcAttr{}
+		}
 
 		res.Credential = &syscall.Credential{
-			Uid: uint32(uid),
-			Gid: uint32(gid),
+			Uid: uint32(*uid),
+			Gid: uint32(*gid),
 		}
 	}
 
