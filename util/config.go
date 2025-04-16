@@ -197,7 +197,7 @@ type ConfigType struct {
 	EmailPassword      string `json:"email_password,omitempty" env:"SEMAPHORE_EMAIL_PASSWORD"`
 	EmailSecure        bool   `json:"email_secure,omitempty" env:"SEMAPHORE_EMAIL_SECURE"`
 	EmailTls           bool   `json:"email_tls,omitempty" env:"SEMAPHORE_EMAIL_TLS"`
-	EmailTlsMinVersion string `json:"email_tls_min_version,omitempty" rule:"^(1\\.[0123])$" default:"1.0" env:"SEMAPHORE_EMAIL_TLS_MIN_VERSION"`
+	EmailTlsMinVersion string `json:"email_tls_min_version,omitempty" rule:"^(1\\.[0123])$" default:"1.2" env:"SEMAPHORE_EMAIL_TLS_MIN_VERSION"`
 
 	// ldap settings
 	LdapEnable       bool          `json:"ldap_enable,omitempty" env:"SEMAPHORE_LDAP_ENABLE"`
