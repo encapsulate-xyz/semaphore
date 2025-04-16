@@ -144,7 +144,7 @@ type AuthConfig struct {
 type EventLogType struct {
 	Enabled     bool   `json:"enabled" env:"SEMAPHORE_EVENT_LOG_ENABLED"`
 	Path        string `json:"path,omitempty" env:"SEMAPHORE_EVENT_LOG_PATH"`
-	TaskLogPath string `json:"task_log_path,omitempty" env:"SEMAPHORE_EVENT_TASK_LOG_PATH"`
+	TaskLogPath string `json:"task_log_path,omitempty" env:"SEMAPHORE_TASK_EVENT_LOG_PATH"`
 }
 
 type ConfigLog struct {
