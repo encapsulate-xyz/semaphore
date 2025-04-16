@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"embed"
 	"fmt"
-	"html"
 	"net/http"
 	"strconv"
 	"text/template"
@@ -48,15 +47,15 @@ func (t *TaskRunner) sendMailAlert() {
 	author, version := t.alertInfos()
 
 	alert := Alert{
-		Name:   html.EscapeString(t.Template.Name),
+		Name:   t.Template.Name,
 		Author: author,
 		Color:  t.alertColor("email"),
 		Task: alertTask{
 			ID:      strconv.Itoa(t.Task.ID),
 			URL:     t.taskLink(),
-			Result:  html.EscapeString(t.Task.Status.Format()),
+			Result:  t.Task.Status.Format(),
 			Version: version,
-			Desc:    html.EscapeString(t.Task.Message),
+			Desc:    t.Task.Message,
 		},
 	}
 
@@ -100,7 +99,7 @@ func (t *TaskRunner) sendMailAlert() {
 			util.Config.EmailPassword,
 			util.Config.EmailSender,
 			user.Email,
-			fmt.Sprintf("Task '%s' failed", html.EscapeString(t.Template.Name)),
+			fmt.Sprintf("Task '%s' failed", t.Template.Name),
 			body.String(),
 		); err != nil {
 			util.LogError(err)
