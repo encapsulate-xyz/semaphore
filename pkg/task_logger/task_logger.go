@@ -2,7 +2,6 @@ package task_logger
 
 import (
 	"os/exec"
-	"strings"
 	"time"
 )
 
@@ -53,9 +52,11 @@ func (s TaskStatus) Format() (res string) {
 		res += "⏹️"
 	case TaskWaitingConfirmation:
 		res += "⚠️"
+	default:
+		res += "❓"
 	}
-	res += strings.ToUpper(string(s))
-
+	// to avoid email content injection issue
+	//res += strings.ToUpper(string(s))
 	return
 }
 
