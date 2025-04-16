@@ -13,12 +13,14 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
+	"os/user"
 	"path"
 	"path/filepath"
 	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
+	"syscall"
 
 	"github.com/google/go-github/github"
 	"github.com/gorilla/securecookie"
@@ -151,6 +153,11 @@ type ConfigLog struct {
 	Events *EventLogType `json:"events,omitempty"`
 }
 
+type ConfigProcess struct {
+	User   string `json:"user,omitempty" env:"SEMAPHORE_PROCESS_USER"`
+	Chroot string `json:"chroot,omitempty" env:"SEMAPHORE_PROCESS_CHROOT"`
+}
+
 // ConfigType mapping between Config and the json file that sets it
 type ConfigType struct {
 	MySQL    *DbConfig `json:"mysql,omitempty"`
@@ -252,6 +259,8 @@ type ConfigType struct {
 	ForwardedEnvVars []string `json:"forwarded_env_vars,omitempty" env:"SEMAPHORE_FORWARDED_ENV_VARS"`
 
 	Log *ConfigLog `json:"log,omitempty"`
+
+	Process *ConfigProcess `json:"process,omitempty"`
 }
 
 func NewConfigType() *ConfigType {
@@ -297,6 +306,35 @@ func ClearDir(dir string, preserveFiles bool, prefix string) error {
 	}
 
 	return nil
+}
+
+func (conf *ConfigType) GetSysProcAttr() (res *syscall.SysProcAttr) {
+
+	if conf.Process.Chroot != "" {
+		res = &syscall.SysProcAttr{}
+		res.Chroot = conf.Process.Chroot
+	}
+
+	if conf.Process.User != "" {
+		if res == nil {
+			res = &syscall.SysProcAttr{}
+		}
+
+		u, err := user.Lookup(conf.Process.User)
+		if err != nil {
+			return
+		}
+
+		uid, _ := strconv.Atoi(u.Uid)
+		gid, _ := strconv.Atoi(u.Gid)
+
+		res.Credential = &syscall.Credential{
+			Uid: uint32(uid),
+			Gid: uint32(gid),
+		}
+	}
+
+	return
 }
 
 func (conf *ConfigType) ClearTmpDir() error {

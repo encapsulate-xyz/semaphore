@@ -36,15 +36,6 @@ RUN curl -O https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraf
     unzip terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip -d /tmp && \
     rm terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip
 
-#RUN if [ "$TARGETARCH" = "amd64" ]; then \
-#      export PULUMI_ARCH="x64"; \
-#    else \
-#      export PULUMI_ARCH="${TARGETARCH}"; \
-#    fi && \
-#    wget -O pulumi.tar.gz https://github.com/pulumi/pulumi/releases/download/v${PULUMI_VERSION}/pulumi-v${PULUMI_VERSION}-linux-${PULUMI_ARCH}.tar.gz
-#RUN tar xf pulumi.tar.gz --strip-components=1 -C /usr/local/bin
-#RUN rm pulumi.tar.gz
-
 FROM alpine:3.21
 
 ARG TARGETARCH="amd64"

@@ -78,6 +78,8 @@ func (t *TerraformApp) makeCmd(command string, args []string, environmentVars []
 		cmd.Env = append(cmd.Env, environmentVars...)
 	}
 
+	cmd.SysProcAttr = util.Config.GetSysProcAttr()
+
 	return cmd
 }
 
