@@ -3,6 +3,9 @@ package mailer
 import (
 	"bytes"
 	"crypto/tls"
+	"errors"
+	"fmt"
+	"github.com/semaphoreui/semaphore/util"
 	"net"
 	"net/smtp"
 	"strings"
@@ -30,6 +33,21 @@ var (
 		"%0d", "",
 	)
 )
+
+func parseTlsVersion(version string) (uint16, error) {
+	switch version {
+	case "1.0":
+		return tls.VersionTLS10, nil
+	case "1.1":
+		return tls.VersionTLS11, nil
+	case "1.2":
+		return tls.VersionTLS12, nil
+	case "1.3":
+		return tls.VersionTLS13, nil
+	}
+
+	return 0, errors.New(fmt.Sprintf("Unsupported TLS version %s", version))
+}
 
 // Send simply sends the defined mail via SMTP.
 func Send(
@@ -71,7 +89,7 @@ func Send(
 
 	if secure {
 		if useTls {
-			return sendSSL(
+			return sendTls(
 				host,
 				port,
 				username,
@@ -123,7 +141,7 @@ func plainauth(
 	)
 }
 
-func sendSSL(
+func sendTls(
 	host,
 	port,
 	username,
@@ -134,10 +152,15 @@ func sendSSL(
 ) error {
 	auth := PlainOrLoginAuth(username, password, host)
 
+	tlsVersion, err := parseTlsVersion(util.Config.EmailTlsMinVersion)
+	if err != nil {
+		return err
+	}
+
 	tlsConfig := &tls.Config{
 		InsecureSkipVerify: false,
 		ServerName:         host,
-		MinVersion:         tls.VersionTLS10,
+		MinVersion:         tlsVersion,
 	}
 
 	// Here is the key, you need to call tls.Dial instead of smtp.Dial
