@@ -98,7 +98,7 @@
 
             <v-select
               v-if="editedVar.type === 'enum'"
-              v-model="editedVar.default"
+              v-model="editedVar.default_value"
               :label="$t('default_value')"
               :items="editedValues"
               item-value="name"
@@ -109,13 +109,13 @@
               type="number"
               v-else-if="editedVar.type === 'int'"
               :label="$t('default_value')"
-              v-model.number="editedVar.default"
+              v-model="editedVar.default_value"
             />
 
             <v-text-field
               v-else-if="editedVar.type !== 'secret'"
               :label="$t('default_value')"
-              v-model="editedVar.default"
+              v-model="editedVar.default_value"
             />
 
             <v-checkbox
