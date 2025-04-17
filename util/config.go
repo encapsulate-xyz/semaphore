@@ -8,19 +8,18 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"golang.org/x/crypto/bcrypt"
 	"io"
 	"net/url"
 	"os"
 	"os/exec"
-	"os/user"
 	"path"
 	"path/filepath"
 	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
-	"syscall"
+
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/google/go-github/github"
 	"github.com/gorilla/securecookie"
@@ -310,53 +309,6 @@ func ClearDir(dir string, preserveFiles bool, prefix string) error {
 	}
 
 	return nil
-}
-
-func (conf *ConfigType) GetSysProcAttr() (res *syscall.SysProcAttr) {
-
-	if conf.Process.Chroot != "" {
-		res = &syscall.SysProcAttr{}
-		res.Chroot = conf.Process.Chroot
-	}
-
-	var uid *int
-	var gid *int
-
-	uid = nil
-	gid = conf.Process.GID
-
-	if conf.Process.User != "" {
-		usr, err := user.Lookup(conf.Process.User)
-		if err != nil {
-			return
-		}
-
-		u, err := strconv.Atoi(usr.Uid)
-		if err != nil {
-			return
-		}
-
-		g, err := strconv.Atoi(usr.Gid)
-		if err != nil {
-			return
-		}
-
-		uid = &u
-		gid = &g
-	}
-
-	if uid != nil && gid != nil {
-		if res == nil {
-			res = &syscall.SysProcAttr{}
-		}
-
-		res.Credential = &syscall.Credential{
-			Uid: uint32(*uid),
-			Gid: uint32(*gid),
-		}
-	}
-
-	return
 }
 
 func (conf *ConfigType) ClearTmpDir() error {
