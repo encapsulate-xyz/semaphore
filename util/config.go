@@ -198,13 +198,15 @@ type ConfigType struct {
 	AccessKeyEncryption string `json:"access_key_encryption,omitempty" env:"SEMAPHORE_ACCESS_KEY_ENCRYPTION"`
 
 	// email alerting
-	EmailAlert    bool   `json:"email_alert,omitempty" env:"SEMAPHORE_EMAIL_ALERT"`
-	EmailSender   string `json:"email_sender,omitempty" env:"SEMAPHORE_EMAIL_SENDER"`
-	EmailHost     string `json:"email_host,omitempty" env:"SEMAPHORE_EMAIL_HOST"`
-	EmailPort     string `json:"email_port,omitempty" rule:"^(|[0-9]{1,5})$" env:"SEMAPHORE_EMAIL_PORT"`
-	EmailUsername string `json:"email_username,omitempty" env:"SEMAPHORE_EMAIL_USERNAME"`
-	EmailPassword string `json:"email_password,omitempty" env:"SEMAPHORE_EMAIL_PASSWORD"`
-	EmailSecure   bool   `json:"email_secure,omitempty" env:"SEMAPHORE_EMAIL_SECURE"`
+	EmailAlert         bool   `json:"email_alert,omitempty" env:"SEMAPHORE_EMAIL_ALERT"`
+	EmailSender        string `json:"email_sender,omitempty" env:"SEMAPHORE_EMAIL_SENDER"`
+	EmailHost          string `json:"email_host,omitempty" env:"SEMAPHORE_EMAIL_HOST"`
+	EmailPort          string `json:"email_port,omitempty" rule:"^(|[0-9]{1,5})$" env:"SEMAPHORE_EMAIL_PORT"`
+	EmailUsername      string `json:"email_username,omitempty" env:"SEMAPHORE_EMAIL_USERNAME"`
+	EmailPassword      string `json:"email_password,omitempty" env:"SEMAPHORE_EMAIL_PASSWORD"`
+	EmailSecure        bool   `json:"email_secure,omitempty" env:"SEMAPHORE_EMAIL_SECURE"`
+	EmailTls           bool   `json:"email_tls,omitempty" env:"SEMAPHORE_EMAIL_TLS"`
+	EmailTlsMinVersion string `json:"email_tls_min_version,omitempty" default:"1.2" rule:"^(1\\.[0123])$" env:"SEMAPHORE_EMAIL_TLS_MIN_VERSION"`
 
 	// ldap settings
 	LdapEnable       bool          `json:"ldap_enable,omitempty" env:"SEMAPHORE_LDAP_ENABLE"`
