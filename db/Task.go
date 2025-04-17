@@ -24,12 +24,13 @@ type TerraformTaskParams struct {
 }
 
 type AnsibleTaskParams struct {
-	Debug    bool     `json:"debug"`
-	DryRun   bool     `json:"dry_run"`
-	Diff     bool     `json:"diff"`
-	Limit    []string `json:"limit"`
-	Tags     []string `json:"tags"`
-	SkipTags []string `json:"skip_tags"`
+	Debug      bool     `json:"debug"`
+	DebugLevel int      `json:"debug_level"`
+	DryRun     bool     `json:"dry_run"`
+	Diff       bool     `json:"diff"`
+	Limit      []string `json:"limit"`
+	Tags       []string `json:"tags"`
+	SkipTags   []string `json:"skip_tags"`
 }
 
 // Task is a model of a task which will be executed by the runner
@@ -84,7 +85,7 @@ func (task *Task) FillParams(target interface{}) (err error) {
 
 func (task *Task) PreInsert(gorp.SqlExecutor) error {
 	task.Created = task.Created.UTC()
-	
+
 	return nil
 }
 

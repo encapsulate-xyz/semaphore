@@ -350,7 +350,15 @@ func (t *LocalJob) getPlaybookArgs(username string, incomingVersion *string) (ar
 	}
 
 	if tplParams.AllowDebug && params.Debug {
-		args = append(args, "-vvvv")
+		if params.DebugLevel < 1 {
+			params.DebugLevel = 4
+		}
+
+		if params.DebugLevel > 6 {
+			params.DebugLevel = 6
+		}
+
+		args = append(args, "-"+strings.Repeat("v", params.DebugLevel))
 	}
 
 	if params.Diff {
@@ -593,7 +601,7 @@ func (t *LocalJob) Run(username string, incomingVersion *string, alias string) (
 func (t *LocalJob) prepareRun(environmentVars []string, params interface{}) error {
 
 	t.Log("Preparing: " + strconv.Itoa(t.Task.ID))
-	
+
 	if err := checkTmpDir(util.Config.GetProjectTmpDir(t.Template.ProjectID)); err != nil {
 		t.Log("Creating tmp dir failed: " + err.Error())
 		return err
