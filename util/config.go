@@ -155,6 +155,7 @@ type ConfigLog struct {
 
 type ConfigProcess struct {
 	User   string `json:"user,omitempty" env:"SEMAPHORE_PROCESS_USER"`
+	UID    *int   `json:"uid,omitempty" env:"SEMAPHORE_PROCESS_UID"`
 	Chroot string `json:"chroot,omitempty" env:"SEMAPHORE_PROCESS_CHROOT"`
 }
 
