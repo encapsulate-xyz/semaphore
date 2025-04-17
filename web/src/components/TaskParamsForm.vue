@@ -20,6 +20,7 @@
           class="ml-7 mb-2"
           style="max-width: 100px;"
           v-model="params.debug_level"
+          @change="updateValue('debug_level', $event)"
           step="1"
           min="1"
           max="6"
