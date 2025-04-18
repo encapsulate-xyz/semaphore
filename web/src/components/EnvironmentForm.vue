@@ -388,7 +388,7 @@
 .EnvironmentMaximizedEditor {
   .CodeMirror {
     font-size: 14px;
-    height: 500px !important;
+    height: 600px !important;
   }
 }
 </style>
