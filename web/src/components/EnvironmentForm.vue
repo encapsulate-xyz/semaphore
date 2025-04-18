@@ -6,10 +6,44 @@
     v-if="item != null"
     class="pb-3"
   >
+
+    <v-dialog
+      v-model="envEditorDialog"
+      max-width="800"
+      persistent
+      :transition="false"
+    >
+      <div style="position: relative;">
+        <codemirror
+          class="EnvironmentMaximizedEditor"
+          :style="{ border: '1px solid lightgray' }"
+          v-model="json"
+          :options="cmOptions"
+          :placeholder="$t('enterExtraVariablesJson')"
+        />
+
+        <v-btn
+          dark
+          fab
+          small
+          color="blue-grey"
+          v-if="extraVarsEditMode === 'json'"
+          style="
+            position: absolute;
+            right: 0;
+            top: 0;
+            margin: 10px;
+          "
+          @click="envEditorDialog = false"
+        >
+          <v-icon>mdi-arrow-collapse</v-icon>
+        </v-btn>
+      </div>
+    </v-dialog>
+
     <v-alert
       :value="formError"
       color="error"
-      class="pb-2"
     >{{ formError }}</v-alert>
 
     <v-text-field
@@ -71,14 +105,35 @@
 
         </v-subheader>
 
-        <codemirror
-          v-if="extraVarsEditMode === 'json'"
-          :style="{ border: '1px solid lightgray' }"
-          v-model="json"
-          :options="cmOptions"
-          :placeholder="$t('enterExtraVariablesJson')"
-        />
+        <div v-if="extraVarsEditMode === 'json'" style="position: relative;">
+          <codemirror
+            :class="{
+              'EnvironmentEditor': true,
+            }"
+            :style="{ border: '1px solid lightgray' }"
+            v-model="json"
+            :options="cmOptions"
+            :placeholder="$t('enterExtraVariablesJson')"
+          />
 
+          <v-btn
+            dark
+            fab
+            small
+            color="blue-grey"
+            v-if="extraVarsEditMode === 'json'"
+            style="
+              position: absolute;
+              right: 0;
+              top: 0;
+              margin: 10px;
+            "
+            @click="envEditorDialog = true"
+          >
+            <v-icon>mdi-arrow-expand</v-icon>
+          </v-btn>
+
+        </div>
         <div v-else-if="extraVarsEditMode === 'table'">
           <v-data-table
             v-if="extraVars != null"
@@ -124,7 +179,9 @@
             </template>
           </v-data-table>
 
-          <v-alert color="error" v-else>Can't be displayed as table.</v-alert>
+          <v-alert color="warning" v-else>
+            Oops! This JSON structure is a little too complex to display as a table.
+          </v-alert>
         </div>
 
         <div>
@@ -322,6 +379,19 @@
 
   </v-form>
 </template>
+<style lang="scss">
+.EnvironmentEditor {
+  .CodeMirror {
+    height: 160px !important;
+  }
+}
+.EnvironmentMaximizedEditor {
+  .CodeMirror {
+    font-size: 14px;
+    height: 500px !important;
+  }
+}
+</style>
 <script>
 /* eslint-disable import/no-extraneous-dependencies,import/extensions */
 
@@ -411,6 +481,7 @@ export default {
       },
 
       extraVarsEditMode: 'json',
+      envEditorDialog: false,
     };
   },
 
