@@ -325,7 +325,7 @@
           <v-checkbox
             class="mt-0"
             :label="$t('allowInventoryInTask')"
-            v-model="(item.task_params || {}).allow_override_inventory"
+            v-model="item.task_params.allow_override_inventory"
             v-if="needField('allow_override_inventory')"
           />
         </div>
@@ -387,21 +387,21 @@
           <v-checkbox
             class="mt-0"
             :label="$t('allowLimitInTask')"
-            v-model="(item.task_params || {}).allow_override_limit"
+            v-model="item.task_params.allow_override_limit"
             v-if="needField('allow_override_limit')"
           />
 
           <v-checkbox
             class="mt-0"
             :label="$t('tags')"
-            v-model="(item.task_params || {}).allow_override_tags"
+            v-model="item.task_params.allow_override_tags"
             v-if="needField('allow_override_tags')"
           />
 
           <v-checkbox
             class="mt-0"
             :label="$t('skipTags')"
-            v-model="(item.task_params || {}).allow_override_skip_tags"
+            v-model="item.task_params.allow_override_skip_tags"
             v-if="needField('allow_override_skip_tags')"
           />
 
@@ -605,10 +605,6 @@ export default {
     },
 
     async afterLoadData() {
-      if (!this.item.task_params) {
-        this.item.task_params = {};
-      }
-
       if (this.sourceItemId) {
         const item = (await axios({
           url: `/api/project/${this.projectId}/templates/${this.sourceItemId}`,
@@ -635,6 +631,10 @@ export default {
         }
 
         this.item = item;
+      }
+
+      if (!this.item.task_params) {
+        this.item.task_params = {};
       }
 
       this.repositories = (await axios({
