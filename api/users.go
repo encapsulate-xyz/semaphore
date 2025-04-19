@@ -58,7 +58,14 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newUser, err := helpers.Store(r).CreateUser(user)
+	var err error
+	var newUser db.User
+
+	if user.External {
+		newUser, err = helpers.Store(r).CreateUserWithoutPassword(user.User)
+	} else {
+		newUser, err = helpers.Store(r).CreateUser(user)
+	}
 
 	if err != nil {
 		log.Warn(editor.Username + " is not created: " + err.Error())
