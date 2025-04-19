@@ -111,6 +111,17 @@ func ReceiveIntegration(w http.ResponseWriter, r *http.Request) {
 				log.Error("Invalid HMAC signature")
 				continue
 			}
+		case db.IntegrationAuthBitbucket:
+			ok := isValidHmacPayload(
+				integration.AuthSecret.LoginPassword.Password,
+				r.Header.Get("x-hub-signature"),
+				payload,
+				"sha256=")
+
+			if !ok {
+				log.Error("Invalid HMAC signature")
+				continue
+			}
 		case db.IntegrationAuthHmac:
 			ok := isValidHmacPayload(
 				integration.AuthSecret.LoginPassword.Password,

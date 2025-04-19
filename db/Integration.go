@@ -8,11 +8,12 @@ import (
 type IntegrationAuthMethod string
 
 const (
-	IntegrationAuthNone   = ""
-	IntegrationAuthGitHub = "github"
-	IntegrationAuthToken  = "token"
-	IntegrationAuthHmac   = "hmac"
-	IntegrationAuthBasic  = "basic"
+	IntegrationAuthNone      = ""
+	IntegrationAuthGitHub    = "github"
+	IntegrationAuthToken     = "token"
+	IntegrationAuthHmac      = "hmac"
+	IntegrationAuthBitbucket = "bitbucket"
+	IntegrationAuthBasic     = "basic"
 )
 
 type IntegrationMatchType string
@@ -40,8 +41,8 @@ const (
 type IntegrationVariableType string
 
 const (
-	IntegrationVariableEnvironment   IntegrationVariableType = "environment"
-	IntegrationVariableTaskParam 	 IntegrationVariableType = "task"
+	IntegrationVariableEnvironment IntegrationVariableType = "environment"
+	IntegrationVariableTaskParam   IntegrationVariableType = "task"
 )
 
 type IntegrationMatcher struct {
