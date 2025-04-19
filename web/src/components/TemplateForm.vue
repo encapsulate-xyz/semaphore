@@ -374,7 +374,7 @@
           <v-checkbox
             class="mt-0"
             :label="$t('auto_approve')"
-            v-model="(item.task_params || {}).auto_approve"
+            v-model="item.task_params.auto_approve"
             v-if="needField('auto_approve')"
           />
 
