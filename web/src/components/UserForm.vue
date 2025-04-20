@@ -105,6 +105,7 @@
             </v-col>
             <v-col cols="6" v-if="isAdmin">
               <v-checkbox
+                :disabled="!isNew"
                 dense
                 hide-details
                 v-model="item.external"
