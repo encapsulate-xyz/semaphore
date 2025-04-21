@@ -418,6 +418,12 @@ export default {
   },
 
   watch: {
+    envEditorDialog(val) {
+      this.$emit('maximize', {
+        maximized: val,
+      });
+    },
+
     extraVarsEditMode(val) {
       let extraVars;
 
