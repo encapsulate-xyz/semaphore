@@ -352,6 +352,16 @@ func login(w http.ResponseWriter, r *http.Request) {
 }
 
 func logout(w http.ResponseWriter, r *http.Request) {
+
+	if session, ok := getSession(r); ok {
+		err := helpers.Store(r).ExpireSession(session.UserID, session.ID)
+		if err != nil {
+			log.Error(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+	}
+
 	http.SetCookie(w, &http.Cookie{
 		Name:     "semaphore",
 		Value:    "",
