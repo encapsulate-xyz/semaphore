@@ -351,6 +351,17 @@ func login(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// logout handles the user logout process by expiring the current session
+// and clearing the session cookie.
+//
+// Behavior:
+//   - If a valid session exists, it is expired in the database.
+//   - The session cookie is cleared by setting its value to an empty string
+//     and its expiration date to a past time.
+//
+// Responses:
+// - 204 No Content: Logout successful.
+// - 500 Internal Server Error: An error occurred while expiring the session.
 func logout(w http.ResponseWriter, r *http.Request) {
 
 	if session, ok := getSession(r); ok {
