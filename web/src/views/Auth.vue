@@ -267,6 +267,7 @@
 <script>
 import axios from 'axios';
 import { getErrorMessage } from '@/lib/error';
+import EventBus from '@/event-bus';
 
 export default {
   data() {
@@ -348,14 +349,21 @@ export default {
     },
 
     async signOut() {
-      (await axios({
-        method: 'post',
-        url: '/api/auth/logout',
-        responseType: 'json',
-      }));
+      try {
+        (await axios({
+          method: 'post',
+          url: '/api/auth/logout',
+          responseType: 'json',
+        }));
 
-      const { location } = document;
-      document.location = location;
+        const { location } = document;
+        document.location = location;
+      } catch (e) {
+        EventBus.$emit('i-snackbar', {
+          color: 'error',
+          text: getErrorMessage(e),
+        });
+      }
     },
 
     makePasswordExample() {
