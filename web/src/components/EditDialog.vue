@@ -115,6 +115,7 @@ export default {
     },
     helpButton: Boolean,
     noBodyPaddings: Boolean,
+    noEscape: Boolean,
   },
 
   data() {
@@ -192,7 +193,7 @@ export default {
     },
 
     handleEscape(ev) {
-      if (ev.key === 'Escape' && this.dialog !== false) {
+      if (ev.key === 'Escape' && this.dialog !== false && !this.noEscape) {
         this.close();
       }
     },
