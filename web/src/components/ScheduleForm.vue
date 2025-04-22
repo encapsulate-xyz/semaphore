@@ -112,7 +112,10 @@
       </div>
 
       <div v-if="['yearly', 'monthly', 'weekly', 'daily'].includes(timing)">
-        <div class="mt-4">Hours</div>
+        <div class="mt-4 d-flex justify-space-between">
+          <span>Hours</span>
+          <b style="color: red;">UTC timezone</b>
+        </div>
         <div class="d-flex flex-wrap">
           <v-checkbox
             class="mr-2 mt-0 ScheduleCheckbox"
@@ -331,12 +334,16 @@ export default {
 
   methods: {
     nextRunTime() {
-      return parser.parseExpression(this.item.cron_format).next().toString();
+      return parser.parseExpression(this.item.cron_format, {
+        tz: 'UTC',
+      }).next().toString();
     },
 
     refreshCheckboxes() {
       const fields = JSON.parse(
-        JSON.stringify(parser.parseExpression(this.item.cron_format).fields),
+        JSON.stringify(parser.parseExpression(this.item.cron_format, {
+          tz: 'UTC',
+        }).fields),
       );
 
       this.months = [];
