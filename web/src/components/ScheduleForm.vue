@@ -66,7 +66,8 @@
         <div class="d-flex flex-wrap">
           <v-checkbox
             class="mr-2 mt-0 ScheduleCheckbox"
-            v-for="m in MONTHS" :key="m.id"
+            v-for="m in MONTHS"
+            :key="m.id"
             :value="m.id"
             :label="m.title"
             v-model="months"
@@ -338,6 +339,11 @@ export default {
         JSON.stringify(parser.parseExpression(this.item.cron_format).fields),
       );
 
+      this.months = [];
+      this.weekdays = [];
+      this.hours = [];
+      this.minutes = [];
+
       if (this.isHourly(this.item.cron_format)) {
         this.minutes = fields.minute;
         this.timing = 'hourly';
@@ -356,7 +362,6 @@ export default {
         this.weekdays = fields.dayOfWeek;
         this.timing = 'weekly';
       } else {
-        this.months = [];
         this.weekdays = [];
       }
 
@@ -365,7 +370,6 @@ export default {
         this.timing = 'monthly';
       } else {
         this.months = [];
-        this.weekdays = [];
       }
 
       if (this.isYearly(this.item.cron_format)) {
