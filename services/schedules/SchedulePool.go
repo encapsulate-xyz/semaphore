@@ -3,6 +3,7 @@ package schedules
 import (
 	"strconv"
 	"sync"
+	"time"
 
 	"github.com/robfig/cron/v3"
 	"github.com/semaphoreui/semaphore/db"
@@ -100,7 +101,7 @@ type SchedulePool struct {
 }
 
 func (p *SchedulePool) init() {
-	p.cron = cron.New()
+	p.cron = cron.New(cron.WithLocation(time.UTC))
 	p.locker = &sync.Mutex{}
 }
 
