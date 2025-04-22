@@ -2,10 +2,10 @@ package mailer
 
 import (
 	"bytes"
-	"html/template"
 	"net"
 	"net/smtp"
 	"strings"
+	"text/template"
 	"time"
 )
 
