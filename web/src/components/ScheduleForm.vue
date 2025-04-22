@@ -46,6 +46,7 @@
       required
       :disabled="formSaving"
       @input="refreshCheckboxes()"
+      suffix="UTC time"
     ></v-text-field>
 
     <div v-if="!rawCron">
@@ -114,7 +115,7 @@
       <div v-if="['yearly', 'monthly', 'weekly', 'daily'].includes(timing)">
         <div class="mt-4 d-flex justify-space-between">
           <span>Hours</span>
-          <b style="color: red;">UTC timezone</b>
+          <b style="color: red;">UTC time</b>
         </div>
         <div class="d-flex flex-wrap">
           <v-checkbox
