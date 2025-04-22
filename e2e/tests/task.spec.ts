@@ -2,7 +2,7 @@ import { test, expect } from './fixtures';
 
 test('run task from demo project', async ({ page, login, project }) => {
   await login(true);
-  await project('task_runner');
+  await project('task_runner', true);
 
   await page.getByTestId('sidebar-templates').click();
   

@@ -2,7 +2,7 @@ import { test as base } from '@playwright/test';
 
 export const test = base.extend<{
   login: (asAdmin: boolean) => Promise<void>;
-  project: (role: 'owner' | 'manager' | 'task_runner' | 'guest') => Promise<void>;
+  project: (role: 'owner' | 'manager' | 'task_runner' | 'guest', demo: boolean) => Promise<void>;
 }>({
     
   login: async ({ page }, use) => {
@@ -23,10 +23,11 @@ export const test = base.extend<{
   },
 
   project: async ({ page }, use) => {
-    await use(async (role = 'owner') => {
+    await use(async (role = 'owner', demo = false) => {
         await page.getByTestId('sidebar-currentProject').click();
         await page.getByTestId('sidebar-newProject').click();
-        await page.getByRole('textbox', { name: 'Project Name' }).fill('Test');
+        await page.getByTestId('newProject-name').fill('Test');
+        await page.getByText('Demo', { exact: true }).check();
         await page.getByRole('button', { name: 'Create' }).click();
     });
   }
