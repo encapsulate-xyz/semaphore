@@ -330,6 +330,7 @@ func Route() *mux.Router {
 	projectTmplManagement.Use(projects.TemplatesMiddleware)
 
 	projectTmplManagement.HandleFunc("/{template_id}", projects.UpdateTemplate).Methods("PUT")
+	projectTmplManagement.HandleFunc("/{template_id}/description", projects.UpdateTemplateDescription).Methods("PUT")
 	projectTmplManagement.HandleFunc("/{template_id}", projects.RemoveTemplate).Methods("DELETE")
 	projectTmplManagement.HandleFunc("/{template_id}", projects.GetTemplate).Methods("GET")
 	projectTmplManagement.HandleFunc("/{template_id}/refs", projects.GetTemplateRefs).Methods("GET", "HEAD")
