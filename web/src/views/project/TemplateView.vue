@@ -122,13 +122,15 @@
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
 @import '~vuetify/src/styles/settings/_variables';
-
+.TemplateView__description {
+  font-size: 14px;
+}
 @media #{map-get($display-breakpoints, 'md-and-up')} {
   .TemplateView__description {
-    margin-top: -10px;
+    transform: translateY(-12px);
   }
 }
 

@@ -25,17 +25,30 @@
 
     <v-btn
       icon @click="edit()"
+      small
       v-if="canEdit && !editable"
-      class="SingleLineEditable__button"
+      class="ml-1 SingleLineEditable__button"
     >
       <v-icon>mdi-pencil</v-icon>
     </v-btn>
 
-    <v-btn icon @click="save()" v-if="editable" class="ml-2 SingleLineEditable__button">
+    <v-btn
+      icon
+      @click="save()"
+      v-if="editable"
+      class="ml-2 SingleLineEditable__button"
+      small
+    >
       <v-icon color="green">mdi-check</v-icon>
     </v-btn>
 
-    <v-btn icon @click="cancel()" v-if="editable" class="SingleLineEditable__button">
+    <v-btn
+      icon
+      @click="cancel()"
+      v-if="editable"
+      class="SingleLineEditable__button"
+      small
+    >
       <v-icon color="red">mdi-close</v-icon>
     </v-btn>
   </div>
@@ -44,7 +57,6 @@
   .SingleLineEditable__editable {
     min-width: 50px;
     outline: none;
-    display: inline-block;
     background-color: rgba(128, 128, 128, 0.4);
     border-radius: 4px;
     padding-left: 5px;
