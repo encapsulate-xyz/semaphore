@@ -82,10 +82,10 @@
     </v-toolbar>
 
     <SingleLineEditable
-      class="mx-4 mb-2 TemplateView__description"
+      class="mx-4 TemplateView__description"
       v-model="item.description"
       @save="updateDescription()"
-      :v-if="item.description || can(USER_PERMISSIONS.manageProjectResources)"
+      v-if="item.description || can(USER_PERMISSIONS.manageProjectResources)"
       :can-edit="can(USER_PERMISSIONS.manageProjectResources)"
     />
 
@@ -127,10 +127,12 @@
 @import '~vuetify/src/styles/settings/_variables';
 .TemplateView__description {
   font-size: 14px;
+  margin-bottom: 12px;
 }
 @media #{map-get($display-breakpoints, 'md-and-up')} {
   .TemplateView__description {
     transform: translateY(-12px);
+    margin-bottom: 0;
   }
 }
 
