@@ -154,9 +154,6 @@ const BASE_FIELDS = {
   environment: {
     label: 'environment3',
   },
-  allow_override_inventory: {
-    label: 'allowInventoryInTask',
-  },
   git_branch: {
     label: 'branch',
   },
@@ -191,6 +188,9 @@ export const ANSIBLE_FIELDS = {
   allow_override_skip_tags: {
     label: 'skipTags',
   },
+  allow_override_inventory: {
+    label: 'allowInventoryInTask',
+  },
 };
 
 export const TERRAFORM_FIELDS = {
@@ -210,6 +210,9 @@ export const TERRAFORM_FIELDS = {
   },
   allow_destroy: {
     label: 'auto_destroy',
+  },
+  allow_override_inventory: {
+    label: 'allowInventoryInTask',
   },
 };
 
