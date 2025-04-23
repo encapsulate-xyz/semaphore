@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <span
       key="placeholder"
       v-if="!editable"
@@ -24,11 +23,15 @@
       {{ value }}
     </span>
 
-    <v-btn icon @click="edit()" v-if="!editable" class="SingleLineEditable__button">
+    <v-btn
+      icon @click="edit()"
+      v-if="canEdit && !editable"
+      class="SingleLineEditable__button"
+    >
       <v-icon>mdi-pencil</v-icon>
     </v-btn>
 
-    <v-btn icon @click="save()" v-if="editable" class="SingleLineEditable__button">
+    <v-btn icon @click="save()" v-if="editable" class="ml-2 SingleLineEditable__button">
       <v-icon color="green">mdi-check</v-icon>
     </v-btn>
 
@@ -42,8 +45,20 @@
     min-width: 50px;
     outline: none;
     display: inline-block;
+    background-color: rgba(128, 128, 128, 0.4);
+    border-radius: 4px;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-left: -5px;
+    margin-right: -5px;
   }
+
   .SingleLineEditable__content {
+    opacity: 0.7;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-left: -5px;
+    margin-right: -5px;
   }
 
   .SingleLineEditable__content--placeholder {
@@ -60,6 +75,7 @@ export default {
   props: {
     value: String,
     placeholder: String,
+    canEdit: Boolean,
   },
   data() {
     return {

@@ -81,20 +81,13 @@
       </v-btn>
     </v-toolbar>
 
-    <v-alert
-      text
-      dense
-      class="mb-0 ml-4 mr-4 mb-2 d-inline-block pr-2"
-      v-if="item.description || can(USER_PERMISSIONS.manageProjectResources)"
-    >
-      <SingleLineEditable
-        v-if="can(USER_PERMISSIONS.manageProjectResources)"
-        style="display: inline"
-        v-model="item.description"
-        @save="updateDescription()"
-      />
-      <div v-else>{{ item.description }}</div>
-    </v-alert>
+    <SingleLineEditable
+      class="mx-4 mb-2"
+      style="display: inline-block"
+      v-model="item.description"
+      @save="updateDescription()"
+      :can-edit="item.description || can(USER_PERMISSIONS.manageProjectResources)"
+    />
 
     <v-tabs class="ml-4">
       <v-tab
