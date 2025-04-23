@@ -40,7 +40,7 @@
     </v-btn>
   </div>
 </template>
-<style scoped>
+<style lang="scss" scoped>
   .SingleLineEditable__editable {
     min-width: 50px;
     outline: none;
@@ -54,7 +54,7 @@
   }
 
   .SingleLineEditable__content {
-    opacity: 0.7;
+    //opacity: 0.7;
     padding-left: 5px;
     padding-right: 5px;
     margin-left: -5px;

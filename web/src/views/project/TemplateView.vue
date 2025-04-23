@@ -82,8 +82,7 @@
     </v-toolbar>
 
     <SingleLineEditable
-      class="mx-4 mb-2"
-      style="display: inline-block"
+      class="mx-4 mb-2 TemplateView__description"
       v-model="item.description"
       @save="updateDescription()"
       :can-edit="item.description || can(USER_PERMISSIONS.manageProjectResources)"
@@ -121,6 +120,19 @@
     ></router-view>
   </div>
 </template>
+
+<style lang="scss" scoped>
+
+@import '~vuetify/src/styles/settings/_variables';
+
+@media #{map-get($display-breakpoints, 'md-and-up')} {
+  .TemplateView__description {
+    margin-top: -10px;
+  }
+}
+
+</style>
+
 <script>
 import axios from 'axios';
 import EventBus from '@/event-bus';
