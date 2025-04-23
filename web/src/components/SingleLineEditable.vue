@@ -1,5 +1,7 @@
 <template>
   <div>
+    <v-icon small class="pr-1">mdi-message-outline</v-icon>
+
     <span
       key="placeholder"
       v-if="!editable"
@@ -7,9 +9,7 @@
       :class="{
         'SingleLineEditable__content--placeholder': !value,
       }"
-    >
-      {{ value || placeholder || $t('empty') }}
-    </span>
+    >{{ value || placeholder || $t('empty') }}</span>
 
     <span
       key="content"
@@ -19,9 +19,7 @@
       class="SingleLineEditable__editable"
       @paste="handlePaste"
       @keypress="handleKeypress"
-    >
-      {{ value }}
-    </span>
+    >{{ value }}</span>
 
     <v-btn
       icon @click="edit()"
@@ -59,18 +57,11 @@
     outline: none;
     background-color: rgba(128, 128, 128, 0.4);
     border-radius: 4px;
-    padding-left: 5px;
-    padding-right: 5px;
-    margin-left: -5px;
-    margin-right: -5px;
+    padding: 2px 5px;
   }
 
   .SingleLineEditable__content {
-    //opacity: 0.7;
-    padding-left: 5px;
-    padding-right: 5px;
-    margin-left: -5px;
-    margin-right: -5px;
+    padding: 2px 5px;
   }
 
   .SingleLineEditable__content--placeholder {
