@@ -2,6 +2,7 @@ package task_logger
 
 import (
 	"os/exec"
+	"strings"
 	"time"
 )
 
@@ -19,6 +20,24 @@ const (
 	TaskSuccessStatus       TaskStatus = "success"
 	TaskFailStatus          TaskStatus = "error"
 )
+
+func (s TaskStatus) String() string {
+	switch s {
+	case TaskWaitingStatus,
+		TaskStartingStatus,
+		TaskWaitingConfirmation,
+		TaskConfirmed,
+		TaskRejected,
+		TaskRunningStatus,
+		TaskStoppingStatus,
+		TaskStoppedStatus,
+		TaskSuccessStatus,
+		TaskFailStatus:
+		return string(s)
+	default:
+		return "unknown"
+	}
+}
 
 func (s TaskStatus) IsValid() bool {
 	switch s {
@@ -57,7 +76,7 @@ func (s TaskStatus) Format() (res string) {
 	}
 
 	// to avoid email content injection issue
-	//res += strings.ToUpper(string(s))
+	res += strings.ToUpper(s.String())
 
 	return
 }
