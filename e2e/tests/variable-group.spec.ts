@@ -14,6 +14,6 @@ test.describe('Variable Groups', () => {
         await page.getByRole('textbox', { name: 'Value' }).fill('Test');
         await page.getByRole('button', { name: 'Save' }).click();
         await page.getByTestId('varGroup-error').waitFor({timeout: 1000});
-        await expect(page.getByTestId('varGroup-error')).toHaveText('Environment variables key can not be empty');
+        await expect(page.getByTestId('varGroup-error')).toHaveText('Environment variables key cannot be empty');
       });
 });
