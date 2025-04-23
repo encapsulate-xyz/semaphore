@@ -85,7 +85,8 @@
       class="mx-4 mb-2 TemplateView__description"
       v-model="item.description"
       @save="updateDescription()"
-      :can-edit="item.description || can(USER_PERMISSIONS.manageProjectResources)"
+      :v-if="item.description || can(USER_PERMISSIONS.manageProjectResources)"
+      :can-edit="can(USER_PERMISSIONS.manageProjectResources)"
     />
 
     <v-tabs class="ml-4">
