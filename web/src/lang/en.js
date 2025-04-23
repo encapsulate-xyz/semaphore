@@ -346,4 +346,8 @@ export default {
   project_stats: 'Stats',
   allow_override_branch: 'Branch',
   template_common_options: 'Common options',
+
+  template_tasks: 'Tasks',
+  template_details: 'Details',
+  template_tf_workspaces: 'Workspaces',
 };

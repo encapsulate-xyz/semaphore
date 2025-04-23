@@ -210,19 +210,23 @@ func (d *BoltDb) IsInitialized() (initialized bool, err error) {
 	return
 }
 
+func (d *BoltDb) getObjectTx(bucketID int, props db.ObjectProps, objectID objectID, object interface{}, tx *bbolt.Tx) (err error) {
+	b := tx.Bucket(makeBucketId(props, bucketID))
+	if b == nil {
+		return db.ErrNotFound
+	}
+
+	str := b.Get(objectID.ToBytes())
+	if str == nil {
+		return db.ErrNotFound
+	}
+
+	return unmarshalObject(str, object, props.SelectColumns)
+}
+
 func (d *BoltDb) getObject(bucketID int, props db.ObjectProps, objectID objectID, object interface{}) (err error) {
 	err = d.db.View(func(tx *bbolt.Tx) error {
-		b := tx.Bucket(makeBucketId(props, bucketID))
-		if b == nil {
-			return db.ErrNotFound
-		}
-
-		str := b.Get(objectID.ToBytes())
-		if str == nil {
-			return db.ErrNotFound
-		}
-
-		return unmarshalObject(str, object, props.SelectColumns)
+		return d.getObjectTx(bucketID, props, objectID, object, tx)
 	})
 
 	return

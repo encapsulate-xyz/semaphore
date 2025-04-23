@@ -81,22 +81,30 @@
       </v-btn>
     </v-toolbar>
 
+    <SingleLineEditable
+      class="mx-4 mb-2 TemplateView__description"
+      v-model="item.description"
+      @save="updateDescription()"
+      :v-if="item.description || can(USER_PERMISSIONS.manageProjectResources)"
+      :can-edit="can(USER_PERMISSIONS.manageProjectResources)"
+    />
+
     <v-tabs class="ml-4">
       <v-tab
         :to="`/project/${item.project_id}${
           $route.params.viewId ? `/views/${$route.params.viewId}` : ''
-        }/templates/${item.id}/tasks`">Tasks</v-tab>
+        }/templates/${item.id}/tasks`">{{ $t('template_tasks') }}</v-tab>
       <v-tab
         :to="`/project/${item.project_id}${
           $route.params.viewId ? `/views/${$route.params.viewId}` : ''
-        }/templates/${item.id}/details`">Details</v-tab>
+        }/templates/${item.id}/details`">{{ $t('template_details') }}</v-tab>
       <v-tab
         v-if="['terraform', 'tofu'].includes(item.app)"
         :to="`/project/${item.project_id}${
           $route.params.viewId ? `/views/${$route.params.viewId}` : ''
         }/templates/${item.id}/state`"
       >
-        Workspaces
+        {{ $t('template_tf_workspaces') }}
       </v-tab>
     </v-tabs>
 
@@ -113,6 +121,19 @@
     ></router-view>
   </div>
 </template>
+
+<style lang="scss" scoped>
+
+@import '~vuetify/src/styles/settings/_variables';
+
+@media #{map-get($display-breakpoints, 'md-and-up')} {
+  .TemplateView__description {
+    margin-top: -10px;
+  }
+}
+
+</style>
+
 <script>
 import axios from 'axios';
 import EventBus from '@/event-bus';
@@ -128,9 +149,11 @@ import ObjectRefsDialog from '@/components/ObjectRefsDialog.vue';
 import NewTaskDialog from '@/components/NewTaskDialog.vue';
 import EditTemplateDialog from '@/components/EditTemplateDialog.vue';
 import PermissionsCheck from '@/components/PermissionsCheck';
+import SingleLineEditable from '@/components/SingleLineEditable.vue';
 
 export default {
   components: {
+    SingleLineEditable,
     YesNoDialog,
     ObjectRefsDialog,
     NewTaskDialog,
@@ -293,6 +316,25 @@ export default {
         })
       ).data;
     },
+
+    async updateDescription() {
+      try {
+        await axios({
+          method: 'put',
+          url: `/api/project/${this.projectId}/templates/${this.itemId}/description`,
+          responseType: 'json',
+          data: {
+            description: this.item.description,
+          },
+        });
+      } catch (err) {
+        EventBus.$emit('i-snackbar', {
+          color: 'error',
+          text: getErrorMessage(err),
+        });
+      }
+    },
+
   },
 };
 </script>

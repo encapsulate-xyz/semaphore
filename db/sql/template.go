@@ -136,6 +136,18 @@ func (d *SqlDb) UpdateTemplate(template db.Template) error {
 
 	return err
 }
+func (d *SqlDb) SetTemplateDescription(projectID int, templateID int, description string) (err error) {
+
+	_, err = d.exec("update project__template set "+
+		"description=? "+
+		"where id=? and project_id=?",
+		description,
+		templateID,
+		projectID,
+	)
+
+	return
+}
 
 func (d *SqlDb) GetTemplates(projectID int, filter db.TemplateFilter, params db.RetrieveQueryParams) (templates []db.Template, err error) {
 
