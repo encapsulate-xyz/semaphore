@@ -101,7 +101,7 @@ func (d *SqlDb) GetTemplateSchedules(projectID int, templateID int, onlyCommitCh
 		return
 	}
 
-	_, err = d.selectAll(&schedules, query, args)
+	_, err = d.selectAll(&schedules, query, args...)
 	return
 }
 
