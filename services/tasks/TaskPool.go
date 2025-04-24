@@ -425,16 +425,8 @@ func (p *TaskPool) AddTask(taskObj db.Task, userID *int, projectID int, needAlia
 	taskRunner.job = job
 
 	p.register <- &taskRunner
-
-	objType := db.EventTask
-	desc := "Task ID " + strconv.Itoa(newTask.ID) + " queued for running"
-	_, err = p.store.CreateEvent(db.Event{
-		UserID:      userID,
-		ProjectID:   &projectID,
-		ObjectType:  &objType,
-		ObjectID:    &newTask.ID,
-		Description: &desc,
-	})
+	
+	taskRunner.createTaskEvent()
 
 	return
 }

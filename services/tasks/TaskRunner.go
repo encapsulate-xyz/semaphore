@@ -84,10 +84,22 @@ func (t *TaskRunner) kill() {
 }
 
 func (t *TaskRunner) createTaskEvent() {
-	objType := db.EventTask
-	desc := "Task ID " + strconv.Itoa(t.Task.ID) + " (" + t.Template.Name + ")" + " finished - " + strings.ToUpper(string(t.Task.Status))
 
-	_, err := t.pool.store.CreateEvent(db.Event{
+	desc := "Task ID " + strconv.Itoa(t.Task.ID) + " (" + t.Template.Name + ")"
+
+	if t.Task.Status.IsFinished() {
+		desc += " finished with status " + strings.ToUpper(string(t.Task.Status))
+	} else {
+		desc += " " + strings.ToUpper(string(t.Task.Status))
+	}
+
+	err := appendTaskToFileLog(desc)
+	if err != nil {
+		log.Error(err)
+	}
+
+	objType := db.EventTask
+	_, err = t.pool.store.CreateEvent(db.Event{
 		UserID:      t.Task.UserID,
 		ProjectID:   &t.Task.ProjectID,
 		ObjectType:  &objType,
@@ -124,26 +136,12 @@ func (t *TaskRunner) run() {
 	}
 
 	t.SetStatus(task_logger.TaskStartingStatus)
-
-	objType := db.EventTask
-	desc := "Task ID " + strconv.Itoa(t.Task.ID) + " (" + t.Template.Name + ")" + " is running"
-
-	_, err := t.pool.store.CreateEvent(db.Event{
-		UserID:      t.Task.UserID,
-		ProjectID:   &t.Task.ProjectID,
-		ObjectType:  &objType,
-		ObjectID:    &t.Task.ID,
-		Description: &desc,
-	})
-
-	if err != nil {
-		t.Log("Fatal error inserting an event")
-		panic(err)
-	}
+	t.createTaskEvent()
 
 	t.Log("Started: " + strconv.Itoa(t.Task.ID))
 	t.Log("Run TaskRunner with template: " + t.Template.Name + "\n")
 
+	var err error
 	var username string
 	var incomingVersion *string
 
