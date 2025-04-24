@@ -2,6 +2,6 @@
 
 package tasks
 
-func appendTaskToFileLog() error {
+func appendTaskToFileLog(string) error {
 	return nil
 }
