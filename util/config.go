@@ -143,13 +143,19 @@ type AuthConfig struct {
 }
 
 type EventLogType struct {
-	Enabled     bool   `json:"enabled" env:"SEMAPHORE_EVENT_LOG_ENABLED"`
-	Path        string `json:"path,omitempty" env:"SEMAPHORE_EVENT_LOG_PATH"`
-	TaskLogPath string `json:"task_log_path,omitempty" env:"SEMAPHORE_TASK_EVENT_LOG_PATH"`
+	Enabled bool   `json:"enabled" env:"SEMAPHORE_EVENT_LOG_ENABLED"`
+	Path    string `json:"path,omitempty" env:"SEMAPHORE_EVENT_LOG_PATH"`
+}
+
+type TaskLogType struct {
+	Enabled        bool   `json:"enabled" env:"SEMAPHORE_TASK_LOG_ENABLED"`
+	Path           string `json:"path,omitempty" env:"SEMAPHORE_TASK_LOG_PATH"`
+	TaskResultPath string `json:"task_result_path,omitempty" env:"SEMAPHORE_TASK_RESULT_PATH"`
 }
 
 type ConfigLog struct {
 	Events *EventLogType `json:"events,omitempty"`
+	Tasks  *EventLogType `json:"tasks,omitempty"`
 }
 
 type ConfigProcess struct {
