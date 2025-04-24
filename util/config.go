@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"gopkg.in/natefinch/lumberjack.v2"
 	"io"
 	"net/url"
 	"os"
@@ -143,14 +144,14 @@ type AuthConfig struct {
 }
 
 type EventLogType struct {
-	Enabled bool   `json:"enabled" env:"SEMAPHORE_EVENT_LOG_ENABLED"`
-	Path    string `json:"path,omitempty" env:"SEMAPHORE_EVENT_LOG_PATH"`
+	Enabled bool               `json:"enabled" env:"SEMAPHORE_EVENT_LOG_ENABLED"`
+	Logger  *lumberjack.Logger `json:"logger,omitempty" env:"SEMAPHORE_EVENT_LOGGER"`
 }
 
 type TaskLogType struct {
-	Enabled        bool   `json:"enabled" env:"SEMAPHORE_TASK_LOG_ENABLED"`
-	Path           string `json:"path,omitempty" env:"SEMAPHORE_TASK_LOG_PATH"`
-	TaskResultPath string `json:"task_result_path,omitempty" env:"SEMAPHORE_TASK_RESULT_PATH"`
+	Enabled      bool               `json:"enabled" env:"SEMAPHORE_TASK_LOG_ENABLED"`
+	Logger       *lumberjack.Logger `json:"logger,omitempty" env:"SEMAPHORE_TASK_LOGGER"`
+	ResultLogger *lumberjack.Logger `json:"result_logger,omitempty" env:"SEMAPHORE_TASK_RESULT_LOGGER"`
 }
 
 type ConfigLog struct {
