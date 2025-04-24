@@ -297,7 +297,7 @@ type Store interface {
 
 	GetSchedules() ([]Schedule, error)
 	GetProjectSchedules(projectID int) ([]ScheduleWithTpl, error)
-	GetTemplateSchedules(projectID int, templateID int) ([]Schedule, error)
+	GetTemplateSchedules(projectID int, templateID int, onlyCommitCheckers bool) ([]Schedule, error)
 	CreateSchedule(schedule Schedule) (Schedule, error)
 	UpdateSchedule(schedule Schedule) error
 	SetScheduleCommitHash(projectID int, scheduleID int, hash string) error
