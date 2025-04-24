@@ -776,6 +776,10 @@ func loadEnvironmentToObject(obj interface{}) error {
 		fieldType := t.Field(i)
 		fieldValue := v.Field(i)
 
+		if !fieldType.IsExported() {
+			continue
+		}
+
 		if fieldType.Type.Kind() == reflect.Struct {
 			err := loadEnvironmentToObject(fieldValue.Addr().Interface())
 			if err != nil {
