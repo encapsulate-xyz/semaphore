@@ -241,3 +241,17 @@ func (d *BoltDb) GetTaskOutputs(projectID int, taskID int, params db.RetrieveQue
 
 	return
 }
+
+func (d *BoltDb) EndTaskStage(taskID int, stageID int, end time.Time, endOutputID int) error {
+	return nil
+}
+func (d *BoltDb) CreateTaskStageResult(taskID int, stageID int, result map[string]any) error {
+	return nil
+}
+
+func (d *BoltDb) GetTaskStage(projectID int, taskID int, stageID int) (res db.TaskStageWithResult, err error) {
+	return
+}
+func (d *BoltDb) GetTaskStageOutputs(projectID int, taskID int, stageID int) (res []db.TaskOutput, err error) {
+	return
+}

@@ -1,18 +1,95 @@
 package sql
 
 import (
+	"encoding/json"
 	"github.com/Masterminds/squirrel"
 	"github.com/semaphoreui/semaphore/db"
 	"math/rand"
+	"time"
 )
 
-func (d *SqlDb) CreateTaskStage(stage db.TaskStage) (db.TaskStage, error) {
-	_, err := d.exec(
-		"insert into task__stage (task_id, type) VALUES (?, ?, ?, ?)",
+func (d *SqlDb) CreateTaskStage(stage db.TaskStage) (res db.TaskStage, err error) {
+	insertID, err := d.insert(
+		"id",
+		"insert into task__stage "+
+			"(task_id, start, end, start_output_id, end_output_id, type) VALUES "+
+			"(?, ?, ?, ?, ?, ?)",
 		stage.TaskID,
-		stage.Type,
-		stage.Start)
+		stage.Start,
+		stage.End,
+		stage.StartOutputID,
+		stage.EndOutputID,
+		stage.Type)
+
+	if err != nil {
+		return
+	}
+
+	res = stage
+	res.ID = insertID
 	return stage, err
+}
+
+func (d *SqlDb) EndTaskStage(taskID int, stageID int, end time.Time, endOutputID int) (err error) {
+	_, err = d.exec(
+		"update task__stage set end=?, end_output_id=? where task_id=? and id=?",
+		end,
+		endOutputID,
+		taskID,
+		stageID)
+
+	return
+}
+
+func (d *SqlDb) CreateTaskStageResult(taskID int, stageID int, result map[string]any) (err error) {
+	jsn, err := json.Marshal(result)
+	if err != nil {
+		return
+	}
+
+	_, err = d.insert(
+		"id",
+		"insert into task__stage_result "+
+			"(task_id, stage_id, `json`) VALUES "+
+			"(?, ?, ?)",
+		taskID,
+		stageID,
+		string(jsn))
+
+	return
+}
+
+func (d *SqlDb) getTaskStage(taskID int, stageID int) (res db.TaskStageWithResult, err error) {
+	err = d.selectOne(
+		&res.TaskStage,
+		"select * from task__stage where task_id=? and id=?",
+		taskID,
+		stageID)
+
+	var stageResult db.TaskStageResult
+
+	err = d.selectOne(
+		&stageResult,
+		"select * from task__stage_result where task_id=? and stage_id=?",
+		taskID,
+		stageID)
+
+	if err != nil {
+		return
+	}
+
+	err = json.Unmarshal([]byte(stageResult.JSON), &res.Result)
+
+	return
+}
+
+func (d *SqlDb) GetTaskStage(projectID int, taskID int, stageID int) (res db.TaskStageWithResult, err error) {
+	// check if task exists in the project
+	_, err = d.GetTask(projectID, taskID)
+	if err != nil {
+		return
+	}
+	return d.getTaskStage(taskID, stageID)
 }
 
 func (d *SqlDb) GetTaskStages(projectID int, taskID int) ([]db.TaskStage, error) {
@@ -118,11 +195,15 @@ func (d *SqlDb) UpdateTask(task db.Task) error {
 }
 
 func (d *SqlDb) CreateTaskOutput(output db.TaskOutput) (db.TaskOutput, error) {
-	_, err := d.exec(
+	insertID, err := d.insert(
+		"id",
 		"insert into task__output (task_id, output, time) VALUES (?, ?, ?)",
 		output.TaskID,
 		output.Output,
 		output.Time.UTC())
+
+	output.ID = insertID
+	
 	return output, err
 }
 
@@ -228,6 +309,45 @@ func (d *SqlDb) GetTaskOutputs(projectID int, taskID int, params db.RetrieveQuer
 
 	if params.Count > 0 {
 		q = q.Limit(uint64(params.Count)).Offset(uint64(params.Offset))
+	}
+
+	query, args, err := q.ToSql()
+	if err != nil {
+		return
+	}
+
+	_, err = d.selectAll(&output, query, args...)
+	return
+}
+
+func (d *SqlDb) GetTaskStageOutputs(projectID int, taskID int, stageID int) (output []db.TaskOutput, err error) {
+	// check if task exists in the project
+	_, err = d.GetTask(projectID, taskID)
+
+	if err != nil {
+		return
+	}
+
+	stage, err := d.getTaskStage(taskID, stageID)
+
+	if err != nil {
+		return
+	}
+
+	q := squirrel.Select("task_id", "time", "output").
+		From("task__output").
+		Where("task_id=?", taskID)
+
+	if stage.StartOutputID != nil {
+		q = q.Where(squirrel.GtOrEq{"task_id": stage.StartOutputID})
+	} else {
+		q = q.Where(squirrel.GtOrEq{"created": stage.Start})
+	}
+
+	if stage.EndOutputID != nil {
+		q = q.Where(squirrel.LtOrEq{"task_id": stage.EndOutputID})
+	} else {
+		q = q.Where(squirrel.LtOrEq{"created": stage.End})
 	}
 
 	query, args, err := q.ToSql()

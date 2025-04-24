@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/semaphoreui/semaphore/pkg/random"
+	"github.com/semaphoreui/semaphore/services/tasks/stage_parsers"
 	"regexp"
 	"strconv"
 	"strings"
@@ -151,11 +152,11 @@ func (p *TaskPool) Run() {
 					log.Error(err)
 				}
 
-				stages := db.GetAllTaskStages(record.task.Template.App)
+				stages := stage_parsers.GetAllTaskStages(record.task.Template.App)
 
 				for _, stageType := range stages {
 
-					parser := db.GetStageResultParser(record.task.Template.App, stageType)
+					parser := stage_parsers.GetStageResultParser(record.task.Template.App, stageType)
 					if parser == nil {
 						continue
 					}
@@ -168,17 +169,20 @@ func (p *TaskPool) Run() {
 
 					if parser.IsEnd(record.task.currentStage, output) {
 
-						stage, err = p.store.EndTaskStage(
+						err = p.store.EndTaskStage(
 							record.task.currentStage.TaskID,
 							record.task.currentStage.ID,
 							record.time,
 							newOutput.ID,
 						)
 
-						oldStage = &stage
-
 						if err != nil {
 							log.Error(err)
+						} else {
+							stage = *record.task.currentStage
+							stage.End = &record.time
+							stage.EndOutputID = &newOutput.ID
+							oldStage = &stage
 						}
 
 						matched = true
@@ -186,8 +190,7 @@ func (p *TaskPool) Run() {
 					} else if parser.IsStart(record.task.currentStage, output) {
 
 						if record.task.currentStage != nil {
-							var oldSt db.TaskStage
-							oldSt, err = p.store.EndTaskStage(
+							err = p.store.EndTaskStage(
 								record.task.currentStage.TaskID,
 								record.task.currentStage.ID,
 								record.task.currentOutput.Time,
@@ -197,6 +200,9 @@ func (p *TaskPool) Run() {
 							if err != nil {
 								log.Error(err)
 							} else {
+								oldSt := *record.task.currentStage
+								oldSt.End = &record.task.currentOutput.Time
+								oldSt.EndOutputID = &record.task.currentOutput.ID
 								oldStage = &oldSt
 							}
 						}
@@ -220,14 +226,14 @@ func (p *TaskPool) Run() {
 
 					if matched {
 						record.task.currentStage = &stage
-						if oldStage != nil {
+						if oldStage != nil && parser.NeedParse() {
 							var stageOutputs []db.TaskOutput
-							stageOutputs, err = p.store.GetTaskStageOutputs(record.task.Task.ID, oldStage.ID)
+							stageOutputs, err = p.store.GetTaskStageOutputs(record.task.Task.ProjectID, record.task.Task.ID, oldStage.ID)
 
 							var res map[string]interface{}
 							res, err = parser.Parse(stageOutputs)
 
-							_, err = p.store.CreateTaskStageResult(oldStage.TaskID, oldStage.ID, res)
+							err = p.store.CreateTaskStageResult(oldStage.TaskID, oldStage.ID, res)
 						}
 						break
 					}
