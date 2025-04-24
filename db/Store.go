@@ -342,6 +342,12 @@ type Store interface {
 	GetTaskStages(projectID int, taskID int) ([]TaskStage, error)
 	CreateTaskStage(stage TaskStage) (TaskStage, error)
 
+	EndTaskStage(taskID int, stageID int, end time.Time, endOutputID int) (TaskStage, error)
+	CreateTaskStageResult(taskID int, stageID int, result map[string]any) (TaskStageResult, error)
+	GetTaskStage(taskID int, stageID int) (TaskStage, error)
+	GetTaskStageResult(taskID int, stageID int) (TaskStageResult, error)
+	GetTaskStageOutputs(taskID int, stageID int) ([]TaskOutput, error)
+
 	GetView(projectID int, viewID int) (View, error)
 	GetViews(projectID int) ([]View, error)
 	UpdateView(view View) error

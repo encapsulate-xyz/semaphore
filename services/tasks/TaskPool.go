@@ -139,14 +139,100 @@ func (p *TaskPool) Run() {
 		select {
 		case record := <-p.logger: // new log message which should be put to database
 			db.StoreSession(p.store, "logger", func() {
-				_, err := p.store.CreateTaskOutput(db.TaskOutput{
+
+				output := db.TaskOutput{
 					TaskID: record.task.Task.ID,
 					Output: record.output,
 					Time:   record.time,
-				})
+				}
+
+				newOutput, err := p.store.CreateTaskOutput(output)
 				if err != nil {
 					log.Error(err)
 				}
+
+				stages := db.GetAllTaskStages(record.task.Template.App)
+
+				for _, stageType := range stages {
+
+					parser := db.GetStageResultParser(record.task.Template.App, stageType)
+					if parser == nil {
+						continue
+					}
+
+					matched := false
+
+					var oldStage *db.TaskStage
+
+					var stage db.TaskStage
+
+					if parser.IsEnd(record.task.currentStage, output) {
+
+						stage, err = p.store.EndTaskStage(
+							record.task.currentStage.TaskID,
+							record.task.currentStage.ID,
+							record.time,
+							newOutput.ID,
+						)
+
+						oldStage = &stage
+
+						if err != nil {
+							log.Error(err)
+						}
+
+						matched = true
+
+					} else if parser.IsStart(record.task.currentStage, output) {
+
+						if record.task.currentStage != nil {
+							var oldSt db.TaskStage
+							oldSt, err = p.store.EndTaskStage(
+								record.task.currentStage.TaskID,
+								record.task.currentStage.ID,
+								record.task.currentOutput.Time,
+								record.task.currentOutput.ID,
+							)
+
+							if err != nil {
+								log.Error(err)
+							} else {
+								oldStage = &oldSt
+							}
+						}
+
+						stage, err = p.store.CreateTaskStage(db.TaskStage{
+							TaskID:        record.task.Task.ID,
+							Start:         &record.time,
+							Type:          stageType,
+							StartOutputID: &newOutput.ID,
+							EndOutputID:   nil,
+						})
+
+						if err != nil {
+							log.Error(err)
+						}
+
+						matched = true
+					}
+
+					record.task.currentOutput = &newOutput
+
+					if matched {
+						record.task.currentStage = &stage
+						if oldStage != nil {
+							var stageOutputs []db.TaskOutput
+							stageOutputs, err = p.store.GetTaskStageOutputs(record.task.Task.ID, oldStage.ID)
+
+							var res map[string]interface{}
+							res, err = parser.Parse(stageOutputs)
+
+							_, err = p.store.CreateTaskStageResult(oldStage.TaskID, oldStage.ID, res)
+						}
+						break
+					}
+				}
+
 			})
 
 		case task := <-p.register: // new task created by API or schedule
@@ -425,7 +511,7 @@ func (p *TaskPool) AddTask(taskObj db.Task, userID *int, projectID int, needAlia
 	taskRunner.job = job
 
 	p.register <- &taskRunner
-	
+
 	taskRunner.createTaskEvent()
 
 	return

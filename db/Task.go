@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/go-gorp/gorp/v3"
@@ -176,6 +177,7 @@ type TaskWithTpl struct {
 
 // TaskOutput is the ansible log output from the task
 type TaskOutput struct {
+	ID     int       `db:"id" json:"id"`
 	TaskID int       `db:"task_id" json:"task_id"`
 	Time   time.Time `db:"time" json:"time"`
 	Output string    `db:"output" json:"output"`
@@ -184,16 +186,106 @@ type TaskOutput struct {
 type TaskStageType string
 
 const (
-	TaskStageRepositoryClone TaskStageType = "repository_clone"
-	TaskStageScriptRun       TaskStageType = "script_run"
+	TaskStageCloneRepository TaskStageType = "clone_repository"
 	TaskStageTerraformPlan   TaskStageType = "terraform_plan"
+	TaskStageRunning         TaskStageType = "running"
+	TaskStagePrintResult     TaskStageType = "print_result"
 )
 
 type TaskStage struct {
+	ID            int           `db:"id" json:"id"`
 	TaskID        int           `db:"task_id" json:"task_id"`
 	Start         *time.Time    `db:"start" json:"start"`
 	End           *time.Time    `db:"end" json:"end"`
 	StartOutputID *int          `db:"start_output_id" json:"start_output_id"`
 	EndOutputID   *int          `db:"end_output_id" json:"end_output_id"`
 	Type          TaskStageType `db:"type" json:"type"`
+}
+
+type TaskStageResult struct {
+	StageID int    `db:"stage_id" json:"stage_id"`
+	JSON    string `db:"json" json:"json"`
+}
+
+type StageResultParser interface {
+	IsStart(currentStage *TaskStage, output TaskOutput) bool
+	IsEnd(currentStage *TaskStage, output TaskOutput) bool
+	Parse(outputs []TaskOutput) (map[string]any, error)
+}
+
+type AnsibleResultStageParser struct{}
+
+func (p AnsibleResultStageParser) IsStart(currentStage *TaskStage, output TaskOutput) bool {
+	if currentStage == nil {
+		return false
+	}
+
+	if currentStage.Type != TaskStageRunning {
+		return false
+	}
+
+	return strings.HasPrefix(output.Output, "PLAY RECAP *****************************************")
+}
+
+func (p AnsibleResultStageParser) IsEnd(currentStage *TaskStage, output TaskOutput) bool {
+	return false
+}
+
+func (p AnsibleResultStageParser) Parse(outputs []TaskOutput) (map[string]any, error) {
+	// Implement the parsing logic for Ansible results
+	return nil, nil
+}
+
+func GetStageResultParser(app TemplateApp, stageType TaskStageType) StageResultParser {
+	switch app {
+	case AppAnsible:
+		switch stageType {
+		case TaskStagePrintResult:
+			return &AnsibleResultStageParser{}
+		}
+	}
+
+	return nil
+}
+
+func GetAllowedNextTaskStages(stage *TaskStage, app TemplateApp) []TaskStageType {
+	switch app {
+	case AppAnsible:
+		if stage == nil {
+			return []TaskStageType{TaskStageCloneRepository}
+		}
+		switch stage.Type {
+		case TaskStageCloneRepository:
+			return []TaskStageType{TaskStageRunning}
+		}
+	}
+
+	return nil
+}
+
+//func GetAllowedNextTaskStages(stage *TaskStage, app TemplateApp) []TaskStageType {
+//	switch app {
+//	case AppAnsible:
+//		if stage == nil {
+//			return []TaskStageType{TaskStageCloneRepository}
+//		}
+//		switch stage.Type {
+//		case TaskStageCloneRepository:
+//			return []TaskStageType{TaskStageRunning}
+//		}
+//	}
+//
+//	return nil
+//}
+
+func GetAllTaskStages(app TemplateApp) []TaskStageType {
+	switch app {
+	case AppAnsible:
+		return []TaskStageType{
+			TaskStageCloneRepository,
+			TaskStageRunning,
+		}
+	}
+
+	return nil
 }

@@ -28,6 +28,9 @@ type TaskRunner struct {
 	Repository  db.Repository
 	Environment db.Environment
 
+	currentStage  *db.TaskStage
+	currentOutput *db.TaskOutput
+
 	users     []int
 	alert     bool
 	alertChat *string
