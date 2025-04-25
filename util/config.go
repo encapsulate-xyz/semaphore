@@ -156,7 +156,7 @@ type TaskLogType struct {
 
 type ConfigLog struct {
 	Events *EventLogType `json:"events,omitempty"`
-	Tasks  *EventLogType `json:"tasks,omitempty"`
+	Tasks  *TaskLogType  `json:"tasks,omitempty"`
 }
 
 type ConfigProcess struct {
