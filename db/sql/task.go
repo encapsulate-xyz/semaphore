@@ -347,7 +347,7 @@ func (d *SqlDb) GetTaskStageOutputs(projectID int, taskID int, stageID int) (out
 		return
 	}
 
-	q := squirrel.Select("task_id", "time", "output").
+	q := squirrel.Select("id", "task_id", "time", "output").
 		From("task__output").
 		Where("task_id=?", taskID)
 

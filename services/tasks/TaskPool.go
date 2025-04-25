@@ -174,8 +174,16 @@ func (p *TaskPool) MoveToNextStage(
 		}
 
 		if matched {
+
 			newStage = &stage
-			if oldStage != nil && parser.NeedParse() {
+
+			var oldParser stage_parsers.StageResultParser
+
+			if oldStage != nil {
+				oldParser = stage_parsers.GetStageResultParser(app, oldStage.Type)
+			}
+
+			if oldParser != nil && oldParser.NeedParse() {
 				var stageOutputs []db.TaskOutput
 				stageOutputs, err = p.store.GetTaskStageOutputs(projectID, newOutput.TaskID, oldStage.ID)
 
@@ -184,7 +192,7 @@ func (p *TaskPool) MoveToNextStage(
 				}
 
 				var res map[string]interface{}
-				res, err = parser.Parse(stageOutputs)
+				res, err = oldParser.Parse(stageOutputs)
 
 				if err != nil {
 					return

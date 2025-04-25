@@ -2,6 +2,7 @@ package stage_parsers
 
 import (
 	"github.com/semaphoreui/semaphore/db"
+	"github.com/semaphoreui/semaphore/util"
 	log "github.com/sirupsen/logrus"
 	"regexp"
 	"strconv"
@@ -29,7 +30,15 @@ func (p AnsibleResultStageParser) IsStart(currentStage *db.TaskStage, output db.
 }
 
 func (p AnsibleResultStageParser) IsEnd(currentStage *db.TaskStage, output db.TaskOutput) bool {
-	return false
+	if currentStage == nil {
+		return false
+	}
+
+	if currentStage.Type != db.TaskStagePrintResult {
+		return false
+	}
+
+	return strings.TrimSpace(output.Output) == ""
 }
 
 type ansibleResultHost struct {
@@ -66,7 +75,7 @@ func (p AnsibleResultStageParser) Parse(outputs []db.TaskOutput) (res map[string
 
 	for _, output := range outputs {
 
-		line := strings.TrimSpace(output.Output)
+		line := util.ClearFromAnsiCodes(strings.TrimSpace(output.Output))
 
 		if line == "" {
 			continue
