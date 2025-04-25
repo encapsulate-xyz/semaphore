@@ -1001,6 +1001,10 @@ func CreateTestStore() *BoltDb {
 	util.Config = &util.ConfigType{
 		BoltDb:  &util.DbConfig{},
 		Dialect: "bolt",
+		Log: &util.ConfigLog{
+			Events: &util.EventLogType{},
+			Tasks:  &util.TaskLogType{},
+		},
 	}
 
 	fn := "/tmp/test_semaphore_db_" + util.RandString(5)
