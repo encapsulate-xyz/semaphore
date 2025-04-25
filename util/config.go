@@ -8,6 +8,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	log "github.com/sirupsen/logrus"
+	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"io"
 	"net/url"
@@ -19,8 +21,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-
-	"golang.org/x/crypto/bcrypt"
 
 	"github.com/google/go-github/github"
 	"github.com/gorilla/securecookie"
@@ -148,10 +148,26 @@ type EventLogType struct {
 	Logger  *lumberjack.Logger `json:"logger,omitempty" env:"SEMAPHORE_EVENT_LOGGER"`
 }
 
+func (e *EventLogType) Write(event log.Fields) error {
+	if !e.Enabled {
+		return nil
+	}
+
+	return appendToFileLog(event, e.Logger)
+}
+
 type TaskLogType struct {
 	Enabled      bool               `json:"enabled" env:"SEMAPHORE_TASK_LOG_ENABLED"`
 	Logger       *lumberjack.Logger `json:"logger,omitempty" env:"SEMAPHORE_TASK_LOGGER"`
 	ResultLogger *lumberjack.Logger `json:"result_logger,omitempty" env:"SEMAPHORE_TASK_RESULT_LOGGER"`
+}
+
+func (e *TaskLogType) Write(event log.Fields) error {
+	if !e.Enabled {
+		return nil
+	}
+
+	return appendToFileLog(event, e.Logger)
 }
 
 type ConfigLog struct {

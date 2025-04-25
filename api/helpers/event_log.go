@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"github.com/semaphoreui/semaphore/db"
+	"github.com/semaphoreui/semaphore/util"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 )
@@ -43,26 +44,14 @@ func EventLog(r *http.Request, action EventLogType, event EventLogItem) {
 		record.ProjectID = &event.ProjectID
 	}
 
-	logFields := log.Fields{
-		"project": event.ProjectID,
-		"type":    string(event.ObjectType),
-		"object":  event.ObjectID,
-		"action":  string(action),
-	}
-
-	if event.UserID > 0 {
-		logFields["user"] = event.UserID
-	}
-
-	if event.IntegrationID > 0 {
-		logFields["integration"] = event.IntegrationID
-	}
+	logFields := record.ToFields()
+	logFields["action"] = string(action)
 
 	if _, err := Store(r).CreateEvent(record); err != nil {
 		log.WithFields(logFields).Error("Failed to store event")
 	}
 
-	if err := appendEventToLog(logFields); err != nil {
+	if err := util.Config.Log.Events.Write(logFields); err != nil {
 		log.WithFields(logFields).Error("Failed to store event in log file")
 	}
 }

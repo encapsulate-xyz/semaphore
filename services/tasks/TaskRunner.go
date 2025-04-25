@@ -93,19 +93,20 @@ func (t *TaskRunner) createTaskEvent() {
 		desc += " " + strings.ToUpper(string(t.Task.Status))
 	}
 
-	err := appendTaskToFileLog(desc)
-	if err != nil {
-		log.Error(err)
-	}
-
 	objType := db.EventTask
-	_, err = t.pool.store.CreateEvent(db.Event{
+	event := db.Event{
 		UserID:      t.Task.UserID,
 		ProjectID:   &t.Task.ProjectID,
 		ObjectType:  &objType,
 		ObjectID:    &t.Task.ID,
 		Description: &desc,
-	})
+	}
+
+	if err := util.Config.Log.Tasks.Write(event.ToFields()); err != nil {
+		log.Error(err)
+	}
+
+	_, err := t.pool.store.CreateEvent(event)
 
 	if err != nil {
 		t.panicOnError(err, "Fatal error inserting an event")
