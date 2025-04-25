@@ -1,3 +1,5 @@
+//go:build !pro
+
 package hooks
 
 import "github.com/semaphoreui/semaphore/db"
