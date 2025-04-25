@@ -41,7 +41,7 @@ func (p AnsibleResultStageParser) IsEnd(currentStage *db.TaskStage, output db.Ta
 	return strings.TrimSpace(output.Output) == ""
 }
 
-type ansibleResultHost struct {
+type AnsibleResultHost struct {
 	Host        string `json:"host"`
 	Ok          int    `json:"ok"`
 	Changed     int    `json:"changed"`
@@ -71,7 +71,7 @@ func toInt(s string) int {
 
 func (p AnsibleResultStageParser) Parse(outputs []db.TaskOutput) (res map[string]any, err error) {
 
-	hosts := make([]ansibleResultHost, 0)
+	hosts := make([]AnsibleResultHost, 0)
 
 	for _, output := range outputs {
 
@@ -91,7 +91,7 @@ func (p AnsibleResultStageParser) Parse(outputs []db.TaskOutput) (res map[string
 			continue
 		}
 
-		hosts = append(hosts, ansibleResultHost{
+		hosts = append(hosts, AnsibleResultHost{
 			Host:        m[1],
 			Ok:          toInt(m[2]),
 			Changed:     toInt(m[3]),

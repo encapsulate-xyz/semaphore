@@ -344,7 +344,8 @@ type Store interface {
 	CreateTaskStageResult(taskID int, stageID int, result map[string]any) error
 
 	GetTaskStages(projectID int, taskID int) ([]TaskStage, error)
-	GetTaskStage(projectID int, taskID int, stageID int) (TaskStageWithResult, error)
+	GetTaskStagesByType(projectID int, taskID int, stage TaskStageType) ([]TaskStage, error)
+	GetTaskStageResult(projectID int, taskID int, stageID int) (TaskStageResult, error)
 	GetTaskStageOutputs(projectID int, taskID int, stageID int) ([]TaskOutput, error)
 
 	GetView(projectID int, viewID int) (View, error)
@@ -507,6 +508,11 @@ var TaskOutputProps = ObjectProps{
 var TaskStageProps = ObjectProps{
 	TableName: "task__stage",
 	Type:      reflect.TypeOf(TaskStage{}),
+}
+
+var TaskStageResultProps = ObjectProps{
+	TableName: "task__stage_result",
+	Type:      reflect.TypeOf(TaskStageResult{}),
 }
 
 var ViewProps = ObjectProps{

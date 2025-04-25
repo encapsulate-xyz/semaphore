@@ -3,6 +3,7 @@ package tasks
 import (
 	"encoding/json"
 	"errors"
+	"github.com/semaphoreui/semaphore/services/tasks/hooks"
 	"os"
 	"strconv"
 	"strings"
@@ -92,6 +93,11 @@ func (t *TaskRunner) createTaskEvent() {
 
 	if t.Task.Status.IsFinished() {
 		desc += " finished with status " + strings.ToUpper(string(t.Task.Status))
+
+		hook := hooks.GetHook(t.Template.App)
+		if hook != nil {
+			go hook.End(t.pool.store, t.Task.ProjectID, t.Task.ID)
+		}
 	} else {
 		desc += " " + strings.ToUpper(string(t.Task.Status))
 	}

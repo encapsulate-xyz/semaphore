@@ -15,7 +15,7 @@ func (d *BoltDb) CreateTaskStage(stage db.TaskStage) (db.TaskStage, error) {
 	return newOutput.(db.TaskStage), nil
 }
 
-func (d *BoltDb) GetTaskStages(projectID int, taskID int) (res []db.TaskStage, err error) {
+func (d *BoltDb) GetTaskStages(projectID int, taskID int, stageType *db.TaskStageType) (res []db.TaskStage, err error) {
 	// check if task exists in the project
 	_, err = d.GetTask(projectID, taskID)
 
@@ -249,7 +249,7 @@ func (d *BoltDb) CreateTaskStageResult(taskID int, stageID int, result map[strin
 	return nil
 }
 
-func (d *BoltDb) GetTaskStage(projectID int, taskID int, stageID int) (res db.TaskStageWithResult, err error) {
+func (d *BoltDb) GetTaskStagesByType(projectID int, taskID int, stageType db.TaskStageType) (res db.TaskStageWithResult, err error) {
 	return
 }
 func (d *BoltDb) GetTaskStageOutputs(projectID int, taskID int, stageID int) (res []db.TaskOutput, err error) {
