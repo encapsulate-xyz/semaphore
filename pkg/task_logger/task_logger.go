@@ -23,17 +23,26 @@ const (
 
 func (s TaskStatus) String() string {
 	switch s {
-	case TaskWaitingStatus,
-		TaskStartingStatus,
-		TaskWaitingConfirmation,
-		TaskConfirmed,
-		TaskRejected,
-		TaskRunningStatus,
-		TaskStoppingStatus,
-		TaskStoppedStatus,
-		TaskSuccessStatus,
-		TaskFailStatus:
-		return string(s)
+	case TaskWaitingStatus:
+		return "waiting"
+	case TaskStartingStatus:
+		return "starting"
+	case TaskWaitingConfirmation:
+		return "waiting_confirmation"
+	case TaskConfirmed:
+		return "confirmed"
+	case TaskRejected:
+		return "rejected"
+	case TaskRunningStatus:
+		return "running"
+	case TaskStoppingStatus:
+		return "stopping"
+	case TaskStoppedStatus:
+		return "stopped"
+	case TaskSuccessStatus:
+		return "success"
+	case TaskFailStatus:
+		return "error"
 	default:
 		return "unknown"
 	}
