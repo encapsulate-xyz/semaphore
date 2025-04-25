@@ -176,6 +176,7 @@ type TaskWithTpl struct {
 
 // TaskOutput is the ansible log output from the task
 type TaskOutput struct {
+	ID     int       `db:"id" json:"id"`
 	TaskID int       `db:"task_id" json:"task_id"`
 	Time   time.Time `db:"time" json:"time"`
 	Output string    `db:"output" json:"output"`
@@ -184,16 +185,30 @@ type TaskOutput struct {
 type TaskStageType string
 
 const (
-	TaskStageRepositoryClone TaskStageType = "repository_clone"
-	TaskStageScriptRun       TaskStageType = "script_run"
-	TaskStageTerraformPlan   TaskStageType = "terraform_plan"
+	TaskStageInit          TaskStageType = "init"
+	TaskStageTerraformPlan TaskStageType = "terraform_plan"
+	TaskStageRunning       TaskStageType = "running"
+	TaskStagePrintResult   TaskStageType = "print_result"
 )
 
 type TaskStage struct {
+	ID            int           `db:"id" json:"id"`
 	TaskID        int           `db:"task_id" json:"task_id"`
 	Start         *time.Time    `db:"start" json:"start"`
 	End           *time.Time    `db:"end" json:"end"`
 	StartOutputID *int          `db:"start_output_id" json:"start_output_id"`
 	EndOutputID   *int          `db:"end_output_id" json:"end_output_id"`
 	Type          TaskStageType `db:"type" json:"type"`
+}
+
+type TaskStageResult struct {
+	ID      int    `db:"id" json:"id"`
+	TaskID  int    `db:"task_id" json:"task_id"`
+	StageID int    `db:"stage_id" json:"stage_id"`
+	JSON    string `db:"json" json:"json"`
+}
+
+type TaskStageWithResult struct {
+	TaskStage
+	Result map[string]any `db:"result" json:"result"`
 }
