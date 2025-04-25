@@ -2,6 +2,7 @@ package sql
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/Masterminds/squirrel"
 	"github.com/semaphoreui/semaphore/db"
 	"math/rand"
@@ -27,7 +28,7 @@ func (d *SqlDb) CreateTaskStage(stage db.TaskStage) (res db.TaskStage, err error
 
 	res = stage
 	res.ID = insertID
-	return stage, err
+	return
 }
 
 func (d *SqlDb) EndTaskStage(taskID int, stageID int, end time.Time, endOutputID int) (err error) {
@@ -59,26 +60,12 @@ func (d *SqlDb) CreateTaskStageResult(taskID int, stageID int, result map[string
 	return
 }
 
-func (d *SqlDb) getTaskStage(taskID int, stageID int) (res db.TaskStageWithResult, err error) {
+func (d *SqlDb) getTaskStage(taskID int, stageID int) (res db.TaskStage, err error) {
 	err = d.selectOne(
-		&res.TaskStage,
+		&res,
 		"select * from task__stage where task_id=? and id=?",
 		taskID,
 		stageID)
-
-	var stageResult db.TaskStageResult
-
-	err = d.selectOne(
-		&stageResult,
-		"select * from task__stage_result where task_id=? and stage_id=?",
-		taskID,
-		stageID)
-
-	if err != nil {
-		return
-	}
-
-	err = json.Unmarshal([]byte(stageResult.JSON), &res.Result)
 
 	return
 }
@@ -89,7 +76,33 @@ func (d *SqlDb) GetTaskStage(projectID int, taskID int, stageID int) (res db.Tas
 	if err != nil {
 		return
 	}
-	return d.getTaskStage(taskID, stageID)
+	stage, err := d.getTaskStage(taskID, stageID)
+	if err != nil {
+		return
+	}
+
+	res.TaskStage = stage
+
+	var stageResult db.TaskStageResult
+
+	err = d.selectOne(
+		&stageResult,
+		"select * from task__stage_result where task_id=? and stage_id=?",
+		taskID,
+		stageID)
+
+	if errors.Is(err, db.ErrNotFound) {
+		err = nil
+		return
+	}
+
+	if err != nil {
+		return
+	}
+
+	err = json.Unmarshal([]byte(stageResult.JSON), &res.Result)
+
+	return
 }
 
 func (d *SqlDb) GetTaskStages(projectID int, taskID int) ([]db.TaskStage, error) {
@@ -203,7 +216,7 @@ func (d *SqlDb) CreateTaskOutput(output db.TaskOutput) (db.TaskOutput, error) {
 		output.Time.UTC())
 
 	output.ID = insertID
-	
+
 	return output, err
 }
 
@@ -339,13 +352,13 @@ func (d *SqlDb) GetTaskStageOutputs(projectID int, taskID int, stageID int) (out
 		Where("task_id=?", taskID)
 
 	if stage.StartOutputID != nil {
-		q = q.Where(squirrel.GtOrEq{"task_id": stage.StartOutputID})
+		q = q.Where(squirrel.GtOrEq{"id": stage.StartOutputID})
 	} else {
 		q = q.Where(squirrel.GtOrEq{"created": stage.Start})
 	}
 
 	if stage.EndOutputID != nil {
-		q = q.Where(squirrel.LtOrEq{"task_id": stage.EndOutputID})
+		q = q.Where(squirrel.LtOrEq{"id": stage.EndOutputID})
 	} else {
 		q = q.Where(squirrel.LtOrEq{"created": stage.End})
 	}

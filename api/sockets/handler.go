@@ -93,18 +93,18 @@ func (c *connection) writePump() {
 		select {
 		case message, ok := <-c.send:
 			if !ok {
-				util.LogErrorF(c.write(websocket.CloseMessage, []byte{}), log.Fields{
+				util.LogWarningF(c.write(websocket.CloseMessage, []byte{}), log.Fields{
 					"error": "Cannot send close message",
 				})
 				return
 			}
 			if err := c.write(websocket.TextMessage, message); err != nil {
-				util.LogErrorF(err, log.Fields{"error": "Cannot send text message"})
+				util.LogWarningF(err, log.Fields{"error": "Cannot send text message"})
 				return
 			}
 		case <-ticker.C:
 			if err := c.write(websocket.PingMessage, []byte{}); err != nil {
-				util.LogErrorF(err, log.Fields{"error": "Cannot send ping message"})
+				util.LogWarningF(err, log.Fields{"error": "Cannot send ping message"})
 				return
 			}
 		}

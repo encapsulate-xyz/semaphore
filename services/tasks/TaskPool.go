@@ -95,6 +95,111 @@ func (p *TaskPool) GetTaskByAlias(alias string) (task *TaskRunner) {
 	return p.aliases[alias]
 }
 
+func (p *TaskPool) MoveToNextStage(
+	app db.TemplateApp,
+	projectID int,
+	currentStage *db.TaskStage,
+	currentOutput *db.TaskOutput,
+	newOutput db.TaskOutput,
+) (newStage *db.TaskStage, err error) {
+
+	stages := stage_parsers.GetAllTaskStages(app)
+
+	for _, stageType := range stages {
+
+		parser := stage_parsers.GetStageResultParser(app, stageType)
+		if parser == nil {
+			continue
+		}
+
+		matched := false
+
+		var oldStage *db.TaskStage
+
+		var stage db.TaskStage
+
+		if parser.IsEnd(currentStage, newOutput) {
+
+			err = p.store.EndTaskStage(
+				currentStage.TaskID,
+				currentStage.ID,
+				newOutput.Time,
+				newOutput.ID,
+			)
+
+			if err != nil {
+				return
+			}
+
+			stage = *currentStage
+			stage.End = &newOutput.Time
+			stage.EndOutputID = &newOutput.ID
+			oldStage = &stage
+
+			matched = true
+
+		} else if parser.IsStart(currentStage, newOutput) {
+
+			if currentStage != nil {
+				err = p.store.EndTaskStage(
+					currentStage.TaskID,
+					currentStage.ID,
+					currentOutput.Time,
+					currentOutput.ID,
+				)
+
+				if err != nil {
+					return
+				}
+
+				oldSt := *currentStage
+				oldSt.End = &currentOutput.Time
+				oldSt.EndOutputID = &currentOutput.ID
+				oldStage = &oldSt
+			}
+
+			stage, err = p.store.CreateTaskStage(db.TaskStage{
+				TaskID:        newOutput.TaskID,
+				Start:         &newOutput.Time,
+				Type:          stageType,
+				StartOutputID: &newOutput.ID,
+				EndOutputID:   nil,
+			})
+
+			if err != nil {
+				return
+			}
+
+			matched = true
+		}
+
+		if matched {
+			newStage = &stage
+			if oldStage != nil && parser.NeedParse() {
+				var stageOutputs []db.TaskOutput
+				stageOutputs, err = p.store.GetTaskStageOutputs(projectID, newOutput.TaskID, oldStage.ID)
+
+				if err != nil {
+					return
+				}
+
+				var res map[string]interface{}
+				res, err = parser.Parse(stageOutputs)
+
+				if err != nil {
+					return
+				}
+
+				err = p.store.CreateTaskStageResult(oldStage.TaskID, oldStage.ID, res)
+			}
+
+			break
+		}
+	}
+
+	return
+}
+
 // nolint: gocyclo
 func (p *TaskPool) Run() {
 	ticker := time.NewTicker(5 * time.Second)
@@ -141,104 +246,36 @@ func (p *TaskPool) Run() {
 		case record := <-p.logger: // new log message which should be put to database
 			db.StoreSession(p.store, "logger", func() {
 
-				output := db.TaskOutput{
+				newOutput, err := p.store.CreateTaskOutput(db.TaskOutput{
 					TaskID: record.task.Task.ID,
 					Output: record.output,
 					Time:   record.time,
-				}
+				})
 
-				newOutput, err := p.store.CreateTaskOutput(output)
 				if err != nil {
 					log.Error(err)
+					return
 				}
 
-				stages := stage_parsers.GetAllTaskStages(record.task.Template.App)
+				currentOutput := record.task.currentOutput
 
-				for _, stageType := range stages {
+				record.task.currentOutput = &newOutput
 
-					parser := stage_parsers.GetStageResultParser(record.task.Template.App, stageType)
-					if parser == nil {
-						continue
-					}
+				newStage, err := p.MoveToNextStage(
+					record.task.Template.App,
+					record.task.Task.ProjectID,
+					record.task.currentStage,
+					currentOutput,
+					newOutput)
 
-					matched := false
-
-					var oldStage *db.TaskStage
-
-					var stage db.TaskStage
-
-					if parser.IsEnd(record.task.currentStage, output) {
-
-						err = p.store.EndTaskStage(
-							record.task.currentStage.TaskID,
-							record.task.currentStage.ID,
-							record.time,
-							newOutput.ID,
-						)
-
-						if err != nil {
-							log.Error(err)
-						} else {
-							stage = *record.task.currentStage
-							stage.End = &record.time
-							stage.EndOutputID = &newOutput.ID
-							oldStage = &stage
-						}
-
-						matched = true
-
-					} else if parser.IsStart(record.task.currentStage, output) {
-
-						if record.task.currentStage != nil {
-							err = p.store.EndTaskStage(
-								record.task.currentStage.TaskID,
-								record.task.currentStage.ID,
-								record.task.currentOutput.Time,
-								record.task.currentOutput.ID,
-							)
-
-							if err != nil {
-								log.Error(err)
-							} else {
-								oldSt := *record.task.currentStage
-								oldSt.End = &record.task.currentOutput.Time
-								oldSt.EndOutputID = &record.task.currentOutput.ID
-								oldStage = &oldSt
-							}
-						}
-
-						stage, err = p.store.CreateTaskStage(db.TaskStage{
-							TaskID:        record.task.Task.ID,
-							Start:         &record.time,
-							Type:          stageType,
-							StartOutputID: &newOutput.ID,
-							EndOutputID:   nil,
-						})
-
-						if err != nil {
-							log.Error(err)
-						}
-
-						matched = true
-					}
-
-					record.task.currentOutput = &newOutput
-
-					if matched {
-						record.task.currentStage = &stage
-						if oldStage != nil && parser.NeedParse() {
-							var stageOutputs []db.TaskOutput
-							stageOutputs, err = p.store.GetTaskStageOutputs(record.task.Task.ProjectID, record.task.Task.ID, oldStage.ID)
-
-							var res map[string]interface{}
-							res, err = parser.Parse(stageOutputs)
-
-							err = p.store.CreateTaskStageResult(oldStage.TaskID, oldStage.ID, res)
-						}
-						break
-					}
+				if err != nil {
+					log.Error(err)
+					return
 				}
 
+				if newStage != nil {
+					record.task.currentStage = newStage
+				}
 			})
 
 		case task := <-p.register: // new task created by API or schedule
