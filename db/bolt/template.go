@@ -194,7 +194,7 @@ func (d *BoltDb) deleteTemplate(projectID int, templateID int, tx *bbolt.Tx) (er
 		}
 	}
 
-	schedules, err := d.GetTemplateSchedules(projectID, templateID)
+	schedules, err := d.GetTemplateSchedules(projectID, templateID, false)
 	if err != nil {
 		return
 	}
