@@ -178,14 +178,6 @@ type EventLogRecord struct {
 	Description   *string `json:"description,omitempty"`
 }
 
-func (e *EventLogType) Write(event EventLogRecord) error {
-	if !e.Enabled {
-		return nil
-	}
-
-	return appendToFileLog(structToMap(event), e.Logger)
-}
-
 type TaskLogType struct {
 	Enabled      bool               `json:"enabled" env:"SEMAPHORE_TASK_LOG_ENABLED"`
 	Logger       *lumberjack.Logger `json:"logger,omitempty" env:"SEMAPHORE_TASK_LOGGER"`
@@ -202,14 +194,6 @@ type TaskLogRecord struct {
 	Description  *string                `json:"-"`
 	RunnerID     *int                   `json:"runner,omitempty"`
 	Status       task_logger.TaskStatus `json:"status"`
-}
-
-func (e *TaskLogType) Write(task TaskLogRecord) error {
-	if !e.Enabled {
-		return nil
-	}
-
-	return appendToFileLog(structToMap(task), e.Logger)
 }
 
 type ConfigLog struct {
