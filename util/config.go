@@ -185,7 +185,7 @@ type TaskLogRecord struct {
 	ProjectID    int                    `json:"project"`
 	TemplateID   int                    `json:"template"`
 	TemplateName string                 `json:"template_name"`
-	UserID       *int                   `json:"userid,omitempty"`
+	UserID       *int                   `json:"user,omitempty"`
 	Description  *string                `json:"-"`
 	RunnerID     *int                   `json:"runner,omitempty"`
 	Status       task_logger.TaskStatus `json:"status"`
