@@ -151,43 +151,30 @@ type AuthConfig struct {
 	Email     *EmailAuthConfig `json:"email,omitempty"`
 }
 
-func structToMap(obj interface{}) map[string]interface{} {
-	b, err := json.Marshal(obj)
-	if err != nil {
-		return nil
-	}
-
-	// 2) unmarshal those bytes into a map
-	var m map[string]interface{}
-	if err := json.Unmarshal(b, &m); err != nil {
-		return nil
-	}
-	return m
-}
-
 type EventLogType struct {
+	Format  FileLogFormat      `json:"format,omitempty" env:"SEMAPHORE_EVENT_LOG_FORMAT"`
 	Enabled bool               `json:"enabled" env:"SEMAPHORE_EVENT_LOG_ENABLED"`
 	Logger  *lumberjack.Logger `json:"logger,omitempty" env:"SEMAPHORE_EVENT_LOGGER"`
 }
 
 type EventLogRecord struct {
 	Action        string  `json:"action"`
-	UserID        *int    `json:"userid,omitempty"`
+	UserID        *int    `json:"user,omitempty"`
 	IntegrationID *int    `json:"integration,omitempty"`
 	ProjectID     *int    `json:"project,omitempty"`
 	Description   *string `json:"description,omitempty"`
 }
 
-func (e *EventLogType) Write(event EventLogRecord) error {
-	if !e.Enabled {
-		return nil
-	}
+type FileLogFormat string
 
-	return appendToFileLog(structToMap(event), e.Logger)
-}
+const (
+	FileLogJSON FileLogFormat = "json"
+	FileLogRaw  FileLogFormat = "raw"
+)
 
 type TaskLogType struct {
 	Enabled      bool               `json:"enabled" env:"SEMAPHORE_TASK_LOG_ENABLED"`
+	Format       FileLogFormat      `json:"format,omitempty" env:"SEMAPHORE_TASK_LOG_FORMAT"`
 	Logger       *lumberjack.Logger `json:"logger,omitempty" env:"SEMAPHORE_TASK_LOGGER"`
 	ResultLogger *lumberjack.Logger `json:"result_logger,omitempty" env:"SEMAPHORE_TASK_RESULT_LOGGER"`
 }
@@ -198,18 +185,10 @@ type TaskLogRecord struct {
 	ProjectID    int                    `json:"project"`
 	TemplateID   int                    `json:"template"`
 	TemplateName string                 `json:"template_name"`
-	UserID       *int                   `json:"userid,omitempty"`
+	UserID       *int                   `json:"user,omitempty"`
 	Description  *string                `json:"-"`
 	RunnerID     *int                   `json:"runner,omitempty"`
 	Status       task_logger.TaskStatus `json:"status"`
-}
-
-func (e *TaskLogType) Write(task TaskLogRecord) error {
-	if !e.Enabled {
-		return nil
-	}
-
-	return appendToFileLog(structToMap(task), e.Logger)
 }
 
 type ConfigLog struct {

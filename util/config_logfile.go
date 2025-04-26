@@ -2,11 +2,10 @@
 
 package util
 
-import (
-	log "github.com/sirupsen/logrus"
-	"gopkg.in/natefinch/lumberjack.v2"
-)
+func (e *EventLogType) Write(event EventLogRecord) error {
+	return nil
+}
 
-func appendToFileLog(row log.Fields, logger *lumberjack.Logger) error {
+func (e *TaskLogType) Write(task TaskLogRecord) error {
 	return nil
 }
