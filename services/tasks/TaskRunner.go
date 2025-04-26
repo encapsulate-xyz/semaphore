@@ -111,7 +111,22 @@ func (t *TaskRunner) createTaskEvent() {
 		Description: &desc,
 	}
 
-	if err := util.Config.Log.Tasks.Write(event.ToFields()); err != nil {
+	var runnerID *int
+	if t.RunnerID > 0 {
+		runnerID = &t.RunnerID
+	}
+
+	if err := util.Config.Log.Tasks.Write(util.TaskLogRecord{
+		ProjectID:    t.Task.ProjectID,
+		TemplateID:   t.Template.ID,
+		TemplateName: t.Template.Name,
+		TaskID:       t.Task.ID,
+		UserID:       t.Task.UserID,
+		Description:  &desc,
+		Username:     t.Username,
+		RunnerID:     runnerID,
+		Status:       t.Task.Status,
+	}); err != nil {
 		log.Error(err)
 	}
 
