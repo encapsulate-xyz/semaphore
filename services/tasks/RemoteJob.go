@@ -16,6 +16,7 @@ type RemoteJob struct {
 	RunnerTag *string
 	Task      db.Task
 	taskPool  *TaskPool
+	killed    bool
 }
 
 type runnerWebhookPayload struct {
@@ -162,5 +163,10 @@ func (t *RemoteJob) Run(username string, incomingVersion *string, alias string) 
 }
 
 func (t *RemoteJob) Kill() {
+	t.killed = true
 	// Do nothing because you can't kill remote process
+}
+
+func (t *RemoteJob) IsKilled() bool {
+	return t.killed
 }
