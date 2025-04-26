@@ -206,11 +206,18 @@ func (t *TaskRunner) run() {
 	}
 
 	for _, tpl := range tpls {
-		_, err = t.pool.AddTask(db.Task{
+		task := db.Task{
 			TemplateID:  tpl.ID,
 			ProjectID:   tpl.ProjectID,
 			BuildTaskID: &t.Task.ID,
-		}, nil, tpl.ProjectID, tpl.App.NeedTaskAlias())
+		}
+		_, err = t.pool.AddTask(
+			task,
+			nil,
+			"",
+			tpl.ProjectID,
+			tpl.App.NeedTaskAlias(),
+		)
 		if err != nil {
 			t.Log("Running app failed: " + err.Error())
 			continue

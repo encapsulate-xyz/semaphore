@@ -83,10 +83,18 @@ func (r ScheduleRunner) Run() {
 		return
 	}
 
-	_, err = r.pool.taskPool.AddTask(db.Task{
+	task := db.Task{
 		TemplateID: schedule.TemplateID,
 		ProjectID:  schedule.ProjectID,
-	}, nil, schedule.ProjectID, tpl.App.NeedTaskAlias())
+	}
+
+	_, err = r.pool.taskPool.AddTask(
+		task,
+		nil,
+		"",
+		schedule.ProjectID,
+		tpl.App.NeedTaskAlias(),
+	)
 
 	if err != nil {
 		log.Error(err)

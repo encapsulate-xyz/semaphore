@@ -478,7 +478,13 @@ func getNextBuildVersion(startVersion string, currentVersion string) string {
 	return prefix + strconv.Itoa(newVer) + suffix
 }
 
-func (p *TaskPool) AddTask(taskObj db.Task, userID *int, projectID int, needAlias bool) (newTask db.Task, err error) {
+func (p *TaskPool) AddTask(
+	taskObj db.Task,
+	userID *int,
+	username string,
+	projectID int,
+	needAlias bool,
+) (newTask db.Task, err error) {
 	taskObj.Created = time.Now().UTC()
 	taskObj.Status = task_logger.TaskWaitingStatus
 	taskObj.UserID = userID
@@ -516,8 +522,9 @@ func (p *TaskPool) AddTask(taskObj db.Task, userID *int, projectID int, needAlia
 	}
 
 	taskRunner := TaskRunner{
-		Task: newTask,
-		pool: p,
+		Task:     newTask,
+		pool:     p,
+		Username: username,
 	}
 
 	if needAlias {
