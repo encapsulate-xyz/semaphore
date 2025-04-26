@@ -8,7 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	log "github.com/sirupsen/logrus"
+	"github.com/semaphoreui/semaphore/pkg/task_logger"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"io"
@@ -36,6 +36,14 @@ const (
 	DbDriverMySQL    = "mysql"
 	DbDriverBolt     = "bolt"
 	DbDriverPostgres = "postgres"
+)
+
+type EventLogAction string
+
+const (
+	EventLogCreate EventLogAction = "create"
+	EventLogUpdate EventLogAction = "update"
+	EventLogDelete EventLogAction = "delete"
 )
 
 type DbConfig struct {
@@ -143,17 +151,39 @@ type AuthConfig struct {
 	Email     *EmailAuthConfig `json:"email,omitempty"`
 }
 
+func structToMap(obj interface{}) map[string]interface{} {
+	b, err := json.Marshal(obj)
+	if err != nil {
+		return nil
+	}
+
+	// 2) unmarshal those bytes into a map
+	var m map[string]interface{}
+	if err := json.Unmarshal(b, &m); err != nil {
+		return nil
+	}
+	return m
+}
+
 type EventLogType struct {
 	Enabled bool               `json:"enabled" env:"SEMAPHORE_EVENT_LOG_ENABLED"`
 	Logger  *lumberjack.Logger `json:"logger,omitempty" env:"SEMAPHORE_EVENT_LOGGER"`
 }
 
-func (e *EventLogType) Write(event log.Fields) error {
+type EventLogRecord struct {
+	Action        string  `json:"action"`
+	UserID        *int    `json:"userid,omitempty"`
+	IntegrationID *int    `json:"integration,omitempty"`
+	ProjectID     *int    `json:"project,omitempty"`
+	Description   *string `json:"description,omitempty"`
+}
+
+func (e *EventLogType) Write(event EventLogRecord) error {
 	if !e.Enabled {
 		return nil
 	}
 
-	return appendToFileLog(event, e.Logger)
+	return appendToFileLog(structToMap(event), e.Logger)
 }
 
 type TaskLogType struct {
@@ -162,12 +192,22 @@ type TaskLogType struct {
 	ResultLogger *lumberjack.Logger `json:"result_logger,omitempty" env:"SEMAPHORE_TASK_RESULT_LOGGER"`
 }
 
-func (e *TaskLogType) Write(event log.Fields) error {
+type TaskLogRecord struct {
+	Username    string                 `json:"username"`
+	TaskID      int                    `json:"task"`
+	ProjectID   int                    `json:"project"`
+	UserID      *int                   `json:"userid"`
+	Description *string                `json:"description"`
+	RunnerID    *int                   `json:"runner"`
+	Status      task_logger.TaskStatus `json:"status"`
+}
+
+func (e *TaskLogType) Write(task TaskLogRecord) error {
 	if !e.Enabled {
 		return nil
 	}
 
-	return appendToFileLog(event, e.Logger)
+	return appendToFileLog(structToMap(task), e.Logger)
 }
 
 type ConfigLog struct {
