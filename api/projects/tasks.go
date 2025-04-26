@@ -32,7 +32,13 @@ func AddTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newTask, err := helpers.TaskPool(r).AddTask(taskObj, &user.ID, project.ID, tpl.App.NeedTaskAlias())
+	newTask, err := helpers.TaskPool(r).AddTask(
+		taskObj,
+		&user.ID,
+		user.Username,
+		project.ID,
+		tpl.App.NeedTaskAlias(),
+	)
 
 	if errors.Is(err, tasks.ErrInvalidSubscription) {
 		helpers.WriteErrorStatus(w, "No active subscription available.", http.StatusForbidden)
