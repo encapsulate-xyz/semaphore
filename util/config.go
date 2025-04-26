@@ -151,20 +151,6 @@ type AuthConfig struct {
 	Email     *EmailAuthConfig `json:"email,omitempty"`
 }
 
-func structToMap(obj interface{}) map[string]interface{} {
-	b, err := json.Marshal(obj)
-	if err != nil {
-		return nil
-	}
-
-	// 2) unmarshal those bytes into a map
-	var m map[string]interface{}
-	if err := json.Unmarshal(b, &m); err != nil {
-		return nil
-	}
-	return m
-}
-
 type EventLogType struct {
 	Enabled bool               `json:"enabled" env:"SEMAPHORE_EVENT_LOG_ENABLED"`
 	Logger  *lumberjack.Logger `json:"logger,omitempty" env:"SEMAPHORE_EVENT_LOGGER"`
