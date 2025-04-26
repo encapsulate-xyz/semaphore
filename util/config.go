@@ -172,7 +172,7 @@ type EventLogType struct {
 
 type EventLogRecord struct {
 	Action        string  `json:"action"`
-	UserID        *int    `json:"userid,omitempty"`
+	UserID        *int    `json:"user,omitempty"`
 	IntegrationID *int    `json:"integration,omitempty"`
 	ProjectID     *int    `json:"project,omitempty"`
 	Description   *string `json:"description,omitempty"`
