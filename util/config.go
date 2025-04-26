@@ -193,13 +193,15 @@ type TaskLogType struct {
 }
 
 type TaskLogRecord struct {
-	Username    string                 `json:"username"`
-	TaskID      int                    `json:"task"`
-	ProjectID   int                    `json:"project"`
-	UserID      *int                   `json:"userid"`
-	Description *string                `json:"description"`
-	RunnerID    *int                   `json:"runner"`
-	Status      task_logger.TaskStatus `json:"status"`
+	Username     string                 `json:"username,omitempty"`
+	TaskID       int                    `json:"task"`
+	ProjectID    int                    `json:"project"`
+	TemplateID   int                    `json:"template"`
+	TemplateName string                 `json:"template_name"`
+	UserID       *int                   `json:"userid,omitempty"`
+	Description  *string                `json:"-"`
+	RunnerID     *int                   `json:"runner,omitempty"`
+	Status       task_logger.TaskStatus `json:"status"`
 }
 
 func (e *TaskLogType) Write(task TaskLogRecord) error {
