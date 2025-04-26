@@ -17,18 +17,17 @@ import (
 )
 
 type LocalJob struct {
-	// Received constant fields
 	Task        db.Task
 	Template    db.Template
 	Inventory   db.Inventory
 	Repository  db.Repository
 	Environment db.Environment
-	Secret      string
-	Logger      task_logger.Logger
+	Secret      string             // Secret contains secrets received from Survey variables
+	Logger      task_logger.Logger // Logger allows to send logs and status to the server
 
 	App db_lib.LocalApp
 
-	// Internal field
+	killed  bool // killed means that API request to stop the job has been received
 	Process *os.Process
 
 	sshKeyInstallation     db.AccessKeyInstallation
@@ -36,10 +35,17 @@ type LocalJob struct {
 	vaultFileInstallations map[string]db.AccessKeyInstallation
 }
 
+func (t *LocalJob) IsKilled() bool {
+	return t.killed
+}
+
 func (t *LocalJob) Kill() {
+	t.killed = true
+
 	if t.Process == nil {
 		return
 	}
+
 	err := t.Process.Kill()
 	if err != nil {
 		t.Log(err.Error())
@@ -559,6 +565,11 @@ func (t *LocalJob) Run(username string, incomingVersion *string, alias string) (
 				environmentVariables,
 				fmt.Sprintf("SEMAPHORE_TASK_TARGET_VERSION=%s", *t.Task.Version))
 		}
+	}
+
+	if t.killed {
+		t.SetStatus(task_logger.TaskStoppedStatus)
+		return nil
 	}
 
 	return t.App.Run(db_lib.LocalAppRunningArgs{

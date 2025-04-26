@@ -19,6 +19,7 @@ import (
 type Job interface {
 	Run(username string, incomingVersion *string, alias string) error
 	Kill()
+	IsKilled() bool
 }
 
 type TaskRunner struct {
@@ -163,8 +164,12 @@ func (t *TaskRunner) run() {
 	err = t.job.Run(username, incomingVersion, t.Alias)
 
 	if err != nil {
-		t.Log("Running app failed: " + err.Error())
-		t.SetStatus(task_logger.TaskFailStatus)
+		if t.job.IsKilled() {
+			t.SetStatus(task_logger.TaskStoppedStatus)
+		} else {
+			t.Log("Running app failed: " + err.Error())
+			t.SetStatus(task_logger.TaskFailStatus)
+		}
 		return
 	}
 
