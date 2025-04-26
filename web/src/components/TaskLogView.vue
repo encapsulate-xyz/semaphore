@@ -33,7 +33,7 @@
             <v-list-item class="pa-0">
               <v-list-item-content>
                 <div class="pr-4">
-                  <TaskStatus :status="item.status"/>
+                  <TaskStatus :status="item.status" data-testid="task-status" />
                 </div>
               </v-list-item-content>
             </v-list-item>
@@ -132,7 +132,7 @@
       class="task-log-action-button"
       style="right: 20px; width: 150px;"
       target="_blank"
-      data-testid="task-rawlog"
+      data-testid="task-rawLog"
     >{{ $t('raw_log') }}</v-btn>
 
   </div>

@@ -10,9 +10,9 @@ Can use used in tandem with ItemFormBase.js. See KeyForm.vue for example.
     persistent
     :fullscreen="expandable && fullscreen"
     :transition="false"
-    :content-class="`item-dialog item-dialog item-dialog--${position} ${contentClass}`"
+    :content-class="`item-dialog item-dialog--${position} ${contentClass || ''}`"
   >
-    <v-card>
+    <v-card :data-testid="testId">
       <v-card-title>
         <slot name="title">
           <v-icon v-if="icon" :color="iconColor" class="mr-3">{{ icon }}</v-icon>
@@ -75,6 +75,7 @@ Can use used in tandem with ItemFormBase.js. See KeyForm.vue for example.
           text
           @click="needSave = true"
           v-if="saveButtonText != null"
+          data-testid="editDialog-save"
         >
           {{ saveButtonText }}
         </v-btn>
@@ -95,6 +96,7 @@ import EventBus from '@/event-bus';
 
 export default {
   props: {
+    testId: String,
     contentClass: String,
     position: String,
     title: String,

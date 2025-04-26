@@ -5,6 +5,7 @@
     :title="$t('newTask')"
     @save="closeDialog"
     @close="closeDialog"
+    test-id="newTaskDialog"
   >
     <template v-slot:title={}>
       <v-icon small class="mr-4">{{ TEMPLATE_TYPE_ICONS[templateType] }}</v-icon>

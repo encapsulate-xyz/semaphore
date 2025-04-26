@@ -27,8 +27,8 @@ export const test = base.extend<{
         await page.getByTestId('sidebar-currentProject').click();
         await page.getByTestId('sidebar-newProject').click();
         await page.getByTestId('newProject-name').fill('Test');
-        await page.getByText('Demo', { exact: true }).check();
-        await page.getByRole('button', { name: 'Create' }).click();
+        await page.getByRole('dialog').getByText('Demo').click();
+        await page.getByRole('dialog').getByRole('button', { name: 'Create' }).click();
     });
   }
 });
