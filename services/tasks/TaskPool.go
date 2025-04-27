@@ -354,7 +354,13 @@ func (p *TaskPool) blocks(t *TaskRunner) bool {
 		return false
 	}
 
-	return proj.MaxParallelTasks > 0 && len(p.activeProj[t.Task.ProjectID]) >= proj.MaxParallelTasks
+	res := proj.MaxParallelTasks > 0 && len(p.activeProj[t.Task.ProjectID]) >= proj.MaxParallelTasks
+
+	if res {
+		return true
+	}
+
+	return res
 }
 
 func CreateTaskPool(store db.Store) TaskPool {

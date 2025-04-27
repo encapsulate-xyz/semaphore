@@ -134,7 +134,9 @@ func (t *TaskRunner) createTaskEvent() {
 	_, err := t.pool.store.CreateEvent(event)
 
 	if err != nil {
-		t.panicOnError(err, "Fatal error inserting an event")
+		msg := "Fatal error inserting an event"
+		t.Log(msg)
+		log.WithError(err).Error(msg)
 	}
 }
 

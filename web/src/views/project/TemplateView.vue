@@ -64,7 +64,13 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn color="primary" depressed class="mr-3" @click="newTaskDialog = true">
+      <v-btn
+        color="primary"
+        depressed
+        class="mr-3"
+        @click="newTaskDialog = true"
+        data-testid="template-run"
+      >
         {{ $t(TEMPLATE_TYPE_ACTION_TITLES[item.type]) }}
       </v-btn>
 
