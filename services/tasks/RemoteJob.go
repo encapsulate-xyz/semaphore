@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"time"
 
@@ -31,6 +32,8 @@ func callRunnerWebhook(runner *db.Runner, tsk *TaskRunner, action string) (err e
 	if runner.Webhook == "" {
 		return
 	}
+
+	log.Debugf("Calling runner's %d webhook for task %d with action %s", runner.ID, tsk.Task.ID, action)
 
 	var jsonBytes []byte
 	jsonBytes, err = json.Marshal(runnerWebhookPayload{
@@ -64,6 +67,8 @@ func callRunnerWebhook(runner *db.Runner, tsk *TaskRunner, action string) (err e
 		err = fmt.Errorf("webhook returned incorrect status")
 		return
 	}
+
+	log.Debugf("Runner's %d webhook returned %d", runner.ID, resp.StatusCode)
 
 	return
 }
