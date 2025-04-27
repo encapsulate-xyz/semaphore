@@ -36,7 +36,7 @@ var migrateCmd = &cobra.Command{
 			applyTo = &migrationArgs.applyTo
 		}
 
-		store := createStoreWithUndo("migrate", undoTo, applyTo)
+		store := createStoreWithMigrationVersion("migrate", undoTo, applyTo)
 
 		defer store.Close("migrate")
 		util.Config.PrintDbInfo()

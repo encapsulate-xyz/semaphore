@@ -161,7 +161,7 @@ func runService() {
 	}
 }
 
-func createStoreWithUndo(token string, undoTo *string, applyTo *string) db.Store {
+func createStoreWithMigrationVersion(token string, undoTo *string, applyTo *string) db.Store {
 	util.ConfigInit(persistentFlags.configPath, persistentFlags.noConfig)
 
 	store := factory.CreateStore()
@@ -191,5 +191,5 @@ func createStoreWithUndo(token string, undoTo *string, applyTo *string) db.Store
 }
 
 func createStore(token string) db.Store {
-	return createStoreWithUndo(token, nil, nil)
+	return createStoreWithMigrationVersion(token, nil, nil)
 }
