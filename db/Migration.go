@@ -3,6 +3,8 @@ package db
 import (
 	"fmt"
 	"slices"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -97,25 +99,81 @@ func (m Migration) Validate() error {
 	return nil
 }
 
+type MigrationVersion struct {
+	Major int
+	Minor int
+	Patch int
+}
+
+func (m Migration) ParseVersion() (res MigrationVersion, err error) {
+
+	parts := strings.Split(m.Version, ".")
+
+	if len(parts) > 3 || len(parts) < 2 {
+		err = fmt.Errorf("invalid migration version format %s", m.Version)
+		return
+	}
+
+	res.Major, err = strconv.Atoi(parts[0])
+	if err != nil {
+		err = fmt.Errorf("invalid migration version major part %s", parts[0])
+		return
+	}
+
+	res.Minor, err = strconv.Atoi(parts[1])
+	if err != nil {
+		err = fmt.Errorf("invalid migration version minor part %s", parts[1])
+		return
+	}
+
+	if len(parts) < 3 {
+		return
+	}
+
+	res.Patch, err = strconv.Atoi(parts[2])
+	if err != nil {
+		err = fmt.Errorf("invalid migration version patch part %s", parts[2])
+		return
+	}
+
+	return
+}
+
+func (v MigrationVersion) Compare(o MigrationVersion) int {
+	if v.Major < o.Major {
+		return -1
+	} else if v.Major > o.Major {
+		return 1
+	}
+
+	if v.Minor < o.Minor {
+		return -1
+	} else if v.Minor > o.Minor {
+		return 1
+	}
+
+	if v.Patch < o.Patch {
+		return -1
+	} else if v.Patch > o.Patch {
+		return 1
+	}
+
+	return 0
+}
+
 func (m Migration) Compare(o Migration) int {
 
-	if err := m.Validate(); err != nil {
+	mVer, err := m.ParseVersion()
+	if err != nil {
 		panic(err)
 	}
 
-	if err := o.Validate(); err != nil {
+	oVer, err := o.ParseVersion()
+	if err != nil {
 		panic(err)
 	}
 
-	if m.Version == o.Version {
-		return 0
-	}
-
-	if m.Version < o.Version {
-		return -1
-	}
-
-	return 1
+	return mVer.Compare(oVer)
 }
 
 func Rollback(d Store, targetVersion string) error {
