@@ -33,7 +33,11 @@ func callRunnerWebhook(runner *db.Runner, tsk *TaskRunner, action string) (err e
 		return
 	}
 
-	log.Debugf("Calling runner's %d webhook for task %d with action %s", runner.ID, tsk.Task.ID, action)
+	log.WithFields(log.Fields{
+		"runner_id": runner.ID,
+		"task_id":   tsk.Task.ID,
+		"action":    action,
+	}).Debugf("Calling runner's webhook")
 
 	var jsonBytes []byte
 	jsonBytes, err = json.Marshal(runnerWebhookPayload{
@@ -68,7 +72,11 @@ func callRunnerWebhook(runner *db.Runner, tsk *TaskRunner, action string) (err e
 		return
 	}
 
-	log.Debugf("Runner's %d webhook returned %d", runner.ID, resp.StatusCode)
+	log.WithFields(log.Fields{
+		"runner_id": runner.ID,
+		"task_id":   tsk.Task.ID,
+		"action":    action,
+	}).Debugf("Runner's webhook returned %d", resp.StatusCode)
 
 	return
 }
