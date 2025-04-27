@@ -199,16 +199,33 @@ func (d *SqlDb) ApplyMigration(migration db.Migration) error {
 
 // TryRollbackMigration attempts to rollback the database to an earlier version if a rollback exists
 func (d *SqlDb) TryRollbackMigration(version db.Migration) {
+	var err error
+
+	tx, err := d.sql.Begin()
+	if err != nil {
+		panic(err)
+	}
+
+	defer func() {
+		if err != nil {
+			_ = tx.Rollback()
+			log.Error(err)
+		}
+	}()
+
 	queries := getVersionSQL(getVersionErrPath(version))
+
 	for _, query := range queries {
 		fmt.Printf(" [ROLLBACK] > %v\n", query)
 		q := d.prepareMigration(query)
 		if q == "" {
 			continue
 		}
-		if _, err := d.exec(q); err != nil {
+		if _, err = d.execTx(tx, q); err != nil {
 			fmt.Println(" [ROLLBACK] - Stopping")
 			return
 		}
 	}
+
+	_, err = d.execTx(tx, "delete from migrations where version=?", version.Version)
 }
