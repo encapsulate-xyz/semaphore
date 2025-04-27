@@ -2,6 +2,7 @@ package db
 
 import (
 	"fmt"
+	"slices"
 	"time"
 )
 
@@ -88,10 +89,61 @@ func GetMigrations() []Migration {
 	}
 }
 
-func Migrate(d Store) error {
+func (m Migration) Compare(o Migration) int {
+	if m.Version == o.Version {
+		return 0
+	}
+
+	if m.Version < o.Version {
+		return -1
+	}
+
+	return 1
+}
+
+func Rollback(d Store, targetVersion string) error {
+
+	didRun := false
+
+	migrations := GetMigrations()
+	slices.Reverse(migrations)
+
+	for _, version := range migrations {
+
+		if version.Compare(Migration{Version: targetVersion}) <= 0 {
+			break
+		}
+
+		applied, err := d.IsMigrationApplied(version)
+		if err != nil {
+			return err
+		}
+
+		if !applied {
+			continue
+		}
+
+		d.TryRollbackMigration(version)
+
+		didRun = true
+	}
+
+	if didRun {
+		fmt.Println("Rollback Finished")
+	}
+
+	return nil
+}
+
+func Migrate(d Store, targetVersion *string) error {
 	didRun := false
 
 	for _, version := range GetMigrations() {
+		
+		if targetVersion != nil && version.Compare(Migration{Version: *targetVersion}) > 0 {
+			break
+		}
+
 		if exists, err := d.IsMigrationApplied(version); err != nil || exists {
 			if exists {
 				continue

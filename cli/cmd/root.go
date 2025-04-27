@@ -168,7 +168,7 @@ func createStore(token string) db.Store {
 
 	store.Connect(token)
 
-	err := db.Migrate(store)
+	err := db.Migrate(store, nil)
 
 	if err != nil {
 		panic(err)

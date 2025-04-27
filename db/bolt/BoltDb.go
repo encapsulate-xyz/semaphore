@@ -94,10 +94,6 @@ func makeBucketId(props db.ObjectProps, ids ...int) []byte {
 	return []byte(id)
 }
 
-func (d *BoltDb) Migrate() error {
-	return nil
-}
-
 func (d *BoltDb) openDbFile() {
 	var filename string
 	if d.Filename == "" {
