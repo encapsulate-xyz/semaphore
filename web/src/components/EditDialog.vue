@@ -35,7 +35,7 @@ Can use used in tandem with ItemFormBase.js. See KeyForm.vue for example.
           <v-icon>mdi-arrow-{{ fullscreen ? 'collapse' : 'expand' }}</v-icon>
         </v-btn>
 
-        <v-btn icon @click="close()" style="margin-right: -6px;">
+        <v-btn icon @click="close()" style="margin-right: -6px;" data-testid="editDialog-close">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-title>

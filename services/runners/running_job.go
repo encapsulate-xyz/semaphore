@@ -104,6 +104,6 @@ func (p *runningJob) logPipe(reader io.Reader) {
 
 	if scanner.Err() != nil && scanner.Err().Error() != "EOF" {
 		//don't panic on these errors, sometimes it throws not dangerous "read |0: file already closed" error
-		util.LogWarningF(scanner.Err(), log.Fields{"error": "Failed to read TaskRunner output"})
+		util.LogDebugF(scanner.Err(), log.Fields{"error": "Failed to read TaskRunner output"})
 	}
 }

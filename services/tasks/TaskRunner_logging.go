@@ -130,10 +130,12 @@ func (t *TaskRunner) SetStatus(status task_logger.TaskStatus) {
 }
 
 func (t *TaskRunner) panicOnError(err error, msg string) {
-	if err != nil {
-		t.Log(msg)
-		util.LogPanicF(err, log.Fields{"error": msg})
+	if err == nil {
+		return
 	}
+
+	t.Log(msg)
+	util.LogPanicF(err, log.Fields{"error": msg})
 }
 
 func (t *TaskRunner) logPipe(reader io.Reader) {
@@ -159,6 +161,6 @@ func (t *TaskRunner) logPipe(reader io.Reader) {
 	close(linesCh)
 
 	if scanner.Err() != nil && scanner.Err().Error() != "EOF" {
-		util.LogWarningF(scanner.Err(), log.Fields{"error": "Failed to read TaskRunner output"})
+		util.LogDebugF(scanner.Err(), log.Fields{"error": "Failed to read TaskRunner output"})
 	}
 }
