@@ -97,7 +97,7 @@ func (c *connection) writePump() {
 					log.WithError(err).WithFields(log.Fields{
 						"context": "websocket",
 						"user_id": c.userID,
-					}).Warn("Cannot send close message")
+					}).Debug("Cannot send close message")
 				}
 				return
 			}
@@ -105,7 +105,7 @@ func (c *connection) writePump() {
 				log.WithError(err).WithFields(log.Fields{
 					"context": "websocket",
 					"user_id": c.userID,
-				}).Warn("Cannot send text message")
+				}).Debug("Cannot send text message")
 				return
 			}
 		case <-ticker.C:
@@ -113,7 +113,7 @@ func (c *connection) writePump() {
 				log.WithError(err).WithFields(log.Fields{
 					"context": "websocket",
 					"user_id": c.userID,
-				}).Warn("Cannot send ping message")
+				}).Debug("Cannot send ping message")
 				return
 			}
 		}

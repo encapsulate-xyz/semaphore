@@ -93,7 +93,14 @@ func (t *LocalJob) installStaticInventory() error {
 func (t *LocalJob) destroyInventoryFile() {
 	fullPath := t.tmpInventoryFullPath()
 	if err := os.Remove(fullPath); err != nil {
-		log.Error(err)
+		if os.IsNotExist(err) {
+			return
+		}
+
+		log.WithError(err).WithFields(log.Fields{
+			"context": "task_running",
+			"task_id": t.Task.ID,
+		}).Warn("failed to remove inventory file")
 	}
 }
 

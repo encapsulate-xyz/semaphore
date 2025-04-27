@@ -53,7 +53,7 @@ type AnsibleResultHost struct {
 }
 
 var ansibleResultHostRE = regexp.MustCompile(
-	`^(\d{1,3}(?:\.\d{1,3}){3})\s*:\s*` +
+	`^([^\s]+)\s*:\s*` +
 		`ok=(\d+)\s+` +
 		`changed=(\d+)\s+` +
 		`unreachable=(\d+)\s+` +
@@ -87,7 +87,9 @@ func (p AnsibleResultStageParser) Parse(outputs []db.TaskOutput) (res map[string
 
 		m := ansibleResultHostRE.FindStringSubmatch(line)
 		if m == nil {
-			log.Warnf("invalid ansible result host: %s", line)
+			log.WithFields(log.Fields{
+				"task_id": output.TaskID,
+			}).Warnf("invalid ansible result host: %s", line)
 			continue
 		}
 
