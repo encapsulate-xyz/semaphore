@@ -10,7 +10,6 @@ import (
 
 	"github.com/semaphoreui/semaphore/pkg/task_logger"
 	"github.com/semaphoreui/semaphore/services/tasks"
-	"github.com/semaphoreui/semaphore/util"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -104,6 +103,9 @@ func (p *runningJob) logPipe(reader io.Reader) {
 
 	if scanner.Err() != nil && scanner.Err().Error() != "EOF" {
 		//don't panic on these errors, sometimes it throws not dangerous "read |0: file already closed" error
-		util.LogDebugF(scanner.Err(), log.Fields{"error": "Failed to read TaskRunner output"})
+		log.WithError(scanner.Err()).WithFields(log.Fields{
+			"context": "task_log",
+			"task_id": p.job.Task.ID,
+		}).Debug("failed to read log")
 	}
 }
