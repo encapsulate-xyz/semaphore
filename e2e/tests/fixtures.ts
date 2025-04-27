@@ -76,10 +76,6 @@ export const test = base.extend<{
        * @param name  The exact project name to delete
        */
       delete: async () => {
-        await page
-          .getByTestId("taskLogDialog")
-          .getByTestId("editDialog-close")
-          .click();
 
         await page.getByTestId("sidebar-dashboard").click();
 

@@ -1,9 +1,7 @@
 import { test, expect } from "./fixtures";
 
-
 test.describe("task running", () => {
   test.beforeEach(async ({ page, login, project }) => {
-    
     await login(true);
 
     await project.create("task_runner", true);
@@ -27,20 +25,22 @@ test.describe("task running", () => {
     test.setTimeout(90000);
   });
 
-  test.afterEach(async ({ project }) => {
+  test.afterEach(async ({ page, project }) => {
+    await page
+      .getByTestId("taskLogDialog")
+      .getByTestId("editDialog-close")
+      .click();
+
     await project.delete();
   });
 
   test("run task from demo project", async ({ page }) => {
-
     await page.getByTestId("task-rawLog").waitFor({ timeout: 60000 });
 
     await expect(page.getByTestId("task-status")).toHaveText("Success");
   });
 
-
   test("stop task on waiting", async ({ page }) => {
-
     await page
       .getByRole("dialog")
       .getByRole("button", { name: "Stop" })
@@ -49,11 +49,9 @@ test.describe("task running", () => {
     await page.getByTestId("task-rawLog").waitFor({ timeout: 600000 });
 
     await expect(page.getByTestId("task-status")).toHaveText("Stopped");
-
   });
 
   test("stop task on cloning", async ({ page }) => {
-
     await page
       .getByRole("dialog")
       .getByText("Get current commit hash")
@@ -67,11 +65,9 @@ test.describe("task running", () => {
     await page.getByTestId("task-rawLog").waitFor({ timeout: 60000 });
 
     await expect(page.getByTestId("task-status")).toHaveText("Stopped");
-
   });
 
   test("stop task on running", async ({ page }) => {
-
     await page
       .getByRole("dialog")
       .getByText(
@@ -87,6 +83,5 @@ test.describe("task running", () => {
     await page.getByTestId("task-rawLog").waitFor({ timeout: 60000 });
 
     await expect(page.getByTestId("task-status")).toHaveText("Stopped");
-
   });
 });

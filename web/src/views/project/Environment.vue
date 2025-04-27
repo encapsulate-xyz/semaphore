@@ -8,6 +8,7 @@
       @save="loadItems"
       :help-button="true"
       :no-escape="editNoEscape"
+      test-id="varGroupDialog"
     >
       <template v-slot:form="{ onSave, onError, needSave, needReset, needHelp }">
         <EnvironmentForm
