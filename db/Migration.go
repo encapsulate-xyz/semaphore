@@ -89,7 +89,24 @@ func GetMigrations() []Migration {
 	}
 }
 
+func (m Migration) Validate() error {
+	if m.Version == "" {
+		return fmt.Errorf("migration version is empty")
+	}
+
+	return nil
+}
+
 func (m Migration) Compare(o Migration) int {
+
+	if err := m.Validate(); err != nil {
+		panic(err)
+	}
+
+	if err := o.Validate(); err != nil {
+		panic(err)
+	}
+
 	if m.Version == o.Version {
 		return 0
 	}
@@ -139,7 +156,7 @@ func Migrate(d Store, targetVersion *string) error {
 	didRun := false
 
 	for _, version := range GetMigrations() {
-		
+
 		if targetVersion != nil && version.Compare(Migration{Version: *targetVersion}) > 0 {
 			break
 		}

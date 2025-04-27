@@ -161,14 +161,19 @@ func runService() {
 	}
 }
 
-func createStore(token string) db.Store {
+func createStoreWithUndo(token string, undoTo *string, applyTo *string) db.Store {
 	util.ConfigInit(persistentFlags.configPath, persistentFlags.noConfig)
 
 	store := factory.CreateStore()
 
 	store.Connect(token)
 
-	err := db.Migrate(store, nil)
+	var err error
+	if undoTo != nil {
+		err = db.Rollback(store, *undoTo)
+	} else {
+		err = db.Migrate(store, applyTo)
+	}
 
 	if err != nil {
 		panic(err)
@@ -183,4 +188,8 @@ func createStore(token string) db.Store {
 	util.LookupDefaultApps()
 
 	return store
+}
+
+func createStore(token string) db.Store {
+	return createStoreWithUndo(token, nil, nil)
 }
