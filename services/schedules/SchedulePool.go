@@ -130,13 +130,17 @@ func (p *SchedulePool) Refresh() {
 			continue
 		}
 
-		_, err := p.addRunner(ScheduleRunner{
+		_, err = p.addRunner(ScheduleRunner{
 			projectID:  schedule.ProjectID,
 			scheduleID: schedule.ID,
 			pool:       p,
 		}, schedule.CronFormat)
+
 		if err != nil {
-			log.Error(err)
+			log.WithError(err).WithFields(log.Fields{
+				"project_id":  schedule.ProjectID,
+				"schedule_id": schedule.ID,
+			}).Errorf("failed to add schedule")
 		}
 	}
 }
