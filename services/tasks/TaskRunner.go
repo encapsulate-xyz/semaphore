@@ -192,7 +192,8 @@ func (t *TaskRunner) run() {
 		if t.job.IsKilled() {
 			t.SetStatus(task_logger.TaskStoppedStatus)
 		} else {
-			t.Log("Running app failed: " + err.Error())
+			log.WithError(err).Warn("Failed to run task")
+			t.Log("Failed to run task: " + err.Error())
 			t.SetStatus(task_logger.TaskFailStatus)
 		}
 		return
