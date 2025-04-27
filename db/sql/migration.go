@@ -199,13 +199,6 @@ func (d *SqlDb) ApplyMigration(migration db.Migration) error {
 
 // TryRollbackMigration attempts to rollback the database to an earlier version if a rollback exists
 func (d *SqlDb) TryRollbackMigration(version db.Migration) {
-	data, _ := dbAssets.ReadFile(getVersionErrPath(version))
-	if len(data) == 0 {
-		fmt.Println("Rollback SQL does not exist.")
-		fmt.Println()
-		return
-	}
-
 	queries := getVersionSQL(getVersionErrPath(version))
 	for _, query := range queries {
 		fmt.Printf(" [ROLLBACK] > %v\n", query)
