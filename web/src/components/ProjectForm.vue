@@ -47,6 +47,7 @@
     ></v-text-field>
 
     <v-switch
+      v-if="itemId === 'new'"
       v-model="item.demo"
       label="Demo"
       style="position: absolute; left: 24px; bottom: 15px;"
