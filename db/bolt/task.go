@@ -4,6 +4,7 @@ import (
 	"github.com/semaphoreui/semaphore/db"
 	"github.com/semaphoreui/semaphore/pkg/tz"
 	"go.etcd.io/bbolt"
+	"time"
 )
 
 func (d *BoltDb) CreateTaskStage(stage db.TaskStage) (db.TaskStage, error) {
