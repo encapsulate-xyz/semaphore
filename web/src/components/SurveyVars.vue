@@ -101,8 +101,8 @@
               v-model="editedVar.default_value"
               :label="$t('default_value')"
               :items="editedValues"
-              item-value="name"
-              item-text="value"
+              item-value="value"
+              item-text="text"
             ></v-select>
 
             <v-text-field
