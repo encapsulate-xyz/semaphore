@@ -105,6 +105,7 @@
               :items="editedValues"
               item-value="value"
               item-text="name"
+              clearable
             ></v-select>
 
             <v-text-field
