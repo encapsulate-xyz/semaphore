@@ -2,8 +2,8 @@ package bolt
 
 import (
 	"github.com/semaphoreui/semaphore/db"
+	"github.com/semaphoreui/semaphore/pkg/tz"
 	"testing"
-	"time"
 )
 
 func TestGetProjects(t *testing.T) {
