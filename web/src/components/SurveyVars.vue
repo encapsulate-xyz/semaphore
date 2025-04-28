@@ -63,6 +63,7 @@
                       flat
                       hide-details
                       v-model="props.item.name"
+                      :label="$t('matchKey')"
                       class="v-text-field--solo--no-min-height"
                     ></v-text-field>
                   </td>
@@ -72,6 +73,7 @@
                       flat
                       hide-details
                       v-model="props.item.value"
+                      :label="$t('matchValue')"
                       class="v-text-field--solo--no-min-height"
                     ></v-text-field>
                   </td>
