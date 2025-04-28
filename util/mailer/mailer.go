@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
+	"github.com/semaphoreui/semaphore/pkg/tz"
 	"github.com/semaphoreui/semaphore/util"
 	"net"
 	"net/smtp"
@@ -76,7 +77,7 @@ func Send(
 		Subject string
 		Body    string
 	}{
-		Date:    time.Now().UTC().Format(time.RFC1123),
+		Date:    tz.Now().Format(time.RFC1123),
 		To:      r.Replace(to),
 		From:    r.Replace(from),
 		Subject: r.Replace(subject),

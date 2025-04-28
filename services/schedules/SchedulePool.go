@@ -1,6 +1,7 @@
 package schedules
 
 import (
+	"github.com/semaphoreui/semaphore/util"
 	"strconv"
 	"sync"
 	"time"
@@ -109,7 +110,11 @@ type SchedulePool struct {
 }
 
 func (p *SchedulePool) init() {
-	p.cron = cron.New(cron.WithLocation(time.UTC))
+	loc, err := time.LoadLocation(util.Config.Schedule.Timezone)
+	if err != nil {
+		panic(err)
+	}
+	p.cron = cron.New(cron.WithLocation(loc))
 	p.locker = &sync.Mutex{}
 }
 

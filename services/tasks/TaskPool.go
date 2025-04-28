@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/semaphoreui/semaphore/pkg/random"
 	"github.com/semaphoreui/semaphore/services/tasks/stage_parsers"
+	"github.com/semaphoreui/semaphore/pkg/tz"
 	"regexp"
 	"strconv"
 	"strings"
@@ -491,7 +492,7 @@ func (p *TaskPool) AddTask(
 	projectID int,
 	needAlias bool,
 ) (newTask db.Task, err error) {
-	taskObj.Created = time.Now().UTC()
+	taskObj.Created = tz.Now()
 	taskObj.Status = task_logger.TaskWaitingStatus
 	taskObj.UserID = userID
 	taskObj.ProjectID = projectID

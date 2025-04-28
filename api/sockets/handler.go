@@ -3,6 +3,7 @@ package sockets
 import (
 	"fmt"
 	"github.com/semaphoreui/semaphore/db"
+	"github.com/semaphoreui/semaphore/pkg/tz"
 	"net/http"
 	"time"
 
@@ -49,10 +50,10 @@ func (c *connection) readPump() {
 
 	c.ws.SetReadLimit(maxMessageSize)
 
-	util.LogErrorF(c.ws.SetReadDeadline(time.Now().Add(pongWait)), log.Fields{"error": "Cannot set read deadline"})
+	util.LogErrorF(c.ws.SetReadDeadline(tz.Now().Add(pongWait)), log.Fields{"error": "Cannot set read deadline"})
 
 	c.ws.SetPongHandler(func(string) error {
-		err := c.ws.SetReadDeadline(time.Now().Add(pongWait))
+		err := c.ws.SetReadDeadline(tz.Now().Add(pongWait))
 		util.LogErrorF(err, log.Fields{"error": "Cannot set read deadline"})
 		return nil
 	})
@@ -73,7 +74,7 @@ func (c *connection) readPump() {
 // write writes a message with the given message type and payload.
 func (c *connection) write(mt int, payload []byte) error {
 
-	err := c.ws.SetWriteDeadline(time.Now().Add(writeWait))
+	err := c.ws.SetWriteDeadline(tz.Now().Add(writeWait))
 
 	util.LogErrorF(err, log.Fields{"error": "Cannot set write deadline"})
 

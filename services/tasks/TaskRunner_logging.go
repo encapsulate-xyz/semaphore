@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"github.com/semaphoreui/semaphore/pkg/tz"
 	"io"
 	"os/exec"
 	"time"
@@ -15,11 +16,11 @@ import (
 )
 
 func (t *TaskRunner) Log(msg string) {
-	t.LogWithTime(time.Now().UTC(), msg)
+	t.LogWithTime(tz.Now(), msg)
 }
 
 func (t *TaskRunner) Logf(format string, a ...any) {
-	t.LogfWithTime(time.Now().UTC(), format, a...)
+	t.LogfWithTime(tz.Now(), format, a...)
 }
 
 func (t *TaskRunner) LogWithTime(now time.Time, msg string) {
@@ -101,7 +102,7 @@ func (t *TaskRunner) SetStatus(status task_logger.TaskStatus) {
 	t.Task.Status = status
 
 	if status == task_logger.TaskRunningStatus {
-		now := time.Now().UTC()
+		now := tz.Now()
 		t.Task.Start = &now
 	}
 

@@ -564,11 +564,10 @@
         :userRole="(userRole || {}).role"
         :userId="(user || {}).id"
         :isAdmin="(user || {}).admin"
-        :webHost="(systemInfo || {}).web_host"
-        :version="(systemInfo || {version: ''}).version.split('-')[0]"
+        :user="user"
         :premiumFeatures="((systemInfo || {premium_features: {}}).premium_features)"
         :authMethods="(systemInfo || {auth_methods: {}}).auth_methods"
-        :user="user"
+        :systemInfo="systemInfo"
       ></router-view>
     </v-main>
 

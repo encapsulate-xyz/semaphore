@@ -2,10 +2,10 @@ package bolt
 
 import (
 	"github.com/semaphoreui/semaphore/db"
+	"github.com/semaphoreui/semaphore/pkg/tz"
 	"reflect"
 	"slices"
 	"strings"
-	"time"
 )
 
 type globalToken struct {
@@ -29,7 +29,7 @@ func (d *BoltDb) CreateSession(session db.Session) (db.Session, error) {
 }
 
 func (d *BoltDb) CreateAPIToken(token db.APIToken) (db.APIToken, error) {
-	token.Created = db.GetParsedTime(time.Now().UTC())
+	token.Created = db.GetParsedTime(tz.Now())
 	// create token in bucket "token_<user id>"
 	newToken, err := d.createObject(token.UserID, db.TokenProps, token)
 	if err != nil {
@@ -119,7 +119,7 @@ func (d *BoltDb) TouchSession(userID int, sessionID int) (err error) {
 	if err != nil {
 		return
 	}
-	session.LastActive = time.Now().UTC()
+	session.LastActive = tz.Now()
 	err = d.updateObject(userID, db.SessionProps, session)
 	return
 }

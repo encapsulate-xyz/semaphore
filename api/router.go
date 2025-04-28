@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"embed"
 	"fmt"
+	"github.com/semaphoreui/semaphore/pkg/tz"
 	"net/http"
 	"os"
 	"path"
@@ -21,7 +22,7 @@ import (
 	"github.com/semaphoreui/semaphore/util"
 )
 
-var startTime = time.Now().UTC()
+var startTime = tz.Now()
 
 //go:embed public/*
 var publicAssets embed.FS
@@ -542,6 +543,8 @@ func getSystemInfo(w http.ResponseWriter, r *http.Request) {
 		},
 
 		"git_client": util.Config.GitClientId,
+
+		"schedule_timezone": util.Config.Schedule.Timezone,
 	}
 
 	helpers.WriteJSON(w, http.StatusOK, body)

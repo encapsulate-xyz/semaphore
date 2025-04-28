@@ -2,15 +2,15 @@ package bolt
 
 import (
 	"github.com/semaphoreui/semaphore/db"
+	"github.com/semaphoreui/semaphore/pkg/tz"
 	"testing"
-	"time"
 )
 
 func Test_SetTemplateDescription(t *testing.T) {
 	store := CreateTestStore()
 
 	proj, err := store.CreateProject(db.Project{
-		Created: time.Now().UTC(),
+		Created: tz.Now(),
 		Name:    "TestProject",
 	})
 	if err != nil {

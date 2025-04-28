@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/semaphoreui/semaphore/services/tasks/hooks"
+	"github.com/semaphoreui/semaphore/pkg/tz"
 	"os"
 	"strconv"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/semaphoreui/semaphore/api/sockets"
 	"github.com/semaphoreui/semaphore/db"
@@ -151,7 +151,7 @@ func (t *TaskRunner) run() {
 		log.Info("Release resource locker with TaskRunner " + strconv.Itoa(t.Task.ID))
 		t.pool.resourceLocker <- &resourceLock{lock: false, holder: t}
 
-		now := time.Now().UTC()
+		now := tz.Now()
 		t.Task.End = &now
 		t.saveStatus()
 		t.createTaskEvent()
