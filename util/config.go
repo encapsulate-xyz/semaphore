@@ -203,6 +203,10 @@ type ConfigProcess struct {
 	GID    *int   `json:"gid,omitempty" env:"SEMAPHORE_PROCESS_GID"`
 }
 
+type ScheduleConfig struct {
+	Timezone string `json:"timezone,omitempty" env:"SEMAPHORE_SCHEDULE_TIMEZONE" default:"UTC"`
+}
+
 // ConfigType mapping between Config and the json file that sets it
 type ConfigType struct {
 	MySQL    *DbConfig `json:"mysql,omitempty"`
@@ -308,6 +312,8 @@ type ConfigType struct {
 	Log *ConfigLog `json:"log,omitempty"`
 
 	Process *ConfigProcess `json:"process,omitempty"`
+
+	Schedule *ScheduleConfig `json:"schedule,omitempty"`
 }
 
 func NewConfigType() *ConfigType {
