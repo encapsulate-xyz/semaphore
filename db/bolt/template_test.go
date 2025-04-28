@@ -10,7 +10,7 @@ func Test_SetTemplateDescription(t *testing.T) {
 	store := CreateTestStore()
 
 	proj, err := store.CreateProject(db.Project{
-		Created: time.Now().UTC(),
+		Created: util.Now(),
 		Name:    "TestProject",
 	})
 	if err != nil {

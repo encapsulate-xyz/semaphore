@@ -3,11 +3,11 @@ package sql
 import (
 	"github.com/Masterminds/squirrel"
 	"github.com/semaphoreui/semaphore/db"
-	"time"
+	"github.com/semaphoreui/semaphore/util"
 )
 
 func (d *SqlDb) CreateProject(project db.Project) (newProject db.Project, err error) {
-	project.Created = time.Now().UTC()
+	project.Created = util.Now()
 
 	insertId, err := d.insert(
 		"id",

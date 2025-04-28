@@ -23,7 +23,7 @@ func addTestRunnerUser() {
 		Username: "ITU-" + uid,
 		Name:     "ITU-" + uid,
 		Email:    uid + "@semaphore.test",
-		Created:  db.GetParsedTime(time.Now().UTC()),
+		Created:  db.GetParsedTime(util.Now()),
 		Admin:    true,
 	}
 
@@ -148,7 +148,7 @@ func addProject() *db.Project {
 	chat := "Test"
 	project := db.Project{
 		Name:      "ITP-" + uid,
-		Created:   time.Now().UTC(),
+		Created:   util.Now(),
 		AlertChat: &chat,
 	}
 	project, err := store.CreateProject(project)
@@ -167,7 +167,7 @@ func addProject() *db.Project {
 func addUser() *db.User {
 	uid := getUUID()
 	user := db.User{
-		Created:  time.Now().UTC(),
+		Created:  util.Now(),
 		Username: "ITU-" + uid,
 		Email:    "test@semaphore." + uid,
 		Name:     "ITU-" + uid,
@@ -215,7 +215,7 @@ func addTask() *db.Task {
 		TemplateID: templateID,
 		Status:     "testing",
 		UserID:     &userPathTestUser.ID,
-		Created:    db.GetParsedTime(time.Now().UTC()),
+		Created:    db.GetParsedTime(util.Now()),
 	}
 
 	t, err := store.CreateTask(t, 0)
@@ -285,7 +285,7 @@ func addIntegrationMatcher() *db.IntegrationMatcher {
 func addToken(tok string, user int) {
 	_, err := store.CreateAPIToken(db.APIToken{
 		ID:      tok,
-		Created: time.Now().UTC(),
+		Created: util.Now(),
 		UserID:  user,
 		Expired: false,
 	})

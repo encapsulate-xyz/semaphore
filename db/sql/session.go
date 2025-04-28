@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"errors"
 	"github.com/semaphoreui/semaphore/db"
+	"github.com/semaphoreui/semaphore/util"
 	"regexp"
-	"time"
 )
 
 func (d *SqlDb) VerifySession(userID int, sessionID int) error {
@@ -20,7 +20,7 @@ func (d *SqlDb) CreateSession(session db.Session) (db.Session, error) {
 }
 
 func (d *SqlDb) CreateAPIToken(token db.APIToken) (db.APIToken, error) {
-	token.Created = db.GetParsedTime(time.Now().UTC())
+	token.Created = db.GetParsedTime(util.Now())
 	err := d.sql.Insert(&token)
 	return token, err
 }
@@ -67,7 +67,7 @@ func (d *SqlDb) ExpireSession(userID int, sessionID int) error {
 }
 
 func (d *SqlDb) TouchSession(userID int, sessionID int) error {
-	_, err := d.exec("update session set last_active=? where id=? and user_id=?", time.Now().UTC(), sessionID, userID)
+	_, err := d.exec("update session set last_active=? where id=? and user_id=?", util.Now(), sessionID, userID)
 
 	return err
 }

@@ -128,12 +128,12 @@ func (t *RemoteJob) Run(username string, incomingVersion *string, alias string) 
 
 	tsk.RunnerID = runner.ID
 
-	startTime := time.Now()
+	startTime := util.Now()
 
 	taskTimedOut := false
 
 	for {
-		if util.Config.MaxTaskDurationSec > 0 && int(time.Now().Sub(startTime).Seconds()) > util.Config.MaxTaskDurationSec {
+		if util.Config.MaxTaskDurationSec > 0 && int(util.Now().Sub(startTime).Seconds()) > util.Config.MaxTaskDurationSec {
 			taskTimedOut = true
 			break
 		}

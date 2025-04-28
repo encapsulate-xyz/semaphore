@@ -354,7 +354,7 @@ func (p *TaskPool) AddTask(
 	projectID int,
 	needAlias bool,
 ) (newTask db.Task, err error) {
-	taskObj.Created = time.Now().UTC()
+	taskObj.Created = util.Now()
 	taskObj.Status = task_logger.TaskWaitingStatus
 	taskObj.UserID = userID
 	taskObj.ProjectID = projectID

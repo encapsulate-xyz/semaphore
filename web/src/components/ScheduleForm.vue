@@ -46,7 +46,7 @@
       required
       :disabled="formSaving"
       @input="refreshCheckboxes()"
-      suffix="UTC time"
+      :suffix="timezone + ' timezone'"
     ></v-text-field>
 
     <div v-if="!rawCron">
@@ -115,7 +115,7 @@
       <div v-if="['yearly', 'monthly', 'weekly', 'daily'].includes(timing)">
         <div class="mt-4 d-flex justify-space-between">
           <span>Hours</span>
-          <b style="color: red;">UTC time</b>
+          <b style="color: red;">{{ timezone + ' timezone' }}</b>
         </div>
         <div class="d-flex flex-wrap">
           <v-checkbox
@@ -333,17 +333,21 @@ export default {
     })).data;
   },
 
+  props: {
+    timezone: String,
+  },
+
   methods: {
     nextRunTime() {
       return parser.parseExpression(this.item.cron_format, {
-        tz: 'UTC',
+        tz: this.timezone,
       }).next().toString();
     },
 
     refreshCheckboxes() {
       const fields = JSON.parse(
         JSON.stringify(parser.parseExpression(this.item.cron_format, {
-          tz: 'UTC',
+          tz: this.timezone,
         }).fields),
       );
 

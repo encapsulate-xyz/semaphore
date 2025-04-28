@@ -15,11 +15,11 @@ import (
 )
 
 func (t *TaskRunner) Log(msg string) {
-	t.LogWithTime(time.Now().UTC(), msg)
+	t.LogWithTime(util.Now(), msg)
 }
 
 func (t *TaskRunner) Logf(format string, a ...any) {
-	t.LogfWithTime(time.Now().UTC(), format, a...)
+	t.LogfWithTime(util.Now(), format, a...)
 }
 
 func (t *TaskRunner) LogWithTime(now time.Time, msg string) {
@@ -101,7 +101,7 @@ func (t *TaskRunner) SetStatus(status task_logger.TaskStatus) {
 	t.Task.Status = status
 
 	if status == task_logger.TaskRunningStatus {
-		now := time.Now().UTC()
+		now := util.Now()
 		t.Task.Start = &now
 	}
 

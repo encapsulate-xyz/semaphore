@@ -128,7 +128,7 @@ func tryFindLDAPUser(username, password string) (*db.User, error) {
 
 	ldapUser := db.User{
 		Username: strings.ToLower(claims.username),
-		Created:  time.Now().UTC(),
+		Created:  util.Now(),
 		Name:     claims.name,
 		Email:    claims.email,
 		External: true,
@@ -162,8 +162,8 @@ func createSession(w http.ResponseWriter, r *http.Request, user db.User) {
 
 	newSession, err := helpers.Store(r).CreateSession(db.Session{
 		UserID:             user.ID,
-		Created:            time.Now().UTC(),
-		LastActive:         time.Now().UTC(),
+		Created:            util.Now(),
+		LastActive:         util.Now(),
 		IP:                 r.Header.Get("X-Real-IP"),
 		UserAgent:          r.Header.Get("user-agent"),
 		Expired:            false,
@@ -376,7 +376,7 @@ func logout(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     "semaphore",
 		Value:    "",
-		Expires:  time.Now().Add(24 * 7 * time.Hour * -1),
+		Expires:  util.Now().Add(24 * 7 * time.Hour * -1),
 		Path:     "/",
 		HttpOnly: true,
 	})
@@ -491,7 +491,7 @@ func oidcLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func generateStateOauthCookie(w http.ResponseWriter) string {
-	expiration := time.Now().Add(365 * 24 * time.Hour)
+	expiration := util.Now().Add(365 * 24 * time.Hour)
 
 	b := make([]byte, 16)
 	_, err := rand.Read(b)

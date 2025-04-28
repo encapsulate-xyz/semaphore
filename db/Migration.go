@@ -2,6 +2,7 @@ package db
 
 import (
 	"fmt"
+	"github.com/semaphoreui/semaphore/util"
 	"slices"
 	"strconv"
 	"strings"
@@ -228,9 +229,9 @@ func Migrate(d Store, targetVersion *string) error {
 		}
 
 		didRun = true
-		fmt.Printf("Executing migration %s (at %v)...\n", version.HumanoidVersion(), time.Now().UTC())
+		fmt.Printf("Executing migration %s (at %v)...\n", version.HumanoidVersion(), util.Now())
 		if err := d.ApplyMigration(version); err != nil {
-			fmt.Printf("Rolling back %s (time: %v)...\n", version.HumanoidVersion(), time.Now().UTC())
+			fmt.Printf("Rolling back %s (time: %v)...\n", version.HumanoidVersion(), util.Now())
 			d.TryRollbackMigration(version)
 			return err
 		}

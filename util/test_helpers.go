@@ -2,13 +2,12 @@ package util
 
 import (
 	"math/rand"
-	"time"
 )
 
 //HELPERS
 
-//https://stackoverflow.com/questions/22892120/how-to-generate-a-random-string-of-a-fixed-length-in-golang
-var src = rand.NewSource(time.Now().UnixNano())
+// https://stackoverflow.com/questions/22892120/how-to-generate-a-random-string-of-a-fixed-length-in-golang
+var src = rand.NewSource(Now().UnixNano())
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 const (
