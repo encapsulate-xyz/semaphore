@@ -102,7 +102,7 @@
               :label="$t('default_value')"
               :items="editedValues"
               item-value="value"
-              item-text="text"
+              item-text="name"
             ></v-select>
 
             <v-text-field
