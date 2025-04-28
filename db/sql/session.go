@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"github.com/semaphoreui/semaphore/db"
-	"github.com/semaphoreui/semaphore/util"
+	"github.com/semaphoreui/semaphore/pkg/tz"
 	"regexp"
 )
 
@@ -20,7 +20,7 @@ func (d *SqlDb) CreateSession(session db.Session) (db.Session, error) {
 }
 
 func (d *SqlDb) CreateAPIToken(token db.APIToken) (db.APIToken, error) {
-	token.Created = db.GetParsedTime(util.Now())
+	token.Created = db.GetParsedTime(tz.Now())
 	err := d.sql.Insert(&token)
 	return token, err
 }
@@ -67,7 +67,7 @@ func (d *SqlDb) ExpireSession(userID int, sessionID int) error {
 }
 
 func (d *SqlDb) TouchSession(userID int, sessionID int) error {
-	_, err := d.exec("update session set last_active=? where id=? and user_id=?", util.Now(), sessionID, userID)
+	_, err := d.exec("update session set last_active=? where id=? and user_id=?", tz.Now(), sessionID, userID)
 
 	return err
 }

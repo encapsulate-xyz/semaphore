@@ -3,6 +3,7 @@ package runners
 import (
 	"bufio"
 	"fmt"
+	"github.com/semaphoreui/semaphore/pkg/tz"
 	"io"
 	"os/exec"
 	"sync"
@@ -35,11 +36,11 @@ func (p *runningJob) AddLogListener(l task_logger.LogListener) {
 }
 
 func (p *runningJob) Log(msg string) {
-	p.LogWithTime(util.Now(), msg)
+	p.LogWithTime(tz.Now(), msg)
 }
 
 func (p *runningJob) Logf(format string, a ...any) {
-	p.LogfWithTime(util.Now(), format, a...)
+	p.LogfWithTime(tz.Now(), format, a...)
 }
 
 func (p *runningJob) LogWithTime(now time.Time, msg string) {

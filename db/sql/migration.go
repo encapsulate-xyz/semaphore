@@ -3,7 +3,7 @@ package sql
 import (
 	"fmt"
 	"github.com/go-gorp/gorp/v3"
-	"github.com/semaphoreui/semaphore/util"
+	"github.com/semaphoreui/semaphore/pkg/tz"
 	"path"
 	"regexp"
 	"strings"
@@ -186,7 +186,7 @@ func (d *SqlDb) ApplyMigration(migration db.Migration) error {
 		return err
 	}
 
-	_, err = tx.Exec(d.PrepareQuery("insert into migrations(version, upgraded_date) values (?, ?)"), migration.Version, util.Now())
+	_, err = tx.Exec(d.PrepareQuery("insert into migrations(version, upgraded_date) values (?, ?)"), migration.Version, tz.Now())
 	if err != nil {
 		handleRollbackError(tx.Rollback())
 		return err

@@ -4,7 +4,7 @@ import (
 	"encoding/base64"
 	"github.com/gorilla/securecookie"
 	"github.com/semaphoreui/semaphore/db"
-	"github.com/semaphoreui/semaphore/util"
+	"github.com/semaphoreui/semaphore/pkg/tz"
 	"go.etcd.io/bbolt"
 )
 
@@ -83,14 +83,14 @@ func (d *BoltDb) updateRunner(runner db.Runner, updater func(targetRunner *db.Ru
 
 func (d *BoltDb) ClearRunnerCache(runner db.Runner) (err error) {
 	return d.updateRunner(runner, func(targetRunner *db.Runner, foundRunner db.Runner) {
-		now := util.Now()
+		now := tz.Now()
 		targetRunner.CleaningRequested = &now
 	})
 }
 
 func (d *BoltDb) TouchRunner(runner db.Runner) (err error) {
 	return d.updateRunner(runner, func(targetRunner *db.Runner, foundRunner db.Runner) {
-		now := util.Now()
+		now := tz.Now()
 		targetRunner.Touched = &now
 	})
 }

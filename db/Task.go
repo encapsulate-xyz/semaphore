@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/semaphoreui/semaphore/pkg/tz"
 	"time"
 
 	"github.com/go-gorp/gorp/v3"
@@ -84,19 +85,19 @@ func (task *Task) FillParams(target interface{}) (err error) {
 }
 
 func (task *Task) PreInsert(gorp.SqlExecutor) error {
-	task.Created = task.Created.UTC()
+	task.Created = tz.In(task.Created)
 
 	return nil
 }
 
 func (task *Task) PreUpdate(gorp.SqlExecutor) error {
 	if task.Start != nil {
-		start := task.Start.UTC()
+		start := tz.In(*task.Start)
 		task.Start = &start
 	}
 
 	if task.End != nil {
-		end := task.End.UTC()
+		end := tz.In(*task.End)
 		task.End = &end
 	}
 	return nil

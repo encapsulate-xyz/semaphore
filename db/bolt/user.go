@@ -3,7 +3,7 @@ package bolt
 import (
 	"fmt"
 	"github.com/semaphoreui/semaphore/db"
-	"github.com/semaphoreui/semaphore/util"
+	"github.com/semaphoreui/semaphore/pkg/tz"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -26,7 +26,7 @@ func (d *BoltDb) CreateUserWithoutPassword(user db.User) (newUser db.User, err e
 	}
 
 	user.Password = ""
-	user.Created = db.GetParsedTime(util.Now())
+	user.Created = db.GetParsedTime(tz.Now())
 
 	usr, err := d.createObject(0, db.UserProps, user)
 
@@ -63,7 +63,7 @@ func (d *BoltDb) CreateUser(user db.UserWithPwd) (newUser db.User, err error) {
 	}
 
 	user.Password = string(pwdHash)
-	user.Created = db.GetParsedTime(util.Now())
+	user.Created = db.GetParsedTime(tz.Now())
 
 	usr, err := d.createObject(0, db.UserProps, user)
 
@@ -274,7 +274,7 @@ func (d *BoltDb) AddTotpVerification(userID int, url string, recoveryHash string
 	totp.UserID = userID
 	totp.URL = url
 	totp.RecoveryHash = recoveryHash
-	totp.Created = db.GetParsedTime(util.Now())
+	totp.Created = db.GetParsedTime(tz.Now())
 
 	newTotp, err := d.createObject(userID, db.UserTotpProps, totp)
 

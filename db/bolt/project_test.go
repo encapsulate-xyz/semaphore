@@ -23,7 +23,7 @@ func TestGetProjects(t *testing.T) {
 	}
 
 	proj1, err := store.CreateProject(db.Project{
-		Created: util.Now(),
+		Created: tz.Now(),
 		Name:    "Test1",
 	})
 
@@ -57,7 +57,7 @@ func TestGetProject(t *testing.T) {
 	store := CreateTestStore()
 
 	proj, err := store.CreateProject(db.Project{
-		Created: util.Now(),
+		Created: tz.Now(),
 		Name:    "Test1",
 	})
 

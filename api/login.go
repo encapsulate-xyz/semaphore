@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/semaphoreui/semaphore/pkg/tz"
 	"net/http"
 	"net/url"
 	"os"
@@ -128,7 +129,7 @@ func tryFindLDAPUser(username, password string) (*db.User, error) {
 
 	ldapUser := db.User{
 		Username: strings.ToLower(claims.username),
-		Created:  util.Now(),
+		Created:  tz.Now(),
 		Name:     claims.name,
 		Email:    claims.email,
 		External: true,
@@ -162,8 +163,8 @@ func createSession(w http.ResponseWriter, r *http.Request, user db.User) {
 
 	newSession, err := helpers.Store(r).CreateSession(db.Session{
 		UserID:             user.ID,
-		Created:            util.Now(),
-		LastActive:         util.Now(),
+		Created:            tz.Now(),
+		LastActive:         tz.Now(),
 		IP:                 r.Header.Get("X-Real-IP"),
 		UserAgent:          r.Header.Get("user-agent"),
 		Expired:            false,
@@ -376,7 +377,7 @@ func logout(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     "semaphore",
 		Value:    "",
-		Expires:  util.Now().Add(24 * 7 * time.Hour * -1),
+		Expires:  tz.Now().Add(24 * 7 * time.Hour * -1),
 		Path:     "/",
 		HttpOnly: true,
 	})
@@ -491,7 +492,7 @@ func oidcLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func generateStateOauthCookie(w http.ResponseWriter) string {
-	expiration := util.Now().Add(365 * 24 * time.Hour)
+	expiration := tz.Now().Add(365 * 24 * time.Hour)
 
 	b := make([]byte, 16)
 	_, err := rand.Read(b)

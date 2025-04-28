@@ -1,13 +1,14 @@
 package util
 
 import (
+	"github.com/semaphoreui/semaphore/pkg/tz"
 	"math/rand"
 )
 
 //HELPERS
 
 // https://stackoverflow.com/questions/22892120/how-to-generate-a-random-string-of-a-fixed-length-in-golang
-var src = rand.NewSource(Now().UnixNano())
+var src = rand.NewSource(tz.Now().UnixNano())
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 const (

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"github.com/Masterminds/squirrel"
 	"github.com/semaphoreui/semaphore/db"
-	"github.com/semaphoreui/semaphore/util"
+	"github.com/semaphoreui/semaphore/pkg/tz"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -16,7 +16,7 @@ func (d *SqlDb) CreateUserWithoutPassword(user db.User) (newUser db.User, err er
 	}
 
 	user.Password = ""
-	user.Created = db.GetParsedTime(util.Now())
+	user.Created = db.GetParsedTime(tz.Now())
 
 	err = d.sql.Insert(&user)
 
@@ -42,7 +42,7 @@ func (d *SqlDb) CreateUser(user db.UserWithPwd) (newUser db.User, err error) {
 	}
 
 	user.Password = string(pwdHash)
-	user.Created = db.GetParsedTime(util.Now())
+	user.Created = db.GetParsedTime(tz.Now())
 
 	err = d.sql.Insert(&user.User)
 
@@ -279,7 +279,7 @@ func (d *SqlDb) AddTotpVerification(userID int, url string, recoveryHash string)
 	totp.UserID = userID
 	totp.URL = url
 	totp.RecoveryHash = recoveryHash
-	totp.Created = db.GetParsedTime(util.Now())
+	totp.Created = db.GetParsedTime(tz.Now())
 
 	res, err := d.exec(
 		"insert into user__totp (user_id, url, recovery_hash, created) values (?, ?, ?, ?)",

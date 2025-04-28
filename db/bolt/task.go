@@ -2,7 +2,7 @@ package bolt
 
 import (
 	"github.com/semaphoreui/semaphore/db"
-	"github.com/semaphoreui/semaphore/util"
+	"github.com/semaphoreui/semaphore/pkg/tz"
 	"go.etcd.io/bbolt"
 )
 
@@ -90,7 +90,7 @@ func (d *BoltDb) clearTasks(projectID int, templateID int, maxTasks int) {
 }
 
 func (d *BoltDb) CreateTask(task db.Task, maxTasks int) (newTask db.Task, err error) {
-	task.Created = util.Now()
+	task.Created = tz.Now()
 	task.ID = 0
 	res, err := d.createObject(0, db.TaskProps, task)
 	if err != nil {

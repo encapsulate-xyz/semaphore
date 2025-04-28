@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"embed"
 	"fmt"
+	"github.com/semaphoreui/semaphore/pkg/tz"
 	"net/http"
 	"os"
 	"path"
@@ -21,7 +22,7 @@ import (
 	"github.com/semaphoreui/semaphore/util"
 )
 
-var startTime = util.Now()
+var startTime = tz.Now()
 
 //go:embed public/*
 var publicAssets embed.FS

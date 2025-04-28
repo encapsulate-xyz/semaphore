@@ -22,7 +22,7 @@ func TestBoltDb_UpdateProjectUser(t *testing.T) {
 	require.NoError(t, err)
 
 	proj1, err := store.CreateProject(db.Project{
-		Created: util.Now(),
+		Created: tz.Now(),
 		Name:    "Test1",
 	})
 	require.NoError(t, err)
@@ -129,7 +129,7 @@ func TestBoltDb_DeleteUser(t *testing.T) {
 
 	// Create a project
 	proj, err := store.CreateProject(db.Project{
-		Created: util.Now(),
+		Created: tz.Now(),
 		Name:    "DeleteUserProject",
 	})
 	require.NoError(t, err)

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/semaphoreui/semaphore/pkg/tz"
 	"net/http"
 	"time"
 
@@ -128,12 +129,12 @@ func (t *RemoteJob) Run(username string, incomingVersion *string, alias string) 
 
 	tsk.RunnerID = runner.ID
 
-	startTime := util.Now()
+	startTime := tz.Now()
 
 	taskTimedOut := false
 
 	for {
-		if util.Config.MaxTaskDurationSec > 0 && int(util.Now().Sub(startTime).Seconds()) > util.Config.MaxTaskDurationSec {
+		if util.Config.MaxTaskDurationSec > 0 && int(tz.Now().Sub(startTime).Seconds()) > util.Config.MaxTaskDurationSec {
 			taskTimedOut = true
 			break
 		}
