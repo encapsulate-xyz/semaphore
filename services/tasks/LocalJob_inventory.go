@@ -91,6 +91,10 @@ func (t *LocalJob) installStaticInventory() error {
 }
 
 func (t *LocalJob) destroyInventoryFile() {
+	if !t.Inventory.Type.IsStatic() {
+		return
+	}
+
 	fullPath := t.tmpInventoryFullPath()
 	if err := os.Remove(fullPath); err != nil {
 		if os.IsNotExist(err) {
