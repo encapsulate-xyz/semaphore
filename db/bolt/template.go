@@ -154,7 +154,7 @@ func (d *BoltDb) GetTemplates(projectID int, filter db.TemplateFilter, params db
 }
 
 func (d *BoltDb) getRawTemplateTx(projectID int, templateID int, tx *bbolt.Tx) (template db.Template, err error) {
-	err = d.getObjectTx(projectID, db.TemplateProps, intObjectID(templateID), &template, tx)
+	err = d.getObjectTx(tx, projectID, db.TemplateProps, intObjectID(templateID), &template)
 	return
 }
 

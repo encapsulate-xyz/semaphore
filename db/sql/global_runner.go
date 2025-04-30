@@ -8,7 +8,7 @@ import (
 	"github.com/semaphoreui/semaphore/pkg/tz"
 )
 
-func (d *SqlDb) GetGlobalRunnerByToken(token string) (runner db.Runner, err error) {
+func (d *SqlDb) GetRunnerByToken(token string) (runner db.Runner, err error) {
 
 	runners := make([]db.Runner, 0)
 

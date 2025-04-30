@@ -206,7 +206,7 @@ func (d *BoltDb) IsInitialized() (initialized bool, err error) {
 	return
 }
 
-func (d *BoltDb) getObjectTx(bucketID int, props db.ObjectProps, objectID objectID, object interface{}, tx *bbolt.Tx) (err error) {
+func (d *BoltDb) getObjectTx(tx *bbolt.Tx, bucketID int, props db.ObjectProps, objectID objectID, object interface{}) (err error) {
 	b := tx.Bucket(makeBucketId(props, bucketID))
 	if b == nil {
 		return db.ErrNotFound
@@ -222,7 +222,7 @@ func (d *BoltDb) getObjectTx(bucketID int, props db.ObjectProps, objectID object
 
 func (d *BoltDb) getObject(bucketID int, props db.ObjectProps, objectID objectID, object interface{}) (err error) {
 	err = d.db.View(func(tx *bbolt.Tx) error {
-		return d.getObjectTx(bucketID, props, objectID, object, tx)
+		return d.getObjectTx(tx, bucketID, props, objectID, object)
 	})
 
 	return

@@ -352,7 +352,7 @@ type Store interface {
 	GetRunner(projectID int, runnerID int) (Runner, error)
 	GetRunners(projectID int, activeOnly bool, tag *string) ([]Runner, error)
 	DeleteRunner(projectID int, runnerID int) error
-	GetGlobalRunnerByToken(token string) (Runner, error)
+	GetRunnerByToken(token string) (Runner, error)
 	GetGlobalRunner(runnerID int) (Runner, error)
 	GetAllRunners(activeOnly bool, globalOnly bool) ([]Runner, error)
 	DeleteGlobalRunner(runnerID int) error
@@ -509,14 +509,6 @@ var ViewProps = ObjectProps{
 	Type:                 reflect.TypeOf(View{}),
 	PrimaryColumnName:    "id",
 	DefaultSortingColumn: "position",
-}
-
-var RunnerProps = ObjectProps{
-	TableName:            "runner",
-	Type:                 reflect.TypeOf(Runner{}),
-	DefaultSortingColumn: "id",
-	PrimaryColumnName:    "id",
-	SortInverted:         true,
 }
 
 var GlobalRunnerProps = ObjectProps{

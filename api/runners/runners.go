@@ -32,7 +32,7 @@ func RunnerMiddleware(next http.Handler) http.Handler {
 
 		store := helpers.Store(r)
 
-		runner, err := store.GetGlobalRunnerByToken(token)
+		runner, err := store.GetRunnerByToken(token)
 
 		if err != nil {
 			helpers.WriteJSON(w, http.StatusNotFound, map[string]string{
