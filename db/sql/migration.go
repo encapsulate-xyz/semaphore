@@ -35,10 +35,15 @@ func getVersionErrPath(version db.Migration) string {
 
 // getVersionSQL takes a path to an SQL file and returns it from embed.FS
 // a slice of strings separated by newlines
-func getVersionSQL(name string) (queries []string) {
+func getVersionSQL(name string, ignoreErrors bool) (queries []string) {
 	sql, err := dbAssets.ReadFile(path.Join("migrations", name))
 	if err != nil {
-		panic(err)
+		if ignoreErrors {
+			log.WithError(err).Warnf("migration %s not found", name)
+			return nil
+		} else {
+			panic(err)
+		}
 	}
 	queries = strings.Split(strings.ReplaceAll(string(sql), ";\r\n", ";\n"), ";\n")
 	for i := range queries {
@@ -152,7 +157,7 @@ func (d *SqlDb) ApplyMigration(migration db.Migration) error {
 		return err
 	}
 
-	queries := getVersionSQL(getVersionPath(migration))
+	queries := getVersionSQL(getVersionPath(migration), false)
 	for i, query := range queries {
 		fmt.Printf("\r [%d/%d]", i+1, len(query))
 
@@ -207,13 +212,21 @@ func (d *SqlDb) TryRollbackMigration(version db.Migration) {
 	}
 
 	defer func() {
-		if err != nil {
+		if err == nil {
+			err = tx.Commit()
+			if err != nil {
+				log.WithError(err).WithFields(log.Fields{
+					"context": "migration",
+					"version": version.Version,
+				}).Error("failed to commit undo migration transaction")
+			}
+		} else {
 			_ = tx.Rollback()
 			log.Error(err)
 		}
 	}()
 
-	queries := getVersionSQL(getVersionErrPath(version))
+	queries := getVersionSQL(getVersionErrPath(version), true)
 
 	for _, query := range queries {
 		fmt.Printf(" [ROLLBACK] > %v\n", query)
