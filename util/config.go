@@ -207,6 +207,11 @@ type ScheduleConfig struct {
 	Timezone string `json:"timezone,omitempty" env:"SEMAPHORE_SCHEDULE_TIMEZONE" default:"UTC"`
 }
 
+type ProfilingConfig struct {
+	Enabled bool `json:"enabled,omitempty" env:"SEMAPHORE_PROFILING_ENABLED"`
+	Port    int  `json:"port,omitempty" env:"SEMAPHORE_PROFILING_PORT" default:"6060"`
+}
+
 // ConfigType mapping between Config and the json file that sets it
 type ConfigType struct {
 	MySQL    *DbConfig `json:"mysql,omitempty"`
@@ -314,6 +319,8 @@ type ConfigType struct {
 	Process *ConfigProcess `json:"process,omitempty"`
 
 	Schedule *ScheduleConfig `json:"schedule,omitempty"`
+
+	Profiling *ProfilingConfig `json:"profiling,omitempty"`
 }
 
 func NewConfigType() *ConfigType {
