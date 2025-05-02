@@ -89,6 +89,11 @@ export const APP_ICONS = {
     color: 'black',
     darkColor: 'white',
   },
+  terragrunt: {
+    icon: '$vuetify.icons.terragrunt',
+    color: '#5F43E9',
+    darkColor: '#5F43E9',
+  },
   pulumi: {
     icon: '$vuetify.icons.pulumi',
     color: 'black',
@@ -111,6 +116,7 @@ export const APP_SHORT_TITLE = {
   ansible: 'Ansible',
   terraform: 'Terraform',
   tofu: 'OpenTofu',
+  terragrunt: 'Terragrunt',
   bash: 'Bash',
   pulumi: 'Pulumi',
   python: 'Python',
@@ -121,6 +127,7 @@ export const APP_TITLE = {
   ansible: 'Ansible Playbook',
   terraform: 'Terraform Code',
   tofu: 'OpenTofu Code',
+  terragrunt: 'Terragrunt Code',
   bash: 'Bash Script',
   pulumi: 'Pulumi Code',
   python: 'Python Script',
@@ -131,12 +138,14 @@ export const APP_INVENTORY_TITLE = {
   ansible: 'Ansible Inventory',
   terraform: 'Terraform Workspace',
   tofu: 'OpenTofu Workspace',
+  terragrunt: 'Terragrunt Workspace',
 };
 
 export const APP_INVENTORY_TYPES = {
   ansible: ['static', 'file', 'static-yaml'],
   terraform: ['terraform-workspace'],
-  tofu: ['terraform-workspace'],
+  tofu: ['tofu-workspace'],
+  terragrunt: ['terragrunt-workspace'],
 };
 
 export const DEFAULT_APPS = Object.keys(APP_ICONS);
@@ -229,4 +238,5 @@ export const APP_FIELDS = {
   ansible: ANSIBLE_FIELDS,
   terraform: TERRAFORM_FIELDS,
   tofu: TERRAFORM_FIELDS,
+  terragrunt: TERRAFORM_FIELDS,
 };

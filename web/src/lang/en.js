@@ -322,6 +322,12 @@ export default {
 
   // Terraform/OpenTofu
   auto_approve: 'Auto approve',
+  auto_destroy: 'Allow destroy',
+
+  // Terragrunt
+  terragrunt: 'Terragrunt',
+  terragruntCode: 'Terragrunt Code',
+  terragruntWorkspace: 'Terragrunt Workspace',
 
   // Ansible
   tag: 'Tag',

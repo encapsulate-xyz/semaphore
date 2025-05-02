@@ -9,6 +9,7 @@ const (
 	InventoryFile               InventoryType = "file"
 	InventoryTerraformWorkspace InventoryType = "terraform-workspace"
 	InventoryTofuWorkspace      InventoryType = "tofu-workspace"
+	InventoryTerragruntWorkspace InventoryType = "terragrunt-workspace"
 )
 
 func (i InventoryType) IsStatic() bool {

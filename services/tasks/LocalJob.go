@@ -560,7 +560,7 @@ func (t *LocalJob) Run(username string, incomingVersion *string, alias string) (
 	switch t.Template.App {
 	case db.AppAnsible:
 		args, inputs, err = t.getPlaybookArgs(username, incomingVersion)
-	case db.AppTerraform, db.AppTofu:
+	case db.AppTerraform, db.AppTofu, db.AppTerragrunt:
 		args, err = t.getTerraformArgs(username, incomingVersion)
 	default:
 		args, err = t.getShellArgs(username, incomingVersion)
