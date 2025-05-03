@@ -501,23 +501,15 @@ export default {
     },
 
     async loadData() {
-      this.inventory = (await axios({
-        method: 'get',
-        url: `/api/project/${this.projectId}/inventory`,
-        responseType: 'json',
-      })).data;
-
-      this.environment = (await axios({
-        method: 'get',
-        url: `/api/project/${this.projectId}/environment`,
-        responseType: 'json',
-      })).data;
-
-      this.repositories = (await axios({
-        method: 'get',
-        url: `/api/project/${this.projectId}/repositories`,
-        responseType: 'json',
-      })).data;
+      [
+        this.inventory,
+        this.environment,
+        this.repositories,
+      ] = await Promise.all([
+        this.loadProjectResources('inventory'),
+        this.loadProjectResources('environment'),
+        this.loadProjectResources('repositories'),
+      ]);
     },
 
     onTableSettingsChange({ headers }) {

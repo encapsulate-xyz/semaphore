@@ -141,5 +141,13 @@ export default {
         responseType: 'json',
       })).data;
     },
+
+    async loadProjectResources(name) {
+      return (await axios({
+        method: 'get',
+        url: `/api/project/${this.projectId}/${name}`,
+        responseType: 'json',
+      })).data;
+    },
   },
 };
