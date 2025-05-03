@@ -33,7 +33,7 @@
     </v-alert>
 
     <v-select
-      v-if="template.type === 'deploy'"
+      v-if="buildTasks != null && template.type === 'deploy'"
       v-model="item.build_task_id"
       :label="$t('buildVersion')"
       :items="buildTasks"
@@ -43,6 +43,13 @@
       required
       :disabled="formSaving"
     />
+
+    <v-skeleton-loader
+      v-else-if="template.type === 'deploy'"
+      type="card"
+      height="54"
+      style="margin-bottom: 16px; margin-top: 4px;"
+    ></v-skeleton-loader>
 
     <v-text-field
       v-model="item.message"
@@ -117,8 +124,15 @@
       dense
       required
       :disabled="formSaving"
-      v-if="needInventory"
+      v-if="inventory != null && needInventory"
     ></v-select>
+
+    <v-skeleton-loader
+      v-else-if="needInventory"
+      type="card"
+      height="46"
+      style="margin-bottom: 16px; margin-top: 4px;"
+    ></v-skeleton-loader>
 
     <ArgsPicker
       v-if="needField('limit') && (template.task_params || {}).allow_override_limit"
@@ -248,6 +262,7 @@ export default {
         if (this.item) {
           this.item.template_id = this.template.id;
         }
+        this.buildTasks = null;
         this.inventory = null;
         // this.template = null;
       }
@@ -319,10 +334,10 @@ export default {
     },
 
     isLoaded() {
-      return this.item != null
-        && this.template != null
-        && this.buildTasks != null
-        && this.inventory != null;
+      return this.item != null;
+      // && this.template != null
+      // && this.buildTasks != null
+      // && this.inventory != null;
     },
 
     beforeSave() {

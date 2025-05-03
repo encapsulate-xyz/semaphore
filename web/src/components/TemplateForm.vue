@@ -604,6 +604,60 @@ export default {
       this.helpDialog = true;
     },
 
+    async onLoadData() {
+      let templates;
+      let inventory1;
+      let inventory2;
+
+      [
+        this.repositories,
+        inventory1,
+        inventory2,
+        this.schedules,
+        this.views,
+        this.environment,
+        templates,
+      ] = await Promise.all([
+        this.loadProjectResources('repositories'),
+        this.loadProjectEndpoint(`/inventory?app=${this.app}&template_id=${this.itemId}`),
+        this.loadProjectEndpoint(`/inventory?app=${this.app}`),
+        this.isNew ? [] : this.loadProjectEndpoint(`/templates/${this.itemId}/schedules`),
+        this.loadProjectResources('views'),
+        this.loadProjectResources('environment'),
+        this.loadProjectResources('templates'),
+      ]);
+
+      this.inventory = [...inventory1, ...inventory2];
+
+      const builds = [];
+      const deploys = [];
+
+      templates.forEach((t) => {
+        switch (t.type) {
+          case 'build':
+            if (builds.length === 0) {
+              builds.push({ header: 'Build Templates' });
+            }
+            builds.push(t);
+            break;
+          case 'deploy':
+            if (deploys.length === 0) {
+              deploys.push({ header: 'Deploy Templates' });
+            }
+            deploys.push(t);
+            break;
+          default:
+            break;
+        }
+      });
+
+      this.buildTemplates = builds;
+      if (this.buildTemplates.length > 0 && deploys.length > 0) {
+        this.buildTemplates.push({ divider: true });
+      }
+      this.buildTemplates.push(...deploys);
+    },
+
     async afterLoadData() {
       if (this.sourceItemId) {
         const item = await this.loadProjectResource('templates', this.sourceItemId);
@@ -631,58 +685,7 @@ export default {
         this.item.task_params = {};
       }
 
-      let templates;
-      let inventory1;
-      let inventory2;
-
-      [
-        this.repositories,
-        inventory1,
-        inventory2,
-        this.schedules,
-        this.views,
-        this.environment,
-        templates,
-      ] = await Promise.all([
-        this.loadProjectResources('repositories'),
-        this.loadProjectEndpoint(`/inventory?app=${this.app}&template_id=${this.itemId}`),
-        this.loadProjectEndpoint(`/inventory?app=${this.app}`),
-        this.isNew ? [] : this.loadProjectEndpoint(`/templates/${this.itemId}/schedules`),
-        this.loadProjectResources('views'),
-        this.loadProjectResources('environment'),
-        this.loadProjectResources('templates'),
-      ]);
-
-      this.inventory = [...inventory1, ...inventory2];
-
-      const builds = [];
-      const deploys = [];
-      templates.forEach((t) => {
-        switch (t.type) {
-          case 'build':
-            if (builds.length === 0) {
-              builds.push({ header: 'Build Templates' });
-            }
-            builds.push(t);
-            break;
-          case 'deploy':
-            if (deploys.length === 0) {
-              deploys.push({ header: 'Deploy Templates' });
-            }
-            deploys.push(t);
-            break;
-          default:
-            break;
-        }
-
-        this.args = JSON.parse(this.item.arguments || '[]');
-      });
-
-      this.buildTemplates = builds;
-      if (this.buildTemplates.length > 0 && deploys.length > 0) {
-        this.buildTemplates.push({ divider: true });
-      }
-      this.buildTemplates.push(...deploys);
+      this.args = JSON.parse(this.item.arguments || '[]');
 
       if (this.schedules.length > 0) {
         const schedule = this.schedules.find((s) => s.repository_id != null);

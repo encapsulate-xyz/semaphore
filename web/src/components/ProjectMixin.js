@@ -6,12 +6,16 @@ export default {
   },
 
   methods: {
-    async loadProjectEndpoint(endpoint) {
+    async loadEndpoint(endpoint) {
       return (await axios({
         method: 'get',
-        url: `/api/project/${this.projectId}${endpoint}`,
+        url: endpoint,
         responseType: 'json',
       })).data;
+    },
+
+    async loadProjectEndpoint(endpoint) {
+      return this.loadEndpoint(`/api/project/${this.projectId}${endpoint}`);
     },
 
     async loadProjectResources(name) {
