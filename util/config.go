@@ -8,9 +8,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/semaphoreui/semaphore/pkg/task_logger"
-	"golang.org/x/crypto/bcrypt"
-	"gopkg.in/natefinch/lumberjack.v2"
 	"io"
 	"net/url"
 	"os"
@@ -21,6 +18,10 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/semaphoreui/semaphore/pkg/task_logger"
+	"golang.org/x/crypto/bcrypt"
+	"gopkg.in/natefinch/lumberjack.v2"
 
 	"github.com/google/go-github/github"
 	"github.com/gorilla/securecookie"
@@ -207,9 +208,9 @@ type ScheduleConfig struct {
 	Timezone string `json:"timezone,omitempty" env:"SEMAPHORE_SCHEDULE_TIMEZONE" default:"UTC"`
 }
 
-type ProfilingConfig struct {
-	Enabled bool `json:"enabled,omitempty" env:"SEMAPHORE_PROFILING_ENABLED"`
-	Port    int  `json:"port,omitempty" env:"SEMAPHORE_PROFILING_PORT" default:"6060"`
+type DebuggingConfig struct {
+	ApiDelay     string `json:"api_delay,omitempty" env:"SEMAPHORE_API_DELAY"`
+	PprofDumpDir string `json:"pprof_dump_dir,omitempty" env:"SEMAPHORE_PPROF_DUMP_DIR"`
 }
 
 // ConfigType mapping between Config and the json file that sets it
@@ -320,7 +321,7 @@ type ConfigType struct {
 
 	Schedule *ScheduleConfig `json:"schedule,omitempty"`
 
-	Profiling *ProfilingConfig `json:"profiling,omitempty"`
+	Debugging *DebuggingConfig `json:"debugging,omitempty"`
 }
 
 func NewConfigType() *ConfigType {

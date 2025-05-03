@@ -4,12 +4,15 @@ import (
 	"bytes"
 	"embed"
 	"fmt"
-	"github.com/semaphoreui/semaphore/pkg/tz"
 	"net/http"
 	"os"
 	"path"
 	"strings"
 	"time"
+
+	"github.com/semaphoreui/semaphore/api/debug"
+	"github.com/semaphoreui/semaphore/pkg/tz"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/semaphoreui/semaphore/api/runners"
 
@@ -60,10 +63,30 @@ func pongHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("pong"))
 }
 
+// DelayMiddleware adds artificial delay to simulate slow network conditions
+func DelayMiddleware(delay time.Duration) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			time.Sleep(delay)
+			next.ServeHTTP(w, r)
+		})
+	}
+}
+
 // Route declares all routes
 func Route() *mux.Router {
 	r := mux.NewRouter()
 	r.NotFoundHandler = http.HandlerFunc(servePublic)
+
+	if util.Config.Debugging.ApiDelay != "" {
+		delay, err := time.ParseDuration(util.Config.Debugging.ApiDelay)
+		if err != nil {
+			log.WithError(err).WithFields(log.Fields{
+				"context": "debugging",
+			}).Panic("Invalid API delay format")
+		}
+		r.Use(DelayMiddleware(delay))
+	}
 
 	webPath := "/"
 	if util.WebHostURL != nil {
@@ -146,6 +169,10 @@ func Route() *mux.Router {
 	adminAPI.Path("/runners").HandlerFunc(addGlobalRunner).Methods("POST", "HEAD")
 
 	adminAPI.Path("/cache").HandlerFunc(clearCache).Methods("DELETE", "HEAD")
+
+	debugAPI := adminAPI.PathPrefix("/debug").Subrouter()
+	debugAPI.Path("/gc").HandlerFunc(debug.GC).Methods("POST")
+	debugAPI.Path("/pprof/dump").HandlerFunc(debug.Dump).Methods("POST")
 
 	globalRunnersAPI := adminAPI.PathPrefix("/runners").Subrouter()
 	globalRunnersAPI.Use(globalRunnerMiddleware)

@@ -56,6 +56,9 @@
             "program": "./cli/main.go",
             "args": ["server", "--config", "./config.json"],
             "cwd": "${workspaceFolder}",
+            "env": {
+                "DEBUG_DELAY": "1s"
+            }
         }, 
     ]
 }

@@ -1124,6 +1124,22 @@ parameters:
     x-example: 13
 
 paths:
+  /debug/gc:
+    post:
+      summary: Garbage collector
+      description: Run the garbage collector
+      responses:
+        204:
+          description: Successful "OK" reply
+
+  /debug/pprof/dump:
+    post:
+      summary: Dump pprof
+      description: Dump pprof
+      responses:
+        204:
+          description: Successful "OK" reply
+
   /ping:
     get:
       summary: PING test

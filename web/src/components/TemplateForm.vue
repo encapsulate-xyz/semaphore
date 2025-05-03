@@ -604,69 +604,35 @@ export default {
       this.helpDialog = true;
     },
 
-    async afterLoadData() {
-      if (this.sourceItemId) {
-        const item = (await axios({
-          url: `/api/project/${this.projectId}/templates/${this.sourceItemId}`,
-          responseType: 'json',
-        })).data;
+    async onLoadData() {
+      let templates;
+      let inventory1;
+      let inventory2;
 
-        item.id = null;
+      [
+        this.repositories,
+        inventory1,
+        inventory2,
+        this.schedules,
+        this.views,
+        this.environment,
+        templates,
+      ] = await Promise.all([
+        this.loadProjectResources('repositories'),
+        this.loadProjectEndpoint(`/inventory?app=${this.app}&template_id=${this.itemId}`),
+        this.loadProjectEndpoint(`/inventory?app=${this.app}`),
+        this.isNew ? [] : this.loadProjectEndpoint(`/templates/${this.itemId}/schedules`),
+        this.loadProjectResources('views'),
+        this.loadProjectResources('environment'),
+        this.loadProjectResources('templates'),
+      ]);
 
-        if (item.vaults) {
-          for (let i = 0; i < item.vaults.length; i += 1) {
-            item.vaults[i].id = null;
-          }
-        }
-
-        const sourceSchedule = (await axios({
-          url: `/api/project/${this.projectId}/templates/${this.sourceItemId}/schedules`,
-          responseType: 'json',
-        })).data[0];
-
-        if (sourceSchedule != null) {
-          this.cronFormat = sourceSchedule.cron_format;
-          this.cronRepositoryId = sourceSchedule.repository_id;
-          this.cronVisible = this.cronRepositoryId != null;
-        }
-
-        this.item = item;
-      }
-
-      if (!this.item.task_params) {
-        this.item.task_params = {};
-      }
-
-      this.repositories = (await axios({
-        url: `/api/project/${this.projectId}/repositories`,
-        responseType: 'json',
-      })).data;
-
-      this.inventory = [
-        ...(await axios({
-          url: `/api/project/${this.projectId}/inventory?app=${this.app}&template_id=${this.itemId}`,
-          responseType: 'json',
-        })).data,
-
-        ...(await axios({
-          url: `/api/project/${this.projectId}/inventory?app=${this.app}`,
-          responseType: 'json',
-        })).data,
-      ];
-
-      this.environment = (await axios({
-        url: `/api/project/${this.projectId}/environment`,
-        responseType: 'json',
-      })).data;
-
-      const template = (await axios({
-        url: `/api/project/${this.projectId}/templates`,
-        responseType: 'json',
-      })).data;
+      this.inventory = [...inventory1, ...inventory2];
 
       const builds = [];
       const deploys = [];
-      template.forEach((t) => {
+
+      templates.forEach((t) => {
         switch (t.type) {
           case 'build':
             if (builds.length === 0) {
@@ -683,8 +649,6 @@ export default {
           default:
             break;
         }
-
-        this.args = JSON.parse(this.item.arguments || '[]');
       });
 
       this.buildTemplates = builds;
@@ -692,16 +656,36 @@ export default {
         this.buildTemplates.push({ divider: true });
       }
       this.buildTemplates.push(...deploys);
+    },
 
-      this.schedules = this.isNew ? [] : (await axios({
-        url: `/api/project/${this.projectId}/templates/${this.itemId}/schedules`,
-        responseType: 'json',
-      })).data;
+    async afterLoadData() {
+      if (this.sourceItemId) {
+        const item = await this.loadProjectResource('templates', this.sourceItemId);
 
-      this.views = (await axios({
-        url: `/api/project/${this.projectId}/views`,
-        responseType: 'json',
-      })).data;
+        item.id = null;
+
+        if (item.vaults) {
+          for (let i = 0; i < item.vaults.length; i += 1) {
+            item.vaults[i].id = null;
+          }
+        }
+
+        const sourceSchedule = (await this.loadProjectEndpoint(`/templates/${this.sourceItemId}/schedules`))[0];
+
+        if (sourceSchedule != null) {
+          this.cronFormat = sourceSchedule.cron_format;
+          this.cronRepositoryId = sourceSchedule.repository_id;
+          this.cronVisible = this.cronRepositoryId != null;
+        }
+
+        this.item = item;
+      }
+
+      if (!this.item.task_params) {
+        this.item.task_params = {};
+      }
+
+      this.args = JSON.parse(this.item.arguments || '[]');
 
       if (this.schedules.length > 0) {
         const schedule = this.schedules.find((s) => s.repository_id != null);

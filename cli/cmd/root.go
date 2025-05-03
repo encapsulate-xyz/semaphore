@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/semaphoreui/semaphore/services/profiling"
 	"net/http"
 	"net/url"
 	"os"
@@ -84,7 +83,6 @@ func runService() {
 	go sockets.StartWS()
 	go schedulePool.Run()
 	go taskPool.Run()
-	go profiling.StartProfiling()
 
 	route := api.Route()
 

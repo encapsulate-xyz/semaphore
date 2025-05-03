@@ -77,7 +77,7 @@
         </div>
       </template>
       <template v-slot:form="{}">
-        <TaskLogView :project-id="projectId" :item-id="task ? task.id : null"/>
+        <TaskLogView :project-id="projectId" :item="task" />
       </template>
     </EditDialog>
 
@@ -1021,6 +1021,7 @@ export default {
       if (parseInt(this.$route.query.t || '', 10) !== e.taskId) {
         const query = { ...this.$route.query, t: e.taskId };
         await this.$router.replace({ query });
+        return; // router has watcher and emits `i-show-task` again after load.
       }
 
       this.task = (await axios({

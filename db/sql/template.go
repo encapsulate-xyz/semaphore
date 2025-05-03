@@ -2,6 +2,7 @@ package sql
 
 import (
 	"encoding/json"
+
 	"github.com/Masterminds/squirrel"
 	"github.com/semaphoreui/semaphore/db"
 )
@@ -183,6 +184,7 @@ func (d *SqlDb) GetTemplates(projectID int, filter db.TemplateFilter, params db.
 		"pt.`type`",
 		"pt.`tasks`",
 		"pt.runner_tag",
+		"pt.task_params",
 		"pt.allow_override_branch_in_task",
 		"(SELECT `id` FROM `task` WHERE template_id = pt.id ORDER BY `id` DESC LIMIT 1) last_task_id").
 		From("project__template pt")

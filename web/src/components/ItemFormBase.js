@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { getErrorMessage } from '@/lib/error';
+import ProjectMixin from '@/components/ProjectMixin';
 
 /**
  * Most of Semaphore entities (keys, environments, etc) have similar REST API for
@@ -23,6 +24,9 @@ import { getErrorMessage } from '@/lib/error';
  *                        (GET, POST, PUT, DELETE methods).
  */
 export default {
+
+  mixins: [ProjectMixin],
+
   props: {
     itemId: [Number, String],
     projectId: [Number, String],
@@ -81,25 +85,17 @@ export default {
       throw new Error('Not implemented'); // must me implemented in template
     },
 
-    beforeSave() {
+    beforeSave() {},
 
-    },
+    afterReset() {},
 
-    afterReset() {
+    afterSave() {},
 
-    },
+    beforeLoadData() {},
 
-    afterSave() {
+    afterLoadData() {},
 
-    },
-
-    beforeLoadData() {
-
-    },
-
-    afterLoadData() {
-
-    },
+    onLoadData() {},
 
     getNewItem() {
       return {};
@@ -114,15 +110,14 @@ export default {
       try {
         await this.beforeLoadData();
 
-        if (this.isNew) {
-          this.item = this.getNewItem();
-        } else {
-          this.item = (await axios({
-            method: 'get',
-            url: this.getSingleItemUrl(),
-            responseType: 'json',
-          })).data;
-        }
+        [
+          this.item,
+        ] = await Promise.all([
+          this.isNew
+            ? Promise.resolve(this.getNewItem())
+            : this.loadEndpoint(this.getSingleItemUrl()),
+          this.onLoadData(),
+        ]);
 
         await this.afterLoadData();
       } catch (err) {

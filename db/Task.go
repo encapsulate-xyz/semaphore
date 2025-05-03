@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/semaphoreui/semaphore/pkg/tz"
 	"time"
+
+	"github.com/semaphoreui/semaphore/pkg/tz"
 
 	"github.com/go-gorp/gorp/v3"
 
@@ -44,35 +45,35 @@ type Task struct {
 
 	// override variables
 	Playbook    string  `db:"playbook" json:"playbook"`
-	Environment string  `db:"environment" json:"environment"`
-	Secret      string  `db:"-" json:"secret"`
-	Arguments   *string `db:"arguments" json:"arguments"`
-	GitBranch   *string `db:"git_branch" json:"git_branch"`
+	Environment string  `db:"environment" json:"environment,omitempty"`
+	Secret      string  `db:"-" json:"secret,omitempty"`
+	Arguments   *string `db:"arguments" json:"arguments,omitempty"`
+	GitBranch   *string `db:"git_branch" json:"git_branch,omitempty"`
 
-	UserID        *int `db:"user_id" json:"user_id"`
-	IntegrationID *int `db:"integration_id" json:"integration_id"`
-	ScheduleID    *int `db:"schedule_id" json:"schedule_id"`
+	UserID        *int `db:"user_id" json:"user_id,omitempty"`
+	IntegrationID *int `db:"integration_id" json:"integration_id,omitempty"`
+	ScheduleID    *int `db:"schedule_id" json:"schedule_id,omitempty"`
 
 	Created time.Time  `db:"created" json:"created"`
-	Start   *time.Time `db:"start" json:"start"`
-	End     *time.Time `db:"end" json:"end"`
+	Start   *time.Time `db:"start" json:"start,omitempty"`
+	End     *time.Time `db:"end" json:"end,omitempty"`
 
-	Message string `db:"message" json:"message"`
+	Message string `db:"message" json:"message,omitempty"`
 
 	// CommitMessage is a git commit hash of playbook repository which
 	// was active when task was created.
-	CommitHash *string `db:"commit_hash" json:"commit_hash"`
+	CommitHash *string `db:"commit_hash" json:"commit_hash,omitempty"`
 	// CommitMessage contains message retrieved from git repository after checkout to CommitHash.
 	// It is readonly by API.
-	CommitMessage string `db:"commit_message" json:"commit_message"`
-	BuildTaskID   *int   `db:"build_task_id" json:"build_task_id"`
+	CommitMessage string `db:"commit_message" json:"commit_message,omitempty"`
+	BuildTaskID   *int   `db:"build_task_id" json:"build_task_id,omitempty"`
 	// Version is a build version.
 	// This field available only for Build tasks.
-	Version *string `db:"version" json:"version"`
+	Version *string `db:"version" json:"version,omitempty"`
 
-	InventoryID *int `db:"inventory_id" json:"inventory_id"`
+	InventoryID *int `db:"inventory_id" json:"inventory_id,omitempty"`
 
-	Params MapStringAnyField `db:"params" json:"params"`
+	Params MapStringAnyField `db:"params" json:"params,omitempty"`
 }
 
 func (task *Task) FillParams(target interface{}) (err error) {
@@ -169,10 +170,10 @@ type TaskWithTpl struct {
 	Task
 	TemplatePlaybook string       `db:"tpl_playbook" json:"tpl_playbook"`
 	TemplateAlias    string       `db:"tpl_alias" json:"tpl_alias"`
-	TemplateType     TemplateType `db:"tpl_type" json:"tpl_type"`
-	TemplateApp      TemplateApp  `db:"tpl_app" json:"tpl_app"`
-	UserName         *string      `db:"user_name" json:"user_name"`
-	BuildTask        *Task        `db:"-" json:"build_task"`
+	TemplateType     TemplateType `db:"tpl_type" json:"tpl_type,omitempty"`
+	TemplateApp      TemplateApp  `db:"tpl_app" json:"tpl_app,omitempty"`
+	UserName         *string      `db:"user_name" json:"user_name,omitempty"`
+	BuildTask        *Task        `db:"-" json:"build_task,omitempty"`
 }
 
 // TaskOutput is the ansible log output from the task
