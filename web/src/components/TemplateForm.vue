@@ -606,10 +606,7 @@ export default {
 
     async afterLoadData() {
       if (this.sourceItemId) {
-        const item = (await axios({
-          url: `/api/project/${this.projectId}/templates/${this.sourceItemId}`,
-          responseType: 'json',
-        })).data;
+        const item = await this.loadProjectResource('templates', this.sourceItemId);
 
         item.id = null;
 
@@ -619,10 +616,7 @@ export default {
           }
         }
 
-        const sourceSchedule = (await axios({
-          url: `/api/project/${this.projectId}/templates/${this.sourceItemId}/schedules`,
-          responseType: 'json',
-        })).data[0];
+        const sourceSchedule = (await this.loadProjectEndpoint(`/templates/${this.sourceItemId}/schedules`))[0];
 
         if (sourceSchedule != null) {
           this.cronFormat = sourceSchedule.cron_format;
@@ -637,36 +631,33 @@ export default {
         this.item.task_params = {};
       }
 
-      this.repositories = (await axios({
-        url: `/api/project/${this.projectId}/repositories`,
-        responseType: 'json',
-      })).data;
+      let templates;
+      let inventory1;
+      let inventory2;
 
-      this.inventory = [
-        ...(await axios({
-          url: `/api/project/${this.projectId}/inventory?app=${this.app}&template_id=${this.itemId}`,
-          responseType: 'json',
-        })).data,
+      [
+        this.repositories,
+        inventory1,
+        inventory2,
+        this.schedules,
+        this.views,
+        this.environment,
+        templates,
+      ] = await Promise.all([
+        this.loadProjectResources('repositories'),
+        this.loadProjectEndpoint(`/inventory?app=${this.app}&template_id=${this.itemId}`),
+        this.loadProjectEndpoint(`/inventory?app=${this.app}`),
+        this.isNew ? [] : this.loadProjectEndpoint(`/templates/${this.itemId}/schedules`),
+        this.loadProjectResources('views'),
+        this.loadProjectResources('environment'),
+        this.loadProjectResources('templates'),
+      ]);
 
-        ...(await axios({
-          url: `/api/project/${this.projectId}/inventory?app=${this.app}`,
-          responseType: 'json',
-        })).data,
-      ];
-
-      this.environment = (await axios({
-        url: `/api/project/${this.projectId}/environment`,
-        responseType: 'json',
-      })).data;
-
-      const template = (await axios({
-        url: `/api/project/${this.projectId}/templates`,
-        responseType: 'json',
-      })).data;
+      this.inventory = [...inventory1, ...inventory2];
 
       const builds = [];
       const deploys = [];
-      template.forEach((t) => {
+      templates.forEach((t) => {
         switch (t.type) {
           case 'build':
             if (builds.length === 0) {
@@ -692,16 +683,6 @@ export default {
         this.buildTemplates.push({ divider: true });
       }
       this.buildTemplates.push(...deploys);
-
-      this.schedules = this.isNew ? [] : (await axios({
-        url: `/api/project/${this.projectId}/templates/${this.itemId}/schedules`,
-        responseType: 'json',
-      })).data;
-
-      this.views = (await axios({
-        url: `/api/project/${this.projectId}/views`,
-        responseType: 'json',
-      })).data;
 
       if (this.schedules.length > 0) {
         const schedule = this.schedules.find((s) => s.repository_id != null);

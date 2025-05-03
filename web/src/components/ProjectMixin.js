@@ -6,19 +6,20 @@ export default {
   },
 
   methods: {
-    async loadProjectResources(name) {
+    async loadProjectEndpoint(endpoint) {
       return (await axios({
         method: 'get',
-        url: `/api/project/${this.projectId}/${name}`,
+        url: `/api/project/${this.projectId}${endpoint}`,
         responseType: 'json',
       })).data;
     },
+
+    async loadProjectResources(name) {
+      return this.loadProjectEndpoint(`/${name}`);
+    },
+
     async loadProjectResource(name, id) {
-      return (await axios({
-        method: 'get',
-        url: `/api/project/${this.projectId}/${name}/${id}`,
-        responseType: 'json',
-      })).data;
+      return this.loadProjectEndpoint(`/${name}/${id}`);
     },
   },
 };
