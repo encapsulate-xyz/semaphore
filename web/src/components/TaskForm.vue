@@ -346,7 +346,7 @@ export default {
 
         this.template.type === 'deploy' ? (await axios({
           keys: 'get',
-          url: `/api/project/${this.projectId}/templates/${this.template.build_template_id}/tasks?status=success`,
+          url: `/api/project/${this.projectId}/templates/${this.template.build_template_id}/tasks?status=success&limit=20`,
           responseType: 'json',
         })).data.filter((task) => task.status === 'success') : [],
 
