@@ -208,8 +208,8 @@ type ScheduleConfig struct {
 }
 
 type ProfilingConfig struct {
-	Enabled bool `json:"enabled,omitempty" env:"SEMAPHORE_PROFILING_ENABLED"`
-	Port    int  `json:"port,omitempty" env:"SEMAPHORE_PROFILING_PORT" default:"6060"`
+	Enabled  bool   `json:"enabled,omitempty" env:"SEMAPHORE_PROFILING_ENABLED"`
+	DumpsDir string `json:"dumps_dir,omitempty" env:"SEMAPHORE_PROFILING_DUMPS_DIR" default:"/tmp/semaphore/profiler"`
 }
 
 // ConfigType mapping between Config and the json file that sets it

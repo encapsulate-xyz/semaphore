@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"embed"
 	"fmt"
+	"github.com/semaphoreui/semaphore/api/debug"
 	"github.com/semaphoreui/semaphore/pkg/tz"
 	"net/http"
 	"os"
@@ -146,6 +147,10 @@ func Route() *mux.Router {
 	adminAPI.Path("/runners").HandlerFunc(addGlobalRunner).Methods("POST", "HEAD")
 
 	adminAPI.Path("/cache").HandlerFunc(clearCache).Methods("DELETE", "HEAD")
+
+	debugAPI := adminAPI.PathPrefix("/debug").Subrouter()
+	debugAPI.Path("/gc").HandlerFunc(debug.GC).Methods("POST")
+	debugAPI.Path("/pprof/dump").HandlerFunc(debug.Dump).Methods("POST")
 
 	globalRunnersAPI := adminAPI.PathPrefix("/runners").Subrouter()
 	globalRunnersAPI.Use(globalRunnerMiddleware)
