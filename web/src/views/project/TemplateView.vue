@@ -160,6 +160,7 @@ import NewTaskDialog from '@/components/NewTaskDialog.vue';
 import EditTemplateDialog from '@/components/EditTemplateDialog.vue';
 import PermissionsCheck from '@/components/PermissionsCheck';
 import SingleLineEditable from '@/components/SingleLineEditable.vue';
+import ProjectMixin from '@/components/ProjectMixin';
 
 export default {
   components: {
@@ -176,7 +177,7 @@ export default {
     premiumFeatures: Object,
   },
 
-  mixins: [PermissionsCheck],
+  mixins: [PermissionsCheck, ProjectMixin],
 
   data() {
     return {
@@ -294,37 +295,17 @@ export default {
     },
 
     async loadData() {
-      this.item = (
-        await axios({
-          method: 'get',
-          url: `/api/project/${this.projectId}/templates/${this.itemId}`,
-          responseType: 'json',
-        })
-      ).data;
-
-      this.inventory = (
-        await axios({
-          method: 'get',
-          url: `/api/project/${this.projectId}/inventory`,
-          responseType: 'json',
-        })
-      ).data;
-
-      this.environment = (
-        await axios({
-          method: 'get',
-          url: `/api/project/${this.projectId}/environment`,
-          responseType: 'json',
-        })
-      ).data;
-
-      this.repositories = (
-        await axios({
-          method: 'get',
-          url: `/api/project/${this.projectId}/repositories`,
-          responseType: 'json',
-        })
-      ).data;
+      [
+        this.item,
+        this.inventory,
+        this.environment,
+        this.repositories,
+      ] = await Promise.all([
+        this.loadProjectResource('templates', this.itemId),
+        this.loadProjectResources('inventory'),
+        this.loadProjectResources('environment'),
+        this.loadProjectResources('repositories'),
+      ]);
     },
 
     async updateDescription() {

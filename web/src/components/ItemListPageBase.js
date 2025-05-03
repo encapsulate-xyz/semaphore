@@ -7,6 +7,7 @@ import ObjectRefsDialog from '@/components/ObjectRefsDialog.vue';
 import { getErrorMessage } from '@/lib/error';
 import { USER_PERMISSIONS } from '@/lib/constants';
 import PermissionsCheck from '@/components/PermissionsCheck';
+import ProjectMixin from '@/components/ProjectMixin';
 
 export default {
   components: {
@@ -15,10 +16,9 @@ export default {
     ObjectRefsDialog,
   },
 
-  mixins: [PermissionsCheck],
+  mixins: [PermissionsCheck, ProjectMixin],
 
   props: {
-    projectId: Number,
     projectType: String,
     userId: Number,
     userRole: String,
@@ -138,14 +138,6 @@ export default {
       this.items = (await axios({
         method: 'get',
         url: this.getItemsUrl(),
-        responseType: 'json',
-      })).data;
-    },
-
-    async loadProjectResources(name) {
-      return (await axios({
-        method: 'get',
-        url: `/api/project/${this.projectId}/${name}`,
         responseType: 'json',
       })).data;
     },
