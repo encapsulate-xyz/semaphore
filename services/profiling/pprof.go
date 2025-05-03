@@ -6,6 +6,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"net/http/pprof"
+	"runtime"
 )
 
 func StartProfiling() {
@@ -21,6 +22,10 @@ func StartProfiling() {
 	mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
 	mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
 	mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
+	mux.HandleFunc("/debug/gc", func(w http.ResponseWriter, r *http.Request) {
+		runtime.GC()
+		w.WriteHeader(http.StatusNoContent)
+	})
 
 	go func() {
 		log.WithFields(log.Fields{
