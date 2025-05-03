@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { getErrorMessage } from '@/lib/error';
+import ProjectMixin from '@/components/ProjectMixin';
 
 /**
  * Most of Semaphore entities (keys, environments, etc) have similar REST API for
@@ -23,6 +24,9 @@ import { getErrorMessage } from '@/lib/error';
  *                        (GET, POST, PUT, DELETE methods).
  */
 export default {
+
+  mixins: [ProjectMixin],
+
   props: {
     itemId: [Number, String],
     projectId: [Number, String],

@@ -6,10 +6,7 @@
     <NewTaskDialog
       v-model="newTaskDialog"
       :project-id="projectId"
-      :template-id="itemId"
-      :template-alias="item.name"
-      :template-type="item.type"
-      :template-app="item.app"
+      :template="item"
     />
 
     <EditTemplateDialog
