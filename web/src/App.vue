@@ -54,32 +54,12 @@
       </template>
     </EditDialog>
 
-    <EditDialog
+    <TaskLogDialog
       v-model="taskLogDialog"
-      :max-width="1000"
-      :hide-buttons="true"
-      :expandable="true"
-      name="TaskLogDialog"
       @close="onTaskLogDialogClosed()"
-      no-body-paddings
-      test-id="taskLogDialog"
-    >
-      <template v-slot:title={}>
-        <div class="text-truncate" style="max-width: calc(100% - 36px);">
-          <router-link
-            class="breadcrumbs__item breadcrumbs__item--link"
-            :to="`/project/${projectId}/templates/${template ? template.id : null}`"
-            @click="taskLogDialog = false"
-          >{{ template ? template.name : null }}
-          </router-link>
-          <v-icon>mdi-chevron-right</v-icon>
-          <span class="breadcrumbs__item">{{ $t('task', {expr: task ? task.id : null}) }}</span>
-        </div>
-      </template>
-      <template v-slot:form="{}">
-        <TaskLogView :project-id="projectId" :item="task" />
-      </template>
-    </EditDialog>
+      :project-id="projectId"
+      :item-id="taskId"
+    />
 
     <EditDialog
       v-model="newProjectDialog"
@@ -625,13 +605,16 @@
 .DarkModeSwitch {
   .v-input__prepend-outer {
     transform: translateY(1px);
+
     .v-icon {
       color: #cacaca !important;
     }
   }
+
   .v-input__append-outer {
     margin-left: 5px;
     transform: translateY(-1px);
+
     .v-icon {
       color: #2196f3 !important;
     }
@@ -649,7 +632,6 @@
 
 .v-data-table tbody tr.v-data-table__expanded__content {
   box-shadow: none !important;
-
 }
 
 .v-data-table a {
@@ -712,6 +694,7 @@
   td:first-child, th:first-child {
     padding-left: 2px !important;
   }
+
   td:last-child, th:last-child {
     padding-right: 2px !important;
   }
@@ -723,6 +706,7 @@
 
   .v-data-table__wrapper > table > tbody > tr {
     background: transparent !important;
+
     &:hover {
       background-color: rgba(143, 143, 143, 0.04) !important;
     }
@@ -783,13 +767,14 @@
 import axios from 'axios';
 import { getErrorMessage } from '@/lib/error';
 import EditDialog from '@/components/EditDialog.vue';
-import TaskLogView from '@/components/TaskLogView.vue';
 import ProjectForm from '@/components/ProjectForm.vue';
 import UserForm from '@/components/UserForm.vue';
 import EventBus from '@/event-bus';
 import socket from '@/socket';
 import RestoreProjectForm from '@/components/RestoreProjectForm.vue';
 import YesNoDialog from '@/components/YesNoDialog.vue';
+import TaskLogDialog from '@/components/TaskLogDialog.vue';
+import delay from '@/lib/delay';
 
 const PROJECT_COLORS = [
   'red',
@@ -866,11 +851,11 @@ function getSystemLang() {
 export default {
   name: 'App',
   components: {
+    TaskLogDialog,
     YesNoDialog,
     RestoreProjectForm,
     UserForm,
     EditDialog,
-    TaskLogView,
     ProjectForm,
   },
   data() {
@@ -893,7 +878,7 @@ export default {
       restoreProjectResultDialog: null,
 
       taskLogDialog: null,
-      task: null,
+      taskId: null,
       template: null,
       darkMode: false,
       languages: [
@@ -1021,21 +1006,11 @@ export default {
       if (parseInt(this.$route.query.t || '', 10) !== e.taskId) {
         const query = { ...this.$route.query, t: e.taskId };
         await this.$router.replace({ query });
-        return; // router has watcher and emits `i-show-task` again after load.
+        return;
       }
 
-      this.task = (await axios({
-        method: 'get',
-        url: `/api/project/${this.projectId}/tasks/${e.taskId}`,
-        responseType: 'json',
-      })).data;
-
-      this.template = (await axios({
-        method: 'get',
-        url: `/api/project/${this.projectId}/templates/${this.task.template_id}`,
-        responseType: 'json',
-      })).data;
-
+      this.taskId = e.taskId;
+      await delay(1);
       this.taskLogDialog = true;
     });
 

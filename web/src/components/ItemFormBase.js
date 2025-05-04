@@ -95,8 +95,6 @@ export default {
 
     afterLoadData() {},
 
-    onLoadData() {},
-
     getNewItem() {
       return {};
     },
@@ -110,14 +108,9 @@ export default {
       try {
         await this.beforeLoadData();
 
-        [
-          this.item,
-        ] = await Promise.all([
-          this.isNew
-            ? Promise.resolve(this.getNewItem())
-            : this.loadEndpoint(this.getSingleItemUrl()),
-          this.onLoadData(),
-        ]);
+        this.item = this.isNew
+          ? this.getNewItem()
+          : await this.loadEndpoint(this.getSingleItemUrl());
 
         await this.afterLoadData();
       } catch (err) {

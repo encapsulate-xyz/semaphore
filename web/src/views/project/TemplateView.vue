@@ -16,6 +16,7 @@
       :item-id="itemId"
       @save="loadData()"
       :premium-features="premiumFeatures"
+      :task-type="item.type"
     ></EditTemplateDialog>
 
     <EditTemplateDialog
@@ -26,6 +27,7 @@
       :source-item-id="itemId"
       @save="onTemplateCopied"
       :premium-features="premiumFeatures"
+      :task-type="item.type"
     ></EditTemplateDialog>
 
     <ObjectRefsDialog

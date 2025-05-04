@@ -5,12 +5,14 @@ export const TEMPLATE_TYPE_ICONS = {
 };
 
 export const TEMPLATE_TYPE_TITLES = {
+  undefined: 'Task',
   '': 'Task',
   build: 'Build',
   deploy: 'Deploy',
 };
 
 export const TEMPLATE_TYPE_ACTION_TITLES = {
+  undefined: 'Run',
   '': 'Run',
   build: 'Build',
   deploy: 'Deploy',
