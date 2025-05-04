@@ -334,10 +334,7 @@ export default {
     },
 
     isLoaded() {
-      return this.item != null;
-      // && this.template != null
-      // && this.buildTasks != null
-      // && this.inventory != null;
+      return this.item != null && this.template != null;
     },
 
     beforeSave() {
