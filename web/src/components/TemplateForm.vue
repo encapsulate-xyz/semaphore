@@ -1,14 +1,14 @@
 <template>
-  <div v-if="!isLoaded">
+  <div v-if="!isLoaded" :style="{ height: `${loaderHeight}px` }" class="mt-1">
     <v-row>
       <v-col>
         <v-skeleton-loader
           type="
             table-heading,
-            list-item-two-line,
-            list-item-two-line,
             image,
-            table-tfoot"
+            list-item-two-line,
+            list-item-two-line,
+            list-item-two-line"
         ></v-skeleton-loader>
       </v-col>
       <v-col>
@@ -17,8 +17,8 @@
             table-heading,
             list-item-two-line,
             list-item-two-line,
-            image,
-            table-tfoot"
+            list-item-two-line,
+            article"
         ></v-skeleton-loader>
       </v-col>
       <v-col v-if="needAppBlock">
@@ -26,9 +26,9 @@
           type="
             table-heading,
             list-item-two-line,
+            article,
             list-item-two-line,
-            image,
-            table-tfoot"
+            article"
         ></v-skeleton-loader>
       </v-col>
     </v-row>
@@ -92,7 +92,7 @@
     >{{ formError }}
     </v-alert>
 
-    <v-row>
+    <v-row class="mb-0">
       <v-col>
         <h2 class="mb-4">{{ $t('template_common_options') }}</h2>
 
@@ -325,7 +325,7 @@
           <v-checkbox
             class="mt-0"
             :label="$t('allowInventoryInTask')"
-            v-model="item.task_params.allow_override_inventory"
+            v-model="allow_override_inventory"
             v-if="needField('allow_override_inventory')"
           />
         </div>
@@ -460,6 +460,7 @@ export default {
     sourceItemId: Number,
     app: String,
     premiumFeatures: Object,
+    taskType: String,
   },
 
   data() {
@@ -517,6 +518,7 @@ export default {
         if (this.item != null) {
           this.item.template_id = this.templateId;
         }
+        this.inventory = null;
       }
     },
 
@@ -530,6 +532,34 @@ export default {
   },
 
   computed: {
+    allow_override_inventory: {
+      get() {
+        return this.item.task_params.allow_override_inventory;
+      },
+      set(newValue) {
+        this.item.task_params.allow_override_inventory = newValue;
+      },
+    },
+
+    loaderHeight() {
+      switch (this.taskType) {
+        case 'build':
+          if (['', 'ansible', 'terraform', 'tofu'].includes(this.app)) {
+            return 626;
+          }
+          return 560;
+        case 'deploy':
+          if (['', 'ansible', 'terraform', 'tofu'].includes(this.app)) {
+            return 676;
+          }
+          return 610;
+        default:
+          if (['', 'ansible', 'terraform', 'tofu'].includes(this.app)) {
+            return 564;
+          }
+          return 514;
+      }
+    },
 
     appBlockTitle() {
       switch (this.app) {
@@ -546,23 +576,23 @@ export default {
     },
 
     surveyVars() {
-      if (this.sourceItemId != null && this.item.survey_vars === undefined) {
-        throw new Error();
-      }
+      // if (this.sourceItemId != null && this.item.survey_vars === undefined) {
+      //   throw new Error();
+      // }
       return this.item.survey_vars;
     },
 
     vaults() {
-      if (this.sourceItemId != null && this.item.vaults === undefined) {
-        throw new Error();
-      }
+      // if (this.sourceItemId != null && this.item.vaults === undefined) {
+      //   throw new Error();
+      // }
       return this.item.vaults;
     },
 
     isLoaded() {
-      if (this.isNew && this.sourceItemId == null) {
-        return true;
-      }
+      // if (this.isNew && this.sourceItemId == null) {
+      //   return true;
+      // }
 
       return this.repositories != null
         && this.inventory != null
@@ -604,7 +634,13 @@ export default {
       this.helpDialog = true;
     },
 
-    async onLoadData() {
+    getNewItem() {
+      return {
+        task_params: {},
+      };
+    },
+
+    async loadRelativeData() {
       let templates;
       let inventory1;
       let inventory2;
@@ -686,6 +722,8 @@ export default {
       }
 
       this.args = JSON.parse(this.item.arguments || '[]');
+
+      await this.loadRelativeData();
 
       if (this.schedules.length > 0) {
         const schedule = this.schedules.find((s) => s.repository_id != null);
