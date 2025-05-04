@@ -774,6 +774,7 @@ import socket from '@/socket';
 import RestoreProjectForm from '@/components/RestoreProjectForm.vue';
 import YesNoDialog from '@/components/YesNoDialog.vue';
 import TaskLogDialog from '@/components/TaskLogDialog.vue';
+import delay from '@/lib/delay';
 
 const PROJECT_COLORS = [
   'red',
@@ -1009,6 +1010,7 @@ export default {
       }
 
       this.taskId = e.taskId;
+      await delay(1);
       this.taskLogDialog = true;
     });
 
