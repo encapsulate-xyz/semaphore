@@ -91,8 +91,8 @@ export const APP_ICONS = {
   },
   terragrunt: {
     icon: '$vuetify.icons.terragrunt',
-    color: '#5F43E9',
-    darkColor: '#5F43E9',
+    color: '#4b3b7a',
+    darkColor: '#4b3b7a',
   },
   pulumi: {
     icon: '$vuetify.icons.pulumi',

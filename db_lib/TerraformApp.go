@@ -106,12 +106,12 @@ func (t *TerraformApp) SetLogger(logger task_logger.Logger) task_logger.Logger {
 func (t *TerraformApp) init(environmentVars []string, params *db.TerraformTaskParams) error {
 
 	keyInstallation, err := t.Inventory.SSHKey.Install(db.AccessKeyRoleGit, t.Logger)
-	if err != nil {
+	if (err != nil) {
 		return err
 	}
 	defer keyInstallation.Destroy() //nolint: errcheck
 
-	args := []string{"init", "-lock=false"}}
+	args := []string{"init", "-lock=false"}
 
 	if params.Upgrade {
 		args = append(args, "-upgrade")
@@ -123,7 +123,7 @@ func (t *TerraformApp) init(environmentVars []string, params *db.TerraformTaskPa
 		args = append(args, "-migrate-state")
 	}
 
-	if t.Name == string(db.AppTerragrunt) { 
+	if t.Name == string(db.AppTerragrunt) {
 		args = append(args, "--tf-path=terraform")
 	}
 
