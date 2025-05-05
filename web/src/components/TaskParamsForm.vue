@@ -51,7 +51,7 @@
       </v-col>
     </v-row>
   </div>
-  <div v-else-if="app === 'terraform' || app === 'tofu'">
+  <div v-else-if="app === 'terraform' || app === 'tofu' || app === 'terragrunt'">
     <v-row no-gutters>
       <v-col>
         <v-checkbox
@@ -133,6 +133,7 @@ const TERRAFORM_APP_PARAMS = [
 const APP_PARAMS = {
   terraform: TERRAFORM_APP_PARAMS,
   tofu: TERRAFORM_APP_PARAMS,
+  terragrunt: TERRAFORM_APP_PARAMS,
   ansible: [
     'diff',
     'debug',

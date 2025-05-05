@@ -26,6 +26,7 @@ RUN --mount=type=cache,target=/go/pkg \
 
 ENV OPENTOFU_VERSION="1.9.0"
 ENV TERRAFORM_VERSION="1.10.3"
+ENV TERRAGRUNT_VERSION="0.78.0"
 #ENV PULUMI_VERSION="3.116.1"
 
 RUN wget https://github.com/opentofu/opentofu/releases/download/v${OPENTOFU_VERSION}/tofu_${OPENTOFU_VERSION}_linux_${TARGETARCH}.tar.gz && \
@@ -35,6 +36,9 @@ RUN wget https://github.com/opentofu/opentofu/releases/download/v${OPENTOFU_VERS
 RUN curl -O https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip && \
     unzip terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip -d /tmp && \
     rm terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip
+
+RUN wget -O /tmp/terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_linux_${TARGETARCH} && \
+    chmod +x /tmp/terragrunt
 
 FROM alpine:3.21
 
@@ -59,6 +63,7 @@ COPY --from=builder /go/src/semaphore/deployment/docker/runner/runner-wrapper /u
 COPY --from=builder /go/src/semaphore/bin/semaphore /usr/local/bin/
 COPY --from=builder /tmp/tofu /usr/local/bin/
 COPY --from=builder /tmp/terraform /usr/local/bin/
+COPY --from=builder /tmp/terragrunt /usr/local/bin/
 
 RUN chown -R semaphore:0 /usr/local/bin/runner-wrapper && \
     chmod +x /usr/local/bin/runner-wrapper && \
@@ -72,14 +77,14 @@ ENV ANSIBLE_VERSION 11.1.0
 ARG ANSIBLE_VENV_PATH=/opt/semaphore/apps/ansible/${ANSIBLE_VERSION}/venv
 
 RUN apk add --no-cache -U python3-dev build-base openssl-dev libffi-dev cargo && \
-     mkdir -p ${ANSIBLE_VENV_PATH} && \
-     python3 -m venv ${ANSIBLE_VENV_PATH} --system-site-packages && \
-     source ${ANSIBLE_VENV_PATH}/bin/activate && \
-     pip3 install --upgrade pip ansible==${ANSIBLE_VERSION} boto3 botocore requests pywinrm && \
-     apk del python3-dev build-base openssl-dev libffi-dev cargo && \
-     rm -rf /var/cache/apk/* && \
-     find ${ANSIBLE_VENV_PATH} -iname __pycache__ | xargs rm -rf && \
-     chown -R semaphore:0 /opt/semaphore
+    mkdir -p ${ANSIBLE_VENV_PATH} && \
+    python3 -m venv ${ANSIBLE_VENV_PATH} --system-site-packages && \
+    source ${ANSIBLE_VENV_PATH}/bin/activate && \
+    pip3 install --upgrade pip ansible==${ANSIBLE_VERSION} boto3 botocore requests pywinrm && \
+    apk del python3-dev build-base openssl-dev libffi-dev cargo && \
+    rm -rf /var/cache/apk/* && \
+    find ${ANSIBLE_VENV_PATH} -iname __pycache__ | xargs rm -rf && \
+    chown -R semaphore:0 /opt/semaphore
 
 USER 1001
 

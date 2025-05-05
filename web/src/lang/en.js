@@ -320,14 +320,9 @@ export default {
 
   api_tokens: 'API Tokens',
 
-  // Terraform/OpenTofu
+  // Terraform/OpenTofu/Terragrunt
   auto_approve: 'Auto approve',
   auto_destroy: 'Allow destroy',
-
-  // Terragrunt
-  terragrunt: 'Terragrunt',
-  terragruntCode: 'Terragrunt Code',
-  terragruntWorkspace: 'Terragrunt Workspace',
 
   // Ansible
   tag: 'Tag',
