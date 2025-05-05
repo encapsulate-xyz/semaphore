@@ -22,7 +22,7 @@
       class="mb-4"
     ></v-text-field>
 
-    <v-select
+    <v-autocomplete
       v-model="item.template_id"
       :label="$t('Template')"
       :items="templates"
