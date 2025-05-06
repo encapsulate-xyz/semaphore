@@ -109,7 +109,9 @@ func ReceiveIntegration(w http.ResponseWriter, r *http.Request) {
 				"sha256=")
 
 			if !ok {
-				log.Error("Invalid HMAC signature")
+				log.WithFields(log.Fields{
+					"context": "integrations",
+				}).Error("Invalid GitHub/HMAC signature")
 				continue
 			}
 		case db.IntegrationAuthBitbucket:
@@ -120,7 +122,9 @@ func ReceiveIntegration(w http.ResponseWriter, r *http.Request) {
 				"sha256=")
 
 			if !ok {
-				log.Error("Invalid HMAC signature")
+				log.WithFields(log.Fields{
+					"context": "integrations",
+				}).Error("Invalid Bitbucket/HMAC signature")
 				continue
 			}
 		case db.IntegrationAuthHmac:
@@ -131,24 +135,32 @@ func ReceiveIntegration(w http.ResponseWriter, r *http.Request) {
 				"")
 
 			if !ok {
-				log.Error("Invalid HMAC signature")
+				log.WithFields(log.Fields{
+					"context": "integrations",
+				}).Error("Invalid HMAC signature")
 				continue
 			}
 		case db.IntegrationAuthToken:
 			if integration.AuthSecret.LoginPassword.Password != r.Header.Get(integration.AuthHeader) {
-				log.Error("Invalid verification token")
+				log.WithFields(log.Fields{
+					"context": "integrations",
+				}).Error("Invalid verification token")
 				continue
 			}
 		case db.IntegrationAuthBasic:
 			var username, password, auth = r.BasicAuth()
 			if !auth || integration.AuthSecret.LoginPassword.Password != password || integration.AuthSecret.LoginPassword.Login != username {
-				log.Error("Invalid BasicAuth: incorrect login or password")
+				log.WithFields(log.Fields{
+					"context": "integrations",
+				}).Error("Invalid BasicAuth: incorrect login or password")
 				continue
 			}
 		case db.IntegrationAuthNone:
 			// Do nothing
 		default:
-			log.Error("Unknown verification method: " + integration.AuthMethod)
+			log.WithFields(log.Fields{
+				"context": "integrations",
+			}).Error("Unknown verification method: " + integration.AuthMethod)
 			continue
 		}
 
@@ -156,7 +168,9 @@ func ReceiveIntegration(w http.ResponseWriter, r *http.Request) {
 			var matchers []db.IntegrationMatcher
 			matchers, err = store.GetIntegrationMatchers(integration.ProjectID, db.RetrieveQueryParams{}, integration.ID)
 			if err != nil {
-				log.Error(err)
+				log.WithFields(log.Fields{
+					"context": "integrations",
+				}).WithError(err).Error("Could not retrieve matchers")
 				continue
 			}
 
