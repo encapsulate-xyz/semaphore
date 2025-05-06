@@ -24,9 +24,18 @@ type logRecord struct {
 	time   time.Time
 }
 
-type resourceLock struct {
-	lock   bool
-	holder *TaskRunner
+type EventType uint
+
+const (
+	EventTypeNew      EventType = 0
+	EventTypeFinished EventType = 1
+	EventTypeFailed   EventType = 2
+	EventTypeEmpty    EventType = 3
+)
+
+type PoolEvent struct {
+	eventType EventType
+	task      *TaskRunner
 }
 
 type TaskPool struct {
@@ -47,7 +56,7 @@ type TaskPool struct {
 
 	store db.Store
 
-	resourceLocker chan *resourceLock
+	queueEvents chan PoolEvent
 
 	aliases map[string]*TaskRunner
 }
@@ -100,41 +109,10 @@ func (p *TaskPool) Run() {
 	ticker := time.NewTicker(5 * time.Second)
 
 	defer func() {
-		close(p.resourceLocker)
 		ticker.Stop()
 	}()
 
-	// Lock or unlock resources when running a TaskRunner
-	go func(locker <-chan *resourceLock) {
-		for l := range locker {
-			t := l.holder
-
-			if l.lock {
-				if p.blocks(t) {
-					panic("Trying to lock an already locked resource!")
-				}
-
-				projTasks, ok := p.activeProj[t.Task.ProjectID]
-				if !ok {
-					projTasks = make(map[int]*TaskRunner)
-					p.activeProj[t.Task.ProjectID] = projTasks
-				}
-				projTasks[t.Task.ID] = t
-				p.RunningTasks[t.Task.ID] = t
-				continue
-			}
-
-			if p.activeProj[t.Task.ProjectID] != nil && p.activeProj[t.Task.ProjectID][t.Task.ID] != nil {
-				delete(p.activeProj[t.Task.ProjectID], t.Task.ID)
-				if len(p.activeProj[t.Task.ProjectID]) == 0 {
-					delete(p.activeProj, t.Task.ProjectID)
-				}
-			}
-
-			delete(p.RunningTasks, t.Task.ID)
-			delete(p.aliases, t.Alias)
-		}
-	}(p.resourceLocker)
+	go p.handleQueue()
 
 	for {
 		select {
@@ -153,67 +131,87 @@ func (p *TaskPool) Run() {
 		case task := <-p.register: // new task created by API or schedule
 
 			db.StoreSession(p.store, "new task", func() {
-				p.Queue = append(p.Queue, task)
+				//p.Queue = append(p.Queue, task)
 				log.Debug(task)
 				msg := "Task " + strconv.Itoa(task.Task.ID) + " added to queue"
 				task.Log(msg)
 				log.Info(msg)
 				task.saveStatus()
 			})
+			p.queueEvents <- PoolEvent{EventTypeNew, task}
 
 		case <-ticker.C: // timer 5 seconds
-			if len(p.Queue) == 0 {
-				break
-			}
+			p.queueEvents <- PoolEvent{EventTypeEmpty, nil}
 
-			var t *TaskRunner
-
-			for i := range p.Queue {
-				curr := p.Queue[i]
-
-				if curr.Task.Status == task_logger.TaskFailStatus {
-					//delete failed TaskRunner from queue
-					p.Queue = slices.Delete(p.Queue, i, i+1)
-					log.Info("Task " + strconv.Itoa(curr.Task.ID) + " removed from queue")
-					continue
-				}
-
-				if p.blocks(curr) {
-					continue
-				}
-
-				t = curr
-				break
-			}
-
-			if t == nil {
-				break
-			}
-
-			////get TaskRunner from top of queue
-			//t := p.Queue[0]
-			//if t.Task.Status == task_logger.TaskFailStatus {
-			//	//delete failed TaskRunner from queue
-			//	p.Queue = p.Queue[1:]
-			//	log.Info("Task " + strconv.Itoa(t.Task.ID) + " removed from queue")
-			//	break
-			//}
-			//
-			//if p.blocks(t) {
-			//	//move blocked TaskRunner to end of queue
-			//	//p.Queue = append(p.Queue[1:], t)
-			//	break
-			//}
-
-			log.Info("Set resource locker with TaskRunner " + strconv.Itoa(t.Task.ID))
-			p.resourceLocker <- &resourceLock{lock: true, holder: t}
-
-			go t.run()
-
-			p.Queue = p.Queue[1:]
-			log.Info("Task " + strconv.Itoa(t.Task.ID) + " removed from queue")
 		}
 	}
+}
+
+func (p *TaskPool) handleQueue() {
+	for t := range p.queueEvents {
+		switch t.eventType {
+		case EventTypeNew:
+			p.Queue = append(p.Queue, t.task)
+		case EventTypeFinished:
+			p.onTaskStop(t.task)
+		}
+
+		if len(p.Queue) == 0 {
+			continue
+		}
+
+		var i = 0
+		for i < len(p.Queue) {
+			curr := p.Queue[i]
+
+			if curr.Task.Status == task_logger.TaskFailStatus {
+				//delete failed TaskRunner from queue
+				p.Queue = slices.Delete(p.Queue, i, i+1)
+				log.Info("Task " + strconv.Itoa(curr.Task.ID) + " removed from queue")
+				continue
+			}
+
+			if p.blocks(curr) {
+				i = i + 1
+				continue
+			}
+
+			p.Queue = slices.Delete(p.Queue, i, i+1)
+			runTask(curr, p)
+		}
+	}
+}
+
+func runTask(task *TaskRunner, p *TaskPool) {
+	log.Info("Set resource locker with TaskRunner " + strconv.Itoa(task.Task.ID))
+
+	p.onTaskRun(task)
+
+	log.Info("Task " + strconv.Itoa(task.Task.ID) + " started")
+	go task.run()
+}
+
+func (p *TaskPool) onTaskRun(t *TaskRunner) {
+	projTasks, ok := p.activeProj[t.Task.ProjectID]
+	if !ok {
+		projTasks = make(map[int]*TaskRunner)
+		p.activeProj[t.Task.ProjectID] = projTasks
+	}
+	projTasks[t.Task.ID] = t
+	p.RunningTasks[t.Task.ID] = t
+	p.aliases[t.Alias] = t
+}
+
+func (p *TaskPool) onTaskStop(t *TaskRunner) {
+	if p.activeProj[t.Task.ProjectID] != nil && p.activeProj[t.Task.ProjectID][t.Task.ID] != nil {
+		delete(p.activeProj[t.Task.ProjectID], t.Task.ID)
+		if len(p.activeProj[t.Task.ProjectID]) == 0 {
+			delete(p.activeProj, t.Task.ProjectID)
+		}
+	}
+
+	delete(p.RunningTasks, t.Task.ID)
+	delete(p.aliases, t.Alias)
 }
 
 func (p *TaskPool) blocks(t *TaskRunner) bool {
@@ -247,14 +245,14 @@ func (p *TaskPool) blocks(t *TaskRunner) bool {
 
 func CreateTaskPool(store db.Store) TaskPool {
 	return TaskPool{
-		Queue:          make([]*TaskRunner, 0), // queue of waiting tasks
-		register:       make(chan *TaskRunner), // add TaskRunner to queue
-		activeProj:     make(map[int]map[int]*TaskRunner),
-		RunningTasks:   make(map[int]*TaskRunner),   // working tasks
-		logger:         make(chan logRecord, 10000), // store log records to database
-		store:          store,
-		resourceLocker: make(chan *resourceLock),
-		aliases:        make(map[string]*TaskRunner),
+		Queue:        make([]*TaskRunner, 0), // queue of waiting tasks
+		register:     make(chan *TaskRunner), // add TaskRunner to queue
+		activeProj:   make(map[int]map[int]*TaskRunner),
+		RunningTasks: make(map[int]*TaskRunner),   // working tasks
+		logger:       make(chan logRecord, 10000), // store log records to database
+		store:        store,
+		queueEvents:  make(chan PoolEvent),
+		aliases:      make(map[string]*TaskRunner),
 	}
 }
 
@@ -410,7 +408,6 @@ func (p *TaskPool) AddTask(taskObj db.Task, userID *int, projectID int, needAlia
 
 	if needAlias {
 		taskRunner.Alias = random.String(32)
-		p.aliases[taskRunner.Alias] = &taskRunner
 	}
 
 	err = taskRunner.populateDetails()
