@@ -106,7 +106,7 @@ func (t *TerraformApp) SetLogger(logger task_logger.Logger) task_logger.Logger {
 func (t *TerraformApp) init(environmentVars []string, params *db.TerraformTaskParams) error {
 
 	keyInstallation, err := t.Inventory.SSHKey.Install(db.AccessKeyRoleGit, t.Logger)
-	if (err != nil) {
+	if err != nil {
 		return err
 	}
 	defer keyInstallation.Destroy() //nolint: errcheck
