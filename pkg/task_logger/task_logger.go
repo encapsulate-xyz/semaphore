@@ -2,7 +2,6 @@ package task_logger
 
 import (
 	"os/exec"
-	"strings"
 	"time"
 )
 
@@ -20,33 +19,6 @@ const (
 	TaskSuccessStatus       TaskStatus = "success"
 	TaskFailStatus          TaskStatus = "error"
 )
-
-func (s TaskStatus) String() string {
-	switch s {
-	case TaskWaitingStatus:
-		return "waiting"
-	case TaskStartingStatus:
-		return "starting"
-	case TaskWaitingConfirmation:
-		return "waiting_confirmation"
-	case TaskConfirmed:
-		return "confirmed"
-	case TaskRejected:
-		return "rejected"
-	case TaskRunningStatus:
-		return "running"
-	case TaskStoppingStatus:
-		return "stopping"
-	case TaskStoppedStatus:
-		return "stopped"
-	case TaskSuccessStatus:
-		return "success"
-	case TaskFailStatus:
-		return "error"
-	default:
-		return "unknown"
-	}
-}
 
 func (s TaskStatus) IsValid() bool {
 	switch s {
@@ -84,8 +56,30 @@ func (s TaskStatus) Format() (res string) {
 		res += "❓"
 	}
 
-	// to avoid email content injection issue
-	res += strings.ToUpper(s.String())
+	switch s {
+	case TaskWaitingStatus:
+		res += "WAITING"
+	case TaskStartingStatus:
+		res += "STARTING"
+	case TaskWaitingConfirmation:
+		res += "WAITING_CONFIRMATION"
+	case TaskConfirmed:
+		res += "CONFIRMED"
+	case TaskRejected:
+		res += "REJECTED"
+	case TaskRunningStatus:
+		res += "RUNNING"
+	case TaskStoppingStatus:
+		res += "STOPPING"
+	case TaskStoppedStatus:
+		res += "STOPPED"
+	case TaskSuccessStatus:
+		res += "SUCCESS"
+	case TaskFailStatus:
+		res += "ERROR"
+	default:
+		res += "UNKNOWN"
+	}
 
 	return
 }
