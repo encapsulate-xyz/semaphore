@@ -151,7 +151,6 @@ func recoverySession(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// nolint: gocyclo
 func verifySession(w http.ResponseWriter, r *http.Request) {
 	session, ok := getSession(r)
 
@@ -161,6 +160,10 @@ func verifySession(w http.ResponseWriter, r *http.Request) {
 	}
 
 	switch session.VerificationMethod {
+	case db.SessionVerificationEmail:
+		verifySessionByEmail(w, r)
+		return
+
 	case db.SessionVerificationTotp:
 		if !util.Config.Auth.Totp.Enabled {
 			helpers.WriteErrorStatus(w, "TOTP_DISABLED", http.StatusForbidden)

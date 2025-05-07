@@ -8,6 +8,10 @@ import (
 	"regexp"
 )
 
+func (d *SqlDb) SetSessionVerificationMethod(userID int, sessionID int, verificationMethod db.SessionVerificationMethod) error {
+	return nil
+}
+
 func (d *SqlDb) VerifySession(userID int, sessionID int) error {
 	_, err := d.exec("update session set verified = true where id=? and user_id=?", sessionID, userID)
 
