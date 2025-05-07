@@ -289,3 +289,12 @@ func (d *BoltDb) AddTotpVerification(userID int, url string, recoveryHash string
 func (d *BoltDb) DeleteTotpVerification(userID int, totpID int) error {
 	return d.deleteObject(userID, db.UserTotpProps, intObjectID(totpID), nil)
 }
+
+func (d *BoltDb) AddEmailOtpVerification(userID int, code string) (res db.UserEmailOtp, err error) {
+	err = db.ErrNotFound
+	return
+}
+func (d *BoltDb) DeleteEmailOtpVerification(userID int, totpID int) (err error) {
+	err = db.ErrNotFound
+	return
+}

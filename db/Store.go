@@ -277,6 +277,8 @@ type Store interface {
 	SetUserPassword(userID int, password string) error
 	AddTotpVerification(userID int, url string, recoveryHash string) (UserTotp, error)
 	DeleteTotpVerification(userID int, totpID int) error
+	AddEmailOtpVerification(userID int, code string) (UserEmailOtp, error)
+	DeleteEmailOtpVerification(userID int, totpID int) error
 
 	GetUser(userID int) (User, error)
 	GetUserByLoginOrEmail(login string, email string) (User, error)

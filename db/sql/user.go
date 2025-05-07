@@ -306,3 +306,12 @@ func (d *SqlDb) DeleteTotpVerification(userID int, totpID int) error {
 	_, err := d.exec("delete from user__totp where user_id=? and id = ?", userID, totpID)
 	return err
 }
+
+func (d *SqlDb) AddEmailOtpVerification(userID int, code string) (res db.UserEmailOtp, err error) {
+	err = db.ErrNotFound
+	return
+}
+func (d *SqlDb) DeleteEmailOtpVerification(userID int, totpID int) (err error) {
+	err = db.ErrNotFound
+	return
+}
