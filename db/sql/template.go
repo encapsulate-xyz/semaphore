@@ -276,7 +276,7 @@ func (d *SqlDb) GetTemplates(projectID int, filter db.TemplateFilter, params db.
 		}
 
 		if tpl.SurveyVarsJSON != nil {
-			err = json.Unmarshal([]byte(*tpl.SurveyVarsJSON), &tpl.SurveyVars)
+			err = json.Unmarshal([]byte(*tpl.SurveyVarsJSON), &template.SurveyVars)
 		}
 
 		if err != nil {
