@@ -141,17 +141,6 @@ type TotpConfig struct {
 	AllowRecovery bool `json:"allow_recovery" env:"SEMAPHORE_TOTP_ALLOW_RECOVERY"`
 }
 
-type RecaptchaConfig struct {
-	Enabled string `json:"enabled,omitempty" env:"SEMAPHORE_RECAPTCHA_ENABLED"`
-	SiteKey string `json:"site_key,omitempty" env:"SEMAPHORE_RECAPTCHA_SITE_KEY"`
-}
-
-type AuthConfig struct {
-	Recaptcha *RecaptchaConfig `json:"recaptcha,omitempty"`
-	Totp      *TotpConfig      `json:"totp,omitempty"`
-	Email     *EmailAuthConfig `json:"email,omitempty"`
-}
-
 type EventLogType struct {
 	Format  FileLogFormat      `json:"format,omitempty" env:"SEMAPHORE_EVENT_LOG_FORMAT"`
 	Enabled bool               `json:"enabled" env:"SEMAPHORE_EVENT_LOG_ENABLED"`
