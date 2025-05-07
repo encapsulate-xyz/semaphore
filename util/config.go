@@ -132,10 +132,6 @@ type TLSConfig struct {
 	HTTPRedirectPort *int   `json:"http_redirect_port,omitempty" env:"SEMAPHORE_TLS_HTTP_REDIRECT_PORT"`
 }
 
-type EmailAuthConfig struct {
-	Enabled bool `json:"enabled" env:"SEMAPHORE_EMAIL_2TP_ENABLED"`
-}
-
 type TotpConfig struct {
 	Enabled       bool `json:"enabled" env:"SEMAPHORE_TOTP_ENABLED"`
 	AllowRecovery bool `json:"allow_recovery" env:"SEMAPHORE_TOTP_ALLOW_RECOVERY"`
