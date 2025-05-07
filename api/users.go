@@ -22,7 +22,9 @@ type minimalUser struct {
 
 func getUsers(w http.ResponseWriter, r *http.Request) {
 	currentUser := context.Get(r, "user").(*db.User)
-	users, err := helpers.Store(r).GetUsers(db.RetrieveQueryParams{})
+	users, err := helpers.Store(r).GetUsers(db.RetrieveQueryParams{
+		Filter: r.URL.Query().Get("s"),
+	})
 
 	if err != nil {
 		panic(err)

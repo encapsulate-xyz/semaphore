@@ -6,6 +6,7 @@ import (
 	"github.com/semaphoreui/semaphore/db"
 	"github.com/semaphoreui/semaphore/pkg/tz"
 	"golang.org/x/crypto/bcrypt"
+	"strings"
 )
 
 func (d *SqlDb) CreateUserWithoutPassword(user db.User) (newUser db.User, err error) {
@@ -224,6 +225,14 @@ func (d *SqlDb) GetUserCount() (count int, err error) {
 	return
 }
 
+func escapeLike(s string) string {
+	// Order matters: escape \ first
+	s = strings.ReplaceAll(s, `\`, `\\`)
+	s = strings.ReplaceAll(s, `%`, `\%`)
+	s = strings.ReplaceAll(s, `_`, `\_`)
+	return s
+}
+
 func (d *SqlDb) GetUsers(params db.RetrieveQueryParams) (users []db.User, err error) {
 	q := squirrel.Select("*").From("`user`")
 
@@ -231,6 +240,10 @@ func (d *SqlDb) GetUsers(params db.RetrieveQueryParams) (users []db.User, err er
 
 	if err != nil {
 		return
+	}
+
+	if params.Filter != "" {
+		q = q.Where(squirrel.Like{"username": escapeLike(params.Filter) + "%"})
 	}
 
 	query, args, err := q.ToSql()
