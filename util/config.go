@@ -1112,6 +1112,7 @@ var appCommands = map[string]string{
 	"ansible":   "ansible-playbook",
 	"terraform": "terraform",
 	"tofu":      "tofu",
+	"terragrunt": "terragrunt",
 	"bash":      "bash",
 }
 
@@ -1119,6 +1120,7 @@ var appPriorities = map[string]int{
 	"ansible":    1000,
 	"terraform":  900,
 	"tofu":       800,
+	"terragrunt": 850,
 	"bash":       700,
 	"powershell": 600,
 	"python":     500,

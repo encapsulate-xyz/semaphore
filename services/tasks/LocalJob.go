@@ -492,7 +492,7 @@ func (t *LocalJob) getTemplateParams() (interface{}, error) {
 	switch t.Template.App {
 	case db.AppAnsible:
 		params = &db.AnsibleTemplateParams{}
-	case db.AppTerraform, db.AppTofu:
+	case db.AppTerraform, db.AppTofu, db.AppTerragrunt:
 		params = &db.TerraformTemplateParams{}
 	default:
 		return nil, nil
@@ -506,7 +506,7 @@ func (t *LocalJob) getParams() (params interface{}, err error) {
 	switch t.Template.App {
 	case db.AppAnsible:
 		params = &db.AnsibleTaskParams{}
-	case db.AppTerraform, db.AppTofu:
+	case db.AppTerraform, db.AppTofu, db.AppTerragrunt:
 		params = &db.TerraformTaskParams{}
 	default:
 		params = &db.DefaultTaskParams{}
@@ -560,7 +560,7 @@ func (t *LocalJob) Run(username string, incomingVersion *string, alias string) (
 	switch t.Template.App {
 	case db.AppAnsible:
 		args, inputs, err = t.getPlaybookArgs(username, incomingVersion)
-	case db.AppTerraform, db.AppTofu:
+	case db.AppTerraform, db.AppTofu, db.AppTerragrunt:
 		args, err = t.getTerraformArgs(username, incomingVersion)
 	default:
 		args, err = t.getShellArgs(username, incomingVersion)

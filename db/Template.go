@@ -18,6 +18,7 @@ const (
 	AppAnsible    TemplateApp = "ansible"
 	AppTerraform  TemplateApp = "terraform"
 	AppTofu       TemplateApp = "tofu"
+	AppTerragrunt TemplateApp = "terragrunt"
 	AppBash       TemplateApp = "bash"
 	AppPowerShell TemplateApp = "powershell"
 	AppPython     TemplateApp = "python"
@@ -32,6 +33,8 @@ func (t TemplateApp) InventoryTypes() []InventoryType {
 		return []InventoryType{InventoryTerraformWorkspace}
 	case AppTofu:
 		return []InventoryType{InventoryTofuWorkspace}
+	case AppTerragrunt:
+		return []InventoryType{InventoryTerragruntWorkspace}
 	default:
 		return []InventoryType{}
 	}
@@ -50,7 +53,7 @@ func (t TemplateApp) HasInventoryType(inventoryType InventoryType) bool {
 }
 
 func (t TemplateApp) IsTerraform() bool {
-	return t == AppTerraform || t == AppTofu
+	return t == AppTerraform || t == AppTofu || t == AppTerragrunt
 }
 
 type SurveyVarType string

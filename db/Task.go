@@ -142,7 +142,7 @@ func (task *Task) ValidateNewTask(template Template) error {
 	switch template.App {
 	case AppAnsible:
 		params = &AnsibleTaskParams{}
-	case AppTerraform, AppTofu:
+	case AppTerraform, AppTofu, AppTerragrunt:
 		params = &TerraformTaskParams{}
 	default:
 		params = &DefaultTaskParams{}
