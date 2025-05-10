@@ -281,7 +281,10 @@ export default {
           return;
         }
 
-        const scrollContainer = this.$refs.records.$el;
+        const scrollContainer = this.$refs.records?.$el;
+        if (!scrollContainer) {
+          return;
+        }
 
         // Check if the current position is already at the bottom
         const currentScrollTop = scrollContainer.scrollTop;
