@@ -153,9 +153,9 @@ func (t *TaskRunner) logPipe(reader io.Reader) {
 	}()
 
 	scanner := bufio.NewScanner(reader)
-	//const maxCapacity = 10 * 1024 * 1024 // 10 MB
-	//buf := make([]byte, maxCapacity)
-	//scanner.Buffer(buf, maxCapacity)
+	const maxCapacity = 10 * 1024 * 1024 // 10 MB
+	buf := make([]byte, maxCapacity)
+	scanner.Buffer(buf, maxCapacity)
 
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -172,7 +172,7 @@ func (t *TaskRunner) logPipe(reader io.Reader) {
 		msg := "Failed to read TaskRunner output"
 
 		switch scanner.Err().Error() {
-		case "EOF":
+		case "EOF", "os: process already finished":
 			return // it is ok
 		case "bufio.Scanner: token too long":
 			msg = "TaskRunner output exceeds the maximum allowed size of 10MB"
