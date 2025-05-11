@@ -1,5 +1,7 @@
 package sockets
 
+import log "github.com/sirupsen/logrus"
+
 // hub maintains the set of active connections and broadcasts messages to the
 // connections.
 type hub struct {
@@ -47,8 +49,15 @@ func (h *hub) run() {
 				select {
 				case conn.send <- m.msg:
 				default:
+
+					log.WithFields(log.Fields{
+						"context": "websocket",
+						"user_id": conn.userID,
+					}).Error("Connection send channel is full, connection closing")
+
 					close(conn.send)
 					delete(h.connections, conn)
+					_ = conn.ws.Close() // Close the WebSocket connection first
 				}
 			}
 		}

@@ -35,7 +35,7 @@ const (
 
 	// Maximum size of the connection.send channel.
 	// When the channel is full, the hub closes it (see method hub.run).
-	connectionChannelSize = 2048
+	connectionChannelSize = 256
 )
 
 type connection struct {
