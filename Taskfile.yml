@@ -120,7 +120,6 @@ tasks:
   lint:be:
     cmds:
       - golangci-lint run
-      # - go vet ./...
       # - swagger validate ./api-docs.yml
 
   test:
