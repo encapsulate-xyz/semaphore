@@ -3,7 +3,7 @@ package sockets
 // hub maintains the set of active connections and broadcasts messages to the
 // connections.
 type hub struct {
-	// Registered connections.
+	// Registered websocket connections.
 	connections map[*connection]bool
 
 	// Inbound messages from the connections.
@@ -28,7 +28,6 @@ var h = hub{
 	connections: make(map[*connection]bool),
 }
 
-//nolint: gocyclo
 func (h *hub) run() {
 	for {
 		select {
@@ -40,16 +39,16 @@ func (h *hub) run() {
 				close(c.send)
 			}
 		case m := <-h.broadcast:
-			for c := range h.connections {
-				if m.userID > 0 && m.userID != c.userID {
+			for conn := range h.connections {
+				if m.userID > 0 && m.userID != conn.userID {
 					continue
 				}
 
 				select {
-				case c.send <- m.msg:
+				case conn.send <- m.msg:
 				default:
-					close(c.send)
-					delete(h.connections, c)
+					close(conn.send)
+					delete(h.connections, conn)
 				}
 			}
 		}

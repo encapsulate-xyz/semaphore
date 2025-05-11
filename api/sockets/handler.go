@@ -9,7 +9,6 @@ import (
 
 	"github.com/gorilla/context"
 	"github.com/gorilla/websocket"
-	"github.com/semaphoreui/semaphore/util"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -33,6 +32,10 @@ const (
 
 	// Maximum message size allowed from peer.
 	maxMessageSize = 512
+
+	// Maximum size of the connection.send channel.
+	// When the channel is full, the hub closes it (see method hub.run).
+	connectionChannelSize = 2048
 )
 
 type connection struct {
@@ -41,18 +44,23 @@ type connection struct {
 	userID int
 }
 
-func (c *connection) logError(err error, msg string) {
+func (c *connection) log(level log.Level, err error, msg string) {
 	log.WithError(err).WithFields(log.Fields{
 		"context": "websocket",
 		"user_id": c.userID,
-	}).Error(msg)
+	}).Log(level, msg)
 }
 
-func (c *connection) debugError(err error, msg string) {
-	log.WithError(err).WithFields(log.Fields{
-		"context": "websocket",
-		"user_id": c.userID,
-	}).Debug(msg)
+func (c *connection) logError(err error, msg string) {
+	c.log(log.ErrorLevel, err, msg)
+}
+
+func (c *connection) logWarn(err error, msg string) {
+	c.log(log.DebugLevel, err, msg)
+}
+
+func (c *connection) logDebug(err error, msg string) {
+	c.log(log.DebugLevel, err, msg)
 }
 
 // readPump pumps messages from the websocket connection to the hub.
@@ -65,12 +73,16 @@ func (c *connection) readPump() {
 	c.ws.SetReadLimit(maxMessageSize)
 
 	if err := c.ws.SetReadDeadline(tz.Now().Add(pongWait)); err != nil {
-		c.logError(err, "Cannot set read deadline")
+		c.logWarn(err, "Cannot set read deadline")
 	}
 
 	c.ws.SetPongHandler(func(string) error {
-		err2 := c.ws.SetReadDeadline(tz.Now().Add(pongWait))
-		util.LogErrorF(err2, log.Fields{"error": "Cannot set read deadline"})
+		deadline := tz.Now().Add(pongWait)
+
+		if err := c.ws.SetReadDeadline(deadline); err != nil {
+			c.logWarn(err, "Cannot set read deadline")
+		}
+
 		return nil
 	})
 
@@ -80,7 +92,7 @@ func (c *connection) readPump() {
 
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
-				c.logError(err, "Cannot read message from websocket")
+				c.logDebug(err, "Cannot read message from websocket")
 			}
 			break
 		}
@@ -90,8 +102,10 @@ func (c *connection) readPump() {
 // write writes a message with the given message type and payload.
 func (c *connection) write(mt int, payload []byte) error {
 
-	if err := c.ws.SetWriteDeadline(tz.Now().Add(writeWait)); err != nil {
-		c.logError(err, "Cannot set write deadline")
+	deadline := tz.Now().Add(writeWait)
+
+	if err := c.ws.SetWriteDeadline(deadline); err != nil {
+		c.logWarn(err, "Cannot set write deadline")
 	}
 
 	return c.ws.WriteMessage(mt, payload)
@@ -109,19 +123,23 @@ func (c *connection) writePump() {
 	for {
 		select {
 		case message, ok := <-c.send:
+
 			if !ok {
 				if err := c.write(websocket.CloseMessage, []byte{}); err != nil {
-					c.debugError(err, "Cannot send close message")
+					c.logDebug(err, "Cannot send close message")
 				}
 				return
 			}
 
 			if err := c.write(websocket.TextMessage, message); err != nil {
-				c.debugError(err, "Cannot send message")
+				c.logDebug(err, "Cannot send message")
+				return
 			}
+
 		case <-ticker.C:
+
 			if err := c.write(websocket.PingMessage, []byte{}); err != nil {
-				c.debugError(err, "Cannot send ping message")
+				c.logDebug(err, "Cannot send ping message")
 				return
 			}
 		}
@@ -138,13 +156,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	user := usr.(*db.User)
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Error(err)
+		log.WithError(err).WithFields(log.Fields{
+			"context": "websocket",
+			"user_id": user.ID,
+		}).Error("Cannot upgrade connection")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	c := &connection{
-		send:   make(chan []byte, 256),
+		send:   make(chan []byte, connectionChannelSize),
 		ws:     ws,
 		userID: user.ID,
 	}
