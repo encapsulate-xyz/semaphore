@@ -305,7 +305,7 @@ export default {
           }
         });
       });
-    }, 500);
+    }, 1000);
     socket.addListener((data) => this.onWebsocketDataReceived(data));
     await this.loadData();
   },

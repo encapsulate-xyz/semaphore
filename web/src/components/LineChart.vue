@@ -22,7 +22,7 @@ import {
   Tooltip,
 } from 'chart.js';
 
-import 'chartjs-adapter-moment';
+// import 'chartjs-adapter-moment';
 
 ChartJS.register(
   Title,
