@@ -48,6 +48,13 @@ func (c *connection) logError(err error, msg string) {
 	}).Error(msg)
 }
 
+func (c *connection) debugError(err error, msg string) {
+	log.WithError(err).WithFields(log.Fields{
+		"context": "websocket",
+		"user_id": c.userID,
+	}).Debug(msg)
+}
+
 // readPump pumps messages from the websocket connection to the hub.
 func (c *connection) readPump() {
 	defer func() {
@@ -104,17 +111,17 @@ func (c *connection) writePump() {
 		case message, ok := <-c.send:
 			if !ok {
 				if err := c.write(websocket.CloseMessage, []byte{}); err != nil {
-					c.logError(err, "Cannot send close message")
+					c.debugError(err, "Cannot send close message")
 				}
 				return
 			}
 
 			if err := c.write(websocket.TextMessage, message); err != nil {
-				c.logError(err, "Cannot send message")
+				c.debugError(err, "Cannot send message")
 			}
 		case <-ticker.C:
 			if err := c.write(websocket.PingMessage, []byte{}); err != nil {
-				c.logError(err, "Cannot send ping message")
+				c.debugError(err, "Cannot send ping message")
 				return
 			}
 		}
