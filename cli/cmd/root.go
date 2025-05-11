@@ -41,9 +41,21 @@ Complete documentation is available at https://semaphoreui.com.`,
 			return
 		}
 
-		lvl, err := log.ParseLevel(persistentFlags.logLevel)
-		if err != nil {
-			log.Panic(err)
+		lvl := log.InfoLevel
+		var err error
+
+		if os.Getenv("SEMAPHORE_LOG_LEVEL") != "" {
+			lvl, err = log.ParseLevel(os.Getenv("SEMAPHORE_LOG_LEVEL"))
+			if err != nil {
+				log.Panic(err)
+			}
+		}
+
+		if persistentFlags.logLevel != "" {
+			lvl, err = log.ParseLevel(persistentFlags.logLevel)
+			if err != nil {
+				log.Panic(err)
+			}
 		}
 
 		log.SetLevel(lvl)

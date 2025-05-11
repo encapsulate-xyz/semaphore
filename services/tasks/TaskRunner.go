@@ -3,8 +3,8 @@ package tasks
 import (
 	"encoding/json"
 	"errors"
-	"github.com/semaphoreui/semaphore/services/tasks/hooks"
 	"github.com/semaphoreui/semaphore/pkg/tz"
+	"github.com/semaphoreui/semaphore/services/tasks/hooks"
 	"os"
 	"strconv"
 	"strings"
@@ -192,7 +192,11 @@ func (t *TaskRunner) run() {
 		if t.job.IsKilled() {
 			t.SetStatus(task_logger.TaskStoppedStatus)
 		} else {
-			log.WithError(err).Warn("Failed to run task")
+			log.WithError(err).WithFields(log.Fields{
+				"task_id":     t.Task.ID,
+				"context":     "task_runner",
+				"task_status": t.Task.Status,
+			}).Warn("Failed to run task")
 			t.Log("Failed to run task: " + err.Error())
 			t.SetStatus(task_logger.TaskFailStatus)
 		}
