@@ -3,15 +3,15 @@ package mailer
 import (
 	"bytes"
 	"crypto/tls"
-	"errors"
 	"fmt"
-	"github.com/semaphoreui/semaphore/pkg/tz"
-	"github.com/semaphoreui/semaphore/util"
 	"net"
 	"net/smtp"
 	"strings"
 	"text/template"
 	"time"
+
+	"github.com/semaphoreui/semaphore/pkg/tz"
+	"github.com/semaphoreui/semaphore/util"
 )
 
 const (
@@ -25,14 +25,12 @@ const (
 		"{{ .Body }}"
 )
 
-var (
-	r = strings.NewReplacer(
-		"\r\n", "",
-		"\r", "",
-		"\n", "",
-		"%0a", "",
-		"%0d", "",
-	)
+var r = strings.NewReplacer(
+	"\r\n", "",
+	"\r", "",
+	"\n", "",
+	"%0a", "",
+	"%0d", "",
 )
 
 func parseTlsVersion(version string) (uint16, error) {
@@ -65,7 +63,6 @@ func Send(
 ) error {
 	body := bytes.NewBufferString("")
 	tpl, err := template.New("").Parse(mailerBase)
-
 	if err != nil {
 		return err
 	}
@@ -83,7 +80,6 @@ func Send(
 		Subject: r.Replace(subject),
 		Body:    content,
 	})
-
 	if err != nil {
 		return err
 	}
@@ -131,7 +127,7 @@ func plainauth(
 	body *bytes.Buffer,
 ) error {
 	auth := PlainOrLoginAuth(username, password, host)
-	//auth := smtp.PlainAuth("", username, password, host)
+	// auth := smtp.PlainAuth("", username, password, host)
 
 	return smtp.SendMail(
 		net.JoinHostPort(host, port),
@@ -220,7 +216,6 @@ func anonymous(
 	body *bytes.Buffer,
 ) error {
 	c, err := smtp.Dial(net.JoinHostPort(host, port))
-
 	if err != nil {
 		return err
 	}
@@ -236,7 +231,6 @@ func anonymous(
 	}
 
 	w, err := c.Data()
-
 	if err != nil {
 		return err
 	}
