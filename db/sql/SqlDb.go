@@ -5,6 +5,11 @@ import (
 	"embed"
 	"errors"
 	"fmt"
+	"reflect"
+	"regexp"
+	"strconv"
+	"strings"
+
 	"github.com/Masterminds/squirrel"
 	"github.com/go-gorp/gorp/v3"
 	_ "github.com/go-sql-driver/mysql" // imports mysql driver
@@ -13,10 +18,6 @@ import (
 	"github.com/semaphoreui/semaphore/pkg/task_logger"
 	"github.com/semaphoreui/semaphore/util"
 	log "github.com/sirupsen/logrus"
-	"reflect"
-	"regexp"
-	"strconv"
-	"strings"
 )
 
 type SqlDb struct {
@@ -35,7 +36,6 @@ create table ` + "`migrations`" + ` (
 var dbAssets embed.FS
 
 func getQueryForParams(q squirrel.SelectBuilder, prefix string, props db.ObjectProps, params db.RetrieveQueryParams) (res squirrel.SelectBuilder, err error) {
-
 	pp, err := params.Validate(props)
 	if err != nil {
 		return
@@ -78,9 +78,7 @@ func handleRollbackError(err error) {
 	}
 }
 
-var (
-	identifierQuoteRE = regexp.MustCompile("`")
-)
+var identifierQuoteRE = regexp.MustCompile("`")
 
 // validateMutationResult checks the success of the update query
 func validateMutationResult(res sql.Result, err error) error {
@@ -137,13 +135,11 @@ func (d *SqlDb) insert(primaryKeyColumnName string, query string, args ...interf
 		}
 	default:
 		res, err := d.exec(query, args...)
-
 		if err != nil {
 			return 0, err
 		}
 
 		insertId, err = res.LastInsertId()
-
 		if err != nil {
 			return 0, err
 		}
@@ -212,10 +208,9 @@ func createDb() error {
 		return err
 	}
 
-	defer conn.Close()
+	defer conn.Close() //nolint:errcheck
 
 	_, err = conn.Exec("create database " + cfg.GetDbName())
-
 	if err != nil {
 		log.Warn(err.Error())
 	}
@@ -235,7 +230,6 @@ func (d *SqlDb) getObject(projectID int, props db.ObjectProps, objectID int, obj
 	}
 
 	query, args, err := q.ToSql()
-
 	if err != nil {
 		return
 	}
@@ -246,7 +240,6 @@ func (d *SqlDb) getObject(projectID int, props db.ObjectProps, objectID int, obj
 }
 
 func (d *SqlDb) makeObjectsQuery(projectID int, props db.ObjectProps, params db.RetrieveQueryParams) (q squirrel.SelectBuilder, err error) {
-
 	columns := []string{"*"}
 	if len(props.SelectColumns) > 0 {
 		columns = props.SortableColumns
@@ -296,7 +289,6 @@ func (d *SqlDb) getObjects(
 	objects interface{},
 ) (err error) {
 	q, err := d.makeObjectsQuery(projectID, props, params)
-
 	if err != nil {
 		return
 	}
@@ -306,7 +298,6 @@ func (d *SqlDb) getObjects(
 	}
 
 	query, args, err := q.ToSql()
-
 	if err != nil {
 		return
 	}
@@ -349,7 +340,6 @@ func (d *SqlDb) Connect(_ string) {
 	}
 
 	err = sqlDb.Ping()
-
 	if err != nil {
 		if err = sqlDb.Close(); err != nil {
 			log.Warn("Cannot close database connection: " + err.Error())
@@ -459,7 +449,6 @@ func (d *SqlDb) getObjectRefsFrom(
 	if referringObjectProps.Type == db.ScheduleProps.Type {
 		var referringSchedules []db.Schedule
 		_, err = d.selectAll(&referringSchedules, "select template_id id from project__schedule where project_id = ? and ("+cond+")", vals...)
-
 		if err != nil {
 			return
 		}
@@ -512,7 +501,6 @@ func (d *SqlDb) getObjectByReferrer(referrerID int, referringObjectProps db.Obje
 		Where("id=?", objectID).
 		Where(referringObjectProps.ReferringColumnSuffix+"=?", referrerID).
 		ToSql()
-
 	if err != nil {
 		return
 	}
@@ -529,7 +517,7 @@ func (d *SqlDb) getObjectsByReferrer(
 	params db.RetrieveQueryParams,
 	objects interface{},
 ) (err error) {
-	var referringColumn = referringObjectProps.ReferringColumnSuffix
+	referringColumn := referringObjectProps.ReferringColumnSuffix
 
 	columns := []string{"*"}
 	if len(props.SelectColumns) > 0 {
@@ -545,13 +533,11 @@ func (d *SqlDb) getObjectsByReferrer(
 	}
 
 	q, err = getQueryForParams(q, "pe.", props, params)
-
 	if err != nil {
 		return
 	}
 
 	query, args, err := q.ToSql()
-
 	if err != nil {
 		return
 	}
@@ -562,7 +548,7 @@ func (d *SqlDb) getObjectsByReferrer(
 }
 
 func (d *SqlDb) deleteByReferrer(referrerID int, referringObjectProps db.ObjectProps, props db.ObjectProps, objectID int) error {
-	var referringColumn = referringObjectProps.ReferringColumnSuffix
+	referringColumn := referringObjectProps.ReferringColumnSuffix
 
 	return validateMutationResult(
 		d.exec(
@@ -622,7 +608,6 @@ func (d *SqlDb) GetObject(props db.ObjectProps, ID int) (object interface{}, err
 		Where(squirrel.Eq{"t.id": ID}).
 		OrderBy("t.id").
 		ToSql()
-
 	if err != nil {
 		return
 	}
@@ -631,8 +616,8 @@ func (d *SqlDb) GetObject(props db.ObjectProps, ID int) (object interface{}, err
 	return
 }
 
-func (d *SqlDb) CreateObject(props db.ObjectProps, object interface{}) (newObject interface{}, err error) {
-	//err = newObject.Validate()
+func (d *SqlDb) CreateObject(props db.ObjectProps, object any) (newObject any, err error) {
+	// err = newObject.Validate()
 
 	if err != nil {
 		return
@@ -642,7 +627,6 @@ func (d *SqlDb) CreateObject(props db.ObjectProps, object interface{}) (newObjec
 	insertID, err := d.insert(
 		"id",
 		"insert into "+props.TableName+" "+template, args...)
-
 	if err != nil {
 		return
 	}
@@ -662,7 +646,6 @@ func (d *SqlDb) GetObjectsByForeignKeyQuery(props db.ObjectProps, foreignID int,
 		Where(foreignProps.ReferringColumnSuffix+"=?", foreignID)
 
 	q, err = getQueryForParams(q, "t.", props, params)
-
 	if err != nil {
 		return
 	}
@@ -670,7 +653,6 @@ func (d *SqlDb) GetObjectsByForeignKeyQuery(props db.ObjectProps, foreignID int,
 	query, args, err := q.
 		OrderBy("t.id").
 		ToSql()
-
 	if err != nil {
 		return
 	}
@@ -685,7 +667,6 @@ func (d *SqlDb) GetAllObjectsByForeignKey(props db.ObjectProps, foreignID int, f
 		Where(foreignProps.ReferringColumnSuffix+"=?", foreignID).
 		OrderBy("t.id").
 		ToSql()
-
 	if err != nil {
 		return
 	}
@@ -700,7 +681,6 @@ func (d *SqlDb) GetAllObjects(props db.ObjectProps) (objects interface{}, err er
 		From(props.TableName + " as t").
 		OrderBy("t.id").
 		ToSql()
-
 	if err != nil {
 		return
 	}
@@ -708,7 +688,6 @@ func (d *SqlDb) GetAllObjects(props db.ObjectProps) (objects interface{}, err er
 	results, err = d.selectAll(&objects, query, args...)
 
 	return results, err
-
 }
 
 // Retrieve the Matchers & Values referencing `id' from WebhookExtractor
@@ -730,10 +709,9 @@ func (d *SqlDb) GetAllObjects(props db.ObjectProps) (objects interface{}, err er
 //	  "Matchers": db.WebhookMatcherProps,
 //	  "Values": db.WebhookExtractValueProps
 //	}, &referrerCollection)
-func (d *SqlDb) GetReferencesForForeignKey(objectProps db.ObjectProps, objectID int, referrerMapping map[string]db.ObjectProps, referrerCollection *interface{}) (err error) {
-
+func (d *SqlDb) GetReferencesForForeignKey(objectProps db.ObjectProps, objectID int, referrerMapping map[string]db.ObjectProps, referrerCollection *any) (err error) {
 	for key, value := range referrerMapping {
-		//v := reflect.ValueOf(referrerCollection)
+		// v := reflect.ValueOf(referrerCollection)
 		referrers, errRef := d.GetObjectReferences(objectProps, value, objectID)
 
 		if errRef != nil {
@@ -775,7 +753,6 @@ func (d *SqlDb) GetObjectReferences(objectProps db.ObjectProps, referringObjectP
 		referringObjects.Interface(),
 		"select id, name from "+referringObjectProps.TableName+" where "+objectProps.ReferringColumnSuffix+" = ? and "+cond,
 		vals...)
-
 	if err != nil {
 		return
 	}
@@ -790,7 +767,6 @@ func (d *SqlDb) GetObjectReferences(objectProps db.ObjectProps, referringObjectP
 }
 
 func (d *SqlDb) GetTaskStats(projectID int, templateID *int, unit db.TaskStatUnit, filter db.TaskFilter) (stats []db.TaskStat, err error) {
-
 	stats = make([]db.TaskStat, 0)
 
 	if unit != db.TaskStatUnitDay {
@@ -827,7 +803,6 @@ func (d *SqlDb) GetTaskStats(projectID int, templateID *int, unit db.TaskStatUni
 	}
 
 	query, args, err := q.ToSql()
-
 	if err != nil {
 		return
 	}

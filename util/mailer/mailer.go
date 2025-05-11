@@ -225,7 +225,7 @@ func anonymous(
 		return err
 	}
 
-	defer c.Close()
+	defer c.Close() //nolint:errcheck
 
 	if err := c.Mail(r.Replace(from)); err != nil {
 		return err
@@ -241,7 +241,7 @@ func anonymous(
 		return err
 	}
 
-	defer w.Close()
+	defer w.Close() //nolint:errcheck
 
 	if _, err := body.WriteTo(w); err != nil {
 		return err

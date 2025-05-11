@@ -329,7 +329,7 @@ func ClearDir(dir string, preserveFiles bool, prefix string) error {
 		return err
 	}
 
-	defer d.Close()
+	defer d.Close() //nolint:errcheck
 
 	files, err := d.ReadDir(0)
 	if err != nil {
@@ -400,7 +400,6 @@ func ConfigInit(configPath string, noConfigFile bool) (usedConfigPath *string) {
 	if Config.WebHost != "" {
 		var err error
 		WebHostURL, err = url.Parse(Config.WebHost)
-
 		if err != nil {
 			panic(err)
 		}
@@ -427,8 +426,8 @@ func loadConfigFile(configPath string) (usedConfigPath *string) {
 		configPath = os.Getenv("SEMAPHORE_CONFIG_PATH")
 	}
 
-	//If the configPath option has been set try to load and decode it
-	//var usedPath string
+	// If the configPath option has been set try to load and decode it
+	// var usedPath string
 
 	if configPath == "" {
 		cwd, err := os.Getwd()
@@ -464,9 +463,9 @@ func loadConfigFile(configPath string) (usedConfigPath *string) {
 	return
 }
 
-func loadDefaultsToObject(obj interface{}) error {
-	var t = reflect.TypeOf(obj)
-	var v = reflect.ValueOf(obj)
+func loadDefaultsToObject(obj any) error {
+	t := reflect.TypeOf(obj)
+	v := reflect.ValueOf(obj)
 
 	if t.Kind() == reflect.Ptr {
 		t = t.Elem()
@@ -521,7 +520,6 @@ func loadDefaultsToObject(obj interface{}) error {
 }
 
 func loadConfigDefaults() {
-
 	err := loadDefaultsToObject(Config)
 	if err != nil {
 		panic(err)
@@ -529,17 +527,14 @@ func loadConfigDefaults() {
 }
 
 func castStringToInt(value string) int {
-
 	valueInt, err := strconv.Atoi(value)
 	if err != nil {
 		panic(err)
 	}
 	return valueInt
-
 }
 
 func castStringToBool(value string) bool {
-
 	var valueBool bool
 	if value == "1" || strings.ToLower(value) == "true" || strings.ToLower(value) == "yes" {
 		valueBool = true
@@ -547,7 +542,6 @@ func castStringToBool(value string) bool {
 		valueBool = false
 	}
 	return valueBool
-
 }
 
 func AssignMapToStruct[P *S, S any](m map[string]interface{}, s P) error {
@@ -643,7 +637,6 @@ func assignMapToStructRecursive(m map[string]interface{}, structValue reflect.Va
 
 								mapElem.Set(reflect.ValueOf(newVal))
 							}
-
 						}
 
 						fieldValue.SetMapIndex(key, mapElem)
@@ -693,7 +686,6 @@ func CastValueToKind(value interface{}, kind reflect.Kind) (res interface{}, ok 
 }
 
 func setConfigValue(attribute reflect.Value, value string) {
-
 	if attribute.IsValid() {
 		kind := attribute.Kind()
 
@@ -721,11 +713,9 @@ func setConfigValue(attribute reflect.Value, value string) {
 	} else {
 		panic(fmt.Errorf("got non-existent config attribute"))
 	}
-
 }
 
 func getConfigValue(path string) string {
-
 	attribute := reflect.ValueOf(Config)
 	nested_path := strings.Split(path, ".")
 
@@ -741,9 +731,9 @@ func getConfigValue(path string) string {
 	return fmt.Sprintf("%v", attribute)
 }
 
-func validate(value interface{}) error {
-	var t = reflect.TypeOf(value)
-	var v = reflect.ValueOf(value)
+func validate(value any) error {
+	t := reflect.TypeOf(value)
+	v := reflect.ValueOf(value)
 
 	if t.Kind() == reflect.Ptr {
 		t = t.Elem()
@@ -791,17 +781,15 @@ func validate(value interface{}) error {
 }
 
 func validateConfig() {
-
 	err := validate(Config)
-
 	if err != nil {
 		panic(err)
 	}
 }
 
-func loadEnvironmentToObject(obj interface{}) error {
-	var t = reflect.TypeOf(obj)
-	var v = reflect.ValueOf(obj)
+func loadEnvironmentToObject(obj any) error {
+	t := reflect.TypeOf(obj)
+	v := reflect.ValueOf(obj)
 
 	if t.Kind() == reflect.Ptr {
 		t = t.Elem()
@@ -1076,7 +1064,6 @@ func (conf *ConfigType) GetDialect() (dialect string, err error) {
 func (conf *ConfigType) GetDBConfig() (dbConfig DbConfig, err error) {
 	var dialect string
 	dialect, err = conf.GetDialect()
-
 	if err != nil {
 		return
 	}
@@ -1127,14 +1114,12 @@ var appPriorities = map[string]int{
 }
 
 func LookupDefaultApps() {
-
 	for appID, cmd := range appCommands {
 		if _, ok := Config.Apps[appID]; ok {
 			continue
 		}
 
 		_, err := exec.LookPath(cmd)
-
 		if err != nil {
 			continue
 		}
@@ -1173,7 +1158,6 @@ func GetPublicHost() string {
 	}
 
 	return aliasURL
-
 }
 
 func GetPublicAliasURL(scope string, alias string) string {
@@ -1189,7 +1173,6 @@ func GetPublicAliasURL(scope string, alias string) string {
 }
 
 func GenerateRecoveryCode() (code string, hash string, err error) {
-
 	buf := make([]byte, 10)
 	_, err = io.ReadFull(rand.Reader, buf)
 	if err != nil {
