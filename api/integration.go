@@ -217,7 +217,7 @@ func Match(matcher db.IntegrationMatcher, header http.Header, bodyBytes []byte) 
 	return false
 }
 
-func MatchCompare(value interface{}, method db.IntegrationMatchMethodType, expected string) bool {
+func MatchCompare(value any, method db.IntegrationMatchMethodType, expected string) bool {
 
 	if intValue, ok := conv.ConvertFloatToIntIfPossible(value); ok {
 		value = intValue

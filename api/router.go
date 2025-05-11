@@ -557,7 +557,7 @@ func getSystemInfo(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	body := map[string]interface{}{
+	body := map[string]any{
 		"version":           util.Version(),
 		"ansible":           util.AnsibleVersion(),
 		"web_host":          host,

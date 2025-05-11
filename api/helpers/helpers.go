@@ -71,10 +71,10 @@ func GetIntParam(name string, w http.ResponseWriter, r *http.Request) (int, erro
 }
 
 // H just a string-to-anything map
-type H map[string]interface{}
+type H map[string]any
 
 // Bind decodes json into object
-func Bind(w http.ResponseWriter, r *http.Request, out interface{}) bool {
+func Bind(w http.ResponseWriter, r *http.Request, out any) bool {
 	err := json.NewDecoder(r.Body).Decode(out)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -84,7 +84,7 @@ func Bind(w http.ResponseWriter, r *http.Request, out interface{}) bool {
 }
 
 // WriteJSON writes object as JSON
-func WriteJSON(w http.ResponseWriter, code int, out interface{}) {
+func WriteJSON(w http.ResponseWriter, code int, out any) {
 	w.Header().Set("content-type", "application/json")
 	w.WriteHeader(code)
 

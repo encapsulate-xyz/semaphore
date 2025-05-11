@@ -544,7 +544,7 @@ func castStringToBool(value string) bool {
 	return valueBool
 }
 
-func AssignMapToStruct[P *S, S any](m map[string]interface{}, s P) error {
+func AssignMapToStruct[P *S, S any](m map[string]any, s P) error {
 	v := reflect.ValueOf(s).Elem()
 	return assignMapToStructRecursive(m, v)
 }
@@ -565,7 +565,7 @@ func cloneStruct(origValue reflect.Value) reflect.Value {
 	return cloneValue
 }
 
-func assignMapToStructRecursive(m map[string]interface{}, structValue reflect.Value) error {
+func assignMapToStructRecursive(m map[string]any, structValue reflect.Value) error {
 	structType := structValue.Type()
 
 	for i := 0; i < structType.NumField(); i++ {
@@ -590,7 +590,7 @@ func assignMapToStructRecursive(m map[string]interface{}, structValue reflect.Va
 						return fmt.Errorf("expected map for nested struct field %s but got %T", field.Name, value)
 					}
 
-					mapValue, ok := value.(map[string]interface{})
+					mapValue, ok := value.(map[string]any)
 					if !ok {
 						return fmt.Errorf("cannot assign value of type %T to field %s of type %s", value, field.Name, field.Type)
 					}
@@ -622,7 +622,7 @@ func assignMapToStructRecursive(m map[string]interface{}, structValue reflect.Va
 						}
 
 						if mapElemType.Kind() == reflect.Struct {
-							if err := assignMapToStructRecursive(mapElemValue.Interface().(map[string]interface{}), mapElem); err != nil {
+							if err := assignMapToStructRecursive(mapElemValue.Interface().(map[string]any), mapElem); err != nil {
 								return err
 							}
 						} else {
@@ -663,7 +663,7 @@ func assignMapToStructRecursive(m map[string]interface{}, structValue reflect.Va
 	return nil
 }
 
-func CastValueToKind(value interface{}, kind reflect.Kind) (res interface{}, ok bool) {
+func CastValueToKind(value any, kind reflect.Kind) (res any, ok bool) {
 	res = value
 
 	switch kind {
@@ -1096,11 +1096,11 @@ func (conf *ConfigType) GenerateSecrets() {
 }
 
 var appCommands = map[string]string{
-	"ansible":   "ansible-playbook",
-	"terraform": "terraform",
-	"tofu":      "tofu",
+	"ansible":    "ansible-playbook",
+	"terraform":  "terraform",
+	"tofu":       "tofu",
 	"terragrunt": "terragrunt",
-	"bash":      "bash",
+	"bash":       "bash",
 }
 
 var appPriorities = map[string]int{
@@ -1134,7 +1134,7 @@ func LookupDefaultApps() {
 	}
 
 	for k, v := range appPriorities {
-		app, _ := Config.Apps[k]
+		app := Config.Apps[k]
 		if app.Priority <= 0 {
 			app.Priority = v
 		}

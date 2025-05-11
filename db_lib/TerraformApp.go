@@ -194,7 +194,7 @@ func (t *TerraformApp) selectWorkspace(workspace string, environmentVars []strin
 	return nil
 }
 
-func (t *TerraformApp) InstallRequirements(environmentVars []string, params interface{}) (err error) {
+func (t *TerraformApp) InstallRequirements(environmentVars []string, params any) (err error) {
 
 	p := params.(*db.TerraformTaskParams)
 

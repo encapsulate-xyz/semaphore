@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/semaphoreui/semaphore/pkg/random"
-	"github.com/semaphoreui/semaphore/services/tasks/stage_parsers"
 	"github.com/semaphoreui/semaphore/pkg/tz"
+	"github.com/semaphoreui/semaphore/services/tasks/stage_parsers"
 	"regexp"
 	"strconv"
 	"strings"
@@ -192,7 +192,7 @@ func (p *TaskPool) MoveToNextStage(
 					return
 				}
 
-				var res map[string]interface{}
+				var res map[string]any
 				res, err = oldParser.Parse(stageOutputs)
 
 				if err != nil {

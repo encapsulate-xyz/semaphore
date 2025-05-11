@@ -177,7 +177,7 @@ func createSession(w http.ResponseWriter, r *http.Request, user db.User) {
 		return
 	}
 
-	encoded, err := util.Cookie.Encode("semaphore", map[string]interface{}{
+	encoded, err := util.Cookie.Encode("semaphore", map[string]any{
 		"user":    user.ID,
 		"session": newSession.ID,
 	})
@@ -542,17 +542,17 @@ func parseClaim(str string, claims map[string]any) (string, bool) {
 	return "", false
 }
 
-func prepareClaims(claims map[string]interface{}) {
+func prepareClaims(claims map[string]any) {
 	for k, v := range claims {
-		switch v.(type) {
+		switch v := v.(type) {
 		case float64:
-			f := v.(float64)
+			f := v
 			i := int64(f)
 			if float64(i) == f {
 				claims[k] = i
 			}
 		case float32:
-			f := v.(float32)
+			f := v
 			i := int64(f)
 			if float32(i) == f {
 				claims[k] = i
@@ -584,7 +584,7 @@ func parseClaims(claims map[string]any, provider util.ClaimsProvider) (res claim
 }
 
 func claimOidcUserInfo(userInfo *oidc.UserInfo, provider util.OidcProvider) (res claimResult, err error) {
-	claims := make(map[string]interface{})
+	claims := make(map[string]any)
 	if err = userInfo.Claims(&claims); err != nil {
 		return
 	}
@@ -595,7 +595,7 @@ func claimOidcUserInfo(userInfo *oidc.UserInfo, provider util.OidcProvider) (res
 }
 
 func claimOidcToken(idToken *oidc.IDToken, provider util.OidcProvider) (res claimResult, err error) {
-	claims := make(map[string]interface{})
+	claims := make(map[string]any)
 	if err = idToken.Claims(&claims); err != nil {
 		return
 	}

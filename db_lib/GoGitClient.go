@@ -36,7 +36,8 @@ func (t ProgressWrapper) Write(p []byte) (n int, err error) {
 }
 
 func getAuthMethod(r GitRepository) (transport.AuthMethod, error) {
-	if r.Repository.SSHKey.Type == db.AccessKeySSH {
+	switch r.Repository.SSHKey.Type {
+	case db.AccessKeySSH:
 		var sshKeyBuff = r.Repository.SSHKey.SshKey.PrivateKey
 
 		if r.Repository.SSHKey.SshKey.Login == "" {
@@ -51,16 +52,16 @@ func getAuthMethod(r GitRepository) (transport.AuthMethod, error) {
 		publicKey.HostKeyCallback = ssh2.InsecureIgnoreHostKey()
 
 		return publicKey, sshErr
-	} else if r.Repository.SSHKey.Type == db.AccessKeyLoginPassword {
+	case db.AccessKeyLoginPassword:
 		password := &http.BasicAuth{
 			Username: r.Repository.SSHKey.LoginPassword.Login,
 			Password: r.Repository.SSHKey.LoginPassword.Password,
 		}
 
 		return password, nil
-	} else if r.Repository.SSHKey.Type == db.AccessKeyNone {
+	case db.AccessKeyNone:
 		return nil, nil
-	} else {
+	default:
 		return nil, errors.New("unsupported auth method")
 	}
 }

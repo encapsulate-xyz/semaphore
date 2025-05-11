@@ -24,24 +24,24 @@ func TestConfig_assignMapToStruct(t *testing.T) {
 		Details map[string]Detail `json:"details"`
 	}
 
-	johnData := map[string]interface{}{
+	johnData := map[string]any{
 		"name":  "John Doe",
 		"age":   30,
 		"email": "john.doe@example.com",
-		"address": map[string]interface{}{
+		"address": map[string]any{
 			"street": "123 Main St",
 			"city":   "Anytown",
 		},
-		"details": map[string]interface{}{
-			"occupation": map[string]interface{}{
+		"details": map[string]any{
+			"occupation": map[string]any{
 				"value":       "engineer",
 				"description": "Works with computers",
 			},
-			"hobby": map[string]interface{}{
+			"hobby": map[string]any{
 				"value":       "hiking",
 				"description": "Enjoys the outdoors",
 			},
-			"interests": map[string]interface{}{
+			"interests": map[string]any{
 				"description": "Ho ho ho",
 			},
 		},

@@ -157,7 +157,7 @@ type Template struct {
 	AllowOverrideBranchInTask bool `db:"allow_override_branch_in_task" json:"allow_override_branch_in_task,omitempty"`
 }
 
-func (tpl *Template) FillParams(target interface{}) error {
+func (tpl *Template) FillParams(target any) error {
 	content, err := json.Marshal(tpl.TaskParams)
 	if err != nil {
 		return nil

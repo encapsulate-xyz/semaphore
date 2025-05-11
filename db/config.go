@@ -5,8 +5,8 @@ import (
 	"strings"
 )
 
-func ConvertFlatToNested(flatMap map[string]string) map[string]interface{} {
-	nestedMap := make(map[string]interface{})
+func ConvertFlatToNested(flatMap map[string]string) map[string]any {
+	nestedMap := make(map[string]any)
 
 	for key, value := range flatMap {
 		parts := strings.Split(key, ".")
@@ -17,9 +17,9 @@ func ConvertFlatToNested(flatMap map[string]string) map[string]interface{} {
 				currentMap[part] = value
 			} else {
 				if _, exists := currentMap[part]; !exists {
-					currentMap[part] = make(map[string]interface{})
+					currentMap[part] = make(map[string]any)
 				}
-				currentMap = currentMap[part].(map[string]interface{})
+				currentMap = currentMap[part].(map[string]any)
 			}
 		}
 	}
@@ -38,7 +38,7 @@ func FillConfigFromDB(store Store) (err error) {
 	options := ConvertFlatToNested(opts)
 
 	if options["apps"] == nil {
-		options["apps"] = make(map[string]interface{})
+		options["apps"] = make(map[string]any)
 	}
 
 	err = util.AssignMapToStruct(options, util.Config)

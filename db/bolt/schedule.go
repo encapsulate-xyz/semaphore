@@ -28,7 +28,7 @@ func (d *BoltDb) GetSchedules() (schedules []db.Schedule, err error) {
 
 func (d *BoltDb) getProjectSchedules(projectID int, filter func(referringObj db.Schedule) bool) (schedules []db.Schedule, err error) {
 	schedules = []db.Schedule{}
-	err = d.getObjects(projectID, db.ScheduleProps, db.RetrieveQueryParams{}, func(referringObj interface{}) bool {
+	err = d.getObjects(projectID, db.ScheduleProps, db.RetrieveQueryParams{}, func(referringObj any) bool {
 		return filter == nil || filter(referringObj.(db.Schedule))
 	}, &schedules)
 	return

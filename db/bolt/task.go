@@ -38,7 +38,7 @@ func (d *BoltDb) clearTasks(projectID int, templateID int, maxTasks int) {
 
 	if nTasks == 0 { // recalculate number of tasks for the template
 
-		n, err := d.count(projectID, db.TaskProps, db.RetrieveQueryParams{}, func(item interface{}) bool {
+		n, err := d.count(projectID, db.TaskProps, db.RetrieveQueryParams{}, func(item any) bool {
 			task := item.(db.Task)
 
 			return task.TemplateID == templateID
@@ -74,7 +74,7 @@ func (d *BoltDb) clearTasks(projectID int, templateID int, maxTasks int) {
 
 		c := b.Cursor()
 
-		return apply(c, db.TaskProps, db.RetrieveQueryParams{}, func(item interface{}) bool {
+		return apply(c, db.TaskProps, db.RetrieveQueryParams{}, func(item any) bool {
 			task := item.(db.Task)
 
 			if task.TemplateID != templateID {
@@ -83,7 +83,7 @@ func (d *BoltDb) clearTasks(projectID int, templateID int, maxTasks int) {
 
 			i++
 			return i > maxTasks
-		}, func(i interface{}) error {
+		}, func(i any) error {
 			task := i.(db.Task)
 			return d.deleteTaskWithOutputs(projectID, task.ID, false, tx)
 		})
@@ -121,7 +121,7 @@ func (d *BoltDb) CreateTaskOutput(output db.TaskOutput) (db.TaskOutput, error) {
 func (d *BoltDb) getTasks(projectID int, templateID *int, params db.RetrieveQueryParams) (tasksWithTpl []db.TaskWithTpl, err error) {
 	var tasks []db.Task
 
-	err = d.getObjects(0, db.TaskProps, params, func(tsk interface{}) bool {
+	err = d.getObjects(0, db.TaskProps, params, func(tsk any) bool {
 		task := tsk.(db.Task)
 
 		if task.ProjectID != projectID {

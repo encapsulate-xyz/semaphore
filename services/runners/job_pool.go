@@ -452,7 +452,7 @@ func generatePrivateKey(privateKeyFilePath string) (publicKey string, err error)
 
 func decryptChunkedBytes(combinedCiphertext []byte, privateKey *rsa.PrivateKey) (fullPlaintext []byte, err error) {
 
-	rsaBlockSize := privateKey.PublicKey.N.BitLen() / 8 // e.g. 256 for 2048-bit key
+	rsaBlockSize := privateKey.N.BitLen() / 8 // e.g. 256 for 2048-bit key
 
 	// 3. Decrypt all chunks
 	for i := 0; i < len(combinedCiphertext); i += rsaBlockSize {

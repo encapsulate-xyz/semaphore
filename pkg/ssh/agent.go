@@ -32,7 +32,7 @@ func (a *Agent) Listen() error {
 
 	for _, k := range a.Keys {
 		var (
-			key interface{}
+			key any
 			err error
 		)
 

@@ -12,7 +12,7 @@ func (d *BoltDb) GetRunnerByToken(token string) (runner db.Runner, err error) {
 
 	runners := make([]db.Runner, 0)
 
-	err = d.getObjects(0, db.GlobalRunnerProps, db.RetrieveQueryParams{}, func(i interface{}) bool {
+	err = d.getObjects(0, db.GlobalRunnerProps, db.RetrieveQueryParams{}, func(i any) bool {
 		r := i.(db.Runner)
 		return r.Token == token
 	}, &runners)
@@ -44,7 +44,7 @@ func (d *BoltDb) GetGlobalRunner(runnerID int) (runner db.Runner, err error) {
 }
 
 func (d *BoltDb) GetAllRunners(activeOnly bool, globalOnly bool) (runners []db.Runner, err error) {
-	err = d.getObjects(0, db.GlobalRunnerProps, db.RetrieveQueryParams{}, func(i interface{}) bool {
+	err = d.getObjects(0, db.GlobalRunnerProps, db.RetrieveQueryParams{}, func(i any) bool {
 		runner := i.(db.Runner)
 
 		if globalOnly && runner.ProjectID != nil {

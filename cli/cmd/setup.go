@@ -87,7 +87,7 @@ func readNewline(pre string, stdin *bufio.Reader) string {
 
 	str, err := stdin.ReadString('\n')
 	util.LogWarning(err)
-	str = strings.Replace(strings.Replace(str, "\n", "", -1), "\r", "", -1)
+	str = strings.ReplaceAll(strings.ReplaceAll(str, "\n", ""), "\r", "")
 
 	return str
 }

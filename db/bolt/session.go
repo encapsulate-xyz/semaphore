@@ -69,7 +69,7 @@ func (d *BoltDb) ExpireAPIToken(userID int, tokenID string) (err error) {
 func (d *BoltDb) DeleteAPIToken(userID int, tokenID string) (err error) {
 	var tokens []db.APIToken
 
-	err = d.getObjects(userID, db.TokenProps, db.RetrieveQueryParams{}, func(i interface{}) bool {
+	err = d.getObjects(userID, db.TokenProps, db.RetrieveQueryParams{}, func(i any) bool {
 		token := i.(db.APIToken)
 		return strings.HasPrefix(token.ID, tokenID)
 	}, &tokens)

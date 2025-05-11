@@ -117,7 +117,7 @@ func (d *SqlDb) PrepareQuery(query string) string {
 	return d.prepareQueryWithDialect(query, d.sql.Dialect)
 }
 
-func (d *SqlDb) insert(primaryKeyColumnName string, query string, args ...interface{}) (int, error) {
+func (d *SqlDb) insert(primaryKeyColumnName string, query string, args ...any) (int, error) {
 	var insertId int64
 
 	switch d.sql.Dialect.(type) {
@@ -148,17 +148,17 @@ func (d *SqlDb) insert(primaryKeyColumnName string, query string, args ...interf
 	return int(insertId), nil
 }
 
-func (d *SqlDb) exec(query string, args ...interface{}) (sql.Result, error) {
+func (d *SqlDb) exec(query string, args ...any) (sql.Result, error) {
 	q := d.PrepareQuery(query)
 	return d.sql.Exec(q, args...)
 }
 
-func (d *SqlDb) execTx(tx *gorp.Transaction, query string, args ...interface{}) (sql.Result, error) {
+func (d *SqlDb) execTx(tx *gorp.Transaction, query string, args ...any) (sql.Result, error) {
 	q := d.PrepareQuery(query)
 	return tx.Exec(q, args...)
 }
 
-func (d *SqlDb) selectOne(holder interface{}, query string, args ...interface{}) error {
+func (d *SqlDb) selectOne(holder any, query string, args ...any) error {
 	err := d.sql.SelectOne(holder, d.PrepareQuery(query), args...)
 
 	if errors.Is(err, sql.ErrNoRows) {
@@ -168,7 +168,7 @@ func (d *SqlDb) selectOne(holder interface{}, query string, args ...interface{})
 	return err
 }
 
-func (d *SqlDb) selectAll(i interface{}, query string, args ...interface{}) ([]interface{}, error) {
+func (d *SqlDb) selectAll(i any, query string, args ...any) ([]any, error) {
 	q := d.PrepareQuery(query)
 	return d.sql.Select(i, q, args...)
 }
@@ -218,7 +218,7 @@ func createDb() error {
 	return nil
 }
 
-func (d *SqlDb) getObject(projectID int, props db.ObjectProps, objectID int, object interface{}) (err error) {
+func (d *SqlDb) getObject(projectID int, props db.ObjectProps, objectID int, object any) (err error) {
 	q := squirrel.Select("*").
 		From(props.TableName).
 		Where("id=?", objectID)
@@ -286,7 +286,7 @@ func (d *SqlDb) getObjects(
 	props db.ObjectProps,
 	params db.RetrieveQueryParams,
 	prepare func(squirrel.SelectBuilder) squirrel.SelectBuilder,
-	objects interface{},
+	objects any,
 ) (err error) {
 	q, err := d.makeObjectsQuery(projectID, props, params)
 	if err != nil {
@@ -428,7 +428,7 @@ func (d *SqlDb) getObjectRefsFrom(
 	fields, err := objectProps.GetReferringFieldsFrom(referringObjectProps.Type)
 
 	cond := ""
-	vals := []interface{}{projectID}
+	vals := []any{projectID}
 
 	for _, f := range fields {
 		if cond != "" {
@@ -495,7 +495,7 @@ func (d *SqlDb) IsInitialized() (bool, error) {
 	return err == nil, nil
 }
 
-func (d *SqlDb) getObjectByReferrer(referrerID int, referringObjectProps db.ObjectProps, props db.ObjectProps, objectID int, object interface{}) (err error) {
+func (d *SqlDb) getObjectByReferrer(referrerID int, referringObjectProps db.ObjectProps, props db.ObjectProps, objectID int, object any) (err error) {
 	query, args, err := squirrel.Select("*").
 		From(props.TableName).
 		Where("id=?", objectID).
@@ -515,7 +515,7 @@ func (d *SqlDb) getObjectsByReferrer(
 	referringObjectProps db.ObjectProps,
 	props db.ObjectProps,
 	params db.RetrieveQueryParams,
-	objects interface{},
+	objects any,
 ) (err error) {
 	referringColumn := referringObjectProps.ReferringColumnSuffix
 
@@ -568,13 +568,13 @@ func (d *SqlDb) deleteObjectByReferencedID(referencedID int, referencedProps db.
   GENERIC IMPLEMENTATION
   **/
 
-func InsertTemplateFromType(typeInstance interface{}) (string, []interface{}) {
+func InsertTemplateFromType(typeInstance any) (string, []any) {
 	val := reflect.Indirect(reflect.ValueOf(typeInstance))
 	typeFieldSize := val.Type().NumField()
 
 	fields := ""
 	values := ""
-	args := make([]interface{}, 0)
+	args := make([]any, 0)
 
 	if typeFieldSize > 1 {
 		fields += "("
@@ -602,7 +602,7 @@ func InsertTemplateFromType(typeInstance interface{}) (string, []interface{}) {
 	return fields + " values " + values, args
 }
 
-func (d *SqlDb) GetObject(props db.ObjectProps, ID int) (object interface{}, err error) {
+func (d *SqlDb) GetObject(props db.ObjectProps, ID int) (object any, err error) {
 	query, args, err := squirrel.Select("t.*").
 		From(props.TableName + " as t").
 		Where(squirrel.Eq{"t.id": ID}).
@@ -640,7 +640,7 @@ func (d *SqlDb) CreateObject(props db.ObjectProps, object any) (newObject any, e
 	return
 }
 
-func (d *SqlDb) GetObjectsByForeignKeyQuery(props db.ObjectProps, foreignID int, foreignProps db.ObjectProps, params db.RetrieveQueryParams, objects interface{}) (err error) {
+func (d *SqlDb) GetObjectsByForeignKeyQuery(props db.ObjectProps, foreignID int, foreignProps db.ObjectProps, params db.RetrieveQueryParams, objects any) (err error) {
 	q := squirrel.Select("*").
 		From(props.TableName+" as t").
 		Where(foreignProps.ReferringColumnSuffix+"=?", foreignID)
@@ -661,7 +661,7 @@ func (d *SqlDb) GetObjectsByForeignKeyQuery(props db.ObjectProps, foreignID int,
 	return
 }
 
-func (d *SqlDb) GetAllObjectsByForeignKey(props db.ObjectProps, foreignID int, foreignProps db.ObjectProps) (objects interface{}, err error) {
+func (d *SqlDb) GetAllObjectsByForeignKey(props db.ObjectProps, foreignID int, foreignProps db.ObjectProps) (objects any, err error) {
 	query, args, err := squirrel.Select("*").
 		From(props.TableName+" as t").
 		Where(foreignProps.ReferringColumnSuffix+"=?", foreignID).
@@ -676,7 +676,7 @@ func (d *SqlDb) GetAllObjectsByForeignKey(props db.ObjectProps, foreignID int, f
 	return results, errQuery
 }
 
-func (d *SqlDb) GetAllObjects(props db.ObjectProps) (objects interface{}, err error) {
+func (d *SqlDb) GetAllObjects(props db.ObjectProps) (objects any, err error) {
 	query, args, err := squirrel.Select("*").
 		From(props.TableName + " as t").
 		OrderBy("t.id").
@@ -684,7 +684,7 @@ func (d *SqlDb) GetAllObjects(props db.ObjectProps) (objects interface{}, err er
 	if err != nil {
 		return
 	}
-	var results []interface{}
+	var results []any
 	results, err = d.selectAll(&objects, query, args...)
 
 	return results, err
@@ -732,7 +732,7 @@ func (d *SqlDb) GetObjectReferences(objectProps db.ObjectProps, referringObjectP
 	fields, err := objectProps.GetReferringFieldsFrom(objectProps.Type)
 
 	cond := ""
-	vals := []interface{}{}
+	vals := []any{}
 
 	for _, f := range fields {
 		if cond != "" {

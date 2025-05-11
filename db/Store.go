@@ -24,7 +24,7 @@ func GetParsedTime(t time.Time) time.Time {
 	return parsedTime
 }
 
-func ObjectToJSON(obj interface{}) *string {
+func ObjectToJSON(obj any) *string {
 	if obj == nil ||
 		(reflect.ValueOf(obj).Kind() == reflect.Ptr && reflect.ValueOf(obj).IsNil()) ||
 		(reflect.ValueOf(obj).Kind() == reflect.Slice && reflect.ValueOf(obj).IsZero()) {
@@ -620,9 +620,9 @@ func ValidateInventory(store Store, inventory *Inventory) (err error) {
 	return
 }
 
-type MapStringAnyField map[string]interface{}
+type MapStringAnyField map[string]any
 
-func (m *MapStringAnyField) Scan(value interface{}) error {
+func (m *MapStringAnyField) Scan(value any) error {
 	if value == nil {
 		*m = nil
 		return nil

@@ -60,7 +60,7 @@ func validateJSON(s string, mustValuesBeScalar bool) error {
 		return nil
 	}
 
-	var data map[string]interface{}
+	var data map[string]any
 	err := json.Unmarshal([]byte(s), &data)
 	if err != nil {
 		return errors.New("must be valid JSON")
@@ -73,7 +73,7 @@ func validateJSON(s string, mustValuesBeScalar bool) error {
 
 		if mustValuesBeScalar {
 			switch v.(type) {
-			case []interface{}, map[string]interface{}:
+			case []any, map[string]any:
 				return errors.New("values must be scalar")
 			}
 		}

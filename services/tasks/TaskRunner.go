@@ -3,8 +3,8 @@ package tasks
 import (
 	"encoding/json"
 	"errors"
-	"github.com/semaphoreui/semaphore/services/tasks/hooks"
 	"github.com/semaphoreui/semaphore/pkg/tz"
+	"github.com/semaphoreui/semaphore/services/tasks/hooks"
 	"os"
 	"strconv"
 	"strings"
@@ -63,7 +63,7 @@ func (t *TaskRunner) AddLogListener(l task_logger.LogListener) {
 
 func (t *TaskRunner) saveStatus() {
 	for _, user := range t.users {
-		b, err := json.Marshal(&map[string]interface{}{
+		b, err := json.Marshal(&map[string]any{
 			"type":        "update",
 			"start":       t.Task.Start,
 			"end":         t.Task.End,
@@ -342,7 +342,7 @@ func (t *TaskRunner) populateDetails() error {
 	}
 
 	if t.Task.Environment != "" {
-		environment := make(map[string]interface{})
+		environment := make(map[string]any)
 		if t.Environment.JSON != "" {
 			err = json.Unmarshal([]byte(t.Task.Environment), &environment)
 			if err != nil {
@@ -350,7 +350,7 @@ func (t *TaskRunner) populateDetails() error {
 			}
 		}
 
-		taskEnvironment := make(map[string]interface{})
+		taskEnvironment := make(map[string]any)
 		err = json.Unmarshal([]byte(t.Environment.JSON), &taskEnvironment)
 		if err != nil {
 			return err
