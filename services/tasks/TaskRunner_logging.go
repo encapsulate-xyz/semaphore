@@ -164,14 +164,12 @@ func (t *TaskRunner) logPipe(reader io.Reader) {
 
 	close(linesCh)
 
-	if scanner.Err() != nil {
-		if scanner.Err().Error() == "EOF" {
-			return // it is ok
-		}
+	err := scanner.Err()
 
+	if err != nil {
 		msg := "Failed to read TaskRunner output"
 
-		switch scanner.Err().Error() {
+		switch err.Error() {
 		case "EOF",
 			"os: process already finished",
 			"read |0: file already closed":
@@ -183,7 +181,7 @@ func (t *TaskRunner) logPipe(reader io.Reader) {
 
 		t.kill() // kill the job because stdout cannot be read.
 
-		log.WithError(scanner.Err()).WithFields(log.Fields{
+		log.WithError(err).WithFields(log.Fields{
 			"task_id": t.Task.ID,
 			"context": "task_logger",
 		}).Error(msg)

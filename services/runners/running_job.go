@@ -105,24 +105,28 @@ func (p *runningJob) logPipe(reader io.Reader) {
 		p.Log(line)
 	}
 
-	msg := "Failed to read TaskRunner output"
+	err := scanner.Err()
 
-	switch scanner.Err().Error() {
-	case "EOF",
-		"os: process already finished",
-		"read |0: file already closed":
-		return // it is ok
-	case "bufio.Scanner: token too long":
-		msg = "TaskRunner output exceeds the maximum allowed size of 10MB"
-		break
+	if err != nil {
+		msg := "Failed to read TaskRunner output"
+
+		switch err.Error() {
+		case "EOF",
+			"os: process already finished",
+			"read |0: file already closed":
+			return // it is ok
+		case "bufio.Scanner: token too long":
+			msg = "TaskRunner output exceeds the maximum allowed size of 10MB"
+			break
+		}
+
+		p.job.Kill() // kill the job because stdout cannot be read.
+
+		log.WithError(err).WithFields(log.Fields{
+			"task_id": p.job.Task.ID,
+			"context": "task_logger",
+		}).Error(msg)
+
+		p.Log("Fatal error: " + msg)
 	}
-
-	p.job.Kill() // kill the job because stdout cannot be read.
-
-	log.WithError(scanner.Err()).WithFields(log.Fields{
-		"task_id": p.job.Task.ID,
-		"context": "job",
-	}).Error(msg)
-
-	p.Log("Fatal error: " + msg)
 }
