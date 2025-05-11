@@ -73,14 +73,14 @@ func (c *connection) readPump() {
 	c.ws.SetReadLimit(maxMessageSize)
 
 	if err := c.ws.SetReadDeadline(tz.Now().Add(pongWait)); err != nil {
-		c.logWarn(err, "Cannot set read deadline")
+		c.logWarn(err, "Failed to set read deadline")
 	}
 
 	c.ws.SetPongHandler(func(string) error {
 		deadline := tz.Now().Add(pongWait)
 
 		if err := c.ws.SetReadDeadline(deadline); err != nil {
-			c.logWarn(err, "Cannot set read deadline")
+			c.logWarn(err, "Failed to set read deadline")
 		}
 
 		return nil
@@ -92,7 +92,7 @@ func (c *connection) readPump() {
 
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
-				c.logDebug(err, "Cannot read message from websocket")
+				c.logDebug(err, "Failed to read message from client")
 			}
 			break
 		}
@@ -126,20 +126,20 @@ func (c *connection) writePump() {
 
 			if !ok {
 				if err := c.write(websocket.CloseMessage, []byte{}); err != nil {
-					c.logDebug(err, "Cannot send close message")
+					c.logDebug(err, "Failed to write close message to client")
 				}
 				return
 			}
 
 			if err := c.write(websocket.TextMessage, message); err != nil {
-				c.logDebug(err, "Cannot send message")
+				c.logDebug(err, "Failed to write message to client")
 				return
 			}
 
 		case <-ticker.C:
 
 			if err := c.write(websocket.PingMessage, []byte{}); err != nil {
-				c.logDebug(err, "Cannot send ping message")
+				c.logDebug(err, "Failed to write ping message to client")
 				return
 			}
 		}
@@ -156,10 +156,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	user := usr.(*db.User)
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
+
 		log.WithError(err).WithFields(log.Fields{
 			"context": "websocket",
 			"user_id": user.ID,
-		}).Error("Cannot upgrade connection")
+		}).Error("Failed to upgrade connection to websocket")
+
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
