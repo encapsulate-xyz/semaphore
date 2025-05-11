@@ -172,7 +172,9 @@ func (t *TaskRunner) logPipe(reader io.Reader) {
 		msg := "Failed to read TaskRunner output"
 
 		switch scanner.Err().Error() {
-		case "EOF", "os: process already finished":
+		case "EOF",
+			"os: process already finished",
+			"read |0: file already closed":
 			return // it is ok
 		case "bufio.Scanner: token too long":
 			msg = "TaskRunner output exceeds the maximum allowed size of 10MB"
