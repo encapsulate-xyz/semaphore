@@ -107,7 +107,6 @@ func (c *connection) writePump() {
 					"context": "websocket",
 					"user_id": c.userID,
 				}).Debug("Cannot send text message")
-				return
 			}
 		case <-ticker.C:
 			if err := c.write(websocket.PingMessage, []byte{}); err != nil {
