@@ -41,6 +41,13 @@ type connection struct {
 	userID int
 }
 
+func (c *connection) logError(err error, msg string) {
+	log.WithError(err).WithFields(log.Fields{
+		"context": "websocket",
+		"user_id": c.userID,
+	}).Error(msg)
+}
+
 // readPump pumps messages from the websocket connection to the hub.
 func (c *connection) readPump() {
 	defer func() {
@@ -50,11 +57,13 @@ func (c *connection) readPump() {
 
 	c.ws.SetReadLimit(maxMessageSize)
 
-	util.LogErrorF(c.ws.SetReadDeadline(tz.Now().Add(pongWait)), log.Fields{"error": "Cannot set read deadline"})
+	if err := c.ws.SetReadDeadline(tz.Now().Add(pongWait)); err != nil {
+		c.logError(err, "Cannot set read deadline")
+	}
 
 	c.ws.SetPongHandler(func(string) error {
-		err := c.ws.SetReadDeadline(tz.Now().Add(pongWait))
-		util.LogErrorF(err, log.Fields{"error": "Cannot set read deadline"})
+		err2 := c.ws.SetReadDeadline(tz.Now().Add(pongWait))
+		util.LogErrorF(err2, log.Fields{"error": "Cannot set read deadline"})
 		return nil
 	})
 
@@ -64,7 +73,7 @@ func (c *connection) readPump() {
 
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
-				util.LogError(err)
+				c.logError(err, "Cannot read message from websocket")
 			}
 			break
 		}
@@ -74,9 +83,9 @@ func (c *connection) readPump() {
 // write writes a message with the given message type and payload.
 func (c *connection) write(mt int, payload []byte) error {
 
-	err := c.ws.SetWriteDeadline(tz.Now().Add(writeWait))
-
-	util.LogErrorF(err, log.Fields{"error": "Cannot set write deadline"})
+	if err := c.ws.SetWriteDeadline(tz.Now().Add(writeWait)); err != nil {
+		c.logError(err, "Cannot set write deadline")
+	}
 
 	return c.ws.WriteMessage(mt, payload)
 }
@@ -95,25 +104,17 @@ func (c *connection) writePump() {
 		case message, ok := <-c.send:
 			if !ok {
 				if err := c.write(websocket.CloseMessage, []byte{}); err != nil {
-					log.WithError(err).WithFields(log.Fields{
-						"context": "websocket",
-						"user_id": c.userID,
-					}).Debug("Cannot send close message")
+					c.logError(err, "Cannot send close message")
 				}
 				return
 			}
+
 			if err := c.write(websocket.TextMessage, message); err != nil {
-				log.WithError(err).WithFields(log.Fields{
-					"context": "websocket",
-					"user_id": c.userID,
-				}).Debug("Cannot send text message")
+				c.logError(err, "Cannot send message")
 			}
 		case <-ticker.C:
 			if err := c.write(websocket.PingMessage, []byte{}); err != nil {
-				log.WithError(err).WithFields(log.Fields{
-					"context": "websocket",
-					"user_id": c.userID,
-				}).Debug("Cannot send ping message")
+				c.logError(err, "Cannot send ping message")
 				return
 			}
 		}
