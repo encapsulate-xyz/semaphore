@@ -149,12 +149,12 @@ func (t *TaskRunner) run() {
 	defer func() {
 		log.Info("Stopped running TaskRunner " + strconv.Itoa(t.Task.ID))
 		log.Info("Release resource locker with TaskRunner " + strconv.Itoa(t.Task.ID))
-		t.pool.resourceLocker <- &resourceLock{lock: false, holder: t}
 
 		now := tz.Now()
 		t.Task.End = &now
 		t.saveStatus()
 		t.createTaskEvent()
+		t.pool.queueEvents <- PoolEvent{EventTypeFinished, t}
 	}()
 
 	// Mark task as stopped if user stopped task during preparation (before task run).
