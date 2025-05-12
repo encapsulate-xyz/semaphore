@@ -36,16 +36,22 @@ Complete documentation is available at https://semaphoreui.com.`,
 		_ = cmd.Help()
 		os.Exit(0)
 	},
+
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		if persistentFlags.logLevel == "" {
+		str := persistentFlags.logLevel
+		if str == "" {
+			str = os.Getenv("SEMAPHORE_LOG_LEVEL")
+		}
+		if str == "" {
 			return
 		}
 
-		lvl, err := log.ParseLevel(persistentFlags.logLevel)
+		lvl, err := log.ParseLevel(str)
 		if err != nil {
 			log.Panic(err)
 		}
 
+		fmt.Println("Log level set to", lvl)
 		log.SetLevel(lvl)
 	},
 }
