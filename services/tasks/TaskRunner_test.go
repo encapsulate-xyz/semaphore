@@ -302,7 +302,7 @@ func TestPopulateDetailsInventory(t *testing.T) {
 		RepositoryID:  repo.ID,
 		InventoryID:   &inv.ID,
 		EnvironmentID: &env.ID,
-		TaskParams: map[string]interface{}{
+		TaskParams: map[string]any{
 			"allow_override_inventory": true,
 		},
 	})

@@ -22,7 +22,7 @@ func getSession(r *http.Request) (*db.Session, bool) {
 		return nil, false
 	}
 
-	value := make(map[string]interface{})
+	value := make(map[string]any)
 	if err = util.Cookie.Decode("semaphore", cookie.Value, &value); err != nil {
 		//w.WriteHeader(http.StatusUnauthorized)
 		return nil, false

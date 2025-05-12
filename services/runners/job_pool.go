@@ -287,7 +287,7 @@ func (p *JobPool) sendProgress() {
 		logger.ActionError(fmt.Errorf("invalid status code"), "send request", "the server returned error "+strconv.Itoa(resp.StatusCode))
 	}
 
-	defer resp.Body.Close()
+	defer resp.Body.Close() //nolint:errcheck
 }
 
 func (p *JobPool) getResponseErrorMessage(resp *http.Response) (res string) {
@@ -421,7 +421,7 @@ func (p *JobPool) tryRegisterRunner(configFilePath *string) (ok bool) {
 		}
 	}
 
-	defer resp.Body.Close()
+	defer resp.Body.Close() //nolint:errcheck
 
 	ok = true
 	return
@@ -445,14 +445,14 @@ func generatePrivateKey(privateKeyFilePath string) (publicKey string, err error)
 	if err != nil {
 		return
 	}
-	defer privateKeyFile.Close()
+	defer privateKeyFile.Close() //nolint:errcheck
 
 	return util.GeneratePrivateKey(privateKeyFile)
 }
 
 func decryptChunkedBytes(combinedCiphertext []byte, privateKey *rsa.PrivateKey) (fullPlaintext []byte, err error) {
 
-	rsaBlockSize := privateKey.PublicKey.N.BitLen() / 8 // e.g. 256 for 2048-bit key
+	rsaBlockSize := privateKey.N.BitLen() / 8 // e.g. 256 for 2048-bit key
 
 	// 3. Decrypt all chunks
 	for i := 0; i < len(combinedCiphertext); i += rsaBlockSize {
@@ -512,7 +512,7 @@ func (p *JobPool) checkNewJobs() {
 		return
 	}
 
-	defer resp.Body.Close()
+	defer resp.Body.Close() //nolint:errcheck
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {

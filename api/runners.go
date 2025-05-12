@@ -21,9 +21,7 @@ func getAllRunners(w http.ResponseWriter, r *http.Request) {
 
 	var result = make([]db.Runner, 0)
 
-	for _, runner := range runners {
-		result = append(result, runner)
-	}
+	result = append(result, runners...)
 
 	helpers.WriteJSON(w, http.StatusOK, result)
 }

@@ -27,9 +27,10 @@ func (t *LocalJob) installInventory() (err error) {
 		}
 	}
 
-	if t.Inventory.Type == db.InventoryFile {
+	switch t.Inventory.Type {
+	case db.InventoryFile:
 		err = t.cloneInventoryRepo()
-	} else if t.Inventory.Type == db.InventoryStatic || t.Inventory.Type == db.InventoryStaticYaml {
+	case db.InventoryStatic, db.InventoryStaticYaml:
 		err = t.installStaticInventory()
 	}
 

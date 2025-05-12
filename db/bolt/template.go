@@ -70,7 +70,7 @@ func (d *BoltDb) SetTemplateDescription(projectID int, templateID int, descripti
 }
 
 func (d *BoltDb) GetTemplates(projectID int, filter db.TemplateFilter, params db.RetrieveQueryParams) (templates []db.Template, err error) {
-	var ftr = func(tpl interface{}) bool {
+	var ftr = func(tpl any) bool {
 		template := tpl.(db.Template)
 		var res = true
 		if filter.App != nil {
@@ -113,7 +113,7 @@ func (d *BoltDb) GetTemplates(projectID int, filter db.TemplateFilter, params db
 
 	var errEndOfTemplates = errors.New("no more templates to filling")
 
-	err = d.apply(projectID, db.TaskProps, db.RetrieveQueryParams{}, func(i interface{}) error {
+	err = d.apply(projectID, db.TaskProps, db.RetrieveQueryParams{}, func(i any) error {
 		task := i.(db.Task)
 
 		if task.ProjectID != projectID {

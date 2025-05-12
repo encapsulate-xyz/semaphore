@@ -16,7 +16,7 @@ func getMD5Hash(filepath string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer file.Close()
+	defer file.Close() //nolint:errcheck
 
 	hash := md5.New()
 	if _, err := io.Copy(hash, file); err != nil {
@@ -45,7 +45,7 @@ func writeMD5Hash(requirementsFile string, requirementsHashFile string) error {
 		return err
 	}
 
-	return os.WriteFile(requirementsHashFile, []byte(newFileMD5Hash), 0644)
+	return os.WriteFile(requirementsHashFile, []byte(newFileMD5Hash), 0o644)
 }
 
 type AnsibleApp struct {
@@ -69,7 +69,7 @@ func (t *AnsibleApp) Log(msg string) {
 	t.Logger.Log(msg)
 }
 
-func (t *AnsibleApp) InstallRequirements(environmentVars []string, params interface{}) error {
+func (t *AnsibleApp) InstallRequirements(environmentVars []string, params any) error {
 	if err := t.installCollectionsRequirements(); err != nil {
 		return err
 	}
@@ -91,7 +91,6 @@ func (t *AnsibleApp) getRepoPath() string {
 }
 
 func (t *AnsibleApp) installGalaxyRequirementsFile(requirementsType GalaxyRequirementsType, requirementsFilePath string) error {
-
 	requirementsHashFilePath := fmt.Sprintf("%s_%s.md5", requirementsFilePath, requirementsType)
 
 	if _, err := os.Stat(requirementsFilePath); err != nil {

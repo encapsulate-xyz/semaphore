@@ -273,7 +273,7 @@ func SaveConfig(config IConfig, defaultFilename string, requiredConfigPath strin
 	return
 }
 
-func askValue(prompt string, defaultValue string, item interface{}) {
+func askValue(prompt string, defaultValue string, item any) {
 	// Print prompt with optional default value
 	fmt.Print(prompt)
 	if len(defaultValue) != 0 {

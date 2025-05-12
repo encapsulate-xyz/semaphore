@@ -64,9 +64,9 @@ func (t *LocalJob) SetCommit(hash, message string) {
 	t.Logger.SetCommit(hash, message)
 }
 
-func (t *LocalJob) getEnvironmentExtraVars(username string, incomingVersion *string) (extraVars map[string]interface{}, err error) {
+func (t *LocalJob) getEnvironmentExtraVars(username string, incomingVersion *string) (extraVars map[string]any, err error) {
 
-	extraVars = make(map[string]interface{})
+	extraVars = make(map[string]any)
 
 	if t.Environment.JSON != "" {
 		err = json.Unmarshal([]byte(t.Environment.JSON), &extraVars)
@@ -75,7 +75,7 @@ func (t *LocalJob) getEnvironmentExtraVars(username string, incomingVersion *str
 		}
 	}
 
-	taskDetails := make(map[string]interface{})
+	taskDetails := make(map[string]any)
 
 	taskDetails["id"] = t.Task.ID
 
@@ -96,7 +96,7 @@ func (t *LocalJob) getEnvironmentExtraVars(username string, incomingVersion *str
 		}
 	}
 
-	vars := make(map[string]interface{})
+	vars := make(map[string]any)
 	vars["task_details"] = taskDetails
 	extraVars["semaphore_vars"] = vars
 
@@ -104,8 +104,8 @@ func (t *LocalJob) getEnvironmentExtraVars(username string, incomingVersion *str
 }
 
 func (t *LocalJob) getEnvironmentExtraVarsJSON(username string, incomingVersion *string) (str string, err error) {
-	extraVars := make(map[string]interface{})
-	extraSecretVars := make(map[string]interface{})
+	extraVars := make(map[string]any)
+	extraSecretVars := make(map[string]any)
 
 	if t.Environment.JSON != "" {
 		err = json.Unmarshal([]byte(t.Environment.JSON), &extraVars)
@@ -123,7 +123,7 @@ func (t *LocalJob) getEnvironmentExtraVarsJSON(username string, incomingVersion 
 
 	maps.Copy(extraVars, extraSecretVars)
 
-	taskDetails := make(map[string]interface{})
+	taskDetails := make(map[string]any)
 
 	taskDetails["id"] = t.Task.ID
 
@@ -144,7 +144,7 @@ func (t *LocalJob) getEnvironmentExtraVarsJSON(username string, incomingVersion 
 		}
 	}
 
-	vars := make(map[string]interface{})
+	vars := make(map[string]any)
 	vars["task_details"] = taskDetails
 	extraVars["semaphore_vars"] = vars
 
@@ -487,8 +487,8 @@ func (t *LocalJob) getCLIArgs() (templateArgs []string, taskArgs []string, err e
 	return
 }
 
-func (t *LocalJob) getTemplateParams() (interface{}, error) {
-	var params interface{}
+func (t *LocalJob) getTemplateParams() (any, error) {
+	var params any
 	switch t.Template.App {
 	case db.AppAnsible:
 		params = &db.AnsibleTemplateParams{}
@@ -502,7 +502,7 @@ func (t *LocalJob) getTemplateParams() (interface{}, error) {
 	return params, err
 }
 
-func (t *LocalJob) getParams() (params interface{}, err error) {
+func (t *LocalJob) getParams() (params any, err error) {
 	switch t.Template.App {
 	case db.AppAnsible:
 		params = &db.AnsibleTaskParams{}
@@ -609,7 +609,7 @@ func (t *LocalJob) Run(username string, incomingVersion *string, alias string) (
 
 }
 
-func (t *LocalJob) prepareRun(environmentVars []string, params interface{}) error {
+func (t *LocalJob) prepareRun(environmentVars []string, params any) error {
 
 	t.Log("Preparing: " + strconv.Itoa(t.Task.ID))
 

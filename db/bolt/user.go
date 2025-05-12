@@ -200,7 +200,7 @@ func (d *BoltDb) GetUser(userID int) (user db.User, err error) {
 
 func (d *BoltDb) GetProUserCount() (count int, err error) {
 	var users []db.User
-	err = d.getObjects(0, db.UserProps, db.RetrieveQueryParams{}, func(i interface{}) bool {
+	err = d.getObjects(0, db.UserProps, db.RetrieveQueryParams{}, func(i any) bool {
 		user := i.(db.User)
 		return user.Pro
 	}, &users)
@@ -254,7 +254,7 @@ func (d *BoltDb) GetUserByLoginOrEmail(login string, email string) (existingUser
 }
 
 func (d *BoltDb) GetAllAdmins() (users []db.User, err error) {
-	err = d.getObjects(0, db.UserProps, db.RetrieveQueryParams{}, func(i interface{}) bool {
+	err = d.getObjects(0, db.UserProps, db.RetrieveQueryParams{}, func(i any) bool {
 		user := i.(db.User)
 		return user.Admin
 	}, &users)

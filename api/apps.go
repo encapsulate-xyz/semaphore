@@ -14,8 +14,8 @@ import (
 	"strings"
 )
 
-func structToFlatMap(obj interface{}) map[string]interface{} {
-	result := make(map[string]interface{})
+func structToFlatMap(obj any) map[string]any {
+	result := make(map[string]any)
 	val := reflect.ValueOf(obj)
 	typ := reflect.TypeOf(obj)
 
@@ -137,7 +137,7 @@ func deleteApp(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
-func setAppOption(store db.Store, appID string, field string, val interface{}) error {
+func setAppOption(store db.Store, appID string, field string, val any) error {
 	key := "apps." + appID + "." + field
 
 	if val == nil {

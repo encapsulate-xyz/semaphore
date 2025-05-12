@@ -1,16 +1,16 @@
 package conv
 
-func ConvertFloatToIntIfPossible(v interface{}) (int64, bool) {
+func ConvertFloatToIntIfPossible(v any) (int64, bool) {
 
-	switch v.(type) {
+	switch v := v.(type) {
 	case float64:
-		f := v.(float64)
+		f := v
 		i := int64(f)
 		if float64(i) == f {
 			return i, true
 		}
 	case float32:
-		f := v.(float32)
+		f := v
 		i := int64(f)
 		if float32(i) == f {
 			return i, true

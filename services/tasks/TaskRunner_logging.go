@@ -25,7 +25,7 @@ func (t *TaskRunner) Logf(format string, a ...any) {
 
 func (t *TaskRunner) LogWithTime(now time.Time, msg string) {
 	for _, user := range t.users {
-		b, err := json.Marshal(&map[string]interface{}{
+		b, err := json.Marshal(&map[string]any{
 			"type":       "log",
 			"output":     msg,
 			"time":       now,

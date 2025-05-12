@@ -405,7 +405,7 @@ func (b *BackupFormat) Marshal() (res string, err error) {
 
 func (b *BackupFormat) Unmarshal(res string) (err error) {
 	// Parse the JSON data into a map
-	var jsonData interface{}
+	var jsonData any
 	if err = json.Unmarshal([]byte(res), &jsonData); err != nil {
 		return
 	}

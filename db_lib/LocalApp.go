@@ -31,13 +31,13 @@ type LocalAppRunningArgs struct {
 	CliArgs         []string
 	EnvironmentVars []string
 	Inputs          map[string]string
-	TaskParams      interface{}
-	TemplateParams  interface{}
+	TaskParams      any
+	TemplateParams  any
 	Callback        func(*os.Process)
 }
 
 type LocalApp interface {
 	SetLogger(logger task_logger.Logger) task_logger.Logger
-	InstallRequirements(environmentVars []string, params interface{}) error
+	InstallRequirements(environmentVars []string, params any) error
 	Run(args LocalAppRunningArgs) error
 }

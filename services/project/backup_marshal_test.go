@@ -22,7 +22,7 @@ func Test_MarshalValue_StructWithFields_ReturnsMap(t *testing.T) {
 	testStruct := TestStruct{Field1: "value1", Field2: 42}
 	result, err := marshalValue(reflect.ValueOf(testStruct))
 	assert.NoError(t, err)
-	expected := map[string]interface{}{"field1": "value1", "field2": 42}
+	expected := map[string]any{"field1": "value1", "field2": 42}
 	assert.Equal(t, expected, result)
 }
 
@@ -30,7 +30,7 @@ func Test_MarshalValue_Slice_ReturnsSlice(t *testing.T) {
 	slice := []int{1, 2, 3}
 	result, err := marshalValue(reflect.ValueOf(slice))
 	assert.NoError(t, err)
-	expected := []interface{}{1, 2, 3}
+	expected := []any{1, 2, 3}
 	assert.Equal(t, expected, result)
 }
 
@@ -40,10 +40,10 @@ func Test_UnmarshalValueWithBackupTags_StructWithFields_SetsFields(t *testing.T)
 		//Field2     int                  `backup:"field2"`
 		TaskParams db.MapStringAnyField `backup:"task_params"`
 	}
-	data := map[string]interface{}{
+	data := map[string]any{
 		//"field1": "value1",
 		//"field2": 42,
-		"task_params": map[string]interface{}{
+		"task_params": map[string]any{
 			"allow_debug": true,
 			"skip_tags":   []string{"123"},
 		},
@@ -55,7 +55,7 @@ func Test_UnmarshalValueWithBackupTags_StructWithFields_SetsFields(t *testing.T)
 	//assert.Equal(t, 42, testStruct.Field2)
 }
 func Test_UnmarshalValueWithBackupTags_Slice_SetsElements(t *testing.T) {
-	data := []interface{}{1, 2, 3}
+	data := []any{1, 2, 3}
 	var slice []int
 	err := unmarshalValueWithBackupTags(data, reflect.ValueOf(&slice).Elem())
 	assert.NoError(t, err)
@@ -64,7 +64,7 @@ func Test_UnmarshalValueWithBackupTags_Slice_SetsElements(t *testing.T) {
 }
 
 func Test_UnmarshalValueWithBackupTags_Map_SetsEntries(t *testing.T) {
-	data := map[string]interface{}{"key1": "value1", "key2": "value2"}
+	data := map[string]any{"key1": "value1", "key2": "value2"}
 	var m map[string]string
 	err := unmarshalValueWithBackupTags(data, reflect.ValueOf(&m).Elem())
 	assert.NoError(t, err)

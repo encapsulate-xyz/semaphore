@@ -110,18 +110,17 @@ tasks:
   lint:
     cmds:
       - task: lint:fe
-#      - task: lint:be
+      - task: lint:be
 
   lint:fe:
     dir: web
     cmds:
       - npm run lint
 
-#  lint:be:
-#    cmds:
-#      - golangci-lint run --disable goconst --timeout 240s ./...
-#      - go vet ./...
-#      - swagger validate ./api-docs.yml
+  lint:be:
+    cmds:
+      - golangci-lint run
+      - swagger validate ./api-docs.yml
 
   test:
     cmds:

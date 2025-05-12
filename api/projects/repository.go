@@ -154,11 +154,9 @@ func UpdateRepository(w http.ResponseWriter, r *http.Request) {
 func RemoveRepository(w http.ResponseWriter, r *http.Request) {
 	repository := context.Get(r, "repository").(db.Repository)
 
-	var err error
-
-	err = helpers.Store(r).DeleteRepository(repository.ProjectID, repository.ID)
+	var err error = helpers.Store(r).DeleteRepository(repository.ProjectID, repository.ID)
 	if errors.Is(err, db.ErrInvalidOperation) {
-		helpers.WriteJSON(w, http.StatusBadRequest, map[string]interface{}{
+		helpers.WriteJSON(w, http.StatusBadRequest, map[string]any{
 			"error": "Repository is in use by one or more templates",
 			"inUse": true,
 		})
