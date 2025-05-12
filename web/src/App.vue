@@ -59,6 +59,7 @@
       @close="onTaskLogDialogClosed()"
       :project-id="projectId"
       :item-id="taskId"
+      :system-info="systemInfo"
     />
 
     <EditDialog
