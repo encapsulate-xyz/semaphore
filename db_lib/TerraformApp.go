@@ -199,8 +199,15 @@ func (t *TerraformApp) InstallRequirements(environmentVars []string, tplParams a
 	tpl := tplParams.(*db.TerraformTemplateParams)
 	p := params.(*db.TerraformTaskParams)
 
+	backendFilename := "backend.tf"
+	if tpl.BackendFilename != "" {
+		backendFilename = tpl.BackendFilename
+	}
+
+	backendFile := path.Join(t.GetFullPath(), backendFilename)
+
 	if tpl.OverrideBackend {
-		err = os.WriteFile(path.Join(t.GetFullPath(), "backend.tf"), []byte("terraform { backend \"http\" {} }"), 0644)
+		err = os.WriteFile(backendFile, []byte("terraform { backend \"http\" {} }"), 0644)
 		if err != nil {
 			return
 		}
@@ -211,7 +218,10 @@ func (t *TerraformApp) InstallRequirements(environmentVars []string, tplParams a
 	}
 
 	if tpl.OverrideBackend {
-		err = os.Remove(path.Join(t.GetFullPath(), "backend.tf"))
+		err = os.Remove(backendFile)
+		if os.IsNotExist(err) {
+			err = nil
+		}
 		if err != nil {
 			return
 		}

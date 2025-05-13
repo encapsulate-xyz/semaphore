@@ -323,6 +323,9 @@ export default {
   // Terraform/OpenTofu/Terragrunt
   auto_approve: 'Auto approve',
   auto_destroy: 'Allow destroy',
+  terraform_override_backend: 'Override backend settings',
+  terraform_backend_filename: 'Backend filename (default: backend.tf)',
+  terraform_invalid_backend_filename: 'Invalid backend filename',
 
   // Ansible
   tag: 'Tag',

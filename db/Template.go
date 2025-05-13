@@ -76,10 +76,11 @@ type AnsibleTemplateParams struct {
 }
 
 type TerraformTemplateParams struct {
-	AllowDestroy     bool `json:"allow_destroy"`
-	AllowAutoApprove bool `json:"allow_auto_approve"`
-	AutoApprove      bool `json:"auto_approve"`
-	OverrideBackend  bool `json:"override_backend"` // override backend if internal backend is used
+	AllowDestroy     bool   `json:"allow_destroy,omitempty"`
+	AllowAutoApprove bool   `json:"allow_auto_approve,omitempty"`
+	AutoApprove      bool   `json:"auto_approve,omitempty"`
+	OverrideBackend  bool   `json:"override_backend,omitempty"` // override backend if internal backend is used
+	BackendFilename  string `json:"backend_filename,omitempty"`
 }
 
 type SurveyVarEnumValue struct {

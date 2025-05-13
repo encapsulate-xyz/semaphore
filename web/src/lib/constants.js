@@ -225,6 +225,12 @@ export const TERRAFORM_FIELDS = {
   allow_override_inventory: {
     label: 'allowInventoryInTask',
   },
+  override_backend: {
+    label: 'terraform_override_backend',
+  },
+  backend_filename: {
+    label: 'terraform_backend_filename',
+  },
 };
 
 export const UNKNOWN_APP_FIELDS = {

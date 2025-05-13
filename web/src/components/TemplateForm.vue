@@ -378,6 +378,25 @@
             v-if="needField('auto_approve')"
           />
 
+          <v-checkbox
+            class="mt-0"
+            :label="$t('terraform_override_backend')"
+            v-model="item.task_params.override_backend"
+            :true-value="true"
+            :false-value="false"
+            v-if="needField('override_backend')"
+          />
+
+          <v-text-field
+            v-model="item.task_params.backend_filename"
+            :label="fieldLabel('terraform_backend_filename')"
+            outlined
+            dense
+            :disabled="formSaving || !item.task_params.override_backend"
+            placeholder="backend.tf"
+            :rules="[v => validateBackendFilename(v) || $t('terraform_invalid_backend_filename')]"
+          ></v-text-field>
+
         </div>
 
         <h2 class="mb-4">
@@ -572,7 +591,7 @@ export default {
     },
 
     needAppBlock() {
-      return ['', 'ansible', 'ansible', 'tofu'].includes(this.app);
+      return ['', 'ansible', 'ansible', 'tofu', 'terraform'].includes(this.app);
     },
 
     surveyVars() {
@@ -605,6 +624,18 @@ export default {
   },
 
   methods: {
+    validateBackendFilename(v) {
+      if (!v) {
+        return true;
+      }
+
+      if (!v.endsWith('.tf')) {
+        return 'File must have extension .tf';
+      }
+
+      return /^[a-zA-Z0-9_\-.]+\.tf$/.test(v);
+    },
+
     setSkipTags(tags) {
       this.item.task_params.skip_tags = tags;
     },
