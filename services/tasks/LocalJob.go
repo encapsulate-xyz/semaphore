@@ -549,7 +549,7 @@ func (t *LocalJob) Run(username string, incomingVersion *string, alias string) (
 		environmentVariables = append(environmentVariables, "TF_HTTP_ADDRESS="+util.GetPublicAliasURL("terraform", alias))
 	}
 
-	err = t.prepareRun(environmentVariables, params)
+	err = t.prepareRun(environmentVariables, tplParams, params)
 	if err != nil {
 		return err
 	}
@@ -609,7 +609,7 @@ func (t *LocalJob) Run(username string, incomingVersion *string, alias string) (
 
 }
 
-func (t *LocalJob) prepareRun(environmentVars []string, params any) error {
+func (t *LocalJob) prepareRun(environmentVars []string, tplParams any, params any) error {
 
 	t.Log("Preparing: " + strconv.Itoa(t.Task.ID))
 
@@ -649,7 +649,7 @@ func (t *LocalJob) prepareRun(environmentVars []string, params any) error {
 		return err
 	}
 
-	if err := t.App.InstallRequirements(environmentVars, params); err != nil {
+	if err := t.App.InstallRequirements(environmentVars, tplParams, params); err != nil {
 		t.Log("Failed to install requirements: " + err.Error())
 		return err
 	}
@@ -725,7 +725,11 @@ func (t *LocalJob) checkoutRepository() error {
 		return err
 	}
 
-	commitMessage, _ := repo.GetLastCommitMessage()
+	commitMessage, err := repo.GetLastCommitMessage()
+
+	if err != nil {
+		t.Log(err.Error())
+	}
 
 	t.SetCommit(commitHash, commitMessage)
 
