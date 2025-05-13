@@ -526,6 +526,7 @@ func (t *LocalJob) Run(username string, incomingVersion *string, alias string) (
 	defer func() {
 		t.destroyKeys()
 		t.destroyInventoryFile()
+		t.App.Clear()
 	}()
 
 	t.SetStatus(task_logger.TaskRunningStatus) // It is required for local mode. Don't delete

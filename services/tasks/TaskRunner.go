@@ -48,6 +48,8 @@ type TaskRunner struct {
 	statusListeners []task_logger.StatusListener
 	logListeners    []task_logger.LogListener
 
+	// Alias uses if task require an alias for run.
+	// For example, terraform task require an alias for run.
 	Alias string
 
 	logWG sync.WaitGroup

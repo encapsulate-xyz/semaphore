@@ -194,6 +194,9 @@ func (t *TerraformApp) selectWorkspace(workspace string, environmentVars []strin
 	return nil
 }
 
+func (t *TerraformApp) Clear() {
+}
+
 func (t *TerraformApp) InstallRequirements(environmentVars []string, tplParams any, params any) (err error) {
 
 	tpl := tplParams.(*db.TerraformTemplateParams)
@@ -207,7 +210,7 @@ func (t *TerraformApp) InstallRequirements(environmentVars []string, tplParams a
 	backendFile := path.Join(t.GetFullPath(), backendFilename)
 
 	if tpl.OverrideBackend {
-		err = os.WriteFile(backendFile, []byte("terraform { backend \"http\" {} }"), 0644)
+		err = os.WriteFile(backendFile, []byte("terraform {\n  backend \"http\" {\n  }\n}\n"), 0644)
 		if err != nil {
 			return
 		}
@@ -217,15 +220,15 @@ func (t *TerraformApp) InstallRequirements(environmentVars []string, tplParams a
 		return
 	}
 
-	if tpl.OverrideBackend {
-		err = os.Remove(backendFile)
-		if os.IsNotExist(err) {
-			err = nil
-		}
-		if err != nil {
-			return
-		}
-	}
+	//if tpl.OverrideBackend {
+	//	err = os.Remove(backendFile)
+	//	if os.IsNotExist(err) {
+	//		err = nil
+	//	}
+	//	if err != nil {
+	//		return
+	//	}
+	//}
 
 	workspace := "default"
 

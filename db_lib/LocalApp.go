@@ -40,4 +40,5 @@ type LocalApp interface {
 	SetLogger(logger task_logger.Logger) task_logger.Logger
 	InstallRequirements(environmentVars []string, tplParams any, params any) error
 	Run(args LocalAppRunningArgs) error
+	Clear()
 }

@@ -508,6 +508,26 @@ func getNextBuildVersion(startVersion string, currentVersion string) string {
 	return prefix + strconv.Itoa(newVer) + suffix
 }
 
+// AddTask creates and queues a new task for execution in the task pool.
+//
+// Parameters:
+//   - taskObj: The task object with initial configuration
+//   - userID: Optional ID of the user initiating the task
+//   - username: Username of the user initiating the task
+//   - projectID: ID of the project this task belongs to
+//   - needAlias: Whether to generate a unique alias for the task
+//
+// The method:
+//   - Sets initial task properties (created time, waiting status, etc.)
+//   - Validates the task against its template
+//   - For build templates, calculates the next version number
+//   - Creates the task record in the database
+//   - Sets up appropriate job handler (local or remote)
+//   - Queues the task for execution
+//
+// Returns:
+//   - The newly created task with all properties set
+//   - An error if task creation or validation fails
 func (p *TaskPool) AddTask(
 	taskObj db.Task,
 	userID *int,
@@ -558,6 +578,7 @@ func (p *TaskPool) AddTask(
 	}
 
 	if needAlias {
+		// A unique, randomly-generated identifier that persists throughout the task's lifecycle.
 		taskRunner.Alias = random.String(32)
 	}
 
