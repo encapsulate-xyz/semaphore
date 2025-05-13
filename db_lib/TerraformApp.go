@@ -2,6 +2,7 @@ package db_lib
 
 import (
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"io"
 	"os"
 	"os/exec"
@@ -22,6 +23,7 @@ type TerraformApp struct {
 	reader           terraformReader // reader
 	Name             string          // Name is the name of the terraform binary
 	PlanHasNoChanges bool            // PlanHasNoChanges is true if terraform plan has no changes
+	backendFilename  string          // backendFilename is the name of the backend file
 }
 
 type terraformReader struct {
@@ -195,6 +197,20 @@ func (t *TerraformApp) selectWorkspace(workspace string, environmentVars []strin
 }
 
 func (t *TerraformApp) Clear() {
+	if t.backendFilename == "" {
+		return
+	}
+
+	err := os.Remove(path.Join(t.GetFullPath(), t.backendFilename))
+	if os.IsNotExist(err) {
+		err = nil
+	}
+	if err != nil {
+		log.WithError(err).WithFields(log.Fields{
+			"context": "terraform",
+			"task_id": t.Template.ID,
+		}).Warn("Unable to remove backend file")
+	}
 }
 
 func (t *TerraformApp) InstallRequirements(environmentVars []string, tplParams any, params any) (err error) {
@@ -202,14 +218,13 @@ func (t *TerraformApp) InstallRequirements(environmentVars []string, tplParams a
 	tpl := tplParams.(*db.TerraformTemplateParams)
 	p := params.(*db.TerraformTaskParams)
 
-	backendFilename := "backend.tf"
-	if tpl.BackendFilename != "" {
-		backendFilename = tpl.BackendFilename
-	}
-
-	backendFile := path.Join(t.GetFullPath(), backendFilename)
-
 	if tpl.OverrideBackend {
+		t.backendFilename = "backend.tf"
+		if tpl.BackendFilename != "" {
+			t.backendFilename = tpl.BackendFilename
+		}
+
+		backendFile := path.Join(t.GetFullPath(), t.backendFilename)
 		err = os.WriteFile(backendFile, []byte("terraform {\n  backend \"http\" {\n  }\n}\n"), 0644)
 		if err != nil {
 			return
@@ -219,16 +234,6 @@ func (t *TerraformApp) InstallRequirements(environmentVars []string, tplParams a
 	if err = t.init(environmentVars, p); err != nil {
 		return
 	}
-
-	//if tpl.OverrideBackend {
-	//	err = os.Remove(backendFile)
-	//	if os.IsNotExist(err) {
-	//		err = nil
-	//	}
-	//	if err != nil {
-	//		return
-	//	}
-	//}
 
 	workspace := "default"
 
