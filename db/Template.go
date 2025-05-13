@@ -79,6 +79,7 @@ type TerraformTemplateParams struct {
 	AllowDestroy     bool `json:"allow_destroy"`
 	AllowAutoApprove bool `json:"allow_auto_approve"`
 	AutoApprove      bool `json:"auto_approve"`
+	OverrideBackend  bool `json:"override_backend"` // override backend if internal backend is used
 }
 
 type SurveyVarEnumValue struct {
