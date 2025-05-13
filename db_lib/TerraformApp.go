@@ -196,11 +196,25 @@ func (t *TerraformApp) selectWorkspace(workspace string, environmentVars []strin
 
 func (t *TerraformApp) InstallRequirements(environmentVars []string, tplParams any, params any) (err error) {
 
+	tpl := tplParams.(*db.TerraformTemplateParams)
 	p := params.(*db.TerraformTaskParams)
 
-	err = t.init(environmentVars, p)
-	if err != nil {
+	if tpl.OverrideBackend {
+		err = os.WriteFile(path.Join(t.GetFullPath(), "backend.tf"), []byte("terraform { backend \"http\" {} }"), 0644)
+		if err != nil {
+			return
+		}
+	}
+
+	if err = t.init(environmentVars, p); err != nil {
 		return
+	}
+
+	if tpl.OverrideBackend {
+		err = os.Remove(path.Join(t.GetFullPath(), "backend.tf"))
+		if err != nil {
+			return
+		}
 	}
 
 	workspace := "default"
