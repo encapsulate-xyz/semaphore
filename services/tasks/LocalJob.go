@@ -425,15 +425,15 @@ func (t *LocalJob) getPlaybookArgs(username string, incomingVersion *string) (ar
 
 	// Fill fields from task
 
-	if tplParams.AllowOverrideLimit {
+	if tplParams.AllowOverrideLimit && params.Limit != nil {
 		limit = strings.Join(params.Limit, ",")
 	}
 
-	if tplParams.AllowOverrideTags {
+	if tplParams.AllowOverrideTags && params.Tags != nil {
 		tags = strings.Join(params.Tags, ",")
 	}
 
-	if tplParams.AllowOverrideSkipTags {
+	if tplParams.AllowOverrideSkipTags && params.SkipTags != nil {
 		skipTags = strings.Join(params.SkipTags, ",")
 	}
 
