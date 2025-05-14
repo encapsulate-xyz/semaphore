@@ -90,7 +90,7 @@
             v-if="isAdmin"
             key="other"
             link
-            href="/apps"
+            to="/apps"
           >
             <v-list-item-icon>
               <v-icon>mdi-cogs</v-icon>
