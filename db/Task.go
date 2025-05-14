@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/semaphoreui/semaphore/pkg/tz"
@@ -74,6 +75,9 @@ type Task struct {
 	InventoryID *int `db:"inventory_id" json:"inventory_id,omitempty"`
 
 	Params MapStringAnyField `db:"params" json:"params,omitempty"`
+
+	// Limit is deprecated, use Params.Limit instead
+	Limit string `db:"hosts_limit" json:"limit"`
 }
 
 func (task *Task) FillParams(target interface{}) (err error) {
@@ -85,8 +89,24 @@ func (task *Task) FillParams(target interface{}) (err error) {
 	return
 }
 
+// PreInsert is a hook which is called before inserting task into database.
+// Called directly in BoltDB implementation.
 func (task *Task) PreInsert(gorp.SqlExecutor) error {
 	task.Created = tz.In(task.Created)
+
+	if _, ok := task.Params["limit"]; !ok {
+		if task.Params == nil {
+			task.Params = make(MapStringAnyField)
+		}
+
+		limits := strings.Split(task.Limit, ",")
+
+		for i := range limits {
+			limits[i] = strings.TrimSpace(limits[i])
+		}
+
+		task.Params["limit"] = limits
+	}
 
 	return nil
 }

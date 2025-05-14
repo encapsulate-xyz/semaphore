@@ -1556,22 +1556,26 @@ paths:
               properties:
                 template_id:
                   type: integer
-                debug:
-                  type: boolean
-                dry_run:
-                  type: boolean
-                diff:
-                  type: boolean
                 playbook:
                   type: string
                 environment:
-                  type: string
-                limit:
                   type: string
                 git_branch:
                   type: string
                 message:
                   type: string
+                params:
+                  type: object
+                  properties:
+                    debug:
+                      type: boolean
+                    dry_run:
+                      type: boolean
+                    diff:
+                      type: boolean
+                    limit:
+                      type: string
+
         required: true
       responses:
         '201':
