@@ -230,7 +230,17 @@ export default {
     },
 
     args() {
-      return JSON.parse(this.item.arguments || '[]');
+      let res = this.item.arguments;
+
+      if (res == null) {
+        res = this.template.arguments;
+      }
+
+      if (res == null) {
+        res = '[]';
+      }
+
+      return JSON.parse(res);
     },
 
     app() {
