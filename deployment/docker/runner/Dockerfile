@@ -81,6 +81,8 @@ RUN apk add --no-cache -U python3-dev build-base openssl-dev libffi-dev cargo &&
      find ${ANSIBLE_VENV_PATH} -iname __pycache__ | xargs rm -rf && \
      chown -R semaphore:0 /opt/semaphore
 
+RUN echo 'Host *\n  StrictHostKeyChecking no\n  UserKnownHostsFile /dev/null' > /etc/ssh/ssh_config.d/semaphore.conf
+
 USER 1001
 
 ENV VIRTUAL_ENV="$ANSIBLE_VENV_PATH"

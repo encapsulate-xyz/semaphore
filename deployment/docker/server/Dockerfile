@@ -59,6 +59,8 @@ RUN apk add --no-cache -U \
     chown -R semaphore:0 /opt/semaphore && \
     find /usr/lib/python* -iname __pycache__ | xargs rm -rf
 
+RUN echo 'Host *\n  StrictHostKeyChecking no\n  UserKnownHostsFile /dev/null' > /etc/ssh/ssh_config.d/semaphore.conf
+
 COPY --chown=1001:0 ./deployment/docker/server/ansible.cfg /etc/ansible/ansible.cfg
 COPY --from=builder /go/src/semaphore/deployment/docker/server/server-wrapper /usr/local/bin/
 COPY --from=builder /go/src/semaphore/bin/semaphore /usr/local/bin/
