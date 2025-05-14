@@ -153,7 +153,7 @@
     />
 
     <ArgsPicker
-      v-if="needField('skip_tags') && (template.task_params || {}).allow_override_limit"
+      v-if="needField('skip_tags') && (template.task_params || {}).allow_override_skip_tags"
       :vars="item.params.skip_tags"
       @change="setSkipTags"
       :title="$t('skipTags')"
