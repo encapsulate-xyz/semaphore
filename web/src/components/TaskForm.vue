@@ -285,6 +285,10 @@ export default {
     },
   },
 
+  created() {
+    this.refreshItem();
+  },
+
   methods: {
 
     setSkipTags(tags) {
@@ -342,7 +346,7 @@ export default {
       this.item.secret = JSON.stringify(this.editedSecretEnvironment);
     },
 
-    async afterLoadData() {
+    refreshItem() {
       this.assignItem(this.sourceTask);
 
       this.item.template_id = this.template.id;
@@ -350,6 +354,16 @@ export default {
       if (!this.item.params) {
         this.item.params = {};
       }
+
+      ['tags', 'limit', 'skip_tags'].forEach((param) => {
+        if (!this.item.params[param]) {
+          this.item.params[param] = (this.template.task_params || {})[param];
+        }
+      });
+    },
+
+    async afterLoadData() {
+      this.refreshItem();
 
       [
         this.buildTasks,
