@@ -77,7 +77,7 @@ type Task struct {
 	Params MapStringAnyField `db:"params" json:"params,omitempty"`
 
 	// Limit is deprecated, use Params.Limit instead
-	Limit string `db:"hosts_limit" json:"limit"`
+	Limit string `db:"-" json:"limit"`
 }
 
 func (task *Task) FillParams(target interface{}) (err error) {

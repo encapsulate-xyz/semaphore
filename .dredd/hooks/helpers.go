@@ -222,7 +222,7 @@ func addTask() *db.Task {
 
 	if err != nil {
 		fmt.Println("error during insertion of task:")
-		if j, err := json.Marshal(t); err == nil {
+		if j, e := json.Marshal(t); e == nil {
 			fmt.Println(string(j))
 		} else {
 			fmt.Println("can not stringify task object")

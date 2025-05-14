@@ -1564,6 +1564,9 @@ paths:
                   type: string
                 message:
                   type: string
+                limit:
+                  type: string
+                  deprecated: true
                 params:
                   type: object
                   properties:
@@ -1574,7 +1577,7 @@ paths:
                     diff:
                       type: boolean
                     limit:
-                      type: string
+                      type: array
 
         required: true
       responses:

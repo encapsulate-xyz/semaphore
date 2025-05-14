@@ -723,6 +723,8 @@ definitions:
         type:
           - string
           - 'null'
+      limit:
+        type: string
       params:
         type: object
         properties:
@@ -733,7 +735,7 @@ definitions:
           diff:
             type: boolean
           limit:
-            type: string
+            type: array
       message:
         type: string
 
