@@ -85,6 +85,14 @@
       :placeholder="$t('enterInventory')"
     />
 
+    <v-text-field
+      v-model="item.runner_tag"
+      :label="$t('runner_tag')"
+      :rules="[v => !!v || $t('name_required')]"
+      required
+      :disabled="formSaving"
+    ></v-text-field>
+
     <v-alert
       dense
       text
