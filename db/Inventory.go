@@ -43,6 +43,9 @@ type Inventory struct {
 	// If null than inventory will be got from template repository.
 	RepositoryID *int        `db:"repository_id" json:"repository_id" backup:"-"`
 	Repository   *Repository `db:"-" json:"-" backup:"-"`
+
+	// RunnerTag is a tag which allow join inventory to the runner.
+	RunnerTag *string `db:"runner_tag" json:"runner_tag,omitempty"`
 }
 
 func (e Inventory) GetFilename() string {
