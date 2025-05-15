@@ -99,13 +99,15 @@ func (task *Task) PreInsert(gorp.SqlExecutor) error {
 			task.Params = make(MapStringAnyField)
 		}
 
-		limits := strings.Split(task.Limit, ",")
+		if task.Limit != "" {
+			limits := strings.Split(task.Limit, ",")
 
-		for i := range limits {
-			limits[i] = strings.TrimSpace(limits[i])
+			for i := range limits {
+				limits[i] = strings.TrimSpace(limits[i])
+			}
+
+			task.Params["limit"] = limits
 		}
-
-		task.Params["limit"] = limits
 	}
 
 	return nil
