@@ -713,20 +713,29 @@ definitions:
         type: integer
       status:
         type: string
-      debug:
-        type: boolean
       playbook:
         type: string
       environment:
         type: string
       secret:
         type: string
-      limit:
-        type: string
       git_branch:
         type:
           - string
           - 'null'
+      limit:
+        type: string
+      params:
+        type: object
+        properties:
+          debug:
+            type: boolean
+          dry_run:
+            type: boolean
+          diff:
+            type: boolean
+          limit:
+            type: array
       message:
         type: string
 

@@ -217,6 +217,7 @@ export default {
   props: {
     item: Object,
     projectId: Number,
+    systemInfo: Object,
   },
 
   data() {
@@ -257,7 +258,7 @@ export default {
     },
 
     rawLogURL() {
-      return `/api/project/${this.projectId}/tasks/${this.itemId}/raw_output`;
+      return `${this.systemInfo?.web_host || ''}/api/project/${this.projectId}/tasks/${this.itemId}/raw_output`;
     },
 
     canStop() {

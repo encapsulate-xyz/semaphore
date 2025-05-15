@@ -153,7 +153,7 @@
     />
 
     <ArgsPicker
-      v-if="needField('skip_tags') && (template.task_params || {}).allow_override_limit"
+      v-if="needField('skip_tags') && (template.task_params || {}).allow_override_skip_tags"
       :vars="item.params.skip_tags"
       @change="setSkipTags"
       :title="$t('skipTags')"
@@ -230,7 +230,17 @@ export default {
     },
 
     args() {
-      return JSON.parse(this.item.arguments || '[]');
+      let res = this.item.arguments;
+
+      if (res == null) {
+        res = this.template.arguments;
+      }
+
+      if (res == null) {
+        res = '[]';
+      }
+
+      return JSON.parse(res);
     },
 
     app() {
@@ -283,6 +293,10 @@ export default {
         this.commit_hash = null;
       }
     },
+  },
+
+  created() {
+    this.refreshItem();
   },
 
   methods: {
@@ -342,7 +356,7 @@ export default {
       this.item.secret = JSON.stringify(this.editedSecretEnvironment);
     },
 
-    async afterLoadData() {
+    refreshItem() {
       this.assignItem(this.sourceTask);
 
       this.item.template_id = this.template.id;
@@ -350,6 +364,16 @@ export default {
       if (!this.item.params) {
         this.item.params = {};
       }
+
+      ['tags', 'limit', 'skip_tags'].forEach((param) => {
+        if (!this.item.params[param]) {
+          this.item.params[param] = (this.template.task_params || {})[param];
+        }
+      });
+    },
+
+    async afterLoadData() {
+      this.refreshItem();
 
       [
         this.buildTasks,

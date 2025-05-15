@@ -26,7 +26,14 @@
       </div>
     </template>
     <template v-slot:form="{}">
-      <TaskLogView v-if="item != null" :project-id="projectId" :item="item" />
+
+      <TaskLogView
+        v-if="item != null"
+        :project-id="projectId"
+        :item="item"
+        :system-info="systemInfo"
+      />
+
       <v-skeleton-loader
         class="task-log-view__placeholder"
         v-else
@@ -66,6 +73,7 @@ export default {
     value: Boolean,
     projectId: Number,
     itemId: Number,
+    systemInfo: Object,
   },
 
   watch: {
