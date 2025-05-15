@@ -18,3 +18,8 @@ type Runner struct {
 
 	PublicKey *string `db:"public_key" json:"-"`
 }
+
+type RunnerTag struct {
+	Tag             string `db:"-" json:"tag"`
+	NumberOfRunners int    `db:"-" json:"number_of_runners"`
+}

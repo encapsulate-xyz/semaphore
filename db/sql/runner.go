@@ -20,3 +20,7 @@ func (d *SqlDb) DeleteRunner(projectID int, runnerID int) (err error) {
 	err = db.ErrNotFound
 	return
 }
+
+func (d *SqlDb) GetRunnerTags() ([]db.RunnerTag, error) {
+	return nil, nil
+}
