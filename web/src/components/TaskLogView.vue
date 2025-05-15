@@ -128,7 +128,7 @@
     <v-btn
       v-if="isTaskStopped"
       color="blue-grey"
-      :href="rawLogURL"
+      :to="rawLogURL"
       class="task-log-action-button"
       style="right: 20px; width: 150px;"
       target="_blank"
