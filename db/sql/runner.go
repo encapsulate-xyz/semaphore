@@ -21,6 +21,6 @@ func (d *SqlDb) DeleteRunner(projectID int, runnerID int) (err error) {
 	return
 }
 
-func (d *SqlDb) GetRunnerTags() ([]db.RunnerTag, error) {
-	return nil, nil
+func (d *SqlDb) GetRunnerTags(projectID int) ([]db.RunnerTag, error) {
+	return []db.RunnerTag{}, nil
 }
