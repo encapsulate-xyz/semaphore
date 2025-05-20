@@ -246,15 +246,18 @@
             :placeholder="$t('branch')"
           ></v-text-field>
 
-          <v-text-field
+          <v-autocomplete
             v-if="premiumFeatures.project_runners"
             v-model="item.runner_tag"
+            :items="runnerTags"
             :label="fieldLabel('runner_tag')"
+            item-value="tag"
+            item-text="tag"
             outlined
             dense
             :disabled="formSaving"
             :placeholder="$t('runner_tag')"
-          ></v-text-field>
+          ></v-autocomplete>
 
           <SurveyVars
             :vars="surveyVars"
@@ -528,6 +531,7 @@ export default {
       helpKey: null,
 
       args: [],
+      runnerTags: null,
     };
   },
 
@@ -618,7 +622,8 @@ export default {
         && this.environment != null
         && this.item != null
         && this.schedules != null
-        && this.views != null;
+        && this.views != null
+        && this.runnerTags != null;
     },
 
   },
@@ -684,6 +689,7 @@ export default {
         this.views,
         this.environment,
         templates,
+        this.runnerTags,
       ] = await Promise.all([
         this.loadProjectResources('repositories'),
         this.loadProjectEndpoint(`/inventory?app=${this.app}&template_id=${this.itemId}`),
@@ -692,6 +698,7 @@ export default {
         this.loadProjectResources('views'),
         this.loadProjectResources('environment'),
         this.loadProjectResources('templates'),
+        this.loadProjectResources('runner_tags'),
       ]);
 
       this.inventory = [...inventory1, ...inventory2];

@@ -369,7 +369,7 @@ type Store interface {
 	CreateRunner(runner Runner) (Runner, error)
 	TouchRunner(runner Runner) (err error)
 	ClearRunnerCache(runner Runner) (err error)
-	GetRunnerTags() ([]RunnerTag, error)
+	GetRunnerTags(projectID int) ([]RunnerTag, error)
 
 	GetTemplateVaults(projectID int, templateID int) ([]TemplateVault, error)
 	CreateTemplateVault(vault TemplateVault) (TemplateVault, error)
@@ -621,6 +621,32 @@ func ValidateInventory(store Store, inventory *Inventory) (err error) {
 	return
 }
 
+type StringArrayField []string
+
+func (m *StringArrayField) Scan(value any) error {
+	if value == nil {
+		*m = nil
+		return nil
+	}
+
+	switch v := value.(type) {
+	case []byte:
+		return json.Unmarshal(v, m)
+	case string:
+		return json.Unmarshal([]byte(v), m)
+	default:
+		return errors.New("unsupported type for MapStringAnyField")
+	}
+}
+
+// Value implements the driver.Valuer interface for MapStringAnyField
+func (m *StringArrayField) Value() (driver.Value, error) {
+	if m == nil {
+		return nil, nil
+	}
+	return json.Marshal(m)
+}
+
 type MapStringAnyField map[string]any
 
 func (m *MapStringAnyField) Scan(value any) error {
@@ -640,7 +666,7 @@ func (m *MapStringAnyField) Scan(value any) error {
 }
 
 // Value implements the driver.Valuer interface for MapStringAnyField
-func (m MapStringAnyField) Value() (driver.Value, error) {
+func (m *MapStringAnyField) Value() (driver.Value, error) {
 	if m == nil {
 		return nil, nil
 	}

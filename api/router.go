@@ -272,6 +272,7 @@ func Route() *mux.Router {
 
 	projectUserAPI.Path("/runners").HandlerFunc(projects.GetRunners).Methods("GET", "HEAD")
 	projectUserAPI.Path("/runners").HandlerFunc(projects.AddRunner).Methods("POST")
+	projectUserAPI.Path("/runner_tags").HandlerFunc(projects.GetRunnerTags).Methods("GET", "HEAD")
 
 	projectRunnersAPI := projectUserAPI.PathPrefix("/runners").Subrouter()
 	projectRunnersAPI.Use(projects.RunnerMiddleware)
@@ -566,7 +567,7 @@ func getSystemInfo(w http.ResponseWriter, r *http.Request) {
 		"auth_methods": authMethods,
 
 		"premium_features": map[string]bool{
-			"project_runners":   false,
+			"project_runners":   true,
 			"terraform_backend": false,
 		},
 

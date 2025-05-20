@@ -1,9 +1,23 @@
 <template>
+  <v-skeleton-loader
+    v-if="!isLoaded"
+    type="
+            table-heading,
+            image,
+            list-item-two-line,
+            list-item-two-line,
+            list-item-two-line,
+            list-item-two-line,
+            list-item-two-line,
+            list-item-two-line,
+            list-item-two-line,
+            list-item-two-line"
+  ></v-skeleton-loader>
   <v-form
+    v-else
     ref="form"
     lazy-validation
     v-model="formValid"
-    v-if="item != null && keys != null"
   >
     <v-alert
       :value="formError"
@@ -18,7 +32,22 @@
       :rules="[v => !!v || $t('name_required')]"
       required
       :disabled="formSaving"
+      outlined
+      dense
     ></v-text-field>
+
+    <v-autocomplete
+      v-if="premiumFeatures.project_runners"
+      v-model="item.runner_tag"
+      :items="runnerTags"
+      :label="$t('runner_tag')"
+      item-value="tag"
+      item-text="tag"
+      outlined
+      dense
+      :disabled="formSaving"
+      :placeholder="$t('runner_tag')"
+    ></v-autocomplete>
 
     <v-select
       v-model="item.ssh_key_id"
@@ -29,6 +58,8 @@
       :rules="[v => !!v || $t('user_credentials_required')]"
       required
       :disabled="formSaving"
+      outlined
+      dense
     ></v-select>
 
     <v-select
@@ -39,6 +70,8 @@
       item-value="id"
       item-text="name"
       :disabled="formSaving"
+      outlined
+      dense
     ></v-select>
 
     <v-select
@@ -50,6 +83,8 @@
       item-text="name"
       required
       :disabled="formSaving"
+      outlined
+      dense
     ></v-select>
 
     <v-text-field
@@ -59,6 +94,8 @@
       required
       :disabled="formSaving"
       v-if="item.type === 'file'"
+      outlined
+      dense
     ></v-text-field>
 
     <v-select
@@ -70,6 +107,8 @@
       item-text="name"
       :disabled="formSaving"
       v-if="item.type === 'file'"
+      outlined
+      dense
     ></v-select>
 
     <codemirror
@@ -85,42 +124,6 @@
       :placeholder="$t('enterInventory')"
     />
 
-    <v-text-field
-      v-model="item.runner_tag"
-      :label="$t('runner_tag')"
-      :rules="[v => !!v || $t('name_required')]"
-      required
-      :disabled="formSaving"
-    ></v-text-field>
-
-    <v-alert
-      dense
-      text
-      class="mt-4"
-      type="info"
-      v-if="item.type === 'static'"
-    >
-      {{ $t('staticInventoryExample') }}
-      <pre style="font-size: 14px;">[website]
-172.18.8.40
-172.18.8.41</pre>
-    </v-alert>
-
-    <v-alert
-      dense
-      text
-      class="mt-4"
-      type="info"
-      v-if="item.type === 'static-yaml'"
-    >
-      {{ $t('staticYamlInventoryExample') }}
-      <pre style="font-size: 14px;">all:
-  children:
-    website:
-      hosts:
-        172.18.8.40:
-        172.18.8.41:</pre>
-    </v-alert>
   </v-form>
 </template>
 <style>
@@ -140,7 +143,6 @@
 /* eslint-disable import/no-extraneous-dependencies,import/extensions */
 
 import ItemFormBase from '@/components/ItemFormBase';
-import axios from 'axios';
 
 import { codemirror } from 'vue-codemirror';
 import 'codemirror/lib/codemirror.css';
@@ -152,6 +154,10 @@ export default {
 
   components: {
     codemirror,
+  },
+
+  props: {
+    premiumFeatures: Object,
   },
 
   data() {
@@ -188,6 +194,7 @@ export default {
       }],
       keys: null,
       repositories: null,
+      runnerTags: null,
     };
   },
 
@@ -198,21 +205,21 @@ export default {
       }
       return this.keys.filter((key) => key.type === 'login_password');
     },
+    isLoaded() {
+      return this.item != null && this.keys != null;
+    },
   },
 
   async created() {
-    [this.keys, this.repositories] = (await Promise.all([
-      await axios({
-        keys: 'get',
-        url: `/api/project/${this.projectId}/keys`,
-        responseType: 'json',
-      }),
-      await axios({
-        keys: 'get',
-        url: `/api/project/${this.projectId}/repositories`,
-        responseType: 'json',
-      }),
-    ])).map((x) => x.data);
+    [
+      this.keys,
+      this.repositories,
+      this.runnerTags,
+    ] = await Promise.all([
+      this.loadProjectResources('keys'),
+      this.loadProjectResources('repositories'),
+      this.loadProjectResources('runner_tags'),
+    ]);
   },
 
   methods: {

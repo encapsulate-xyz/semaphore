@@ -73,7 +73,7 @@
       justify-center
       class="pa-0"
     >
-      <v-card class="px-5 py-5" style="margin-bottom: 10%; border-radius: 15px;">
+      <v-card class="px-5 py-5" style="border-radius: 15px;">
         <v-card-text>
           <v-form
             ref="signInForm"
@@ -81,7 +81,6 @@
             v-model="signInFormValid"
             style="width: 350px;"
           >
-
             <v-img
               width="80"
               height="80"
