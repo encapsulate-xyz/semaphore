@@ -266,11 +266,24 @@
       <v-btn
         class="ml-2 pr-2"
         color="hsl(348deg, 86%, 61%)"
-        href="https://semaphoreui.com/pro"
+        href="https://semaphoreui.com/pro#runners"
       >
         {{ $t('learn_more_about_pro') }}
         <v-icon>mdi-chevron-right</v-icon>
       </v-btn>
+    </v-alert>
+
+    <v-alert
+      style="border-radius: 0;"
+      type="info"
+      text
+      v-if="!systemInfo.use_remote_runner && projectId == null"
+    >
+      Global runners
+      <a
+        target="_blank"
+        href="https://docs.semaphoreui.com/administration-guide/runners/#set-up-a-server"
+      >disabled</a>.
     </v-alert>
 
     <v-data-table

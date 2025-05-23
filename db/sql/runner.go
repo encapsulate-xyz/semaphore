@@ -3,6 +3,7 @@
 package sql
 
 import (
+	"github.com/Masterminds/squirrel"
 	"github.com/semaphoreui/semaphore/db"
 )
 
@@ -21,6 +22,26 @@ func (d *SqlDb) DeleteRunner(projectID int, runnerID int) (err error) {
 	return
 }
 
-func (d *SqlDb) GetRunnerTags(projectID int) ([]db.RunnerTag, error) {
-	return []db.RunnerTag{}, nil
+func (d *SqlDb) GetRunnerTags(projectID int) (res []db.RunnerTag, err error) {
+	query, args, err := squirrel.Select("tag").
+		From("runner as r").
+		Where(squirrel.Eq{"r.project_id": projectID}).
+		Where(squirrel.NotEq{"r.tag": ""}).
+		ToSql()
+
+	if err != nil {
+		return
+	}
+
+	runners := make([]db.Runner, 0)
+	_, err = d.selectAll(&runners, query, args...)
+
+	res = make([]db.RunnerTag, 0)
+	for _, r := range runners {
+		res = append(res, db.RunnerTag{
+			Tag: r.Tag,
+		})
+	}
+
+	return
 }

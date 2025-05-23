@@ -10,7 +10,10 @@ Can use used in tandem with ItemFormBase.js. See KeyForm.vue for example.
     persistent
     :fullscreen="expandable && fullscreen"
     :transition="false"
-    :content-class="`item-dialog item-dialog--${position} ${contentClass || ''}`"
+    :content-class="
+      `item-dialog ${ expandable ? 'item-dialog--expandable' : ''}
+      item-dialog--${position} ${contentClass || ''}`
+    "
   >
     <v-card :data-testid="testId">
       <v-card-title>
@@ -21,23 +24,26 @@ Can use used in tandem with ItemFormBase.js. See KeyForm.vue for example.
 
         <v-spacer></v-spacer>
 
-        <v-btn
-          icon
-          @click="toggleHelp()"
-          class="mr-3"
-          :style="{opacity: needHelp ? 1 : 0.3}"
-          v-if="helpButton"
-        >
-          <v-icon>mdi-help-box</v-icon>
-        </v-btn>
+        <div class="item-dialog__title-actions">
+          <v-btn
+            icon
+            @click="toggleHelp()"
+            class="mr-3"
+            :style="{opacity: needHelp ? 1 : 0.3}"
+            v-if="helpButton"
+          >
+            <v-icon>mdi-help-box</v-icon>
+          </v-btn>
 
-        <v-btn icon @click="toggleFullscreen()" class="mr-3" v-if="expandable">
-          <v-icon>mdi-arrow-{{ fullscreen ? 'collapse' : 'expand' }}</v-icon>
-        </v-btn>
+          <v-btn icon @click="toggleFullscreen()" class="mr-3" v-if="expandable">
+            <v-icon>mdi-arrow-{{ fullscreen ? 'collapse' : 'expand' }}</v-icon>
+          </v-btn>
 
-        <v-btn icon @click="close()" style="margin-right: -6px;" data-testid="editDialog-close">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
+          <v-btn icon @click="close()" data-testid="editDialog-close">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </div>
+
       </v-card-title>
 
       <v-card-text
@@ -87,7 +93,30 @@ Can use used in tandem with ItemFormBase.js. See KeyForm.vue for example.
   .item-dialog--top {
     align-self: flex-start;
   }
-  .item-dialog--center {
+
+  .item-dialog__title-actions {
+    position: absolute;
+    right: 12px;
+  }
+
+  .item-dialog {
+    .v-card__title {
+      white-space: nowrap;
+      overflow: hidden;
+      margin-right: 12px;
+    }
+  }
+
+  .theme--dark {
+    .item-dialog__title-actions {
+        background: #1E1E1E;
+    }
+  }
+
+  .theme--light {
+    .item-dialog__title-actions {
+      background: white;
+    }
   }
 </style>
 <script>

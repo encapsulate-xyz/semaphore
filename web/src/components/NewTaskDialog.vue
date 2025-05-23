@@ -9,7 +9,7 @@
   >
     <template v-slot:title={}>
       <v-icon small class="mr-4">{{ TEMPLATE_TYPE_ICONS[template?.type || ''] }}</v-icon>
-      <span class="breadcrumbs__item">{{ template?.name || '' }}</span>
+      <span class="breadcrumbs__item">{{ templateTitle }}</span>
       <v-icon>mdi-chevron-right</v-icon>
       <span class="breadcrumbs__item">{{ $t('newTask') }}</span>
     </template>
@@ -60,6 +60,17 @@ export default {
 
     async value(val) {
       this.dialog = val;
+    },
+  },
+
+  computed: {
+    templateTitle() {
+      let res = this.template?.name || '';
+      if (res.length > 16) {
+        res = `${res.substring(0, 14)}...`;
+      }
+
+      return res;
     },
   },
 
