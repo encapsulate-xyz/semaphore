@@ -376,6 +376,8 @@ type Store interface {
 	UpdateTemplateVaults(projectID int, templateID int, vaults []TemplateVault) error
 
 	GetTaskStats(projectID int, templateID *int, unit TaskStatUnit, filter TaskFilter) ([]TaskStat, error)
+
+	//GetProjectStats(projectID int) (ProjectStats, error)
 }
 
 var AccessKeyProps = ObjectProps{
