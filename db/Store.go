@@ -369,7 +369,7 @@ type Store interface {
 	CreateRunner(runner Runner) (Runner, error)
 	TouchRunner(runner Runner) (err error)
 	ClearRunnerCache(runner Runner) (err error)
-	GetRunnerTags(projectID int) ([]RunnerTag, error)
+	GetRunnerTags() ([]RunnerTag, error)
 
 	GetTemplateVaults(projectID int, templateID int) ([]TemplateVault, error)
 	CreateTemplateVault(vault TemplateVault) (TemplateVault, error)

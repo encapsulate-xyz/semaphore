@@ -22,7 +22,8 @@ func (d *SqlDb) DeleteRunner(projectID int, runnerID int) (err error) {
 	return
 }
 
-func (d *SqlDb) GetRunnerTags(projectID int) (res []db.RunnerTag, err error) {
+func (d *SqlDb) GetRunnerTags() (res []db.RunnerTag, err error) {
+	projectID := 0
 	query, args, err := squirrel.Select("tag").
 		From("runner as r").
 		Where(squirrel.Eq{"r.project_id": projectID}).
