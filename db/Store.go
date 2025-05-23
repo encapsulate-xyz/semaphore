@@ -666,21 +666,10 @@ func (m *MapStringAnyField) Scan(value any) error {
 }
 
 // Value implements the driver.Valuer interface for MapStringAnyField
+// DO NOT ADD *, It breaks method call
 func (m MapStringAnyField) Value() (driver.Value, error) {
 	if m == nil {
 		return nil, nil
 	}
 	return json.Marshal(m)
-}
-
-func (m *MapStringAnyField) String() string {
-	if m == nil {
-		return ""
-	}
-	b, err := json.Marshal(m)
-	if err != nil {
-		return ""
-	}
-
-	return string(b)
 }
