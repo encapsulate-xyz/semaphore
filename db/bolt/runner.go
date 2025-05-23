@@ -21,7 +21,7 @@ func (d *BoltDb) DeleteRunner(projectID int, runnerID int) (err error) {
 	return
 }
 
-func (d *BoltDb) GetRunnerTags() ([]db.RunnerTag, error) {
+func (d *BoltDb) GetRunnerTags(projectID int) ([]db.RunnerTag, error) {
 	return []db.RunnerTag{
 		{
 			Tag:             "tag1",
