@@ -666,7 +666,7 @@ func (m *MapStringAnyField) Scan(value any) error {
 }
 
 // Value implements the driver.Valuer interface for MapStringAnyField
-func (m *MapStringAnyField) Value() (driver.Value, error) {
+func (m MapStringAnyField) Value() (driver.Value, error) {
 	if m == nil {
 		return nil, nil
 	}
