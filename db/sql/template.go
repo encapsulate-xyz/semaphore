@@ -50,7 +50,7 @@ func (d *SqlDb) CreateTemplate(template db.Template) (newTemplate db.Template, e
 		template.App,
 		template.GitBranch,
 		template.RunnerTag,
-		template.TaskParams,
+		template.TaskParams.String(),
 
 		template.AllowOverrideBranchInTask,
 	)

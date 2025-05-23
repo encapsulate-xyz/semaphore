@@ -672,3 +672,15 @@ func (m *MapStringAnyField) Value() (driver.Value, error) {
 	}
 	return json.Marshal(m)
 }
+
+func (m *MapStringAnyField) String() string {
+	if m == nil {
+		return ""
+	}
+	b, err := json.Marshal(m)
+	if err != nil {
+		return ""
+	}
+
+	return string(b)
+}
