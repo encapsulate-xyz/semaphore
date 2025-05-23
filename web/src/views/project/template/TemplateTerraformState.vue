@@ -192,7 +192,7 @@
         </span>
         <v-btn
           color="hsl(348deg, 86%, 61%)"
-          href="https://semaphoreui.com/pro"
+          href="https://semaphoreui.com/pro#runners"
         >
           Learn more
           <v-icon>mdi-chevron-right</v-icon>

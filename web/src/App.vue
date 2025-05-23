@@ -485,7 +485,7 @@
               <v-list-item
                 key="runners"
                 to="/runners"
-                v-if="user.admin && systemInfo.use_remote_runner"
+                v-if="user.admin"
               >
                 <v-list-item-icon>
                   <v-icon>mdi-cogs</v-icon>
