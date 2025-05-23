@@ -58,6 +58,14 @@ func (e Inventory) GetFilename() string {
 	//return strings.TrimPrefix(e.Inventory, "/")
 }
 
+func (e Inventory) Validate() error {
+	if e.RunnerTag == nil && *e.RunnerTag == "" {
+		return &ValidationError{"template runner tag can not be empty"}
+	}
+
+	return nil
+}
+
 func FillInventory(d Store, inventory *Inventory) (err error) {
 	if inventory.SSHKeyID != nil {
 		inventory.SSHKey, err = d.GetAccessKey(inventory.ProjectID, *inventory.SSHKeyID)

@@ -183,6 +183,9 @@ func (tpl *Template) CanOverrideInventory() (ok bool, err error) {
 }
 
 func (tpl *Template) Validate() error {
+	if tpl.RunnerTag != nil && *tpl.RunnerTag == "" {
+		return &ValidationError{"template runner tag can not be empty"}
+	}
 	switch tpl.App {
 	case AppAnsible:
 		if tpl.InventoryID == nil {
