@@ -591,9 +591,17 @@ func (p *TaskPool) AddTask(
 
 	var job Job
 
-	if util.Config.UseRemoteRunner || taskRunner.Template.RunnerTag != nil {
+	if util.Config.UseRemoteRunner ||
+		taskRunner.Template.RunnerTag != nil ||
+		taskRunner.Inventory.RunnerTag != nil {
+
+		tag := taskRunner.Template.RunnerTag
+		if tag == nil {
+			tag = taskRunner.Inventory.RunnerTag
+		}
+
 		job = &RemoteJob{
-			RunnerTag: taskRunner.Template.RunnerTag,
+			RunnerTag: tag,
 			Task:      taskRunner.Task,
 			taskPool:  p,
 		}
