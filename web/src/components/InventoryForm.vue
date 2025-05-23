@@ -8,9 +8,6 @@
             list-item-two-line,
             list-item-two-line,
             list-item-two-line,
-            list-item-two-line,
-            list-item-two-line,
-            list-item-two-line,
             list-item-two-line"
   ></v-skeleton-loader>
   <v-form
@@ -206,7 +203,7 @@ export default {
       return this.keys.filter((key) => key.type === 'login_password');
     },
     isLoaded() {
-      return this.item != null && this.keys != null;
+      return this.item != null; // && this.keys != null;
     },
   },
 
