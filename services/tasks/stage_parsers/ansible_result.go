@@ -75,38 +75,6 @@ type AnsibleResultStageParserState struct {
 	Hosts []AnsibleResultHost
 }
 
-func (p AnsibleResultStageParser) ParseSingle(output db.TaskOutput) {
-
-	line := util.ClearFromAnsiCodes(strings.TrimSpace(output.Output))
-
-	if line == "" {
-		return
-	}
-
-	if strings.HasPrefix(line, ansibleResultMaker) {
-		return
-	}
-
-	m := ansibleResultHostRE.FindStringSubmatch(line)
-	if m == nil {
-		log.WithFields(log.Fields{
-			"task_id": output.TaskID,
-		}).Warnf("invalid ansible result host: %s", line)
-		return
-	}
-
-	p.state.Hosts = append(p.state.Hosts, AnsibleResultHost{
-		Host:        m[1],
-		Ok:          toInt(m[2]),
-		Changed:     toInt(m[3]),
-		Unreachable: toInt(m[4]),
-		Failed:      toInt(m[5]),
-		Skipped:     toInt(m[6]),
-		Rescued:     toInt(m[7]),
-		Ignored:     toInt(m[8]),
-	})
-}
-
 func (p AnsibleResultStageParser) Parse(currentStage *db.TaskStage, output db.TaskOutput) (ok bool, err error) {
 
 	if currentStage == nil {
