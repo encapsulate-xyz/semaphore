@@ -225,14 +225,21 @@ type TaskStage struct {
 	Type          TaskStageType `db:"type" json:"type"`
 }
 
+type TaskStageWithResult struct {
+	ID            int           `db:"id" json:"id"`
+	TaskID        int           `db:"task_id" json:"task_id"`
+	Start         *time.Time    `db:"start" json:"start"`
+	End           *time.Time    `db:"end" json:"end"`
+	StartOutputID *int          `db:"start_output_id" json:"start_output_id"`
+	EndOutputID   *int          `db:"end_output_id" json:"end_output_id"`
+	Type          TaskStageType `db:"type" json:"type"`
+	JSON          string        `db:"json" json:"-"`
+	Result        any           `db:"-" json:"result"`
+}
+
 type TaskStageResult struct {
 	ID      int    `db:"id" json:"id"`
 	TaskID  int    `db:"task_id" json:"task_id"`
 	StageID int    `db:"stage_id" json:"stage_id"`
 	JSON    string `db:"json" json:"json"`
-}
-
-type TaskStageWithResult struct {
-	TaskStage
-	Result map[string]any `db:"result" json:"result"`
 }

@@ -346,8 +346,7 @@ type Store interface {
 	EndTaskStage(taskID int, stageID int, end time.Time, endOutputID int) error
 	CreateTaskStageResult(taskID int, stageID int, result map[string]any) error
 
-	GetTaskStages(projectID int, taskID int) ([]TaskStage, error)
-	GetTaskStagesByType(projectID int, taskID int, stage TaskStageType) ([]TaskStage, error)
+	GetTaskStages(projectID int, taskID int) ([]TaskStageWithResult, error)
 	GetTaskStageResult(projectID int, taskID int, stageID int) (TaskStageResult, error)
 	GetTaskStageOutputs(projectID int, taskID int, stageID int) ([]TaskOutput, error)
 

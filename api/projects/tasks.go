@@ -2,6 +2,7 @@ package projects
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"github.com/gorilla/context"
 	"github.com/semaphoreui/semaphore/api/helpers"
@@ -128,16 +129,24 @@ func GetTaskStages(w http.ResponseWriter, r *http.Request) {
 	task := context.Get(r, "task").(db.Task)
 	project := context.Get(r, "project").(db.Project)
 
-	var output []db.TaskOutput
-	output, err := helpers.Store(r).GetTaskOutputs(project.ID, task.ID, db.RetrieveQueryParams{})
+	stages, err := helpers.Store(r).GetTaskStages(project.ID, task.ID)
 
 	if err != nil {
-		util.LogErrorF(err, log.Fields{"error": "Bad request. Cannot get task output from database"})
-		w.WriteHeader(http.StatusBadRequest)
+		helpers.WriteError(w, err)
 		return
 	}
 
-	helpers.WriteJSON(w, http.StatusOK, output)
+	for i := range stages {
+		var res any
+		err = json.Unmarshal([]byte(stages[i].JSON), &res)
+		if err != nil {
+			helpers.WriteError(w, err)
+			return
+		}
+		stages[i].Result = res
+	}
+
+	helpers.WriteJSON(w, http.StatusOK, stages)
 }
 
 // GetTaskOutput returns the logged task output by id and writes it as json or returns error

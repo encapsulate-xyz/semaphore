@@ -90,14 +90,15 @@ func (d *SqlDb) GetTaskStageResult(projectID int, taskID int, stageID int) (res 
 	return
 }
 
-func (d *SqlDb) getTaskStages(projectID int, taskID int, stageType *db.TaskStageType) (res []db.TaskStage, err error) {
+func (d *SqlDb) getTaskStages(projectID int, taskID int, stageType *db.TaskStageType) (res []db.TaskStageWithResult, err error) {
 	if err = d.validateTask(projectID, taskID); err != nil {
 		return
 	}
 
-	q := squirrel.Select("*").
-		From(db.TaskStageProps.TableName).
-		Where(squirrel.Eq{"task_id": taskID})
+	q := squirrel.Select("p.*, pu.json").
+		From("task__stage as p").
+		Join("task__stage_result as pu on pu.stage_id=p.id").
+		Where("pu.task_id=?", taskID)
 
 	if stageType != nil {
 		q = q.Where(squirrel.Eq{"type": *stageType})
@@ -114,12 +115,8 @@ func (d *SqlDb) getTaskStages(projectID int, taskID int, stageType *db.TaskStage
 	return
 }
 
-func (d *SqlDb) GetTaskStages(projectID int, taskID int) ([]db.TaskStage, error) {
+func (d *SqlDb) GetTaskStages(projectID int, taskID int) ([]db.TaskStageWithResult, error) {
 	return d.getTaskStages(projectID, taskID, nil)
-}
-
-func (d *SqlDb) GetTaskStagesByType(projectID int, taskID int, stageType db.TaskStageType) ([]db.TaskStage, error) {
-	return d.getTaskStages(projectID, taskID, &stageType)
 }
 
 func (d *SqlDb) clearTasks(projectID int, templateID int, maxTasks int) {

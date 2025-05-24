@@ -382,6 +382,7 @@ func Route() *mux.Router {
 	projectTaskManagement.HandleFunc("/{task_id}/raw_output", projects.GetTaskRawOutput).Methods("GET", "HEAD")
 	projectTaskManagement.HandleFunc("/{task_id}", projects.GetTask).Methods("GET", "HEAD")
 	projectTaskManagement.HandleFunc("/{task_id}", projects.RemoveTask).Methods("DELETE")
+	projectTaskManagement.HandleFunc("/{task_id}/stages", projects.GetTaskStages).Methods("GET", "HEAD")
 
 	projectScheduleManagement := projectUserAPI.PathPrefix("/schedules").Subrouter()
 	projectScheduleManagement.Use(projects.SchedulesMiddleware)

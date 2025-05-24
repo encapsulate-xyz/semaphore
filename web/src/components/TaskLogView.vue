@@ -4,136 +4,145 @@
     :class="{'task-log-view--with-message': item.message || item.commit_message}"
   >
 
-    <div class="overflow-auto text-no-wrap px-5">
-      <v-alert
-        dense
-        class="d-inline-block mb-2 mr-2"
-        text
-        icon="mdi-message-outline"
+    <div class="px-5" style="margin-top: -12px; margin-bottom: 12px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
+      <span
         v-if="item.message"
       >
+        <v-icon small>mdi-message-outline</v-icon>
         {{ item.message }}
-      </v-alert>
+      </span>
 
-      <v-alert
-        dense
+      <span
         class="d-inline-block mb-2"
-        text
-        icon="mdi-source-fork"
         v-if="item.commit_message"
       >
+        <v-icon small>mdi-source-fork</v-icon>
         {{ item.commit_message }}
-      </v-alert>
+      </span>
     </div>
 
-    <v-container fluid class="py-0 px-5 mb-2 overflow-auto">
-      <v-row no-gutters class="flex-nowrap">
-        <v-col>
-          <v-list two-line subheader class="pa-0">
+    <div class="overflow-auto text-no-wrap px-5" style="margin-bottom: -40px;">
+      <TaskStatus :status="item.status" data-testid="task-status" />
+      <span class="ml-3">
+        {{ user?.name || '-' }}
+        {{ item.start | formatDate }}
+        {{ [item.start, item.end] | formatMilliseconds }}
+      </span>
+    </div>
+
+    <v-tabs right v-model="tab">
+      <v-tab>Log</v-tab>
+      <v-tab>Details</v-tab>
+      <v-tab>Summary</v-tab>
+    </v-tabs>
+
+    <div v-if="tab === 0">
+      <VirtualList
+        class="task-log-records"
+        :data-key="'id'"
+        :data-sources="output"
+        :data-component="itemComponent"
+        :estimate-size="22"
+        :keeps="100"
+        ref="records"
+      >
+        <div class="task-log-records__record" v-for="record in output" :key="record.id">
+          <div class="task-log-records__time">
+            {{ record.time | formatTime }}
+          </div>
+          <div class="task-log-records__output" v-html="$options.filters.formatLog(record.output)">
+          </div>
+        </div>
+      </VirtualList>
+
+      <v-btn
+        color="success"
+        class="task-log-action-button"
+        style="right: 260px; width: 70px;"
+        v-if="item.status === 'waiting_confirmation'"
+        @click="confirmTask()"
+      >
+        <v-icon>mdi-check</v-icon>
+      </v-btn>
+
+      <v-btn
+        color="warning"
+        class="task-log-action-button"
+        style="right: 180px; width: 70px;"
+        v-if="item.status === 'waiting_confirmation'"
+        @click="rejectTask()"
+      >
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
+
+      <v-btn
+        color="error"
+        class="task-log-action-button"
+        style="right: 20px; width: 150px;"
+        v-if="canStop"
+        @click="stopTask(item.status === 'stopping')"
+      >
+        {{ item.status === 'stopping' ? $t('forceStop') : $t('stop') }}
+      </v-btn>
+
+      <v-btn
+        v-if="isTaskStopped"
+        color="blue-grey"
+        :to="rawLogURL"
+        class="task-log-action-button"
+        style="right: 20px; width: 150px;"
+        target="_blank"
+        data-testid="task-rawLog"
+      >{{ $t('raw_log') }}</v-btn>
+    </div>
+
+    <div v-else-if="tab === 1">
+      <v-container fluid class="py-0 px-5 overflow-auto">
+        <v-row>
+          <v-col class="pr-4">
+            <v-list two-line subheader class="pa-0">
+              <v-list-item class="pa-0">
+                <v-list-item-content v-if="item.user_id != null">
+                  <v-list-item-title>{{ $t('author') }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ user?.name || '-' }}</v-list-item-subtitle>
+                </v-list-item-content>
+                <v-list-item-content v-else-if="item.integration_id != null">
+                  <v-list-item-title>{{ $t('integration') }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-col>
+          <v-col class="pr-4">
+            <v-list two-line subheader class="pa-0">
+              <v-list-item class="pa-0">
+                <v-list-item-content>
+                  <v-list-item-title>{{ $t('started') || '-' }}</v-list-item-title>
+                  <v-list-item-subtitle>
+                    {{ item.start | formatDate }}
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-col>
+          <v-col>
             <v-list-item class="pa-0">
               <v-list-item-content>
-                <div class="pr-4">
-                  <TaskStatus :status="item.status" data-testid="task-status" />
-                </div>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-col>
-        <v-col class="pr-4">
-          <v-list two-line subheader class="pa-0">
-            <v-list-item class="pa-0">
-              <v-list-item-content v-if="item.user_id != null">
-                <v-list-item-title>{{ $t('author') }}</v-list-item-title>
-                <v-list-item-subtitle>{{ user.name || '-' }}</v-list-item-subtitle>
-              </v-list-item-content>
-              <v-list-item-content v-else-if="item.integration_id != null">
-                <v-list-item-title>{{ $t('integration') }}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-col>
-        <v-col class="pr-4">
-          <v-list two-line subheader class="pa-0">
-            <v-list-item class="pa-0">
-              <v-list-item-content>
-                <v-list-item-title>{{ $t('started') || '-' }}</v-list-item-title>
+                <v-list-item-title>{{ $t('duration') || '-' }}</v-list-item-title>
                 <v-list-item-subtitle>
-                  {{ item.start | formatDate }}
+                  {{ [item.start, item.end] | formatMilliseconds }}
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
-          </v-list>
-        </v-col>
-        <v-col>
-          <v-list-item class="pa-0">
-            <v-list-item-content>
-              <v-list-item-title>{{ $t('duration') || '-' }}</v-list-item-title>
-              <v-list-item-subtitle>
-                {{ [item.start, item.end] | formatMilliseconds }}
-              </v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-        </v-col>
-      </v-row>
-    </v-container>
+          </v-col>
+        </v-row>
+      </v-container>
+    </div>
+    <div v-else-if="tab === 2">
+      <v-divider style="margin-top: -1px;" />
 
-    <VirtualList
-      class="task-log-records"
-      :data-key="'id'"
-      :data-sources="output"
-      :data-component="itemComponent"
-      :estimate-size="22"
-      :keeps="100"
-      ref="records"
-    >
-      <div class="task-log-records__record" v-for="record in output" :key="record.id">
-        <div class="task-log-records__time">
-          {{ record.time | formatTime }}
-        </div>
-        <div class="task-log-records__output" v-html="$options.filters.formatLog(record.output)">
-        </div>
-      </div>
-    </VirtualList>
-
-    <v-btn
-      color="success"
-      class="task-log-action-button"
-      style="right: 260px; width: 70px;"
-      v-if="item.status === 'waiting_confirmation'"
-      @click="confirmTask()"
-    >
-      <v-icon>mdi-check</v-icon>
-    </v-btn>
-
-    <v-btn
-      color="warning"
-      class="task-log-action-button"
-      style="right: 180px; width: 70px;"
-      v-if="item.status === 'waiting_confirmation'"
-      @click="rejectTask()"
-    >
-      <v-icon>mdi-close</v-icon>
-    </v-btn>
-
-    <v-btn
-      color="error"
-      class="task-log-action-button"
-      style="right: 20px; width: 150px;"
-      v-if="canStop"
-      @click="stopTask(item.status === 'stopping')"
-    >
-      {{ item.status === 'stopping' ? $t('forceStop') : $t('stop') }}
-    </v-btn>
-
-    <v-btn
-      v-if="isTaskStopped"
-      color="blue-grey"
-      :to="rawLogURL"
-      class="task-log-action-button"
-      style="right: 20px; width: 150px;"
-      target="_blank"
-      data-testid="task-rawLog"
-    >{{ $t('raw_log') }}</v-btn>
+      <AnsibleStageView :stages="stages" />
+    </div>
 
   </div>
 </template>
@@ -142,8 +151,8 @@
 
 @import '~vuetify/src/styles/settings/_variables';
 
-$task-log-header-height: 62px + 64px + 8px;
-$task-log-message-height: 48px;
+$task-log-header-height: 28px + 64px + 8px;
+$task-log-message-height: 28px;
 
 .task-log-action-button {
   position: absolute;
@@ -208,9 +217,10 @@ import socket from '@/socket';
 import VirtualList from 'vue-virtual-scroll-list';
 import TaskLogViewRecord from '@/components/TaskLogViewRecord.vue';
 import ProjectMixin from '@/components/ProjectMixin';
+import AnsibleStageView from '@/components/AnsibleStageView.vue';
 
 export default {
-  components: { TaskStatus, VirtualList },
+  components: { AnsibleStageView, TaskStatus, VirtualList },
 
   mixins: [ProjectMixin],
 
@@ -222,11 +232,13 @@ export default {
 
   data() {
     return {
+      tab: 0,
       itemComponent: TaskLogViewRecord,
       output: [],
       outputBuffer: [],
       user: {},
       autoScroll: true,
+      stages: null,
     };
   },
 
@@ -239,6 +251,13 @@ export default {
     async projectId() {
       this.reset();
       await this.loadData();
+    },
+
+    async tab() {
+      if (this.tab === 1) {
+        this.stages = await this.loadProjectEndpoint(`/tasks/${this.itemId}/stages`);
+        console.log(this.stages);
+      }
     },
   },
 
