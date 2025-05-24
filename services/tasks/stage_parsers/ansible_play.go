@@ -79,7 +79,8 @@ func (p AnsibleRunningStageParser) Parse(currentStage *db.TaskStage, output db.T
 		p.state.CurrentHostAnswer = ""
 	} else if strings.HasPrefix(line, failedTaskMaker) {
 		end := strings.Index(line, "]")
-		p.state.CurrentFailedHost = line[len(ansibleTaskMaker):end]
+		start := len(failedTaskMaker)
+		p.state.CurrentFailedHost = line[start:end]
 		p.state.CurrentHostAnswer = ""
 	} else if p.state.CurrentFailedHost != "" {
 		if line == "" {
