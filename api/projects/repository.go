@@ -46,6 +46,11 @@ func GetRepositoryRefs(w http.ResponseWriter, r *http.Request) {
 func GetRepositoryBranches(w http.ResponseWriter, r *http.Request) {
 	repo := context.Get(r, "repository").(db.Repository)
 
+	if repo.GetType() == db.RepositoryLocal || repo.GetType() == db.RepositoryFile {
+		helpers.WriteJSON(w, http.StatusBadRequest, "Wrong repository type: "+repo.GetType())
+		return
+	}
+
 	git := db_lib.GitRepository{
 		Repository: repo,
 		Client:     db_lib.CreateDefaultGitClient(),

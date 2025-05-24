@@ -154,7 +154,7 @@ func (c CmdGitClient) GetRemoteBranches(r GitRepository) ([]string, error) {
 	}
 
 	if len(out) == 0 {
-		return nil, nil
+		return []string{}, nil
 	}
 
 	branches := strings.Split(out, "\n")

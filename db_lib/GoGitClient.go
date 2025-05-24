@@ -39,6 +39,14 @@ func (t ProgressWrapper) Write(p []byte) (n int, err error) {
 func getAuthMethod(r GitRepository) (transport.AuthMethod, error) {
 	switch r.Repository.SSHKey.Type {
 	case db.AccessKeySSH:
+
+		install, err := r.Repository.SSHKey.Install(db.AccessKeyRoleGit, r.Logger)
+		if err != nil {
+			return nil, err
+		}
+
+		defer install.Destroy()
+
 		var sshKeyBuff = r.Repository.SSHKey.SshKey.PrivateKey
 
 		if r.Repository.SSHKey.SshKey.Login == "" {
