@@ -772,7 +772,7 @@
     //border-radius: 4px;
     //text-shadow: 0px 0px 2px black;
     //color: black;
-    //font-weight: 500;
+    font-weight: 500;
   }
 
   &.primary--text {

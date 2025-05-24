@@ -56,6 +56,7 @@
       </v-card>
     </v-dialog>
     <fieldset style="padding: 0 10px 2px 10px;
+                     font-weight: 500;
                      border: 1px solid rgba(133, 133, 133, 0.4);
                      background-color: rgba(133, 133, 133, 0.04);
                      border-radius: 8px;
