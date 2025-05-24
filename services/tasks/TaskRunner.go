@@ -32,6 +32,7 @@ type TaskRunner struct {
 
 	currentStage  *db.TaskStage
 	currentOutput *db.TaskOutput
+	currentState  any
 
 	users     []int
 	alert     bool

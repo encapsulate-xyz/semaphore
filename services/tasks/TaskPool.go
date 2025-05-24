@@ -109,16 +109,18 @@ func (p *TaskPool) GetTaskByAlias(alias string) (task *TaskRunner) {
 func (p *TaskPool) MoveToNextStage(
 	app db.TemplateApp,
 	projectID int,
+	currentState any,
 	currentStage *db.TaskStage,
 	currentOutput *db.TaskOutput,
 	newOutput db.TaskOutput,
-) (newStage *db.TaskStage, err error) {
+) (newStage *db.TaskStage, newState any, err error) {
 
+	newState = currentState
 	stages := stage_parsers.GetAllTaskStages(app)
 
 	for _, stageType := range stages {
 
-		parser := stage_parsers.GetStageResultParser(app, stageType)
+		parser := stage_parsers.GetStageResultParser(app, stageType, currentState)
 		if parser == nil {
 			continue
 		}
@@ -182,6 +184,12 @@ func (p *TaskPool) MoveToNextStage(
 			}
 
 			matched = true
+		} else {
+			err = parser.Parse(newOutput)
+			if err != nil {
+				log.Error("Error parsing stage output: ", err)
+				return
+			}
 		}
 
 		if matched {
@@ -191,29 +199,20 @@ func (p *TaskPool) MoveToNextStage(
 			var oldParser stage_parsers.StageResultParser
 
 			if oldStage != nil {
-				oldParser = stage_parsers.GetStageResultParser(app, oldStage.Type)
+				oldParser = stage_parsers.GetStageResultParser(app, oldStage.Type, currentState)
 			}
 
 			if oldParser != nil && oldParser.NeedParse() {
-				var stageOutputs []db.TaskOutput
-				stageOutputs, err = p.store.GetTaskStageOutputs(projectID, newOutput.TaskID, oldStage.ID)
 
-				if err != nil {
-					return
-				}
-
-				var res map[string]any
-				res, err = oldParser.Parse(stageOutputs)
-
-				if err != nil {
-					return
-				}
+				res := oldParser.Result()
 
 				err = p.store.CreateTaskStageResult(oldStage.TaskID, oldStage.ID, res)
 			}
 
 			break
 		}
+
+		newState = parser.State()
 	}
 
 	return
@@ -249,9 +248,10 @@ func (p *TaskPool) Run() {
 
 				record.task.currentOutput = &newOutput
 
-				newStage, err := p.MoveToNextStage(
+				newStage, newState, err := p.MoveToNextStage(
 					record.task.Template.App,
 					record.task.Task.ProjectID,
+					record.task.currentState,
 					record.task.currentStage,
 					currentOutput,
 					newOutput)
@@ -260,6 +260,8 @@ func (p *TaskPool) Run() {
 					log.Error(err)
 					return
 				}
+
+				record.task.currentState = newState
 
 				if newStage != nil {
 					record.task.currentStage = newStage
