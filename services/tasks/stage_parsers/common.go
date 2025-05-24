@@ -9,8 +9,8 @@ type StageResultParser interface {
 	IsStart(currentStage *db.TaskStage, output db.TaskOutput) bool
 	IsEnd(currentStage *db.TaskStage, output db.TaskOutput) bool
 	NeedParse() bool
-	Parse(output db.TaskOutput) error
 	State() any
+	Parse(currentStage *db.TaskStage, output db.TaskOutput) (bool, error)
 	Result() map[string]any
 }
 
@@ -27,6 +27,8 @@ func GetStageResultParser(app db.TemplateApp, stageType db.TaskStageType, state 
 
 			if state == nil {
 				state = &AnsibleRunningStageParserState{}
+			} else if _, ok := state.(*AnsibleRunningStageParserState); !ok {
+				state = &AnsibleRunningStageParserState{}
 			}
 
 			return &AnsibleRunningStageParser{
@@ -35,6 +37,8 @@ func GetStageResultParser(app db.TemplateApp, stageType db.TaskStageType, state 
 		case db.TaskStagePrintResult:
 
 			if state == nil {
+				state = &AnsibleResultStageParserState{}
+			} else if _, ok := state.(*AnsibleResultStageParserState); !ok {
 				state = &AnsibleResultStageParserState{}
 			}
 
@@ -62,10 +66,6 @@ func GetAllTaskStages(app db.TemplateApp) []db.TaskStageType {
 
 type InitStageParser struct{}
 
-func (p InitStageParser) State() any {
-	return nil
-}
-
 func (p InitStageParser) NeedParse() bool {
 	return false
 }
@@ -82,10 +82,14 @@ func (p InitStageParser) IsEnd(currentStage *db.TaskStage, output db.TaskOutput)
 	return false
 }
 
-func (p InitStageParser) Parse(output db.TaskOutput) error {
-	return nil
+func (p InitStageParser) Parse(currentStage *db.TaskStage, output db.TaskOutput) (bool, error) {
+	return false, nil
 }
 
 func (p InitStageParser) Result() map[string]any {
+	return nil
+}
+
+func (p InitStageParser) State() any {
 	return nil
 }

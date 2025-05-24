@@ -120,7 +120,7 @@ func (p *TaskPool) MoveToNextStage(
 
 	for _, stageType := range stages {
 
-		parser := stage_parsers.GetStageResultParser(app, stageType, currentState)
+		parser := stage_parsers.GetStageResultParser(app, stageType, newState)
 		if parser == nil {
 			continue
 		}
@@ -185,10 +185,12 @@ func (p *TaskPool) MoveToNextStage(
 
 			matched = true
 		} else {
-			err = parser.Parse(newOutput)
+			var ok bool
+			ok, err = parser.Parse(currentStage, newOutput)
 			if err != nil {
-				log.Error("Error parsing stage output: ", err)
-				return
+				log.Error(err.Error())
+			} else if ok {
+				newState = parser.State()
 			}
 		}
 
@@ -211,8 +213,6 @@ func (p *TaskPool) MoveToNextStage(
 
 			break
 		}
-
-		newState = parser.State()
 	}
 
 	return

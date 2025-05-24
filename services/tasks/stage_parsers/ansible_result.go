@@ -18,9 +18,6 @@ const ansibleResultMaker = "PLAY RECAP *****************************************
 func (p AnsibleResultStageParser) NeedParse() bool {
 	return true
 }
-func (p AnsibleResultStageParser) State() any {
-	return nil
-}
 
 func (p AnsibleResultStageParser) IsStart(currentStage *db.TaskStage, output db.TaskOutput) bool {
 	if currentStage == nil {
@@ -110,7 +107,17 @@ func (p AnsibleResultStageParser) ParseSingle(output db.TaskOutput) {
 	})
 }
 
-func (p AnsibleResultStageParser) Parse(output db.TaskOutput) (err error) {
+func (p AnsibleResultStageParser) Parse(currentStage *db.TaskStage, output db.TaskOutput) (ok bool, err error) {
+
+	if currentStage == nil {
+		return
+	}
+
+	if currentStage.Type != db.TaskStagePrintResult {
+		return
+	}
+
+	ok = true
 
 	line := util.ClearFromAnsiCodes(strings.TrimSpace(output.Output))
 
@@ -141,11 +148,15 @@ func (p AnsibleResultStageParser) Parse(output db.TaskOutput) (err error) {
 		Ignored:     toInt(m[8]),
 	})
 
-	return nil
+	return
 }
 
 func (p AnsibleResultStageParser) Result() (res map[string]any) {
 	res = make(map[string]any)
 	res["hosts"] = p.state.Hosts
 	return
+}
+
+func (p AnsibleResultStageParser) State() any {
+	return p.state
 }

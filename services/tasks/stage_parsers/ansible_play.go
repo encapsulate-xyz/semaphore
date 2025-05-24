@@ -22,10 +22,6 @@ type AnsibleRunningStageParser struct {
 	state *AnsibleRunningStageParserState
 }
 
-func (p AnsibleRunningStageParser) State() any {
-	return p.state
-}
-
 func (p AnsibleRunningStageParser) NeedParse() bool {
 	return false
 }
@@ -50,7 +46,17 @@ func (p AnsibleRunningStageParser) IsEnd(currentStage *db.TaskStage, output db.T
 const ansibleTaskMaker = "TASK ["
 const failedTaskMaker = "fatal: ["
 
-func (p AnsibleRunningStageParser) Parse(output db.TaskOutput) error {
+func (p AnsibleRunningStageParser) Parse(currentStage *db.TaskStage, output db.TaskOutput) (ok bool, err error) {
+
+	if currentStage == nil {
+		return
+	}
+
+	if currentStage.Type != db.TaskStageRunning {
+		return
+	}
+
+	ok = true
 
 	if strings.HasPrefix(output.Output, ansibleTaskMaker) {
 		if p.state.CurrentFailedHost != "" {
@@ -85,11 +91,15 @@ func (p AnsibleRunningStageParser) Parse(output db.TaskOutput) error {
 		}
 	}
 
-	// Implement the parsing logic for Ansible results
-	return nil
+	return
 }
 
 func (p AnsibleRunningStageParser) Result() (res map[string]any) {
 
 	return nil
+}
+
+func (p AnsibleRunningStageParser) State() any {
+
+	return p.state
 }
