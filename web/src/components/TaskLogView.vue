@@ -25,8 +25,10 @@
     <div class="overflow-auto text-no-wrap px-5" style="margin-bottom: -40px;">
       <TaskStatus :status="item.status" data-testid="task-status" />
       <span class="ml-3">
-        {{ user?.name || '-' }}
-        {{ item.start | formatDate }}
+        Started by <b>{{ user?.name || '-' }}</b>
+        at <b>{{ item.start | formatDate }}</b>
+        <v-icon
+          class="ml-3 mr-1" small style="transform: translateY(-1px)">mdi-clock-outline</v-icon>
         {{ [item.start, item.end] | formatMilliseconds }}
       </span>
     </div>

@@ -4,12 +4,12 @@
     <div class="pl-5 pt-5 d-flex" style="column-gap: 10px;">
       <div class="AnsibleServerStatus AnsibleServerStatus--ok">
         <div class="AnsibleServerStatus__count">{{ okServers }}</div>
-        <div>OK SERVERS</div>
+        <div class="AnsibleServerStatus__title">OK SERVERS</div>
       </div>
 
       <div class="AnsibleServerStatus AnsibleServerStatus--bad">
         <div class="AnsibleServerStatus__count">{{ notOkServers }}</div>
-        <div>NOT OK SERVERS</div>
+        <div class="AnsibleServerStatus__title">NOT OK SERVERS</div>
       </div>
     </div>
 
@@ -36,7 +36,8 @@
           <td style="width: 150px;">{{ task.host }}</td>
           <td style="width: 200px;">{{ task.task }}</td>
           <td>
-            <div style="overflow: hidden; color: red; max-width: 400px; text-overflow: ellipsis">
+            <div
+              style="overflow: hidden; color: #ff5252; max-width: 400px; text-overflow: ellipsis">
               {{ task.answer }}
             </div>
           </td>
@@ -76,27 +77,33 @@
   </div>
 </template>
 <style lang="scss">
-  .AnsibleServerStatus {
-    text-align: center;
-    width: 250px;
-    font-weight: bold;
-    color: white;
-    font-size: 24px;
-    line-height: 1.2;
-    border-radius: 8px;
-  }
+.AnsibleServerStatus {
+  text-align: center;
+  width: 250px;
+  font-weight: bold;
+  color: white;
+  font-size: 24px;
+  line-height: 1.2;
+  border-radius: 8px;
+}
 
-  .AnsibleServerStatus__count {
-    font-size: 100px;
-  }
+.AnsibleServerStatus__count {
+  padding-top: 10px;
+  font-size: 80px;
+  line-height: 1;
+}
 
-  .AnsibleServerStatus--ok {
-    background-color: green;
-  }
+.AnsibleServerStatus--ok {
+  background-color: #4caf50;
+}
 
-  .AnsibleServerStatus--bad {
-    background-color: red;
-  }
+.AnsibleServerStatus--bad {
+  background-color: #ff5252;
+}
+
+.AnsibleServerStatus__title {
+  padding-bottom: 10px;
+}
 </style>
 
 <script>
