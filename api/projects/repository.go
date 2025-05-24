@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/context"
 	"github.com/semaphoreui/semaphore/api/helpers"
 	"github.com/semaphoreui/semaphore/db"
+	"github.com/semaphoreui/semaphore/db_lib"
 	"github.com/semaphoreui/semaphore/util"
 	"net/http"
 )
@@ -40,6 +41,24 @@ func GetRepositoryRefs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	helpers.WriteJSON(w, http.StatusOK, refs)
+}
+
+func GetRepositoryBranches(w http.ResponseWriter, r *http.Request) {
+	repo := context.Get(r, "repository").(db.Repository)
+
+	git := db_lib.GitRepository{
+		Repository: repo,
+		Client:     db_lib.CreateDefaultGitClient(),
+	}
+
+	branches, err := git.GetRemoteBranches()
+
+	if err != nil {
+		helpers.WriteError(w, err)
+		return
+	}
+
+	helpers.WriteJSON(w, http.StatusOK, branches)
 }
 
 // GetRepositories returns all repositories in a project sorted by type
