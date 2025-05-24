@@ -758,10 +758,11 @@
 
 .v-input {
   .v-input__slot fieldset {
-    //border-radius: 8px;
-    //border: 0;
+    border-radius: 8px;
+    //border: 1px;
     //border-color: rgba(133, 133, 133, 0.3);
-    //background-color: rgba(133, 133, 133, 0.05);
+    border-color: rgba(133, 133, 133, 0.4);
+    background-color: rgba(133, 133, 133, 0.04);
   }
 
   .v-label--active {
@@ -773,6 +774,13 @@
     //color: black;
     //font-weight: 500;
   }
+
+  &.primary--text {
+    .v-input__slot fieldset {
+      border-color: #2196f3;
+    }
+  }
+
 }
 
 @import '~vuetify/src/styles/styles.sass';
