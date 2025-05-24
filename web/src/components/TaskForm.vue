@@ -32,7 +32,7 @@
       </div>
     </v-alert>
 
-    <v-select
+    <v-autocomplete
       v-if="buildTasks != null && template.type === 'deploy'"
       v-model="item.build_task_id"
       :label="$t('buildVersion')"
@@ -42,6 +42,8 @@
       :rules="[v => !!v || $t('build_version_required')]"
       required
       :disabled="formSaving"
+      outlined
+      dense
     />
 
     <v-skeleton-loader
@@ -55,6 +57,8 @@
       v-model="item.message"
       :label="$t('messageOptional')"
       :disabled="formSaving"
+      outlined
+      dense
     />
 
     <div v-for="(v) in template.survey_vars || []" :key="v.name">
@@ -69,6 +73,8 @@
         :rules="[
             val => !v.required || !!val || v.title + $t('isRequired'),
           ]"
+        outlined
+        dense
       />
 
       <v-select
@@ -84,6 +90,8 @@
         :items="v.values"
         item-text="name"
         item-value="value"
+        outlined
+        dense
       />
 
       <v-text-field
@@ -97,6 +105,8 @@
           val => !val || v.type !== 'int' || /^\d+$/.test(val) ||
           v.title + ' ' + $t('mustBeInteger'),
         ]"
+        outlined
+        dense
       />
     </div>
 
@@ -114,7 +124,7 @@
         && template.allow_override_branch_in_task"
     />
 
-    <v-select
+    <v-autocomplete
       v-model="inventory_id"
       :label="fieldLabel('inventory')"
       :items="inventory"
@@ -125,7 +135,7 @@
       required
       :disabled="formSaving"
       v-if="inventory != null && needInventory"
-    ></v-select>
+    ></v-autocomplete>
 
     <v-skeleton-loader
       v-else-if="needInventory"

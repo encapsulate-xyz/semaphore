@@ -53,6 +53,8 @@
             :rules="[v => !!v || $t('name_required')]"
             required
             :disabled="formSaving"
+            outlined
+            dense
           ></v-text-field>
 
           <v-text-field
@@ -61,6 +63,8 @@
             :rules="[v => !!v || $t('user_name_required')]"
             required
             :disabled="formSaving"
+            outlined
+            dense
           ></v-text-field>
 
           <v-text-field
@@ -69,6 +73,8 @@
             :rules="[v => !!v || $t('email_required')]"
             required
             :disabled="!isNew && item.external || formSaving"
+            outlined
+            dense
           >
 
             <template v-slot:append>
@@ -84,6 +90,8 @@
             :required="isNew && !item.external"
             :rules="isNew && !item.external ? [v => !!v || $t('password_required')] : []"
             :disabled="item.external || formSaving"
+            outlined
+            dense
           ></v-text-field>
 
           <v-row class="pb-5 pt-2">
