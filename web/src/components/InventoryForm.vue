@@ -52,7 +52,7 @@
       :placeholder="$t('runner_tag')"
     ></v-autocomplete>
 
-    <v-select
+    <v-autocomplete
       v-model="item.ssh_key_id"
       :label="$t('userCredentials')"
       :items="keys"
@@ -63,9 +63,9 @@
       :disabled="formSaving"
       outlined
       dense
-    ></v-select>
+    ></v-autocomplete>
 
-    <v-select
+    <v-autocomplete
       v-model="item.become_key_id"
       :label="$t('sudoCredentialsOptional')"
       clearable
@@ -75,7 +75,7 @@
       :disabled="formSaving"
       outlined
       dense
-    ></v-select>
+    ></v-autocomplete>
 
     <v-select
       v-model="item.type"

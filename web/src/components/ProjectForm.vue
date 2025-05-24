@@ -18,6 +18,8 @@
       required
       :disabled="formSaving"
       data-testid="newProject-name"
+      outlined
+      dense
     ></v-text-field>
 
     <v-checkbox
@@ -31,6 +33,8 @@
       :label="$t('telegramChatIdOptional')"
       :disabled="formSaving"
       data-testid="newProject-tg"
+      outlined
+      dense
     ></v-text-field>
 
     <v-text-field
@@ -44,6 +48,8 @@
       hint="Should be 0 or greater, 0 - unlimited."
       type="number"
       :step="1"
+      outlined
+      dense
     ></v-text-field>
 
     <v-switch

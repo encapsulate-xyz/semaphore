@@ -759,10 +759,10 @@
 .v-input {
   .v-input__slot fieldset {
     border-radius: 8px;
-    //border: 1px;
+    border-width: 0;
     //border-color: rgba(133, 133, 133, 0.3);
     border-color: rgba(133, 133, 133, 0.4);
-    background-color: rgba(133, 133, 133, 0.04);
+    background-color: rgba(133, 133, 133, 0.1);
   }
 
   .v-label--active {
@@ -770,17 +770,32 @@
     //padding-left: 3px;
     //padding-right: 3px;
     //border-radius: 4px;
-    //text-shadow: 0px 0px 2px black;
+    text-shadow: 0px 0px 2px black;
     //color: black;
-    font-weight: 500;
+    //font-weight: 500;
   }
 
   &.primary--text {
     .v-input__slot fieldset {
+      border-width: 2px;
       border-color: #2196f3;
     }
   }
 
+  &.error--text {
+    .v-input__slot fieldset {
+      border-width: 2px;
+      border-color: #ff5252;
+    }
+  }
+}
+
+.theme--light {
+  .v-input {
+    .v-label--active {
+      text-shadow: 0px 0px 2px white;
+    }
+  }
 }
 
 @import '~vuetify/src/styles/styles.sass';

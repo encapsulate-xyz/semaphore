@@ -20,6 +20,8 @@
       required
       :disabled="formSaving"
       class="mb-4"
+      outlined
+      dense
     ></v-text-field>
 
     <v-autocomplete
@@ -31,6 +33,8 @@
       :rules="[v => !!v || $t('template_required')]"
       required
       :disabled="formSaving"
+      outlined
+      dense
     />
 
     <v-switch
@@ -47,6 +51,8 @@
       :disabled="formSaving"
       @input="refreshCheckboxes()"
       :suffix="timezone + ' time'"
+      outlined
+      dense
     ></v-text-field>
 
     <div v-if="!rawCron">
@@ -60,6 +66,8 @@
         required
         :disabled="formSaving"
         @change="refreshCron()"
+        outlined
+        dense
       />
 
       <div v-if="['yearly'].includes(timing)">

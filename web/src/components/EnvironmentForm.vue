@@ -54,6 +54,8 @@
       required
       :disabled="formSaving"
       class="mb-2"
+      outlined
+      dense
     ></v-text-field>
 
     <v-tabs grow v-model="tab">

@@ -18,9 +18,11 @@
       :rules="[v => !!v || 'Name is required']"
       required
       :disabled="formSaving"
+      outlined
+      dense
     ></v-text-field>
 
-    <v-select
+    <v-autocomplete
       v-model="item.template_id"
       label="Task Template to run"
       clearable
@@ -28,7 +30,9 @@
       item-value="id"
       item-text="name"
       :disabled="formSaving"
-    ></v-select>
+      outlined
+      dense
+    ></v-autocomplete>
 
     <v-select
       v-model="item.auth_method"
@@ -37,6 +41,8 @@
       item-value="id"
       item-text="title"
       :disabled="formSaving"
+      outlined
+      dense
     ></v-select>
 
     <v-text-field
@@ -44,6 +50,8 @@
       v-model="item.auth_header"
       label="Auth header"
       :disabled="formSaving"
+      outlined
+      dense
     ></v-text-field>
 
     <v-select
@@ -55,6 +63,8 @@
       item-value="id"
       item-text="name"
       :disabled="formSaving"
+      outlined
+      dense
     ></v-select>
 
     <TaskParamsForm
