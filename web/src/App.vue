@@ -758,9 +758,9 @@
 
 .v-input {
   .v-input__slot fieldset {
+    //border-color: rgba(133, 133, 133, 0.3);
     border-radius: 8px;
     border-width: 0;
-    //border-color: rgba(133, 133, 133, 0.3);
     border-color: rgba(133, 133, 133, 0.4);
     background-color: rgba(133, 133, 133, 0.1);
   }
