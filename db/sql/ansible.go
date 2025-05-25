@@ -8,19 +8,19 @@ import (
 )
 
 func (d *SqlDb) CreateAnsibleTaskHost(host db.AnsibleTaskHost) error {
-	return errors.New("not implemented")
+	return nil
 }
 
 func (d *SqlDb) CreateAnsibleTaskError(error db.AnsibleTaskError) error {
-	return errors.New("not implemented")
+	return nil
 }
 
 func (d *SqlDb) GetAnsibleTaskHosts(projectID int, taskID int) (res []db.AnsibleTaskHost, err error) {
-	err = errors.New("not implemented")
+	res = make([]db.AnsibleTaskHost, 0)
 	return
 }
 
 func (d *SqlDb) GetAnsibleTaskErrors(projectID int, taskID int) (res []db.AnsibleTaskError, err error) {
-	err = errors.New("not implemented")
+	res = make([]db.AnsibleTaskError, 0)
 	return
 }
