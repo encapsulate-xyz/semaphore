@@ -2,24 +2,28 @@
   <div>
 
     <h3>Template information</h3>
-    <div class="mb-4">
-      <div>Template: {{ template?.name }}</div>
-      <div>App: {{ template?.app }}</div>
+    <div class="mb-5">
+      <div>App: <b>{{ getAppTitle(template?.app) }}</b></div>
+      <div>
+        Template: <RouterLink  :to="`/project/${projectId}/templates/${template?.id}`">
+          {{ template?.name }}
+        </RouterLink>
+      </div>
     </div>
 
     <h3>Commit info</h3>
 
-    <div class="mb-4">
-      <div>Commit message: {{ item.commit_message }}</div>
-      <div>Commit hash: {{ item.commit_hash }}</div>
+    <div class="mb-5">
+      <div>Commit message: <b>{{ item.commit_message }}</b></div>
+      <div>Commit hash: <code>{{ item.commit_hash }}</code></div>
     </div>
 
     <h3>Running info</h3>
 
-    <div class="mb-4">
-      <div>Message: {{ item.message || '-' }}</div>
+    <div class="mb-5">
+      <div>Message: <b>{{ item.message || '-' }}</b></div>
 
-      <div v-if="item.user_id != null">{{ $t('author') }}: {{ user?.name || '-' }}</div>
+      <div v-if="item.user_id != null">{{ $t('author') }}: <b>{{ user?.name || '-' }}</b></div>
       <div v-else-if="item.integration_id != null">
         {{ $t('integration') }}: {{ item.integration_id }}
       </div>
@@ -29,12 +33,13 @@
     </div>
 
     <h3>Task parameters</h3>
-    <div class="mb-4">
+    <div class="mb-5">
       <div>Limit: {{ item.params.limit }}</div>
       <div>Debug: {{ item.params.debug }}</div>
       <div>Debug level: {{ item.params.debug_level }}</div>
-      <div>Diff: {{ item.params.diff }}</div>
-      <div>Environment: {{ item.enviroment }}</div>
+      <div>Diff <code>--diff</code>: {{ item.params.diff }}</div>
+      <div>Dry run <code>--check</code>: {{ item.params.dry_run }}</div>
+      <div>Environment: {{ item.environment }}</div>
     </div>
 
   </div>
@@ -45,6 +50,7 @@
 <script>
 
 import ProjectMixin from '@/components/ProjectMixin';
+import AppsMixin from '@/components/AppsMixin';
 
 export default {
   props: {
@@ -53,7 +59,7 @@ export default {
     projectId: Number,
   },
 
-  mixins: [ProjectMixin],
+  mixins: [ProjectMixin, AppsMixin],
 
   data() {
     return {
