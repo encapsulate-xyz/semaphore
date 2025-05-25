@@ -91,7 +91,7 @@
       <v-btn
         v-if="isTaskStopped"
         color="blue-grey"
-        :to="rawLogURL"
+        :href="rawLogURL"
         class="task-log-action-button"
         style="right: 20px; width: 150px;"
         target="_blank"
@@ -200,6 +200,7 @@ export default {
     item: Object,
     projectId: Number,
     systemInfo: Object,
+    premiumFeatures: null,
   },
 
   data() {
