@@ -75,7 +75,7 @@ type AnsibleResultStageParserState struct {
 	Hosts []AnsibleResultHost
 }
 
-func (p AnsibleResultStageParser) Parse(currentStage *db.TaskStage, output db.TaskOutput) (ok bool, err error) {
+func (p AnsibleResultStageParser) Parse(currentStage *db.TaskStage, output db.TaskOutput, store db.Store) (ok bool, err error) {
 
 	if currentStage == nil {
 		return

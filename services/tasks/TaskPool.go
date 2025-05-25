@@ -186,7 +186,7 @@ func (p *TaskPool) MoveToNextStage(
 			matched = true
 		} else {
 			var ok bool
-			ok, err = parser.Parse(currentStage, newOutput)
+			ok, err = parser.Parse(currentStage, newOutput, p.store)
 			if err != nil {
 				log.Error(err.Error())
 			} else if ok {
