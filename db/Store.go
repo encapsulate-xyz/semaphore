@@ -345,6 +345,10 @@ type Store interface {
 	CreateTaskStage(stage TaskStage) (TaskStage, error)
 	EndTaskStage(taskID int, stageID int, end time.Time, endOutputID int) error
 	CreateTaskStageResult(taskID int, stageID int, result map[string]any) error
+	CreateAnsibleTaskHost(host AnsibleTaskHost) error
+	CreateAnsibleTaskError(error AnsibleTaskError) error
+	GetAnsibleTaskHosts(projectID int, taskID int) ([]AnsibleTaskHost, error)
+	GetAnsibleTaskError(projectID int, taskID int) ([]AnsibleTaskError, error)
 
 	GetTaskStages(projectID int, taskID int) ([]TaskStageWithResult, error)
 	GetTaskStageResult(projectID int, taskID int, stageID int) (TaskStageResult, error)
@@ -375,8 +379,6 @@ type Store interface {
 	UpdateTemplateVaults(projectID int, templateID int, vaults []TemplateVault) error
 
 	GetTaskStats(projectID int, templateID *int, unit TaskStatUnit, filter TaskFilter) ([]TaskStat, error)
-
-	//GetProjectStats(projectID int) (ProjectStats, error)
 }
 
 var AccessKeyProps = ObjectProps{

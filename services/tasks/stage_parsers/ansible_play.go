@@ -48,7 +48,7 @@ func (p AnsibleRunningStageParser) IsEnd(currentStage *db.TaskStage, output db.T
 const ansibleTaskMaker = "TASK ["
 const failedTaskMaker = "fatal: ["
 
-func (p AnsibleRunningStageParser) Parse(currentStage *db.TaskStage, output db.TaskOutput, store db.Store) (ok bool, err error) {
+func (p AnsibleRunningStageParser) Parse(currentStage *db.TaskStage, output db.TaskOutput, store db.Store, projectID int) (ok bool, err error) {
 
 	if currentStage == nil {
 		return

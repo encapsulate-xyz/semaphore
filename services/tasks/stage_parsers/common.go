@@ -10,7 +10,7 @@ type StageResultParser interface {
 	IsEnd(currentStage *db.TaskStage, output db.TaskOutput) bool
 	NeedParse() bool
 	State() any
-	Parse(currentStage *db.TaskStage, output db.TaskOutput, store db.Store) (bool, error)
+	Parse(currentStage *db.TaskStage, output db.TaskOutput, store db.Store, projectID int) (bool, error)
 	Result() map[string]any
 }
 
@@ -82,7 +82,7 @@ func (p InitStageParser) IsEnd(currentStage *db.TaskStage, output db.TaskOutput)
 	return false
 }
 
-func (p InitStageParser) Parse(currentStage *db.TaskStage, output db.TaskOutput, store db.Store) (bool, error) {
+func (p InitStageParser) Parse(currentStage *db.TaskStage, output db.TaskOutput, store db.Store, projectID int) (bool, error) {
 	return false, nil
 }
 

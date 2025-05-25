@@ -43,16 +43,16 @@ func (p AnsibleResultStageParser) IsEnd(currentStage *db.TaskStage, output db.Ta
 	return strings.TrimSpace(output.Output) == ""
 }
 
-type AnsibleResultHost struct {
-	Host        string `json:"host"`
-	Ok          int    `json:"ok"`
-	Changed     int    `json:"changed"`
-	Unreachable int    `json:"unreachable"`
-	Failed      int    `json:"failed"`
-	Skipped     int    `json:"skipped"`
-	Rescued     int    `json:"rescued"`
-	Ignored     int    `json:"ignored"`
-}
+//type AnsibleResultHost struct {
+//	Host        string `json:"host"`
+//	Ok          int    `json:"ok"`
+//	Changed     int    `json:"changed"`
+//	Unreachable int    `json:"unreachable"`
+//	Failed      int    `json:"failed"`
+//	Skipped     int    `json:"skipped"`
+//	Rescued     int    `json:"rescued"`
+//	Ignored     int    `json:"ignored"`
+//}
 
 var ansibleResultHostRE = regexp.MustCompile(
 	`^([^\s]+)\s*:\s*` +
@@ -72,10 +72,10 @@ func toInt(s string) int {
 }
 
 type AnsibleResultStageParserState struct {
-	Hosts []AnsibleResultHost
+	//Hosts []AnsibleResultHost
 }
 
-func (p AnsibleResultStageParser) Parse(currentStage *db.TaskStage, output db.TaskOutput, store db.Store) (ok bool, err error) {
+func (p AnsibleResultStageParser) Parse(currentStage *db.TaskStage, output db.TaskOutput, store db.Store, projectID int) (ok bool, err error) {
 
 	if currentStage == nil {
 		return
@@ -105,7 +105,20 @@ func (p AnsibleResultStageParser) Parse(currentStage *db.TaskStage, output db.Ta
 		return
 	}
 
-	p.state.Hosts = append(p.state.Hosts, AnsibleResultHost{
+	//p.state.Hosts = append(p.state.Hosts, AnsibleResultHost{
+	//	Host:        m[1],
+	//	Ok:          toInt(m[2]),
+	//	Changed:     toInt(m[3]),
+	//	Unreachable: toInt(m[4]),
+	//	Failed:      toInt(m[5]),
+	//	Skipped:     toInt(m[6]),
+	//	Rescued:     toInt(m[7]),
+	//	Ignored:     toInt(m[8]),
+	//})
+
+	err = store.CreateAnsibleTaskHost(db.AnsibleTaskHost{
+		TaskID:      currentStage.TaskID,
+		ProjectID:   projectID,
 		Host:        m[1],
 		Ok:          toInt(m[2]),
 		Changed:     toInt(m[3]),
@@ -121,7 +134,7 @@ func (p AnsibleResultStageParser) Parse(currentStage *db.TaskStage, output db.Ta
 
 func (p AnsibleResultStageParser) Result() (res map[string]any) {
 	res = make(map[string]any)
-	res["hosts"] = p.state.Hosts
+	//res["hosts"] = p.state.Hosts
 	return
 }
 
