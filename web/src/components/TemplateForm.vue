@@ -177,7 +177,7 @@
           v-if="needField('playbook')"
         ></v-text-field>
 
-        <v-select
+        <v-autocomplete
           v-model="item.inventory_id"
           :label="fieldLabel('inventory')"
           :items="inventory"
@@ -188,9 +188,9 @@
           required
           :disabled="formSaving"
           v-if="needField('inventory')"
-        ></v-select>
+        ></v-autocomplete>
 
-        <v-select
+        <v-autocomplete
           v-model="item.repository_id"
           :label="fieldLabel('repository') + ' *'"
           :items="repositories"
@@ -202,9 +202,9 @@
           :required="isFieldRequired('repository')"
           :disabled="formSaving"
           v-if="needField('repository')"
-        ></v-select>
+        ></v-autocomplete>
 
-        <v-select
+        <v-autocomplete
           v-model="item.environment_id"
           :label="fieldLabel('environment')"
           :items="environment"
@@ -216,9 +216,9 @@
           :required="isFieldRequired('environment')"
           :disabled="formSaving"
           v-if="needField('environment')"
-        ></v-select>
+        ></v-autocomplete>
 
-        <v-select
+        <v-autocomplete
           class="mb-3"
           style="max-height: 60px;"
           v-model="item.view_id"
@@ -230,7 +230,7 @@
           :disabled="formSaving"
           outlined
           dense
-        ></v-select>
+        ></v-autocomplete>
       </v-col>
 
       <v-col>

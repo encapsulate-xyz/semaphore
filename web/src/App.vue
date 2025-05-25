@@ -796,6 +796,11 @@
   }
 }
 
+.v-list--dense .v-list-item .v-list-item__title {
+  font-weight: normal;
+  font-size: 1rem;
+}
+
 @import '~vuetify/src/styles/styles.sass';
 @media #{map-get($display-breakpoints, 'xl-only')} {
   .CenterToScreen {
