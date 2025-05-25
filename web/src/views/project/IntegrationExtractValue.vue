@@ -93,12 +93,10 @@
 <script>
 import ItemListPageBase from '@/components/ItemListPageBase';
 
-import IntegrationExtractorsBase from '@/components/IntegrationExtractorsBase';
-
 import IntegrationExtractValueForm from '@/components/IntegrationExtractValueForm.vue';
 
 export default {
-  mixins: [ItemListPageBase, IntegrationExtractorsBase],
+  mixins: [ItemListPageBase],
   components: { IntegrationExtractValueForm },
 
   computed: {
