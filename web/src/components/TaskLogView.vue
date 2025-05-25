@@ -4,7 +4,7 @@
     :class="{'task-log-view--with-message': item.message || item.commit_message}"
   >
 
-    <div class="px-5" style="margin-top: -12px; margin-bottom: 12px;
+    <div class="px-5" style="margin-top: -18px; margin-bottom: 12px;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
       <span
         v-if="item.message"

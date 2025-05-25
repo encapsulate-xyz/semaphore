@@ -7,7 +7,15 @@
       <div>App: {{ template?.app }}</div>
     </div>
 
-    <h3>Start information</h3>
+    <h3>Commit info</h3>
+
+    <div class="mb-4">
+      <div v-if="item.message">Message: {{ item.message }}</div>
+      <div>Commit message: {{ item.commit_message }}</div>
+      <div>Commit hash: {{ item.commit_hash }}</div>
+    </div>
+
+    <h3>Running info</h3>
     <v-row>
       <v-col class="pr-4">
         <v-list two-line subheader class="pa-0">
@@ -46,7 +54,14 @@
       </v-col>
     </v-row>
 
-    <h3>Parameters</h3>
+    <h3>Task parameters</h3>
+    <div class="mb-4">
+      <div>Limit: {{ item.params.limit }}</div>
+      <div>Debug: {{ item.params.debug }}</div>
+      <div>Debug level: {{ item.params.debug_level }}</div>
+      <div>Diff: {{ item.params.diff }}</div>
+      <div>Environment: {{ item.enviroment }}</div>
+    </div>
 
   </div>
 </template>
