@@ -33,7 +33,6 @@
         data-testid="dashboard-runners"
       >
         {{ $t('runners') }}
-        <v-icon class="ml-1" large color="hsl(348deg, 86%, 61%)">mdi-professional-hexagon</v-icon>
       </v-tab>
     </v-tabs>
 
