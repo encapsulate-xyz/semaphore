@@ -8,10 +8,12 @@
       v-if="!premiumFeatures.task_result"
     >
         <span class="mr-2">
-          Terraform/OpenTofu HTTP backend available only in <b>PRO</b> version.
+          This is <b>DEMO</b> data.
+          Task summary available only in <b>PRO</b> version.
         </span>
       <v-btn
         color="hsl(348deg, 86%, 61%)"
+        target="_blank"
         href="https://semaphoreui.com/pro#task_result"
       >
         Learn more
@@ -56,7 +58,7 @@
           <td>
             <div
               style="overflow: hidden; color: #ff5252; max-width: 400px; text-overflow: ellipsis">
-              {{ task.answer }}
+              {{ task.error }}
             </div>
           </td>
         </tr>
