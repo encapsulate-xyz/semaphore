@@ -10,49 +10,23 @@
     <h3>Commit info</h3>
 
     <div class="mb-4">
-      <div v-if="item.message">Message: {{ item.message }}</div>
       <div>Commit message: {{ item.commit_message }}</div>
       <div>Commit hash: {{ item.commit_hash }}</div>
     </div>
 
     <h3>Running info</h3>
-    <v-row>
-      <v-col class="pr-4">
-        <v-list two-line subheader class="pa-0">
-          <v-list-item class="pa-0">
-            <v-list-item-content v-if="item.user_id != null">
-              <v-list-item-title>{{ $t('author') }}</v-list-item-title>
-              <v-list-item-subtitle>{{ user?.name || '-' }}</v-list-item-subtitle>
-            </v-list-item-content>
-            <v-list-item-content v-else-if="item.integration_id != null">
-              <v-list-item-title>{{ $t('integration') }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-      </v-col>
-      <v-col class="pr-4">
-        <v-list two-line subheader class="pa-0">
-          <v-list-item class="pa-0">
-            <v-list-item-content>
-              <v-list-item-title>{{ $t('started') || '-' }}</v-list-item-title>
-              <v-list-item-subtitle>
-                {{ item.start | formatDate }}
-              </v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-      </v-col>
-      <v-col>
-        <v-list-item class="pa-0">
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('duration') || '-' }}</v-list-item-title>
-            <v-list-item-subtitle>
-              {{ [item.start, item.end] | formatMilliseconds }}
-            </v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-      </v-col>
-    </v-row>
+
+    <div class="mb-4">
+      <div>Message: {{ item.message || '-' }}</div>
+
+      <div v-if="item.user_id != null">{{ $t('author') }}: {{ user?.name || '-' }}</div>
+      <div v-else-if="item.integration_id != null">
+        {{ $t('integration') }}: {{ item.integration_id }}
+      </div>
+
+      <div>{{ $t('started') }}: {{ item.start | formatDate }}</div>
+      <div>{{ $t('duration') }}: {{ [item.start, item.end] | formatMilliseconds }}</div>
+    </div>
 
     <h3>Task parameters</h3>
     <div class="mb-4">
