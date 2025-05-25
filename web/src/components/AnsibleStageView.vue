@@ -151,19 +151,6 @@ export default {
     },
   },
 
-  computed: {
-    failedTasks() {
-      const running = (this.stages || [])
-        .filter((stage) => stage.type === 'running')[0];
-      return running?.result.failed || {};
-    },
-    hosts() {
-      const running = (this.stages || [])
-        .filter((stage) => stage.type === 'print_result')[0];
-      return running?.result.hosts || [];
-    },
-  },
-
   async created() {
     await this.loadData();
     this.calcStats();
@@ -171,8 +158,11 @@ export default {
 
   methods: {
     async loadData() {
+      this.failedTasks = await this.loadProjectEndpoint(`/tasks/${this.taskId}/ansible/errors`);
+      this.hosts = await this.loadProjectEndpoint(`/tasks/${this.taskId}/ansible/hosts`);
       this.stages = await this.loadProjectEndpoint(`/tasks/${this.taskId}/stages`);
     },
+
     calcStats() {
       this.hosts.forEach((host) => {
         if (host.failed > 0 || host.unreachable > 0) {

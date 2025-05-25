@@ -18,7 +18,7 @@ func (d *BoltDb) GetAnsibleTaskHosts(projectID int, taskID int) (res []db.Ansibl
 	return
 }
 
-func (d *BoltDb) GetAnsibleTaskError(projectID int, taskID int) (res []db.AnsibleTaskError, err error) {
+func (d *BoltDb) GetAnsibleTaskErrors(projectID int, taskID int) (res []db.AnsibleTaskError, err error) {
 	err = errors.New("not implemented")
 	return
 }

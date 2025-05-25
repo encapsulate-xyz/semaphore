@@ -124,6 +124,41 @@ func GetTaskMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+//type ansibleTaskResult struct {
+//	App        string              `json:"app"`
+//	TemplateID int                 `json:"template_id"`
+//	Hosts      db.AnsibleTaskHost  `json:"hosts"`
+//	Errors     db.AnsibleTaskError `json:"errors"`
+//}
+
+//func GetAnsibleTaskResult() (res ansibleTaskResult, err error) {
+//	return
+//}
+
+func GetAnsibleTaskHosts(w http.ResponseWriter, r *http.Request) {
+	task := context.Get(r, "task").(db.Task)
+	project := context.Get(r, "project").(db.Project)
+	hosts, err := helpers.Store(r).GetAnsibleTaskHosts(project.ID, task.ID)
+	if err != nil {
+		helpers.WriteError(w, err)
+		return
+	}
+
+	helpers.WriteJSON(w, http.StatusOK, hosts)
+}
+
+func GetAnsibleTaskErrors(w http.ResponseWriter, r *http.Request) {
+	task := context.Get(r, "task").(db.Task)
+	project := context.Get(r, "project").(db.Project)
+	hosts, err := helpers.Store(r).GetAnsibleTaskErrors(project.ID, task.ID)
+	if err != nil {
+		helpers.WriteError(w, err)
+		return
+	}
+
+	helpers.WriteJSON(w, http.StatusOK, hosts)
+}
+
 // GetTaskStages returns the logged task stages by id and writes it as json or returns error
 func GetTaskStages(w http.ResponseWriter, r *http.Request) {
 	task := context.Get(r, "task").(db.Task)

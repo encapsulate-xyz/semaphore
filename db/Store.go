@@ -348,7 +348,7 @@ type Store interface {
 	CreateAnsibleTaskHost(host AnsibleTaskHost) error
 	CreateAnsibleTaskError(error AnsibleTaskError) error
 	GetAnsibleTaskHosts(projectID int, taskID int) ([]AnsibleTaskHost, error)
-	GetAnsibleTaskError(projectID int, taskID int) ([]AnsibleTaskError, error)
+	GetAnsibleTaskErrors(projectID int, taskID int) ([]AnsibleTaskError, error)
 
 	GetTaskStages(projectID int, taskID int) ([]TaskStageWithResult, error)
 	GetTaskStageResult(projectID int, taskID int, stageID int) (TaskStageResult, error)

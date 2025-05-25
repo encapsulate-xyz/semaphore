@@ -384,6 +384,8 @@ func Route() *mux.Router {
 	projectTaskManagement.HandleFunc("/{task_id}", projects.GetTask).Methods("GET", "HEAD")
 	projectTaskManagement.HandleFunc("/{task_id}", projects.RemoveTask).Methods("DELETE")
 	projectTaskManagement.HandleFunc("/{task_id}/stages", projects.GetTaskStages).Methods("GET", "HEAD")
+	projectTaskManagement.HandleFunc("/{task_id}/ansible/hosts", projects.GetAnsibleTaskHosts).Methods("GET", "HEAD")
+	projectTaskManagement.HandleFunc("/{task_id}/ansible/errors", projects.GetAnsibleTaskErrors).Methods("GET", "HEAD")
 
 	projectScheduleManagement := projectUserAPI.PathPrefix("/schedules").Subrouter()
 	projectScheduleManagement.Use(projects.SchedulesMiddleware)

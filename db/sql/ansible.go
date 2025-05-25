@@ -18,7 +18,7 @@ func (d *SqlDb) GetAnsibleTaskHosts(projectID int, taskID int) (res []db.Ansible
 	return
 }
 
-func (d *SqlDb) GetAnsibleTaskError(projectID int, taskID int) (res []db.AnsibleTaskError, err error) {
+func (d *SqlDb) GetAnsibleTaskErrors(projectID int, taskID int) (res []db.AnsibleTaskError, err error) {
 	err = errors.New("not implemented")
 	return
 }
