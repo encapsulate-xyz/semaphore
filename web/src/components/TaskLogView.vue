@@ -24,19 +24,19 @@
 
     <div class="overflow-auto text-no-wrap px-5" style="margin-bottom: -40px;">
       <TaskStatus :status="item.status" data-testid="task-status" />
-      <span class="ml-3">
+      <span class="ml-3 hidden-xs-only">
         Started by <b>{{ user?.name || '-' }}</b>
         at <b>{{ item.start | formatDate }}</b>
         <v-icon
-          class="ml-3 mr-1" small style="transform: translateY(-1px)">mdi-clock-outline</v-icon>
+          class="ml-4" small style="transform: translateY(-1px)">mdi-clock-outline</v-icon>
         {{ [item.start, item.end] | formatMilliseconds }}
       </span>
     </div>
 
     <v-tabs right v-model="tab">
       <v-tab>Log</v-tab>
-      <v-tab>Details</v-tab>
-      <v-tab>Summary</v-tab>
+      <v-tab :disabled="!isTaskStopped">Details</v-tab>
+      <v-tab :disabled="!isTaskStopped">Summary</v-tab>
     </v-tabs>
 
     <div v-if="tab === 0">
@@ -100,15 +100,17 @@
     </div>
 
     <div v-else-if="tab === 1">
-      <v-container fluid class="py-0 px-5 overflow-auto">
-        <TaskDetails :item="item" :user="user" />
+      <v-divider style="margin-top: -1px;" />
+
+      <v-container fluid class="py-0 px-5 overflow-auto pt-4">
+        <TaskDetails :item="item" :user="user" :project-id="projectId" />
       </v-container>
     </div>
 
     <div v-else-if="tab === 2">
       <v-divider style="margin-top: -1px;" />
 
-      <AnsibleStageView :stages="stages" />
+      <AnsibleStageView :project-id="projectId" :task-id="itemId" />
     </div>
 
   </div>
@@ -208,7 +210,7 @@ export default {
       outputBuffer: [],
       user: {},
       autoScroll: true,
-      stages: null,
+      // stages: null,
     };
   },
 
@@ -223,12 +225,11 @@ export default {
       await this.loadData();
     },
 
-    async tab() {
-      if (this.tab === 1) {
-        this.stages = await this.loadProjectEndpoint(`/tasks/${this.itemId}/stages`);
-        console.log(this.stages);
-      }
-    },
+    // async tab() {
+    //   if (this.tab === 1) {
+    //     this.stages = await this.loadProjectEndpoint(`/tasks/${this.itemId}/stages`);
+    //   }
+    // },
   },
 
   computed: {

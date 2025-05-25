@@ -108,13 +108,19 @@
 
 <script>
 
+import ProjectMixin from '@/components/ProjectMixin';
+
 export default {
   props: {
-    stages: Array,
+    projectId: Number,
+    taskId: Number,
   },
+
+  mixins: [ProjectMixin],
 
   data() {
     return {
+      stages: null,
       okServers: 0,
       notOkServers: 0,
       tab: 'notOkServers',
@@ -122,7 +128,8 @@ export default {
   },
 
   watch: {
-    stages() {
+    async taskId() {
+      await this.loadData();
       this.calcStats();
     },
   },
@@ -140,11 +147,15 @@ export default {
     },
   },
 
-  created() {
+  async created() {
+    await this.loadData();
     this.calcStats();
   },
 
   methods: {
+    async loadData() {
+      this.stages = await this.loadProjectEndpoint(`/tasks/${this.taskId}/stages`);
+    },
     calcStats() {
       this.hosts.forEach((host) => {
         if (host.failed > 0 || host.unreachable > 0) {
