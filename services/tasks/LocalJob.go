@@ -463,6 +463,10 @@ func (t *LocalJob) getPlaybookArgs(username string, incomingVersion *string) (ar
 		inputs["BECOME password"] = line
 	}
 
+	if line, ok := inputMap[db.AccessKeyRoleAnsibleBecomeUser]; ok {
+		inputs["SUDO password"] = line
+	}
+
 	return
 }
 

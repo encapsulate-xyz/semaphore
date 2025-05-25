@@ -104,6 +104,7 @@ Can use used in tandem with ItemFormBase.js. See KeyForm.vue for example.
       white-space: nowrap;
       overflow: hidden;
       margin-right: 12px;
+      padding-bottom: 20px !important;
     }
   }
 
