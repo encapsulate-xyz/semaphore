@@ -65,13 +65,6 @@ func (p AnsibleRunningStageParser) Parse(currentStage *db.TaskStage, output db.T
 	if strings.HasPrefix(line, ansibleTaskMaker) {
 		p.state.Tasks++
 		if p.state.CurrentFailedHost != "" {
-			//tsk := AnsibleRunningStageParserFailedTask{
-			//	Task:   p.state.CurrentTask,
-			//	Host:   p.state.CurrentFailedHost,
-			//	Answer: p.state.CurrentHostAnswer,
-			//}
-			//p.state.FailedTasks = append(p.state.FailedTasks, tsk)
-
 			err = store.CreateAnsibleTaskError(db.AnsibleTaskError{
 				TaskID:    currentStage.TaskID,
 				ProjectID: projectID,
@@ -97,13 +90,6 @@ func (p AnsibleRunningStageParser) Parse(currentStage *db.TaskStage, output db.T
 	} else if p.state.CurrentFailedHost != "" {
 		if line == "" {
 			if p.state.CurrentFailedHost != "" {
-				//tsk := AnsibleRunningStageParserFailedTask{
-				//	Task:   p.state.CurrentTask,
-				//	Host:   p.state.CurrentFailedHost,
-				//	Answer: p.state.CurrentHostAnswer,
-				//}
-				//p.state.FailedTasks = append(p.state.FailedTasks, tsk)
-				//
 				err = store.CreateAnsibleTaskError(db.AnsibleTaskError{
 					TaskID:    currentStage.TaskID,
 					ProjectID: projectID,
