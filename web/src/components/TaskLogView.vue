@@ -110,7 +110,11 @@
     <div v-else-if="tab === 2">
       <v-divider style="margin-top: -1px;" />
 
-      <AnsibleStageView :project-id="projectId" :task-id="itemId" />
+      <AnsibleStageView
+        :premium-features="systemInfo.premium_features"
+        :project-id="projectId"
+        :task-id="itemId"
+      />
     </div>
 
   </div>

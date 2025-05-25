@@ -5,6 +5,7 @@
       text
       color="hsl(348deg, 86%, 61%)"
       style="border-radius: 0;"
+      v-if="!premiumFeatures.task_result"
     >
         <span class="mr-2">
           Terraform/OpenTofu HTTP backend available only in <b>PRO</b> version.
@@ -131,6 +132,7 @@ export default {
   props: {
     projectId: Number,
     taskId: Number,
+    premiumFeatures: Object,
   },
 
   mixins: [ProjectMixin],

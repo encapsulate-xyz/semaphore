@@ -571,8 +571,9 @@ func getSystemInfo(w http.ResponseWriter, r *http.Request) {
 		"auth_methods": authMethods,
 
 		"premium_features": map[string]bool{
-			"project_runners":   true,
+			"project_runners":   false,
 			"terraform_backend": false,
+			"task_result":       false,
 		},
 
 		"git_client": util.Config.GitClientId,
