@@ -199,10 +199,46 @@
           :rules="isFieldRequired('repository') ? [v => !!v || $t('repository_required')] : []"
           outlined
           dense
+          hide-details
           :required="isFieldRequired('repository')"
           :disabled="formSaving"
           v-if="needField('repository')"
         ></v-autocomplete>
+
+        <div class="mb-3 text-right">
+
+          <a
+            v-if="!item.git_branch && !setBranch"
+            @click="setBranch = true"
+          >Set branch</a>
+
+        </div>
+
+        <div v-if="item.git_branch || setBranch">
+          <div v-if="branches != null">
+            <v-autocomplete
+              clearable
+              :items="branches"
+              v-model="item.git_branch"
+              :label="fieldLabel('branch')"
+              outlined
+              dense
+              :disabled="formSaving"
+              :placeholder="$t('branch')"
+            ></v-autocomplete>
+          </div>
+          <div v-else>
+            <v-text-field
+              clearable
+              v-model="item.git_branch"
+              :label="fieldLabel('branch')"
+              outlined
+              dense
+              :disabled="formSaving"
+              :placeholder="$t('branch')"
+            ></v-text-field>
+          </div>
+        </div>
 
         <v-autocomplete
           v-model="item.environment_id"
@@ -237,14 +273,6 @@
         <h2 class="mb-4">{{ $t('template_advanced') }}</h2>
 
         <div class="mb-4">
-          <v-text-field
-            v-model="item.git_branch"
-            :label="fieldLabel('branch')"
-            outlined
-            dense
-            :disabled="formSaving"
-            :placeholder="$t('branch')"
-          ></v-text-field>
 
           <v-autocomplete
             v-if="premiumFeatures.project_runners"
@@ -533,10 +561,22 @@ export default {
 
       args: [],
       runnerTags: null,
+      branches: null,
+      setBranch: false,
     };
   },
 
   watch: {
+    gitBranch() {
+      this.setBranch = false;
+    },
+
+    async repositoryId() {
+      this.branches = null;
+
+      await this.loadBranches();
+    },
+
     needReset(val) {
       if (val) {
         if (this.item != null) {
@@ -555,7 +595,19 @@ export default {
     },
   },
 
+  async created() {
+    await this.loadBranches();
+  },
+
   computed: {
+    repositoryId() {
+      return this.item?.repository_id;
+    },
+
+    gitBranch() {
+      return this.item?.git_branch;
+    },
+
     allow_override_inventory: {
       get() {
         return this.item.task_params.allow_override_inventory;
@@ -630,6 +682,16 @@ export default {
   },
 
   methods: {
+    async loadBranches() {
+      if (this.repositoryId == null) {
+        return;
+      }
+
+      this.branches = await this.loadProjectEndpoint(
+        `/repositories/${this.repositoryId}/branches`,
+      );
+    },
+
     validateBackendFilename(v) {
       if (!v) {
         return true;
