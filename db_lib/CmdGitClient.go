@@ -146,3 +146,38 @@ func (c CmdGitClient) GetLastRemoteCommitHash(r GitRepository) (hash string, err
 	hash = out[0:firstSpaceIndex]
 	return
 }
+
+func (c CmdGitClient) GetRemoteBranches(r GitRepository) ([]string, error) {
+	out, err := c.output(r, GitRepositoryTmpPath, "ls-remote", "--heads", r.Repository.GetGitURL(false))
+	if err != nil {
+		return nil, err
+	}
+
+	if len(out) == 0 {
+		return []string{}, nil
+	}
+
+	branches := strings.Split(out, "\n")
+	branchNames := getRepositoryBranchNames(branches)
+	return branchNames, nil
+}
+
+func getRepositoryBranchNames(branches []string) []string {
+	branchNames := make([]string, 0, len(branches))
+
+	for _, branch := range branches {
+		parts := strings.Split(branch, "\t")
+		if len(parts) < 2 {
+			continue
+		}
+
+		refPath := parts[1]
+
+		if idx := strings.LastIndex(refPath, "/"); idx != -1 {
+			branchName := refPath[idx+1:]
+			branchNames = append(branchNames, branchName)
+		}
+	}
+
+	return branchNames
+}

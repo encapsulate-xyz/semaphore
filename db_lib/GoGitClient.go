@@ -2,6 +2,7 @@ package db_lib
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/go-git/go-git/v5"
@@ -38,6 +39,14 @@ func (t ProgressWrapper) Write(p []byte) (n int, err error) {
 func getAuthMethod(r GitRepository) (transport.AuthMethod, error) {
 	switch r.Repository.SSHKey.Type {
 	case db.AccessKeySSH:
+
+		install, err := r.Repository.SSHKey.Install(db.AccessKeyRoleGit, r.Logger)
+		if err != nil {
+			return nil, err
+		}
+
+		defer install.Destroy()
+
 		var sshKeyBuff = r.Repository.SSHKey.SshKey.PrivateKey
 
 		if r.Repository.SSHKey.SshKey.Login == "" {
@@ -278,4 +287,35 @@ func (c GoGitClient) GetLastRemoteCommitHash(r GitRepository) (hash string, err 
 	}
 
 	return
+}
+
+func (c GoGitClient) GetRemoteBranches(r GitRepository) ([]string, error) {
+	remote := git.NewRemote(memory.NewStorage(), &config.RemoteConfig{
+		Name: "origin",
+		URLs: []string{r.Repository.GitURL},
+	})
+
+	auth, err := getAuthMethod(r)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to create SSH auth method: %w", err)
+	}
+
+	listOptions := &git.ListOptions{}
+	if auth != nil {
+		listOptions.Auth = auth
+	}
+
+	refs, err := remote.List(listOptions)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list remote references: %w", err)
+	}
+
+	branches := make([]string, 0, len(refs))
+	for _, ref := range refs {
+		if ref.Name().IsBranch() {
+			branches = append(branches, ref.Name().Short())
+		}
+	}
+	return branches, nil
 }
