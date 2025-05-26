@@ -7,8 +7,6 @@ info:
     This documentation outlines the available operations and data models.
   version: "2.14.0-beta1"
 
-host: localhost:3000
-
 consumes:
   - application/json
 produces:
