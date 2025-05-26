@@ -116,6 +116,8 @@ func (p AnsibleResultStageParser) Parse(currentStage *db.TaskStage, output db.Ta
 
 func (p AnsibleResultStageParser) Result() (res map[string]any) {
 	res = make(map[string]any)
+	writeLogTaskResultLog(p.state)
+
 	p.state.Hosts = make([]db.AnsibleTaskHost, 0)
 	//res["hosts"] = p.state.Hosts
 	return
