@@ -145,6 +145,8 @@ export default {
       okServers: 0,
       notOkServers: 0,
       tab: 'notOkServers',
+      failedTasks: null,
+      hosts: null,
     };
   },
 
@@ -162,9 +164,11 @@ export default {
 
   methods: {
     async loadData() {
-      this.failedTasks = await this.loadProjectEndpoint(`/tasks/${this.taskId}/ansible/errors`);
-      this.hosts = await this.loadProjectEndpoint(`/tasks/${this.taskId}/ansible/hosts`);
-      this.stages = await this.loadProjectEndpoint(`/tasks/${this.taskId}/stages`);
+      [this.failedTasks, this.hosts, this.stages] = await Promise.all([
+        this.loadProjectEndpoint(`/tasks/${this.taskId}/ansible/errors`),
+        this.loadProjectEndpoint(`/tasks/${this.taskId}/ansible/hosts`),
+        this.loadProjectEndpoint(`/tasks/${this.taskId}/stages`),
+      ]);
     },
 
     calcStats() {
