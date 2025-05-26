@@ -5,6 +5,15 @@
     v-model="formValid"
     v-if="templates && item != null"
   >
+    <v-alert
+      v-model="showInfo"
+      color="info"
+      text
+      dismissible
+    >
+      Use environment variable <code>SEMAPHORE_SCHEDULE_TIMEZONE</code> or config param
+      <code>schedule.timezone</code> to set timezone for Schedule.
+    </v-alert>
 
     <v-alert
       :value="formError"
@@ -330,10 +339,23 @@ export default {
       months: [],
       weekdays: [],
       rawCron: false,
+      showInfo: true,
     };
   },
 
+  watch: {
+    showInfo(val) {
+      if (val) {
+        localStorage.removeItem('schedule_hide_info');
+      } else {
+        localStorage.setItem('schedule_hide_info', '1');
+      }
+    },
+  },
+
   async created() {
+    this.showInfo = localStorage.getItem('schedule_hide_info') !== '1';
+
     this.templates = (await axios({
       method: 'get',
       url: `/api/project/${this.projectId}/templates`,
