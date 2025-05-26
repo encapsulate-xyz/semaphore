@@ -224,7 +224,8 @@ func (d *SqlDb) GetTaskOutputs(projectID int, taskID int, params db.RetrieveQuer
 
 	q := squirrel.Select("task_id", "time", "output").
 		From("task__output").
-		Where("task_id=?", taskID)
+		Where("task_id=?", taskID).
+		OrderBy("time, id")
 
 	if params.Count > 0 {
 		q = q.Limit(uint64(params.Count)).Offset(uint64(params.Offset))
