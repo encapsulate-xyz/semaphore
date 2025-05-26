@@ -1,7 +1,7 @@
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
   <div>
 
-    <h3 v-if="template">Template information</h3>
+    <h2 v-if="template" class="pb-2">Template info</h2>
     <div v-if="template" class="mb-5">
       <div>App: <b>{{ getAppTitle(template.app) }}</b></div>
       <div>
@@ -11,14 +11,14 @@
       </div>
     </div>
 
-    <h3 v-if="item.commit_hash">Commit info</h3>
+    <h2 v-if="item.commit_hash" class="pb-2">Commit info</h2>
 
     <div v-if="item.commit_hash" class="mb-5">
       <div>Commit message: <b>{{ item.commit_message }}</b></div>
       <div>Commit hash: <code>{{ item.commit_hash }}</code></div>
     </div>
 
-    <h3>Running info</h3>
+    <h2 class="pb-2">Running info</h2>
 
     <div class="mb-5">
       <div>Message: <b>{{ item.message || '—' }}</b></div>
@@ -34,7 +34,7 @@
       <div>{{ $t('duration') }}: {{ [item.start, item.end] | formatMilliseconds }}</div>
     </div>
 
-    <h3 v-if="item?.params">Task parameters</h3>
+    <h2 v-if="item?.params" class="pb-2">Task parameters</h2>
     <div class="mb-5" v-if="item?.params">
       <div>Limit: {{ item.params.limit }}</div>
       <div>Debug: {{ item.params.debug }}</div>
