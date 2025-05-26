@@ -43,17 +43,6 @@ func (p AnsibleResultStageParser) IsEnd(currentStage *db.TaskStage, output db.Ta
 	return strings.TrimSpace(output.Output) == ""
 }
 
-//type AnsibleResultHost struct {
-//	Host        string `json:"host"`
-//	Ok          int    `json:"ok"`
-//	Changed     int    `json:"changed"`
-//	Unreachable int    `json:"unreachable"`
-//	Failed      int    `json:"failed"`
-//	Skipped     int    `json:"skipped"`
-//	Rescued     int    `json:"rescued"`
-//	Ignored     int    `json:"ignored"`
-//}
-
 var ansibleResultHostRE = regexp.MustCompile(
 	`^([^\s]+)\s*:\s*` +
 		`ok=(\d+)\s+` +
@@ -72,7 +61,7 @@ func toInt(s string) int {
 }
 
 type AnsibleResultStageParserState struct {
-	//Hosts []AnsibleResultHost
+	Hosts []db.AnsibleTaskHost `json:"hosts"`
 }
 
 func (p AnsibleResultStageParser) Parse(currentStage *db.TaskStage, output db.TaskOutput, store db.Store, projectID int) (ok bool, err error) {
@@ -105,18 +94,7 @@ func (p AnsibleResultStageParser) Parse(currentStage *db.TaskStage, output db.Ta
 		return
 	}
 
-	//p.state.Hosts = append(p.state.Hosts, AnsibleResultHost{
-	//	Host:        m[1],
-	//	Ok:          toInt(m[2]),
-	//	Changed:     toInt(m[3]),
-	//	Unreachable: toInt(m[4]),
-	//	Failed:      toInt(m[5]),
-	//	Skipped:     toInt(m[6]),
-	//	Rescued:     toInt(m[7]),
-	//	Ignored:     toInt(m[8]),
-	//})
-
-	err = store.CreateAnsibleTaskHost(db.AnsibleTaskHost{
+	host := db.AnsibleTaskHost{
 		TaskID:      currentStage.TaskID,
 		ProjectID:   projectID,
 		Host:        m[1],
@@ -127,13 +105,18 @@ func (p AnsibleResultStageParser) Parse(currentStage *db.TaskStage, output db.Ta
 		Skipped:     toInt(m[6]),
 		Rescued:     toInt(m[7]),
 		Ignored:     toInt(m[8]),
-	})
+	}
+
+	p.state.Hosts = append(p.state.Hosts, host)
+
+	err = store.CreateAnsibleTaskHost(host)
 
 	return
 }
 
 func (p AnsibleResultStageParser) Result() (res map[string]any) {
 	res = make(map[string]any)
+	p.state.Hosts = make([]db.AnsibleTaskHost, 0)
 	//res["hosts"] = p.state.Hosts
 	return
 }
