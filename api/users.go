@@ -77,6 +77,35 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 
 	helpers.WriteJSON(w, http.StatusCreated, newUser)
 }
+func readonlyUserMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		userID, err := helpers.GetIntParam("user_id", w, r)
+
+		if err != nil {
+			return
+		}
+
+		user, err := helpers.Store(r).GetUser(userID)
+
+		if err != nil {
+			helpers.WriteError(w, err)
+			return
+		}
+
+		editor := context.Get(r, "user").(*db.User)
+
+		if !editor.Admin && editor.ID != user.ID {
+			user = db.User{
+				ID:       user.ID,
+				Username: user.Username,
+				Name:     user.Name,
+			}
+		}
+
+		context.Set(r, "_user", user)
+		next.ServeHTTP(w, r)
+	})
+}
 
 func getUserMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

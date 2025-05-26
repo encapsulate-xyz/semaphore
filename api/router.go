@@ -196,10 +196,13 @@ func Route() *mux.Router {
 	tasksAPI.Path("/{task_id}").HandlerFunc(tasks.GetTasks).Methods("GET", "HEAD")
 	tasksAPI.Path("/{task_id}").HandlerFunc(tasks.DeleteTask).Methods("DELETE")
 
+	userUserAPI := authenticatedAPI.Path("/users/{user_id}").Subrouter()
+	userUserAPI.Use(readonlyUserMiddleware)
+	userUserAPI.Methods("GET", "HEAD").HandlerFunc(getUser)
+
 	userAPI := authenticatedAPI.Path("/users/{user_id}").Subrouter()
 	userAPI.Use(getUserMiddleware)
 
-	userAPI.Methods("GET", "HEAD").HandlerFunc(getUser)
 	userAPI.Methods("PUT").HandlerFunc(updateUser)
 	userAPI.Methods("DELETE").HandlerFunc(deleteUser)
 
