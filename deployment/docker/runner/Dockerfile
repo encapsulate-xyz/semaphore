@@ -73,7 +73,8 @@ RUN chown -R semaphore:0 /usr/local/bin/runner-wrapper && \
 WORKDIR /home/semaphore
 
 # renovate: datasource=pypi depName=ansible
-ENV ANSIBLE_VERSION 11.1.0
+ARG ANSIBLE_VERSION=11.1.0
+ENV ANSIBLE_VERSION=${ANSIBLE_VERSION}
 ARG ANSIBLE_VENV_PATH=/opt/semaphore/apps/ansible/${ANSIBLE_VERSION}/venv
 
 RUN apk add --no-cache -U python3-dev build-base openssl-dev libffi-dev cargo && \
