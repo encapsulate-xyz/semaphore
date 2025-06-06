@@ -45,7 +45,6 @@ Semaphore UI allows you to:
 
 You can install Semaphore using the following methods:
 * [Docker](https://semaphoreui.com/install/docker)
-* [SaaS](https://portal.semaphoreui.com)
 * Deploy a VM from a marketplace:
   * [AWS](https://aws.amazon.com/marketplace/pp/prodview-xavlsdkqybxtq)
   * [DigitalOcean](https://marketplace.digitalocean.com/apps/semaphore?refcode=b55d7c0077b8&action=deploy)
