@@ -17,10 +17,11 @@ Thank you, [Stefan](https://github.com/stefanux) and [steadfasterX](https://gith
 
 Thank you, [Thomas](https://github.com/tboerger) and [Brian](https://github.com/Omicron7), for excellent contriubutions. You solved issues that no one else would have taken on.
 
+<!--
 ## Live Demo
 
 Try the latest version of Semaphore at [https://portal.semaphoreui.com](https://portal.semaphoreui.com).
-
+-->
 
 ## What is Semaphore UI?
 
