@@ -30,7 +30,7 @@
 
         at <b>{{ item.start | formatDate }}</b>
         <v-icon
-          class="ml-4" small style="transform: translateY(-1px)">mdi-clock-outline</v-icon>
+          class="ml-6" small style="transform: translateY(-1px)">mdi-clock-outline</v-icon>
         {{ [item.start, item.end] | formatMilliseconds }}
       </span>
     </div>
