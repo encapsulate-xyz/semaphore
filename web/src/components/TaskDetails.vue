@@ -60,7 +60,7 @@
     </v-row>
 
     <v-row>
-      <v-col>
+      <v-col cols="12" md="6">
         <v-card
           :color="$vuetify.theme.dark ? '#212121' : 'white'"
           style="background: #8585850f"
@@ -105,7 +105,7 @@
           </v-card-text>
         </v-card>
       </v-col>
-      <v-col>
+      <v-col cols="12" md="6">
         <v-card v-if="item?.params">
           <v-card-title>Task parameters</v-card-title>
           <v-card-text>
