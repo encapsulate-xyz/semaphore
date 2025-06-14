@@ -1,6 +1,6 @@
 # Semaphore UI
 
-Modern UI for Ansible, Terraform, OpenTofu, PowerShell and other DevOps tools.
+Modern UI for Ansible, Terraform/OpenTofu/Terragrunt, PowerShell and other DevOps tools.
 
 [![roadmap](https://img.shields.io/badge/roadmap-gray?style=for-the-badge&logo=github)](https://github.com/orgs/semaphoreui/projects/11)
 [![telegram](https://img.shields.io/badge/discord_community-510b80?style=for-the-badge&logo=discord)](https://discord.gg/5R6k7hNGcH) 
