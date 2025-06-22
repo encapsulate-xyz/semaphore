@@ -173,6 +173,16 @@ export default {
         this.loadProjectEndpoint(`/tasks/${this.taskId}/ansible/hosts`),
         this.loadProjectEndpoint(`/tasks/${this.taskId}/stages`),
       ]);
+
+      this.hosts.forEach((host) => {
+        if (host.unreachable) {
+          this.failedTasks.push({
+            host: host.host,
+            task: '—',
+            error: 'Host is unreachable',
+          });
+        }
+      });
     },
 
     calcStats() {
