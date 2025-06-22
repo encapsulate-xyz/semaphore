@@ -48,11 +48,14 @@
         <tr>
           <th style="width: 150px;">Server</th>
           <th style="width: 200px;">Task</th>
-          <th style="calc(100% - 350px);">Error</th>
+          <th style="width: calc(100% - 350px);">Error</th>
         </tr>
         </thead>
         <tbody>
-        <tr v-for="(task, index) in failedTasks" :key="index">
+        <tr v-if="!failedTasks || failedTasks.length === 0">
+          <td colspan="3" class="text-center">No failed tasks</td>
+        </tr>
+        <tr v-else v-for="(task, index) in failedTasks" :key="index">
           <td style="width: 150px;">{{ task.host }}</td>
           <td style="width: 200px;">{{ task.task }}</td>
           <td>
@@ -62,6 +65,7 @@
             </div>
           </td>
         </tr>
+
         </tbody>
       </template>
     </v-simple-table>
