@@ -42,33 +42,67 @@
       </v-btn>
     </v-btn-toggle>
 
-    <v-simple-table v-if="tab === 'notOkServers'">
-      <template v-slot:default>
-        <thead>
-        <tr>
-          <th style="width: 150px;">Server</th>
-          <th style="width: 200px;">Task</th>
-          <th style="width: calc(100% - 350px);">Error</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-if="!failedTasks || failedTasks.length === 0">
-          <td colspan="3" class="text-center">No failed tasks</td>
-        </tr>
-        <tr v-else v-for="(task, index) in failedTasks" :key="index">
-          <td style="width: 150px;">{{ task.host }}</td>
-          <td style="width: 200px;">{{ task.task }}</td>
-          <td>
-            <div
-              style="overflow: hidden; color: #ff5252; max-width: 400px; text-overflow: ellipsis">
-              {{ task.error }}
-            </div>
-          </td>
-        </tr>
-
-        </tbody>
+    <v-data-table
+      v-if="tab === 'notOkServers'"
+      hide-default-footer
+      single-expand
+      show-expand
+      :headers="notOkServersHeaders"
+      :items="failedTasks"
+      :items-per-page="Number.MAX_VALUE"
+    >
+      <template v-slot:item.error="{ item }">
+        <div
+          style="overflow: hidden; color: #ff5252; max-width: 400px; text-overflow: ellipsis">
+          {{ item.error }}
+        </div>
       </template>
-    </v-simple-table>
+      <template v-slot:expanded-item="{ headers, item }">
+        <td
+          :colspan="headers.length"
+        >
+          <pre style="overflow: auto;
+                            background: gray;
+                            font-size: 14px;
+                            color: white;
+                            border-radius: 10px;
+                            margin-top: 5px; margin-bottom: 5px;"
+
+               class="pa-2"
+          >{{ item.error.trim() }}</pre>
+        </td>
+      </template>
+    </v-data-table>
+
+<!--    <v-simple-table v-if="tab === 'notOkServers'">-->
+<!--      <template v-slot:default>-->
+<!--        <thead>-->
+<!--        <tr>-->
+<!--          <th style="width: 150px;">Server</th>-->
+<!--          <th style="width: 200px;">Task</th>-->
+<!--          <th style="width: calc(100% - 350px);">Error</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        <tr v-if="!failedTasks || failedTasks.length === 0">-->
+<!--          <td colspan="3" class="text-center">No failed tasks</td>-->
+<!--        </tr>-->
+
+<!--        <tr v-else v-for="(task, index) in failedTasks" :key="index">-->
+<!--          <td style="width: 150px;">{{ task.host }}</td>-->
+<!--          <td style="width: 200px;">{{ task.task }}</td>-->
+<!--          <td>-->
+<!--            <div-->
+<!--              style="overflow: hidden; color: #ff5252;
+max-width: 400px; text-overflow: ellipsis">-->
+<!--              {{ task.error }}-->
+<!--            </div>-->
+<!--          </td>-->
+<!--        </tr>-->
+
+<!--        </tbody>-->
+<!--      </template>-->
+<!--    </v-simple-table>-->
 
     <v-simple-table v-else-if="tab === 'allServers'">
       <template v-slot:default>
@@ -183,8 +217,21 @@ export default {
       okServers: 0,
       notOkServers: 0,
       tab: 'notOkServers',
-      failedTasks: null,
+      failedTasks: [],
       hosts: null,
+      notOkServersHeaders: [{
+        text: 'Server',
+        value: 'host',
+        sortable: false,
+      }, {
+        text: 'Task',
+        value: 'task',
+        sortable: false,
+      }, {
+        text: 'Error',
+        value: 'error',
+        sortable: false,
+      }],
     };
   },
 

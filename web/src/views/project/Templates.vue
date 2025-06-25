@@ -138,8 +138,8 @@
       :items-per-page="Number.MAX_VALUE"
       :expanded.sync="openedItems"
       :style="{
-          opacity: viewItemsLoading ? 0.3 : 1,
-        }"
+        opacity: viewItemsLoading ? 0.3 : 1,
+      }"
     >
       <template v-slot:item.name="{ item }">
         <v-icon
