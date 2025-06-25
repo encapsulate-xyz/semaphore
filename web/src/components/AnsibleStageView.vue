@@ -87,13 +87,47 @@
         <tbody>
         <tr v-for="(host, index) in hosts" :key="index">
           <td>{{ host.host }}</td>
-          <td>{{ host.changed }}</td>
-          <td>{{ host.failed }}</td>
-          <td>{{ host.ignored }}</td>
-          <td>{{ host.ok }}</td>
-          <td>{{ host.rescued }}</td>
-          <td>{{ host.skipped }}</td>
-          <td>{{ host.unreachable }}</td>
+
+          <td :style="{
+            color: (host.changed > 0 ? 'brown' : undefined),
+            'font-weight': (host.changed > 0 ? 'bold' : undefined),
+          }"
+          >{{ host.changed }}</td>
+
+          <td :style="{
+            color: (host.failed > 0 ? 'red' : undefined),
+            'font-weight': (host.failed > 0 ? 'bold' : undefined),
+          }">{{ host.failed }}</td>
+
+          <td :style="{
+            color: (host.ignored > 0 ? 'red' : undefined),
+            'font-weight': (host.ignored > 0 ? 'bold' : undefined),
+          }"
+          >{{ host.ignored }}</td>
+
+          <td :style="{
+            color: (host.ok > 0 ? 'green' : undefined),
+            'font-weight': (host.ok > 0 ? 'bold' : undefined),
+          }"
+          >{{ host.ok }}</td>
+
+          <td :style="{
+            'font-weight': (host.rescued > 0 ? 'bold' : undefined),
+          }"
+          >{{ host.rescued }}</td>
+
+          <td :style="{
+            color: (host.skipped > 0 ? 'rgb(0,170,170)' : undefined),
+            'font-weight': (host.skipped > 0 ? 'bold' : undefined),
+          }"
+          >{{ host.skipped }}</td>
+
+          <td :style="{
+            color: (host.unreachable > 0 ? 'red' : undefined),
+            'font-weight': (host.unreachable > 0 ? 'bold' : undefined),
+          }">
+            {{ host.unreachable }}
+          </td>
         </tr>
         </tbody>
       </template>
