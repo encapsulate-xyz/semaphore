@@ -50,6 +50,7 @@
       :headers="notOkServersHeaders"
       :items="failedTasks"
       :items-per-page="Number.MAX_VALUE"
+      class="w-100"
     >
       <template v-slot:item.error="{ item }">
         <div
@@ -61,15 +62,16 @@
         <td
           :colspan="headers.length"
         >
-          <pre style="overflow: auto;
-                            background: gray;
-                            font-size: 14px;
-                            color: white;
-                            border-radius: 10px;
-                            margin-top: 5px; margin-bottom: 5px;"
+            <pre style="overflow: auto;
+                  background: gray;
+                  font-size: 14px;
+                  color: white;
+                  border-radius: 10px;
+                  white-space: wrap;
+                  margin-top: 5px; margin-bottom: 5px;"
 
-               class="pa-2"
-          >{{ item.error.trim() }}</pre>
+                 class="pa-2"
+            >{{ item.error.trim() }}</pre>
         </td>
       </template>
     </v-data-table>
