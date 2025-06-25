@@ -67,8 +67,9 @@
                   font-size: 14px;
                   color: white;
                   border-radius: 10px;
-                  white-space: wrap;
-                  margin-top: 5px; margin-bottom: 5px;"
+                  white-space: pre-wrap;
+                  margin-top: 5px;
+                  margin-bottom: 5px;"
 
                  class="pa-2"
             >{{ item.error.trim() }}</pre>
