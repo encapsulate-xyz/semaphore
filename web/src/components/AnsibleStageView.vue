@@ -89,7 +89,7 @@
           <td>{{ host.host }}</td>
 
           <td :style="{
-            color: (host.changed > 0 ? 'brown' : undefined),
+            color: (host.changed > 0 ? 'rgb(170,85,0)' : undefined),
             'font-weight': (host.changed > 0 ? 'bold' : undefined),
           }"
           >{{ host.changed }}</td>
