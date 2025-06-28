@@ -272,7 +272,6 @@ func (p *TaskPool) Run() {
 
 			db.StoreSession(p.store, "new task", func() {
 				//p.Queue = append(p.Queue, task)
-				log.Debug(task)
 				msg := "Task " + strconv.Itoa(task.Task.ID) + " added to queue"
 				task.Log(msg)
 				log.Info(msg)
