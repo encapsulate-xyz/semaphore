@@ -24,7 +24,7 @@ func (d *SqlDb) GetAccessKeys(projectID int, params db.RetrieveQueryParams) (key
 		return
 	}
 
-	q = q.Where("pe.environment_id IS NULL")
+	q = q.Where("pe.owner = ''")
 
 	query, args, err := q.ToSql()
 
@@ -87,12 +87,14 @@ func (d *SqlDb) CreateAccessKey(key db.AccessKey) (newKey db.AccessKey, err erro
 
 	insertID, err := d.insert(
 		"id",
-		"insert into access_key (name, type, project_id, secret, environment_id) values (?, ?, ?, ?, ?)",
+		"insert into access_key (name, type, project_id, secret, environment_id, owner) values (?, ?, ?, ?, ?, ?)",
 		key.Name,
 		key.Type,
 		key.ProjectID,
 		key.Secret,
-		key.EnvironmentID)
+		key.EnvironmentID,
+		key.Owner,
+	)
 
 	if err != nil {
 		return
