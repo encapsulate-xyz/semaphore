@@ -582,9 +582,10 @@ func getSystemInfo(w http.ResponseWriter, r *http.Request) {
 		"auth_methods": authMethods,
 
 		"premium_features": map[string]bool{
-			"project_runners":   false,
-			"terraform_backend": false,
-			"task_result":       false,
+			"project_runners":         false,
+			"terraform_backend":       false,
+			"task_result":             false,
+			"hashicorp_vault_secrets": false,
 		},
 
 		"git_client": util.Config.GitClientId,

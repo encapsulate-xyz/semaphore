@@ -81,7 +81,7 @@ func (c *ProjectController) UpdateProject(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	err := c.ProjectService.UpdateProject(project)
+	err := c.ProjectService.UpdateProject(body)
 
 	if err != nil {
 		helpers.WriteError(w, err)

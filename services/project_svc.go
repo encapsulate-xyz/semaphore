@@ -45,7 +45,7 @@ func (s *ProjectServiceImpl) UpdateProject(project db.Project) (err error) {
 	if len(keys) == 0 {
 		if project.VaultToken != "" {
 			_, err = s.keyRepo.CreateAccessKey(db.AccessKey{
-				Type:      db.AccessKeyLoginPassword,
+				Type:      db.AccessKeyString,
 				ProjectID: &project.ID,
 				Secret:    nil,
 				String:    project.VaultToken,
@@ -59,7 +59,7 @@ func (s *ProjectServiceImpl) UpdateProject(project db.Project) (err error) {
 			err = s.keyRepo.DeleteAccessKey(project.ID, vault.ID)
 		} else {
 			vault.OverrideSecret = true
-			vault.Secret = &project.VaultToken
+			vault.String = project.VaultToken
 			err = s.keyRepo.UpdateAccessKey(vault)
 		}
 	}
