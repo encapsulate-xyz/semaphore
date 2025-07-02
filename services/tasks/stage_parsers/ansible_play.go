@@ -122,6 +122,15 @@ func (p AnsibleRunningStageParser) Parse(currentStage *db.TaskStage, output db.T
 			p.state.CurrentHostAnswer = msg
 		} else {
 			end := strings.Index(line, "]")
+
+			if end == -1 {
+				log.WithFields(log.Fields{
+					"context": "ansible play parser",
+					"line":    line,
+				}).Warn("Failed to parse failed task line")
+				return
+			}
+
 			start := len(failedTaskMaker)
 			p.state.CurrentFailedHost = line[start:end]
 			p.state.CurrentHostAnswer = ""
