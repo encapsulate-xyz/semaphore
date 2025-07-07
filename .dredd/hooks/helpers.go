@@ -70,7 +70,7 @@ func truncateAll() {
 	case *bolt.BoltDb:
 		// Do nothing
 	case *sql.SqlDb:
-		switch store.(*sql.SqlDb).Sql().Dialect.(type) {
+		switch store.(*sql.SqlDb).Sql().Dialect().(type) {
 		case gorp.PostgresDialect:
 			// Do nothing
 		case gorp.MySQLDialect:

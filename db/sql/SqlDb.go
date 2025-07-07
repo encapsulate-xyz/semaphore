@@ -18,10 +18,12 @@ import (
 	"github.com/semaphoreui/semaphore/pkg/task_logger"
 	"github.com/semaphoreui/semaphore/util"
 	log "github.com/sirupsen/logrus"
+	_ "modernc.org/sqlite" // Import the driver
 )
 
 type SqlDb struct {
-	sql *gorp.DbMap
+	sql     Sql
+	dialect string
 }
 
 var initialSQL = `
@@ -34,6 +36,14 @@ create table ` + "`migrations`" + ` (
 
 //go:embed migrations/*.sql
 var dbAssets embed.FS
+
+func CreateDb(dialect string) *SqlDb {
+	return &SqlDb{dialect: dialect}
+}
+
+func (d *SqlDb) GetDialect() string {
+	return d.dialect
+}
 
 func getQueryForParams(q squirrel.SelectBuilder, prefix string, props db.ObjectProps, params db.RetrieveQueryParams) (res squirrel.SelectBuilder, err error) {
 	pp, err := params.Validate(props)
@@ -114,27 +124,31 @@ func (d *SqlDb) prepareQueryWithDialect(query string, dialect gorp.Dialect) stri
 }
 
 func (d *SqlDb) PrepareQuery(query string) string {
-	return d.prepareQueryWithDialect(query, d.sql.Dialect)
+	return d.prepareQueryWithDialect(query, d.sql.Dialect())
 }
 
 func (d *SqlDb) insert(primaryKeyColumnName string, query string, args ...any) (int, error) {
+	return d.insertBy(d.sql, primaryKeyColumnName, query, args...)
+}
+
+func (d *SqlDb) insertBy(executor gorp.SqlExecutor, primaryKeyColumnName string, query string, args ...any) (int, error) {
 	var insertId int64
 
-	switch d.sql.Dialect.(type) {
+	switch d.sql.Dialect().(type) {
 	case gorp.PostgresDialect:
 		var err error
 		if primaryKeyColumnName != "" {
 			query += " returning " + primaryKeyColumnName
-			err = d.sql.QueryRow(d.PrepareQuery(query), args...).Scan(&insertId)
+			err = executor.QueryRow(d.PrepareQuery(query), args...).Scan(&insertId)
 		} else {
-			_, err = d.sql.Exec(d.PrepareQuery(query), args...)
+			_, err = executor.Exec(d.PrepareQuery(query), args...)
 		}
 
 		if err != nil {
 			return 0, err
 		}
 	default:
-		res, err := d.exec(query, args...)
+		res, err := executor.Exec(d.PrepareQuery(query), args...)
 		if err != nil {
 			return 0, err
 		}
@@ -323,7 +337,7 @@ func (d *SqlDb) deleteObject(projectID int, props db.ObjectProps, objectID any) 
 }
 
 func (d *SqlDb) Close(token string) {
-	err := d.sql.Db.Close()
+	err := d.sql.Close()
 	if err != nil {
 		panic(err)
 	}
@@ -364,16 +378,11 @@ func (d *SqlDb) Connect(_ string) {
 		panic(err)
 	}
 
-	var dialect gorp.Dialect
+	d.sql = Create(cfg.Dialect, sqlDb) //&gorp.DbMap{Db: sqlDb, Dialect: dialect}
 
-	switch cfg.Dialect {
-	case util.DbDriverMySQL:
-		dialect = gorp.MySQLDialect{Engine: "InnoDB", Encoding: "UTF8"}
-	case util.DbDriverPostgres:
-		dialect = gorp.PostgresDialect{}
-	}
-
-	d.sql = &gorp.DbMap{Db: sqlDb, Dialect: dialect}
+	//if d.GetDialect() == util.DbDriverSQLite {
+	//	sqlDb.SetMaxOpenConns(1)
+	//}
 
 	d.sql.AddTableWithName(db.APIToken{}, "user__token").SetKeys(false, "id")
 	d.sql.AddTableWithName(db.AccessKey{}, "access_key").SetKeys(true, "id")
@@ -486,7 +495,7 @@ func (d *SqlDb) getObjectRefsFrom(
 	return
 }
 
-func (d *SqlDb) Sql() *gorp.DbMap {
+func (d *SqlDb) Sql() Sql {
 	return d.sql
 }
 

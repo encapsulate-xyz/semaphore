@@ -24,6 +24,20 @@ func (t *TaskRunner) Logf(format string, a ...any) {
 }
 
 func (t *TaskRunner) LogWithTime(now time.Time, msg string) {
+	t.sendToWs(now, msg)
+
+	t.pool.logger <- logRecord{
+		task:   t,
+		output: msg,
+		time:   now,
+	}
+
+	for _, l := range t.logListeners {
+		l(now, msg)
+	}
+}
+
+func (t *TaskRunner) sendToWs(now time.Time, msg string) {
 	for _, user := range t.users {
 		b, err := json.Marshal(&map[string]any{
 			"type":       "log",
@@ -35,16 +49,6 @@ func (t *TaskRunner) LogWithTime(now time.Time, msg string) {
 
 		util.LogPanic(err)
 		sockets.Message(user, b)
-	}
-
-	t.pool.logger <- logRecord{
-		task:   t,
-		output: msg,
-		time:   now,
-	}
-
-	for _, l := range t.logListeners {
-		l(now, msg)
 	}
 }
 
@@ -148,7 +152,13 @@ func (t *TaskRunner) logPipe(reader io.Reader) {
 		defer t.logWG.Done()
 
 		for line := range linesCh {
-			t.Log(line)
+			time := tz.Now()
+
+			if len(linesCh) > 10000 {
+				fmt.Println("TaskRunner log buffer is full ", len(linesCh))
+			}
+
+			t.LogWithTime(time, line)
 		}
 	}()
 

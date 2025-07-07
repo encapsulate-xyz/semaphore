@@ -55,7 +55,7 @@ func getVersionSQL(name string, ignoreErrors bool) (queries []string) {
 // prepareMigration converts migration SQLite-query to current dialect.
 // Supported MySQL and Postgres dialects.
 func (d *SqlDb) prepareMigration(query string) string {
-	switch d.sql.Dialect.(type) {
+	switch d.sql.Dialect().(type) {
 	case gorp.MySQLDialect:
 		query = autoIncrementRE.ReplaceAllString(query, "auto_increment")
 		query = ifExistsRE.ReplaceAllString(query, "")
