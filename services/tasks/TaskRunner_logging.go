@@ -152,13 +152,7 @@ func (t *TaskRunner) logPipe(reader io.Reader) {
 		defer t.logWG.Done()
 
 		for line := range linesCh {
-			time := tz.Now()
-
-			if len(linesCh) > 10000 {
-				fmt.Println("TaskRunner log buffer is full ", len(linesCh))
-			}
-
-			t.LogWithTime(time, line)
+			t.Log(line)
 		}
 	}()
 
