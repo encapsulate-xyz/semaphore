@@ -225,6 +225,34 @@ jobs:
         run: |
           chmod +x ./semaphore && ./semaphore migrate --config config.json
 
+  migrate-sqlite:
+    runs-on: ubuntu-latest
+
+    needs:
+      - build-local
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: semaphore
+
+      - name: Write config
+        run: |
+          cat > config.json <<EOF
+            {
+              "sqlite": {
+                "host": "/tmp/db.sqlite"
+              },
+              "dialect": "sqlite",
+              "email_alert": false
+            }
+          EOF
+
+      - name: Migrate database
+        run: |
+          chmod +x ./semaphore && ./semaphore migrate --config config.json
+
   integrate-boltdb:
     runs-on: ubuntu-latest
 
