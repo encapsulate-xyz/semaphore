@@ -22,7 +22,7 @@ import (
 )
 
 type SqlDb struct {
-	sql     Sql
+	sql     *gorp.DbMap
 	dialect string
 }
 
@@ -124,7 +124,7 @@ func (d *SqlDb) prepareQueryWithDialect(query string, dialect gorp.Dialect) stri
 }
 
 func (d *SqlDb) PrepareQuery(query string) string {
-	return d.prepareQueryWithDialect(query, d.sql.Dialect())
+	return d.prepareQueryWithDialect(query, d.sql.Dialect)
 }
 
 func (d *SqlDb) insert(primaryKeyColumnName string, query string, args ...any) (int, error) {
@@ -134,7 +134,7 @@ func (d *SqlDb) insert(primaryKeyColumnName string, query string, args ...any) (
 func (d *SqlDb) insertBy(executor gorp.SqlExecutor, primaryKeyColumnName string, query string, args ...any) (int, error) {
 	var insertId int64
 
-	switch d.sql.Dialect().(type) {
+	switch d.sql.Dialect.(type) {
 	case gorp.PostgresDialect:
 		var err error
 		if primaryKeyColumnName != "" {
@@ -337,7 +337,7 @@ func (d *SqlDb) deleteObject(projectID int, props db.ObjectProps, objectID any) 
 }
 
 func (d *SqlDb) Close(token string) {
-	err := d.sql.Close()
+	err := d.sql.Db.Close()
 	if err != nil {
 		panic(err)
 	}
@@ -378,11 +378,22 @@ func (d *SqlDb) Connect(_ string) {
 		panic(err)
 	}
 
-	d.sql = Create(cfg.Dialect, sqlDb) //&gorp.DbMap{Db: sqlDb, Dialect: dialect}
+	var dialect gorp.Dialect
 
-	//if d.GetDialect() == util.DbDriverSQLite {
-	//	sqlDb.SetMaxOpenConns(1)
-	//}
+	switch cfg.Dialect {
+	case util.DbDriverMySQL:
+		dialect = gorp.MySQLDialect{Engine: "InnoDB", Encoding: "UTF8"}
+	case util.DbDriverPostgres:
+		dialect = gorp.PostgresDialect{}
+	case util.DbDriverSQLite:
+		dialect = gorp.SqliteDialect{}
+	}
+
+	d.sql = &gorp.DbMap{Db: sqlDb, Dialect: dialect}
+
+	if d.GetDialect() == util.DbDriverSQLite {
+		sqlDb.SetMaxOpenConns(1)
+	}
 
 	d.sql.AddTableWithName(db.APIToken{}, "user__token").SetKeys(false, "id")
 	d.sql.AddTableWithName(db.AccessKey{}, "access_key").SetKeys(true, "id")
@@ -495,7 +506,7 @@ func (d *SqlDb) getObjectRefsFrom(
 	return
 }
 
-func (d *SqlDb) Sql() Sql {
+func (d *SqlDb) Sql() *gorp.DbMap {
 	return d.sql
 }
 
