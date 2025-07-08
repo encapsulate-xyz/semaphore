@@ -595,10 +595,7 @@ jobs:
         run: |
           cat > config.stdin <<EOF
           4
-          localhost:5432
-          semaphore
-          p455w0rd
-          semaphore
+          /tmp/database.sqlite
           /tmp/semaphore
           http://localhost:3000
           no
