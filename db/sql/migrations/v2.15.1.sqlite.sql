@@ -19,7 +19,7 @@ CREATE TABLE project__environment (
                                       password    VARCHAR(255) NULL,
                                       json        TEXT NOT NULL,
                                       name        VARCHAR(255) NULL,
-                                      env         TEXT NOT NULL
+                                      env         TEXT
 );
 
 CREATE INDEX project__environment__project__environment_project_id
