@@ -128,10 +128,6 @@ func (d *SqlDb) PrepareQuery(query string) string {
 }
 
 func (d *SqlDb) insert(primaryKeyColumnName string, query string, args ...any) (int, error) {
-	return d.insertBy(d.sql, primaryKeyColumnName, query, args...)
-}
-
-func (d *SqlDb) insertBy(executor gorp.SqlExecutor, primaryKeyColumnName string, query string, args ...any) (int, error) {
 	var insertId int64
 
 	switch d.sql.Dialect.(type) {
@@ -139,16 +135,16 @@ func (d *SqlDb) insertBy(executor gorp.SqlExecutor, primaryKeyColumnName string,
 		var err error
 		if primaryKeyColumnName != "" {
 			query += " returning " + primaryKeyColumnName
-			err = executor.QueryRow(d.PrepareQuery(query), args...).Scan(&insertId)
+			err = d.sql.QueryRow(d.PrepareQuery(query), args...).Scan(&insertId)
 		} else {
-			_, err = executor.Exec(d.PrepareQuery(query), args...)
+			_, err = d.sql.Exec(d.PrepareQuery(query), args...)
 		}
 
 		if err != nil {
 			return 0, err
 		}
 	default:
-		res, err := executor.Exec(d.PrepareQuery(query), args...)
+		res, err := d.sql.Exec(d.PrepareQuery(query), args...)
 		if err != nil {
 			return 0, err
 		}

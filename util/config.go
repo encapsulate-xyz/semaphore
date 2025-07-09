@@ -1017,23 +1017,8 @@ func (d *DbConfig) GetConnectionString(includeDbName bool) (connectionString str
 		}
 		connectionString += mapToQueryString(d.Options)
 	case DbDriverSQLite:
-		connectionString = fmt.Sprintf("file:%s?_busy_timeout=5000&_journal_mode=WAL&_synchronous=NORMAL", dbHost)
-
-		//if includeDbName {
-		//	connectionString = fmt.Sprintf(
-		//		"postgres://%s:%s@%s/%s",
-		//		dbUser,
-		//		url.QueryEscape(dbPass),
-		//		dbHost,
-		//		dbName)
-		//} else {
-		//	connectionString = fmt.Sprintf(
-		//		"postgres://%s:%s@%s/postgres",
-		//		dbUser,
-		//		url.QueryEscape(dbPass),
-		//		dbHost)
-		//}
-		//connectionString += mapToQueryString(d.Options)
+		connectionString = "file:" + dbHost
+		connectionString += mapToQueryString(d.Options)
 	default:
 		err = fmt.Errorf("unsupported database driver: %s", d.Dialect)
 	}
