@@ -65,6 +65,7 @@ type ObjectReferrers struct {
 	Repositories []ObjectReferrer `json:"repositories"`
 	Integrations []ObjectReferrer `json:"integrations"`
 	Schedules    []ObjectReferrer `json:"schedules"`
+	AccessKeys   []ObjectReferrer `json:"access_keys"`
 }
 
 type IntegrationReferrers struct {
@@ -299,6 +300,7 @@ type EnvironmentManager interface {
 type GetAccessKeyOptions struct {
 	Owner         AccessKeyOwner
 	EnvironmentID *int
+	StorageID     *int
 }
 
 // AccessKeyManager handles access key-related operations
@@ -429,6 +431,15 @@ type EventManager interface {
 	GetEvents(projectID int, params RetrieveQueryParams) ([]Event, error)
 }
 
+type SecretStorageRepository interface {
+	GetSecretStorages(projectID int) ([]SecretStorage, error)
+	CreateSecretStorage(storage SecretStorage) (SecretStorage, error)
+	GetSecretStorage(projectID int, storageID int) (SecretStorage, error)
+	UpdateSecretStorage(storage SecretStorage) error
+	GetSecretStorageRefs(projectID int, storageID int) (ObjectReferrers, error)
+	DeleteSecretStorage(projectID int, storageID int) error
+}
+
 // Store is the main interface that aggregates all specialized interfaces
 type Store interface {
 	ConnectionManager
@@ -449,6 +460,7 @@ type Store interface {
 	ViewManager
 	RunnerManager
 	EventManager
+	SecretStorageRepository
 }
 
 var AccessKeyProps = ObjectProps{
@@ -549,6 +561,14 @@ var ScheduleProps = ObjectProps{
 	Ownerships:        []*ObjectProps{&ProjectProps},
 }
 
+var SecretStorageProps = ObjectProps{
+	TableName:             "project__secret_storage",
+	ReferringColumnSuffix: "storage_id",
+	Type:                  reflect.TypeOf(SecretStorage{}),
+	PrimaryColumnName:     "id",
+	Ownerships:            []*ObjectProps{&ProjectProps},
+}
+
 var UserProps = ObjectProps{
 	TableName:         "user",
 	Type:              reflect.TypeOf(User{}),
@@ -629,6 +649,11 @@ var UserTotpProps = ObjectProps{
 }
 
 func (p ObjectProps) GetReferringFieldsFrom(t reflect.Type) (fields []string, err error) {
+	if p.ReferringColumnSuffix == "" {
+		err = errors.New("referring column suffix is not set")
+		return
+	}
+
 	n := t.NumField()
 	for i := 0; i < n; i++ {
 		if !strings.HasSuffix(t.Field(i).Tag.Get("db"), p.ReferringColumnSuffix) {

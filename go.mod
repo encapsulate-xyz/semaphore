@@ -1,6 +1,6 @@
 module github.com/semaphoreui/semaphore
 
-go 1.24.0
+go 1.24.2
 
 require (
 	github.com/Masterminds/squirrel v1.5.4
@@ -20,6 +20,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/pquerna/otp v1.4.0
 	github.com/robfig/cron/v3 v3.0.1
+	github.com/semaphoreui/semaphore/pro v0.0.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/snikch/goodman v0.0.0-20171125024755-10e37e294daa
 	github.com/spf13/cobra v1.9.1
@@ -31,6 +32,8 @@ require (
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	modernc.org/sqlite v1.38.0
 )
+
+replace github.com/semaphoreui/semaphore/pro => ./pro
 
 require (
 	dario.cat/mergo v1.0.1 // indirect

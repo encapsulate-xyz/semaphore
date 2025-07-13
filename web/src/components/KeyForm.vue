@@ -3,7 +3,7 @@
       ref="form"
       lazy-validation
       v-model="formValid"
-      v-if="item != null"
+      v-if="item != null && secretStorages != null"
   >
     <v-alert
         :value="formError"
@@ -20,6 +20,27 @@
         :disabled="formSaving"
         outlined
         dense
+    />
+
+    <v-autocomplete
+      v-model="item.source_storage_id"
+      :label="$t('Storage (optional)')"
+      :items="secretStorages"
+      item-value="id"
+      item-text="name"
+      :disabled="formSaving || !canEditSecrets"
+      outlined
+      dense
+      clearable
+    />
+
+    <v-text-field
+      v-if="item.source_storage_id != null"
+      v-model="item.source_storage_key"
+      :label="$t('Source Key')"
+      :disabled="formSaving || !canEditSecrets"
+      outlined
+      dense
     />
 
     <v-select
@@ -110,6 +131,11 @@ import ItemFormBase from '@/components/ItemFormBase';
 
 export default {
   mixins: [ItemFormBase],
+
+  props: {
+    supportStorages: Boolean,
+  },
+
   data() {
     return {
       showLoginPassword: false,
@@ -124,6 +150,7 @@ export default {
         id: 'none',
         name: `${this.$t('keyFormNone')}`,
       }],
+      secretStorages: null,
     };
   },
 
@@ -131,6 +158,14 @@ export default {
     canEditSecrets() {
       return this.isNew || this.item.override_secret;
     },
+  },
+
+  async created() {
+    [
+      this.secretStorages,
+    ] = await Promise.all([
+      this.loadProjectResources('secret_storages'),
+    ]);
   },
 
   methods: {

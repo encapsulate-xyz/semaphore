@@ -33,6 +33,8 @@ type LocalJob struct {
 	sshKeyInstallation     db.AccessKeyInstallation
 	becomeKeyInstallation  db.AccessKeyInstallation
 	vaultFileInstallations map[string]db.AccessKeyInstallation
+
+	KeyInstaller db_lib.AccessKeyInstaller
 }
 
 func (t *LocalJob) IsKilled() bool {
@@ -238,7 +240,7 @@ func (t *LocalJob) getTerraformArgs(username string, incomingVersion *string) (a
 	}
 
 	var params db.TerraformTaskParams
-	err = t.Task.FillParams(&params)
+	err = t.Task.ExtractParams(&params)
 	if err != nil {
 		return
 	}
@@ -350,7 +352,7 @@ func (t *LocalJob) getPlaybookArgs(username string, incomingVersion *string) (ar
 
 	var params db.AnsibleTaskParams
 
-	err = t.Task.FillParams(&params)
+	err = t.Task.ExtractParams(&params)
 	if err != nil {
 		return
 	}
@@ -516,7 +518,7 @@ func (t *LocalJob) getParams() (params any, err error) {
 		params = &db.DefaultTaskParams{}
 	}
 
-	err = t.Task.FillParams(params)
+	err = t.Task.ExtractParams(params)
 
 	if err != nil {
 		return
@@ -554,7 +556,13 @@ func (t *LocalJob) Run(username string, incomingVersion *string, alias string) (
 		environmentVariables = append(environmentVariables, "TF_HTTP_ADDRESS="+util.GetPublicAliasURL("terraform", alias))
 	}
 
-	err = t.prepareRun(environmentVariables, tplParams, params)
+	err = t.prepareRun(db_lib.LocalAppInstallingArgs{
+		EnvironmentVars: environmentVariables,
+		TplParams:       tplParams,
+		Params:          params,
+		Installer:       t.KeyInstaller,
+	})
+
 	if err != nil {
 		return err
 	}
@@ -614,7 +622,7 @@ func (t *LocalJob) Run(username string, incomingVersion *string, alias string) (
 
 }
 
-func (t *LocalJob) prepareRun(environmentVars []string, tplParams any, params any) error {
+func (t *LocalJob) prepareRun(installingArgs db_lib.LocalAppInstallingArgs) error {
 
 	t.Log("Preparing: " + strconv.Itoa(t.Task.ID))
 
@@ -654,7 +662,7 @@ func (t *LocalJob) prepareRun(environmentVars []string, tplParams any, params an
 		return err
 	}
 
-	if err := t.App.InstallRequirements(environmentVars, tplParams, params); err != nil {
+	if err := t.App.InstallRequirements(installingArgs); err != nil {
 		t.Log("Failed to install requirements: " + err.Error())
 		return err
 	}
@@ -672,7 +680,7 @@ func (t *LocalJob) updateRepository() error {
 		Logger:     t.Logger,
 		TemplateID: t.Template.ID,
 		Repository: t.Repository,
-		Client:     db_lib.CreateDefaultGitClient(),
+		Client:     db_lib.CreateDefaultGitClient(t.KeyInstaller),
 	}
 
 	err := repo.ValidateRepo()
@@ -708,7 +716,7 @@ func (t *LocalJob) checkoutRepository() error {
 		Logger:     t.Logger,
 		TemplateID: t.Template.ID,
 		Repository: t.Repository,
-		Client:     db_lib.CreateDefaultGitClient(),
+		Client:     db_lib.CreateDefaultGitClient(t.KeyInstaller),
 	}
 
 	err := repo.ValidateRepo()
@@ -758,7 +766,7 @@ func (t *LocalJob) installVaultKeyFiles() (err error) {
 
 		var install db.AccessKeyInstallation
 		if vault.Type == db.TemplateVaultPassword {
-			install, err = vault.Vault.Install(db.AccessKeyRoleAnsiblePasswordVault, t.Logger)
+			install, err = t.KeyInstaller.Install(*vault.Vault, db.AccessKeyRoleAnsiblePasswordVault, t.Logger)
 			if err != nil {
 				return
 			}

@@ -16,6 +16,7 @@
           @error="onError"
           :need-save="needSave"
           :need-reset="needReset"
+          :support-storages="premiumFeatures.secret_storages"
         />
       </template>
     </EditDialog>
@@ -45,7 +46,25 @@
       >{{ $t('newKey') }}</v-btn>
     </v-toolbar>
 
-    <v-divider />
+    <v-tabs class="pl-4">
+      <v-tab
+        key="keys"
+        :to="`/project/${projectId}/keys`"
+        data-testid="keystore-keys"
+      >
+        Keys
+      </v-tab>
+
+      <v-tab
+        key="storages"
+        :to="`/project/${projectId}/secret_storages`"
+        data-testid="keystore-storages"
+      >
+        Storages
+      </v-tab>
+    </v-tabs>
+
+    <v-divider style="margin-top: -1px;" />
 
     <v-data-table
       :headers="headers"
@@ -89,7 +108,19 @@ import KeyForm from '@/components/KeyForm.vue';
 
 export default {
   components: { KeyForm },
+
   mixins: [ItemListPageBase],
+
+  props: {
+    systemInfo: Object,
+  },
+
+  computed: {
+    premiumFeatures() {
+      return this.systemInfo?.premium_features || {};
+    },
+  },
+
   methods: {
     getHeaders() {
       return [{

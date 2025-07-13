@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/semaphoreui/semaphore/api/helpers"
+	"github.com/semaphoreui/semaphore/services/server"
 	"net/http"
 	"net/url"
 	"os"
@@ -68,8 +69,33 @@ func Execute() {
 
 func runService() {
 	store := createStore("root")
-	taskPool := tasks.CreateTaskPool(store)
-	schedulePool := schedules.CreateSchedulePool(store, &taskPool)
+
+	projectService := server.NewProjectService(store, store)
+	encryptionService := server.NewAccessKeyEncryptionService(store, store, store)
+	accessKeyInstallationService := server.NewAccessKeyInstallationService(encryptionService)
+	integrationService := server.NewIntegrationService(store, encryptionService)
+	inventoryService := server.NewInventoryService(
+		store,
+		store,
+		store,
+		encryptionService,
+	)
+	secretStorageService := server.NewSecretStorageService(store, store)
+	accessKeyService := server.NewAccessKeyService(store, secretStorageService, encryptionService)
+
+	taskPool := tasks.CreateTaskPool(
+		store,
+		inventoryService,
+		encryptionService,
+		accessKeyInstallationService,
+	)
+
+	schedulePool := schedules.CreateSchedulePool(
+		store,
+		&taskPool,
+		accessKeyInstallationService,
+		encryptionService,
+	)
 
 	defer schedulePool.Destroy()
 
@@ -90,7 +116,16 @@ func runService() {
 	go schedulePool.Run()
 	go taskPool.Run()
 
-	route := api.Route(store, &taskPool)
+	route := api.Route(
+		store,
+		&taskPool,
+		projectService,
+		integrationService,
+		encryptionService,
+		accessKeyInstallationService,
+		secretStorageService,
+		accessKeyService,
+	)
 
 	route.Use(func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
