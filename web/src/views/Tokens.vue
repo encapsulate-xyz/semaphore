@@ -10,6 +10,11 @@
       </v-btn>
       <v-toolbar-title>{{ $t('api_tokens') }}</v-toolbar-title>
       <v-spacer></v-spacer>
+
+      <a :href="`${this.systemInfo?.web_host || ''}/swagger/index.html`" class="mr-6">
+        {{ $t('API Reference') }}
+      </a>
+
       <v-btn
         color="primary"
         @click="newToken()"
@@ -89,6 +94,7 @@ export default {
   },
 
   props: {
+    systemInfo: Object,
   },
 
   computed: {

@@ -588,7 +588,6 @@ func serveFile(w http.ResponseWriter, r *http.Request, name string) {
 }
 
 func getSystemInfo(w http.ResponseWriter, r *http.Request) {
-	host := util.GetPublicHost()
 
 	var authMethods LoginAuthMethods
 
@@ -601,7 +600,7 @@ func getSystemInfo(w http.ResponseWriter, r *http.Request) {
 	body := map[string]any{
 		"version":           util.Version(),
 		"ansible":           util.AnsibleVersion(),
-		"web_host":          host,
+		"web_host":          util.Config.WebHost,
 		"use_remote_runner": util.Config.UseRemoteRunner,
 
 		"auth_methods": authMethods,
