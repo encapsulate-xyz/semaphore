@@ -10,18 +10,20 @@ type AccessKeyService interface {
 }
 
 type AccessKeyServiceImpl struct {
-	accessKeyRepo        db.AccessKeyManager
-	encryptionService    AccessKeyEncryptionService
-	secretStorageService SecretStorageService
+	accessKeyRepo     db.AccessKeyManager
+	encryptionService AccessKeyEncryptionService
+	secretStorageRepo db.SecretStorageRepository
 }
 
 func NewAccessKeyService(
 	accessKeyRepo db.AccessKeyManager,
 	encryptionService AccessKeyEncryptionService,
+	secretStorageRepo db.SecretStorageRepository,
 ) AccessKeyService {
 	return &AccessKeyServiceImpl{
 		accessKeyRepo:     accessKeyRepo,
 		encryptionService: encryptionService,
+		secretStorageRepo: secretStorageRepo,
 	}
 }
 
@@ -33,7 +35,7 @@ func (s *AccessKeyServiceImpl) Delete(projectID int, keyID int) (err error) {
 
 	if key.SourceStorageID != nil {
 		var storage db.SecretStorage
-		storage, err = s.secretStorageService.GetSecretStorage(projectID, *key.SourceStorageID)
+		storage, err = s.secretStorageRepo.GetSecretStorage(projectID, *key.SourceStorageID)
 		if err != nil {
 			return
 		}
