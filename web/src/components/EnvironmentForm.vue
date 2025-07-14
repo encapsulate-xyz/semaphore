@@ -45,7 +45,8 @@
       :value="formError"
       color="error"
       data-testid="varGroup-error"
-    >{{ formError }}</v-alert>
+    >{{ formError }}
+    </v-alert>
 
     <v-text-field
       v-model="item.name"
@@ -87,7 +88,7 @@
       <v-tab key="secrets">Secrets</v-tab>
     </v-tabs>
 
-    <v-divider style="margin-top: -1px;" class="mb-7" />
+    <v-divider style="margin-top: -1px;" class="mb-7"/>
 
     <v-tabs-items v-model="tab">
       <v-tab-item key="variables">
@@ -101,7 +102,8 @@
                 class="ml-1"
                 v-bind="attrs"
                 v-on="on"
-              >mdi-help-box</v-icon>
+              >mdi-help-box
+              </v-icon>
             </template>
             <div>
               <div><code>--extra-vars</code> for Ansible</div>
@@ -109,7 +111,7 @@
             </div>
           </v-tooltip>
 
-          <v-spacer />
+          <v-spacer/>
 
           <v-btn-toggle
             v-model="extraVarsEditMode"
@@ -215,7 +217,7 @@
           <v-subheader class="px-0 mt-4">
             {{ $t('environmentVariables') }}
 
-            <v-spacer />
+            <v-spacer/>
 
             <v-btn icon @click="addEnvVar()" data-testid="varGroup-addEnv">
               <v-icon>
@@ -288,7 +290,8 @@
                   class="ml-1"
                   v-bind="attrs"
                   v-on="on"
-                >mdi-help-box</v-icon>
+                >mdi-help-box
+                </v-icon>
               </template>
               <div>
                 <div><code>--extra-vars</code> for Ansible</div>
@@ -296,8 +299,8 @@
               </div>
             </v-tooltip>
 
-            <v-spacer />
-            <v-btn icon @click="addSecret('var')"  data-testid="varGroup-addSecretVar">
+            <v-spacer/>
+            <v-btn icon @click="addSecret('var')" data-testid="varGroup-addSecretVar">
               <v-icon>
                 mdi-plus
               </v-icon>
@@ -354,9 +357,9 @@
           <v-subheader class="px-0 mt-4">
             {{ $t('environmentVariables') }}
 
-            <v-spacer />
+            <v-spacer/>
 
-            <v-btn icon @click="addSecret('env')"  data-testid="varGroup-addSecretEnv">
+            <v-btn icon @click="addSecret('env')" data-testid="varGroup-addSecretEnv">
               <v-icon>
                 mdi-plus
               </v-icon>
@@ -420,6 +423,7 @@
     height: 160px !important;
   }
 }
+
 .EnvironmentMaximizedEditor {
   .CodeMirror {
     font-size: 14px;
@@ -625,7 +629,13 @@ export default {
     },
 
     async afterLoadData() {
-      if (this.item) {
+      if (this.itemId === 'new') {
+        [
+          this.secretStorages,
+        ] = await Promise.all([
+          this.loadProjectResources('secret_storages'),
+        ]);
+      } else {
         this.secretStorages = [];
 
         if (this.item.secret_storage_id) {
@@ -633,12 +643,6 @@ export default {
             await this.loadProjectResource('secret_storages', this.item.secret_storage_id),
           );
         }
-      } else {
-        [
-          this.secretStorages,
-        ] = await Promise.all([
-          this.loadProjectResources('secret_storages'),
-        ]);
       }
 
       this.json = JSON.stringify(JSON.parse(this.item?.json || '{}'), null, 2);

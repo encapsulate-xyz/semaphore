@@ -3,10 +3,10 @@ package server
 import "github.com/semaphoreui/semaphore/db"
 
 type AccessKeyService interface {
-	UpdateAccessKey(key db.AccessKey) error
-	CreateAccessKey(key db.AccessKey) (newKey db.AccessKey, err error)
-	GetAccessKeys(projectID int, options db.GetAccessKeyOptions, params db.RetrieveQueryParams) ([]db.AccessKey, error)
-	DeleteAccessKey(projectID int, keyID int) (err error)
+	Update(key db.AccessKey) error
+	Create(key db.AccessKey) (newKey db.AccessKey, err error)
+	GetAll(projectID int, options db.GetAccessKeyOptions, params db.RetrieveQueryParams) ([]db.AccessKey, error)
+	Delete(projectID int, keyID int) (err error)
 }
 
 type AccessKeyServiceImpl struct {
@@ -17,17 +17,15 @@ type AccessKeyServiceImpl struct {
 
 func NewAccessKeyService(
 	accessKeyRepo db.AccessKeyManager,
-	storageService SecretStorageService,
 	encryptionService AccessKeyEncryptionService,
 ) AccessKeyService {
 	return &AccessKeyServiceImpl{
-		accessKeyRepo:        accessKeyRepo,
-		encryptionService:    encryptionService,
-		secretStorageService: storageService,
+		accessKeyRepo:     accessKeyRepo,
+		encryptionService: encryptionService,
 	}
 }
 
-func (s *AccessKeyServiceImpl) DeleteAccessKey(projectID int, keyID int) (err error) {
+func (s *AccessKeyServiceImpl) Delete(projectID int, keyID int) (err error) {
 	key, err := s.accessKeyRepo.GetAccessKey(projectID, keyID)
 	if err != nil {
 		return
@@ -53,11 +51,17 @@ func (s *AccessKeyServiceImpl) DeleteAccessKey(projectID int, keyID int) (err er
 	return
 }
 
-func (s *AccessKeyServiceImpl) GetAccessKeys(projectID int, options db.GetAccessKeyOptions, params db.RetrieveQueryParams) ([]db.AccessKey, error) {
+func (s *AccessKeyServiceImpl) GetAll(projectID int, options db.GetAccessKeyOptions, params db.RetrieveQueryParams) ([]db.AccessKey, error) {
 	return s.accessKeyRepo.GetAccessKeys(projectID, options, params)
 }
 
-func (s *AccessKeyServiceImpl) CreateAccessKey(key db.AccessKey) (newKey db.AccessKey, err error) {
+func (s *AccessKeyServiceImpl) Create(key db.AccessKey) (newKey db.AccessKey, err error) {
+
+	err = key.Validate(true)
+	if err != nil {
+		return
+	}
+
 	err = s.encryptionService.SerializeSecret(&key)
 	if err != nil {
 		return
@@ -67,7 +71,7 @@ func (s *AccessKeyServiceImpl) CreateAccessKey(key db.AccessKey) (newKey db.Acce
 	return
 }
 
-func (s *AccessKeyServiceImpl) UpdateAccessKey(key db.AccessKey) (err error) {
+func (s *AccessKeyServiceImpl) Update(key db.AccessKey) (err error) {
 	if key.OverrideSecret {
 		err = s.encryptionService.SerializeSecret(&key)
 		if err != nil {

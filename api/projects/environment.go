@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/semaphoreui/semaphore/api/helpers"
 	"github.com/semaphoreui/semaphore/db"
+	"github.com/semaphoreui/semaphore/pkg/random"
 	"github.com/semaphoreui/semaphore/services/server"
 	"net/http"
 )
@@ -27,9 +28,13 @@ func NewEnvironmentController(
 }
 
 func (c *EnvironmentController) updateEnvironmentSecrets(env db.Environment) error {
+
+	errors := make([]error, 0)
+
 	for _, secret := range env.Secrets {
 		err := secret.Validate()
 		if err != nil {
+			errors = append(errors, err)
 			continue
 		}
 
@@ -37,34 +42,51 @@ func (c *EnvironmentController) updateEnvironmentSecrets(env db.Environment) err
 
 		switch secret.Operation {
 		case db.EnvironmentSecretCreate:
-			key, err = c.accessKeyService.CreateAccessKey(db.AccessKey{
-				Name:          secret.Name,
-				String:        secret.Secret,
-				EnvironmentID: &env.ID,
-				ProjectID:     &env.ProjectID,
-				Type:          db.AccessKeyString,
-				Owner:         secret.Type.GetAccessKeyOwner(),
+			var sourceStorageKey *string
+			if env.SecretStorageKeyPrefix != nil {
+				tmp := *env.SecretStorageKeyPrefix + random.String(10)
+				sourceStorageKey = &tmp
+			}
+
+			key, err = c.accessKeyService.Create(db.AccessKey{
+				Name:             secret.Name,
+				String:           secret.Secret,
+				EnvironmentID:    &env.ID,
+				ProjectID:        &env.ProjectID,
+				Type:             db.AccessKeyString,
+				Owner:            secret.Type.GetAccessKeyOwner(),
+				SourceStorageID:  env.SecretStorageID,
+				SourceStorageKey: sourceStorageKey,
 			})
+
+			if err != nil {
+				errors = append(errors, err)
+				continue
+			}
 		case db.EnvironmentSecretDelete:
 			key, err = c.accessKeyRepo.GetAccessKey(env.ProjectID, secret.ID)
 
 			if err != nil {
+				errors = append(errors, err)
 				continue
 			}
 
 			if key.EnvironmentID == nil && *key.EnvironmentID == env.ID {
+				errors = append(errors, err)
 				continue
 			}
 
-			err = c.accessKeyService.DeleteAccessKey(env.ProjectID, secret.ID)
+			err = c.accessKeyService.Delete(env.ProjectID, secret.ID)
 		case db.EnvironmentSecretUpdate:
 			key, err = c.accessKeyRepo.GetAccessKey(env.ProjectID, secret.ID)
 
 			if err != nil {
+				errors = append(errors, err)
 				continue
 			}
 
 			if key.EnvironmentID == nil && *key.EnvironmentID == env.ID {
+				errors = append(errors, err)
 				continue
 			}
 
@@ -80,8 +102,12 @@ func (c *EnvironmentController) updateEnvironmentSecrets(env db.Environment) err
 				updateKey.OverrideSecret = true
 			}
 
-			err = c.accessKeyService.UpdateAccessKey(updateKey)
+			err = c.accessKeyService.Update(updateKey)
 		}
+	}
+
+	if len(errors) > 0 {
+		return errors[0]
 	}
 
 	return nil

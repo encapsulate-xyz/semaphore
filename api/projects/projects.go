@@ -83,7 +83,7 @@ func (c *ProjectsController) createDemoProject(projectID int, noneKeyID int, emp
 		return
 	}
 
-	vaultKey, err := c.accessKeyService.CreateAccessKey(db.AccessKey{
+	vaultKey, err := c.accessKeyService.Create(db.AccessKey{
 		Name:      "Vault Password",
 		Type:      db.AccessKeyLoginPassword,
 		ProjectID: &projectID,
@@ -343,7 +343,7 @@ func (c *ProjectsController) AddProject(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	noneKey, err := c.accessKeyService.CreateAccessKey(db.AccessKey{
+	noneKey, err := c.accessKeyService.Create(db.AccessKey{
 		Name:      "None",
 		Type:      db.AccessKeyNone,
 		ProjectID: &body.ID,

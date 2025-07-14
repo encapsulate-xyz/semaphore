@@ -80,8 +80,8 @@ func runService() {
 		store,
 		encryptionService,
 	)
-	secretStorageService := server.NewSecretStorageService(store, store)
-	accessKeyService := server.NewAccessKeyService(store, secretStorageService, encryptionService)
+	accessKeyService := server.NewAccessKeyService(store, encryptionService)
+	secretStorageService := server.NewSecretStorageService(store, accessKeyService)
 
 	taskPool := tasks.CreateTaskPool(
 		store,

@@ -93,7 +93,7 @@ func (c *SecretStorageController) Update(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	err := c.secretStorageService.UpdateSecretStorage(storage)
+	err := c.secretStorageService.Update(storage)
 	if err != nil {
 		helpers.WriteError(w, err)
 		return
@@ -125,7 +125,7 @@ func (c *SecretStorageController) Add(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newStorage, err := c.secretRepo.CreateSecretStorage(storage)
+	newStorage, err := c.secretStorageService.Create(storage)
 
 	if err != nil {
 		helpers.WriteError(w, err)
@@ -151,7 +151,7 @@ func (c *SecretStorageController) Remove(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	err = c.secretStorageService.DeleteSecretStorage(project.ID, storageID)
+	err = c.secretStorageService.Delete(project.ID, storageID)
 	if err != nil {
 		helpers.WriteError(w, err)
 		return

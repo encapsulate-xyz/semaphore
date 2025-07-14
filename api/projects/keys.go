@@ -98,7 +98,7 @@ func (c *KeyController) AddKey(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newKey, err := c.accessKeyService.CreateAccessKey(key)
+	newKey, err := c.accessKeyService.Create(key)
 
 	if err != nil {
 		helpers.WriteError(w, err)
@@ -150,7 +150,7 @@ func (c *KeyController) UpdateKey(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	err = c.accessKeyService.UpdateAccessKey(key)
+	err = c.accessKeyService.Update(key)
 	if err != nil {
 		helpers.WriteError(w, err)
 		return
@@ -171,7 +171,7 @@ func (c *KeyController) UpdateKey(w http.ResponseWriter, r *http.Request) {
 func (c *KeyController) RemoveKey(w http.ResponseWriter, r *http.Request) {
 	key := helpers.GetFromContext(r, "accessKey").(db.AccessKey)
 
-	err := c.accessKeyService.DeleteAccessKey(*key.ProjectID, key.ID)
+	err := c.accessKeyService.Delete(*key.ProjectID, key.ID)
 	if errors.Is(err, db.ErrInvalidOperation) {
 		helpers.WriteJSON(w, http.StatusBadRequest, map[string]any{
 			"error": "Access Key is in use by one or more templates",

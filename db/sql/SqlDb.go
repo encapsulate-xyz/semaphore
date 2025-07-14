@@ -402,6 +402,13 @@ func (d *SqlDb) Connect(_ string) {
 	d.sql.AddTableWithName(db.Template{}, "project__template").SetKeys(true, "id")
 	d.sql.AddTableWithName(db.User{}, "user").SetKeys(true, "id")
 	d.sql.AddTableWithName(db.Session{}, "session").SetKeys(true, "id")
+
+	if d.GetDialect() == util.DbDriverSQLite {
+		_, err = d.exec("PRAGMA foreign_keys = ON")
+		if err != nil {
+			panic(err)
+		}
+	}
 }
 
 func (d *SqlDb) getObjectRefs(projectID int, objectProps db.ObjectProps, objectID int) (refs db.ObjectReferrers, err error) {
