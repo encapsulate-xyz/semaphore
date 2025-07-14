@@ -61,9 +61,9 @@
       <v-col>
         <v-autocomplete
           v-model="item.secret_storage_id"
-          :label="$t('Secret Storage (optional)')"
+          :label="$t('Secret storage (optional)')"
           :items="secretStorages"
-          :disabled="formSaving"
+          :disabled="formSaving || !isNew"
           item-value="id"
           item-text="name"
           outlined
@@ -74,8 +74,8 @@
       <v-col>
         <v-text-field
           v-model="item.secret_storage_key_prefix"
-          :label="$t('Source key prefix')"
-          :disabled="formSaving || !item.secret_storage_id"
+          :label="$t('Secret key prefix')"
+          :disabled="formSaving || !item.secret_storage_id|| !isNew"
           outlined
           dense
         />
@@ -270,6 +270,14 @@
 
       <v-tab-item key="secrets">
 
+        <div v-if="!isNew && secretStorage" class="pb-3">
+          <div style="font-weight: bold; font-size: 20px;">
+            <v-icon small class="mr-1">$vuetify.icons.hashicorp_vault</v-icon>
+            {{ secretStorage.name }}
+          </div>
+          <pre>{{ item.secret_storage_key_prefix }}*</pre>
+        </div>
+
         <div>
           <v-subheader class="px-0">
             {{ $t('extraVariables') }}
@@ -439,6 +447,15 @@ export default {
 
   components: {
     codemirror,
+  },
+
+  computed: {
+    secretStorage() {
+      if (this.item && this.item.secret_storage_id && this.secretStorages) {
+        return this.secretStorages.find((s) => s.id === this.item.secret_storage_id);
+      }
+      return null;
+    },
   },
 
   watch: {
