@@ -53,10 +53,35 @@
       :rules="[v => !!v || $t('name_required')]"
       required
       :disabled="formSaving"
-      class="mb-2"
       outlined
       dense
     ></v-text-field>
+
+    <v-row>
+      <v-col>
+        <v-autocomplete
+          v-model="item.source_storage_id"
+          :label="$t('Secret Storage (optional)')"
+          :items="secretStorages"
+          :disabled="formSaving"
+          item-value="id"
+          item-text="name"
+          outlined
+          dense
+          clearable
+        />
+      </v-col>
+      <v-col>
+
+        <v-text-field
+          v-model="item.source_storage_key"
+          :label="$t('Source Key')"
+          :disabled="formSaving || !item.source_storage_id"
+          outlined
+          dense
+        />
+      </v-col>
+    </v-row>
 
     <v-tabs grow v-model="tab">
       <v-tab key="variables">Variables</v-tab>

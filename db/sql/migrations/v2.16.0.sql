@@ -19,3 +19,6 @@ alter table `access_key` add `storage_id` int null references `project__secret_s
 
 alter table `access_key` add `source_storage_id` int null references `project__secret_storage`(`id`);
 alter table `access_key` add `source_storage_key` varchar(1000);
+
+alter table `project__environment` add `source_storage_id` int null references `project__secret_storage`(`id`);
+alter table `project__environment` add `source_storage_key` varchar(1000);

@@ -34,9 +34,8 @@ var Cookie *securecookie.SecureCookie
 var WebHostURL *url.URL
 
 const (
-	DbDriverMySQL = "mysql"
-	// Deprecated: replaced with sqlite
-	DbDriverBolt     = "bolt"
+	DbDriverMySQL    = "mysql"
+	DbDriverBolt     = "bolt" // Deprecated: replaced with sqlite
 	DbDriverPostgres = "postgres"
 	DbDriverSQLite   = "sqlite"
 )
@@ -203,7 +202,7 @@ type DebuggingConfig struct {
 // ConfigType mapping between Config and the json file that sets it
 type ConfigType struct {
 	MySQL    *DbConfig `json:"mysql,omitempty"`
-	BoltDb   *DbConfig `json:"bolt,omitempty"`
+	BoltDb   *DbConfig `json:"bolt,omitempty"` // Deprecated
 	Postgres *DbConfig `json:"postgres,omitempty"`
 	SQLite   *DbConfig `json:"sqlite,omitempty"`
 

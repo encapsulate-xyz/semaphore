@@ -403,7 +403,7 @@ export default {
 
   computed: {
     webHost() {
-      return this.systemInfo?.web_host || '';
+      return this.systemInfo?.web_host || window.location.origin;
     },
 
     premiumFeatures() {
@@ -420,7 +420,7 @@ export default {
 
     runnerConfigCommand() {
       return `{
-  "web_host": "${this.webHost}",
+  "web_host": "${this.webHost || window.location.origin}",
   "runner": {
     "token": "${(this.newRunner || {}).token}",
     "private_key_file": "/path/to/private/key"
