@@ -3,7 +3,7 @@
     ref="form"
     lazy-validation
     v-model="formValid"
-    v-if="item != null"
+    v-if="item != null && secretStorages != null"
     class="pb-3"
   >
 
@@ -57,10 +57,10 @@
       dense
     ></v-text-field>
 
-    <v-row>
+    <v-row v-if="isNew">
       <v-col>
         <v-autocomplete
-          v-model="item.source_storage_id"
+          v-model="item.secret_storage_id"
           :label="$t('Secret Storage (optional)')"
           :items="secretStorages"
           :disabled="formSaving"
@@ -72,11 +72,10 @@
         />
       </v-col>
       <v-col>
-
         <v-text-field
-          v-model="item.source_storage_key"
-          :label="$t('Source Key')"
-          :disabled="formSaving || !item.source_storage_id"
+          v-model="item.secret_storage_key_prefix"
+          :label="$t('Source key prefix')"
+          :disabled="formSaving || !item.secret_storage_id"
           outlined
           dense
         />
@@ -442,9 +441,6 @@ export default {
     codemirror,
   },
 
-  created() {
-  },
-
   watch: {
     envEditorDialog(val) {
       this.$emit('maximize', {
@@ -516,6 +512,8 @@ export default {
 
       extraVarsEditMode: 'json',
       envEditorDialog: false,
+
+      secretStorages: null,
     };
   },
 
@@ -609,7 +607,19 @@ export default {
       this.item.secrets = secrets;
     },
 
+    async beforeLoadData() {
+      [
+        this.secretStorages,
+      ] = await Promise.all([
+        this.loadProjectResources('secret_storages'),
+      ]);
+    },
+
     afterLoadData() {
+      if (this.item) {
+        return;
+      }
+
       this.json = JSON.stringify(JSON.parse(this.item?.json || '{}'), null, 2);
 
       const json = JSON.parse(this.item?.json || '{}');

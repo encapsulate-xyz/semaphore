@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"embed"
 	"fmt"
-	"github.com/semaphoreui/semaphore/pkg/features"
+	proFeatures "github.com/semaphoreui/semaphore/pro/pkg/features"
 	"github.com/semaphoreui/semaphore/services/server"
 	task2 "github.com/semaphoreui/semaphore/services/tasks"
 	"net/http"
@@ -605,7 +605,7 @@ func getSystemInfo(w http.ResponseWriter, r *http.Request) {
 
 		"auth_methods": authMethods,
 
-		"premium_features": features.GetFeatures(),
+		"premium_features": proFeatures.GetFeatures(),
 
 		"git_client": util.Config.GitClientId,
 
