@@ -588,6 +588,7 @@ func serveFile(w http.ResponseWriter, r *http.Request, name string) {
 }
 
 func getSystemInfo(w http.ResponseWriter, r *http.Request) {
+	user := helpers.GetFromContext(r, "user").(*db.User)
 
 	var authMethods LoginAuthMethods
 
@@ -605,7 +606,7 @@ func getSystemInfo(w http.ResponseWriter, r *http.Request) {
 
 		"auth_methods": authMethods,
 
-		"premium_features": proFeatures.GetFeatures(),
+		"premium_features": proFeatures.GetFeatures(user),
 
 		"git_client": util.Config.GitClientId,
 

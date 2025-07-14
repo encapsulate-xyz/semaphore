@@ -607,17 +607,21 @@ export default {
       this.item.secrets = secrets;
     },
 
-    async beforeLoadData() {
-      [
-        this.secretStorages,
-      ] = await Promise.all([
-        this.loadProjectResources('secret_storages'),
-      ]);
-    },
-
-    afterLoadData() {
+    async afterLoadData() {
       if (this.item) {
-        return;
+        this.secretStorages = [];
+
+        if (this.item.secret_storage_id) {
+          this.secretStorages.push(
+            await this.loadProjectResource('secret_storages', this.item.secret_storage_id),
+          );
+        }
+      } else {
+        [
+          this.secretStorages,
+        ] = await Promise.all([
+          this.loadProjectResources('secret_storages'),
+        ]);
       }
 
       this.json = JSON.stringify(JSON.parse(this.item?.json || '{}'), null, 2);

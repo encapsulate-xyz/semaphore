@@ -1,6 +1,8 @@
 package features
 
-func GetFeatures() map[string]bool {
+import "github.com/semaphoreui/semaphore/db"
+
+func GetFeatures(user *db.User) map[string]bool {
 	return map[string]bool{
 		"project_runners":   false,
 		"terraform_backend": false,
