@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"embed"
 	"fmt"
+	proApi "github.com/semaphoreui/semaphore/pro/api"
 	proFeatures "github.com/semaphoreui/semaphore/pro/pkg/features"
 	"github.com/semaphoreui/semaphore/services/server"
 	task2 "github.com/semaphoreui/semaphore/services/tasks"
@@ -15,6 +16,7 @@ import (
 
 	"github.com/semaphoreui/semaphore/api/debug"
 	"github.com/semaphoreui/semaphore/pkg/tz"
+	proSubscriptions "github.com/semaphoreui/semaphore/pro/api/subscriptions"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/semaphoreui/semaphore/api/runners"
@@ -97,6 +99,7 @@ func Route(
 	repositoryController := projects.NewRepositoryController(accessKeyInstallationService)
 	keyController := projects.NewKeyController(accessKeyService)
 	projectsController := projects.NewProjectsController(accessKeyService)
+	terraformController := proApi.NewTerraformController(encryptionService)
 
 	r := mux.NewRouter()
 	r.NotFoundHandler = http.HandlerFunc(servePublic)
@@ -153,11 +156,11 @@ func Route(
 		integrationController.ReceiveIntegration).Methods("POST", "GET", "OPTIONS")
 
 	terraformWebhookRouter := publicWebHookRouter.PathPrefix("/terraform").Subrouter()
-	terraformWebhookRouter.Use(TerraformInventoryAliasMiddleware)
-	terraformWebhookRouter.Path("/{alias}").HandlerFunc(getTerraformState).Methods("GET")
-	terraformWebhookRouter.Path("/{alias}").HandlerFunc(addTerraformState).Methods("POST")
-	terraformWebhookRouter.Path("/{alias}").HandlerFunc(lockTerraformState).Methods("LOCK")
-	terraformWebhookRouter.Path("/{alias}").HandlerFunc(unlockTerraformState).Methods("UNLOCK")
+	terraformWebhookRouter.Use(terraformController.TerraformInventoryAliasMiddleware)
+	terraformWebhookRouter.Path("/{alias}").HandlerFunc(terraformController.GetTerraformState).Methods("GET")
+	terraformWebhookRouter.Path("/{alias}").HandlerFunc(terraformController.AddTerraformState).Methods("POST")
+	terraformWebhookRouter.Path("/{alias}").HandlerFunc(terraformController.LockTerraformState).Methods("LOCK")
+	terraformWebhookRouter.Path("/{alias}").HandlerFunc(terraformController.UnlockTerraformState).Methods("UNLOCK")
 
 	authenticatedWS := r.PathPrefix(webPath + "api").Subrouter()
 	authenticatedWS.Use(JSONMiddleware, authenticationWithStore)
@@ -167,6 +170,9 @@ func Route(
 	authenticatedAPI.Use(StoreMiddleware, JSONMiddleware, authentication)
 
 	authenticatedAPI.Path("/info").HandlerFunc(getSystemInfo).Methods("GET", "HEAD")
+
+	authenticatedAPI.Path("/subscription").HandlerFunc(proSubscriptions.Activate).Methods("POST")
+	authenticatedAPI.Path("/subscription").HandlerFunc(proSubscriptions.GetSubscription).Methods("GET")
 
 	authenticatedAPI.Path("/projects").HandlerFunc(projects.GetProjects).Methods("GET", "HEAD")
 	authenticatedAPI.Path("/projects").HandlerFunc(projectsController.AddProject).Methods("POST")
@@ -597,6 +603,10 @@ func getSystemInfo(w http.ResponseWriter, r *http.Request) {
 		authMethods.Totp = &LoginTotpAuthMethod{
 			AllowRecovery: util.Config.Auth.Totp.AllowRecovery,
 		}
+	}
+
+	if util.Config.Auth.Email.Enabled {
+		authMethods.Email = &LoginEmailAuthMethod{}
 	}
 
 	body := map[string]any{

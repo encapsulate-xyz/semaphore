@@ -243,8 +243,12 @@ type LoginTotpAuthMethod struct {
 	AllowRecovery bool `json:"allow_recovery"`
 }
 
+type LoginEmailAuthMethod struct {
+}
+
 type LoginAuthMethods struct {
-	Totp *LoginTotpAuthMethod `json:"totp,omitempty"`
+	Totp  *LoginTotpAuthMethod  `json:"totp,omitempty"`
+	Email *LoginEmailAuthMethod `json:"email,omitempty"`
 }
 
 type loginMetadata struct {
