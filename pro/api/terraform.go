@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/semaphoreui/semaphore/db"
 	"github.com/semaphoreui/semaphore/services/server"
 	"net/http"
 )
@@ -9,7 +10,10 @@ type TerraformController struct {
 	encryptionServices server.AccessKeyEncryptionService
 }
 
-func NewTerraformController(encryptionServices server.AccessKeyEncryptionService) *TerraformController {
+func NewTerraformController(
+	encryptionServices server.AccessKeyEncryptionService,
+	terraformRepo db.TerraformStore,
+) *TerraformController {
 	return &TerraformController{
 		encryptionServices: encryptionServices,
 	}
