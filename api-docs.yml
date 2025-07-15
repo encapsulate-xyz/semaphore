@@ -435,6 +435,7 @@ definitions:
         type: integer
       name:
         type: string
+        example: Test
       secret:
         type: string
       type:
