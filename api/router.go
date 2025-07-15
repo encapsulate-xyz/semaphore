@@ -81,6 +81,7 @@ func DelayMiddleware(delay time.Duration) func(http.Handler) http.Handler {
 // Route declares all routes
 func Route(
 	store db.Store,
+	terraformStore db.TerraformStore,
 	taskPool *task2.TaskPool,
 	projectService server.ProjectService,
 	integrationService server.IntegrationService,
@@ -99,7 +100,7 @@ func Route(
 	repositoryController := projects.NewRepositoryController(accessKeyInstallationService)
 	keyController := projects.NewKeyController(accessKeyService)
 	projectsController := projects.NewProjectsController(accessKeyService)
-	terraformController := proApi.NewTerraformController(encryptionService)
+	terraformController := proApi.NewTerraformController(encryptionService, terraformStore)
 
 	r := mux.NewRouter()
 	r.NotFoundHandler = http.HandlerFunc(servePublic)

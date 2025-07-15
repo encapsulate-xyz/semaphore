@@ -14,6 +14,7 @@ import (
 	"github.com/semaphoreui/semaphore/api/sockets"
 	"github.com/semaphoreui/semaphore/db"
 	"github.com/semaphoreui/semaphore/db/factory"
+	proFactory "github.com/semaphoreui/semaphore/pro/db/factory"
 	"github.com/semaphoreui/semaphore/services/schedules"
 	"github.com/semaphoreui/semaphore/services/tasks"
 	"github.com/semaphoreui/semaphore/util"
@@ -69,6 +70,7 @@ func Execute() {
 
 func runService() {
 	store := createStore("root")
+	terraformStore := proFactory.NewTerraformStore(store)
 
 	projectService := server.NewProjectService(store, store)
 	encryptionService := server.NewAccessKeyEncryptionService(store, store, store)
@@ -119,6 +121,7 @@ func runService() {
 
 	route := api.Route(
 		store,
+		terraformStore,
 		&taskPool,
 		projectService,
 		integrationService,
