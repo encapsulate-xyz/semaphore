@@ -86,12 +86,13 @@ func Route(
 	accessKeyInstallationService server.AccessKeyInstallationService,
 	secretStorageService server.SecretStorageService,
 	accessKeyService server.AccessKeyService,
+	environmentService server.EnvironmentService,
 ) *mux.Router {
 
 	projectController := &projects.ProjectController{ProjectService: projectService}
 	runnerController := runners.NewRunnerController(store, taskPool)
 	integrationController := NewIntegrationController(integrationService)
-	environmentController := projects.NewEnvironmentController(store, encryptionService, accessKeyService)
+	environmentController := projects.NewEnvironmentController(store, encryptionService, accessKeyService, environmentService)
 	secretStorageController := projects.NewSecretStorageController(store, secretStorageService)
 	repositoryController := projects.NewRepositoryController(accessKeyInstallationService)
 	keyController := projects.NewKeyController(accessKeyService)
@@ -391,7 +392,7 @@ func Route(
 	projectEnvManagement.HandleFunc("/{environment_id}", projects.GetEnvironment).Methods("GET", "HEAD")
 	projectEnvManagement.HandleFunc("/{environment_id}/refs", projects.GetEnvironmentRefs).Methods("GET", "HEAD")
 	projectEnvManagement.HandleFunc("/{environment_id}", environmentController.UpdateEnvironment).Methods("PUT")
-	projectEnvManagement.HandleFunc("/{environment_id}", projects.RemoveEnvironment).Methods("DELETE")
+	projectEnvManagement.HandleFunc("/{environment_id}", environmentController.RemoveEnvironment).Methods("DELETE")
 
 	projectTmplManagement := projectUserAPI.PathPrefix("/templates").Subrouter()
 	projectTmplManagement.Use(projects.TemplatesMiddleware)

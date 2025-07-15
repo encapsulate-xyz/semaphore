@@ -1,6 +1,7 @@
 package projects
 
 import (
+	"errors"
 	"fmt"
 	"github.com/semaphoreui/semaphore/api/helpers"
 	"github.com/semaphoreui/semaphore/db"
@@ -10,20 +11,23 @@ import (
 )
 
 type EnvironmentController struct {
-	accessKeyRepo     db.AccessKeyManager
-	accessKeyService  server.AccessKeyService
-	encryptionService server.AccessKeyEncryptionService
+	accessKeyRepo      db.AccessKeyManager
+	accessKeyService   server.AccessKeyService
+	encryptionService  server.AccessKeyEncryptionService
+	environmentService server.EnvironmentService
 }
 
 func NewEnvironmentController(
 	accessKeyRepo db.AccessKeyManager,
 	encryptionService server.AccessKeyEncryptionService,
 	accessKeyService server.AccessKeyService,
+	environmentService server.EnvironmentService,
 ) *EnvironmentController {
 	return &EnvironmentController{
-		accessKeyRepo:     accessKeyRepo,
-		accessKeyService:  accessKeyService,
-		encryptionService: encryptionService,
+		accessKeyRepo:      accessKeyRepo,
+		accessKeyService:   accessKeyService,
+		encryptionService:  encryptionService,
+		environmentService: environmentService,
 	}
 }
 
@@ -262,11 +266,13 @@ func (c *EnvironmentController) AddEnvironment(w http.ResponseWriter, r *http.Re
 }
 
 // RemoveEnvironment deletes an environment from the database
-func RemoveEnvironment(w http.ResponseWriter, r *http.Request) {
+func (c *EnvironmentController) RemoveEnvironment(w http.ResponseWriter, r *http.Request) {
 	env := helpers.GetFromContext(r, "environment").(db.Environment)
 
-	err := helpers.Store(r).DeleteEnvironment(env.ProjectID, env.ID)
-	if err == db.ErrInvalidOperation {
+	err := c.environmentService.Delete(env.ProjectID, env.ID)
+	//err := helpers.Store(r).DeleteEnvironment(env.ProjectID, env.ID)
+
+	if errors.Is(err, db.ErrInvalidOperation) {
 		helpers.WriteJSON(w, http.StatusBadRequest, map[string]any{
 			"error": "Environment is in use by one or more templates",
 			"inUse": true,
