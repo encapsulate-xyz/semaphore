@@ -19,7 +19,7 @@ func (d *SqlDb) CreateUserWithoutPassword(user db.User) (newUser db.User, err er
 	user.Password = ""
 	user.Created = db.GetParsedTime(tz.Now())
 
-	err = d.sql.Insert(&user)
+	err = d.Sql().Insert(&user)
 
 	if err != nil {
 		return
@@ -45,7 +45,7 @@ func (d *SqlDb) CreateUser(user db.UserWithPwd) (newUser db.User, err error) {
 	user.Password = string(pwdHash)
 	user.Created = db.GetParsedTime(tz.Now())
 
-	err = d.sql.Insert(&user.User)
+	err = d.Sql().Insert(&user.User)
 
 	if err != nil {
 		return
@@ -209,7 +209,7 @@ func (d *SqlDb) GetUser(userID int) (user db.User, err error) {
 
 func (d *SqlDb) GetProUserCount() (count int, err error) {
 
-	cnt, err := d.sql.SelectInt(d.PrepareQuery("select count(*) from `user` where pro"))
+	cnt, err := d.Sql().SelectInt(d.PrepareQuery("select count(*) from `user` where pro"))
 
 	count = int(cnt)
 
@@ -218,7 +218,7 @@ func (d *SqlDb) GetProUserCount() (count int, err error) {
 
 func (d *SqlDb) GetUserCount() (count int, err error) {
 
-	cnt, err := d.sql.SelectInt(d.PrepareQuery("select count(*) from `user`"))
+	cnt, err := d.Sql().SelectInt(d.PrepareQuery("select count(*) from `user`"))
 
 	count = int(cnt)
 

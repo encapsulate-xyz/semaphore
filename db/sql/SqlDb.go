@@ -21,9 +21,246 @@ import (
 	_ "modernc.org/sqlite" // Import the driver
 )
 
-type SqlDb struct {
+type SqlDbConnection struct {
 	sql     *gorp.DbMap
 	dialect string
+}
+
+type SqlDb struct {
+	connection SqlDbConnection
+}
+
+func (d *SqlDb) Sql() *gorp.DbMap {
+	return d.connection.sql
+}
+
+func (d *SqlDbConnection) Connect() {
+	sqlDb, err := connect()
+	if err != nil {
+		panic(err)
+	}
+
+	err = sqlDb.Ping()
+	if err != nil {
+		if err = sqlDb.Close(); err != nil {
+			log.Warn("Cannot close database connection: " + err.Error())
+		}
+
+		if err = createDb(); err != nil {
+			panic(err)
+		}
+
+		sqlDb, err = connect()
+		if err != nil {
+			panic(err)
+		}
+
+		if err = sqlDb.Ping(); err != nil {
+			panic(err)
+		}
+	}
+
+	cfg, err := util.Config.GetDBConfig()
+	if err != nil {
+		panic(err)
+	}
+
+	var dialect gorp.Dialect
+
+	switch cfg.Dialect {
+	case util.DbDriverMySQL:
+		dialect = gorp.MySQLDialect{Engine: "InnoDB", Encoding: "UTF8"}
+	case util.DbDriverPostgres:
+		dialect = gorp.PostgresDialect{}
+	case util.DbDriverSQLite:
+		dialect = gorp.SqliteDialect{}
+	}
+
+	d.sql = &gorp.DbMap{Db: sqlDb, Dialect: dialect}
+
+	if d.GetDialect() == util.DbDriverSQLite {
+		sqlDb.SetMaxOpenConns(1)
+	}
+
+	d.sql.AddTableWithName(db.APIToken{}, "user__token").SetKeys(false, "id")
+	d.sql.AddTableWithName(db.AccessKey{}, "access_key").SetKeys(true, "id")
+	d.sql.AddTableWithName(db.Environment{}, "project__environment").SetKeys(true, "id")
+	d.sql.AddTableWithName(db.Inventory{}, "project__inventory").SetKeys(true, "id")
+	d.sql.AddTableWithName(db.Project{}, "project").SetKeys(true, "id")
+	d.sql.AddTableWithName(db.Repository{}, "project__repository").SetKeys(true, "id")
+	d.sql.AddTableWithName(db.Task{}, "task").SetKeys(true, "id")
+	d.sql.AddTableWithName(db.TaskOutput{}, "task__output").SetUniqueTogether("task_id", "time")
+	d.sql.AddTableWithName(db.Template{}, "project__template").SetKeys(true, "id")
+	d.sql.AddTableWithName(db.User{}, "user").SetKeys(true, "id")
+	d.sql.AddTableWithName(db.Session{}, "session").SetKeys(true, "id")
+
+	//if d.GetDialect() == util.DbDriverSQLite {
+	//	_, err = d.exec("PRAGMA foreign_keys = ON")
+	//	if err != nil {
+	//		panic(err)
+	//	}
+	//}
+}
+
+func (d *SqlDbConnection) Close() {
+	err := d.sql.Db.Close()
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (d *SqlDbConnection) prepareQueryWithDialect(query string, dialect gorp.Dialect) string {
+	switch dialect.(type) {
+	case gorp.PostgresDialect:
+		var queryBuilder strings.Builder
+		argNum := 1
+		for _, r := range query {
+			switch r {
+			case '?':
+				queryBuilder.WriteString("$" + strconv.Itoa(argNum))
+				argNum++
+			case '`':
+				queryBuilder.WriteRune('"')
+			default:
+				queryBuilder.WriteRune(r)
+			}
+		}
+		query = queryBuilder.String()
+	}
+	return query
+}
+
+func (d *SqlDbConnection) PrepareQuery(query string) string {
+	return d.prepareQueryWithDialect(query, d.sql.Dialect)
+}
+
+func (d *SqlDbConnection) Insert(primaryKeyColumnName string, query string, args ...any) (int, error) {
+	var insertId int64
+
+	switch d.sql.Dialect.(type) {
+	case gorp.PostgresDialect:
+		var err error
+		if primaryKeyColumnName != "" {
+			query += " returning " + primaryKeyColumnName
+			err = d.sql.QueryRow(d.PrepareQuery(query), args...).Scan(&insertId)
+		} else {
+			_, err = d.sql.Exec(d.PrepareQuery(query), args...)
+		}
+
+		if err != nil {
+			return 0, err
+		}
+	default:
+		res, err := d.sql.Exec(d.PrepareQuery(query), args...)
+		if err != nil {
+			return 0, err
+		}
+
+		insertId, err = res.LastInsertId()
+		if err != nil {
+			return 0, err
+		}
+	}
+
+	return int(insertId), nil
+}
+
+func (d *SqlDbConnection) Exec(query string, args ...any) (sql.Result, error) {
+	q := d.PrepareQuery(query)
+	return d.sql.Exec(q, args...)
+}
+
+func (d *SqlDbConnection) ExecTx(tx *gorp.Transaction, query string, args ...any) (sql.Result, error) {
+	q := d.PrepareQuery(query)
+	return tx.Exec(q, args...)
+}
+
+func (d *SqlDbConnection) SelectOne(holder any, query string, args ...any) error {
+	err := d.sql.SelectOne(holder, d.PrepareQuery(query), args...)
+
+	if errors.Is(err, sql.ErrNoRows) {
+		err = db.ErrNotFound
+	}
+
+	return err
+}
+
+func (d *SqlDbConnection) SelectAll(i any, query string, args ...any) ([]any, error) {
+	q := d.PrepareQuery(query)
+	return d.sql.Select(i, q, args...)
+}
+
+func (d *SqlDbConnection) DeleteObject(projectID int, props db.ObjectProps, objectID any) error {
+	if props.IsGlobal {
+		return validateMutationResult(
+			d.Exec(
+				"delete from "+props.TableName+" where id=?",
+				objectID))
+	} else {
+		return validateMutationResult(
+			d.Exec(
+				"delete from "+props.TableName+" where project_id=? and id=?",
+				projectID,
+				objectID))
+	}
+}
+
+func (d *SqlDbConnection) GetObject(projectID int, props db.ObjectProps, objectID int, object any) (err error) {
+	q := squirrel.Select("*").
+		From(props.TableName).
+		Where("id=?", objectID)
+
+	if props.IsGlobal {
+		q = q.Where("project_id is null")
+	} else {
+		q = q.Where("project_id=?", projectID)
+	}
+
+	query, args, err := q.ToSql()
+	if err != nil {
+		return
+	}
+
+	err = d.SelectOne(object, query, args...)
+
+	return
+}
+
+func (d *SqlDbConnection) GetObjectsByReferrer(
+	referrerID int,
+	referringObjectProps db.ObjectProps,
+	props db.ObjectProps,
+	params db.RetrieveQueryParams,
+	objects any,
+) (err error) {
+	referringColumn := referringObjectProps.ReferringColumnSuffix
+
+	columns := []string{"*"}
+	if len(props.SelectColumns) > 0 {
+		columns = props.SelectColumns
+	}
+
+	q := squirrel.Select(columns...).From(props.TableName + " pe")
+
+	if props.IsGlobal {
+		q = q.Where("pe." + referringColumn + " is null")
+	} else {
+		q = q.Where("pe."+referringColumn+"=?", referrerID)
+	}
+
+	q, err = getQueryForParams(q, "pe.", props, params)
+	if err != nil {
+		return
+	}
+
+	query, args, err := q.ToSql()
+	if err != nil {
+		return
+	}
+
+	_, err = d.SelectAll(objects, query, args...)
+
+	return
 }
 
 var initialSQL = `
@@ -38,11 +275,27 @@ create table ` + "`migrations`" + ` (
 var dbAssets embed.FS
 
 func CreateDb(dialect string) *SqlDb {
-	return &SqlDb{dialect: dialect}
+	return &SqlDb{
+		connection: SqlDbConnection{
+			dialect: dialect,
+		},
+	}
+}
+
+func (d *SqlDbConnection) GetDialect() string {
+	return d.dialect
+}
+
+func (d *SqlDb) GetConnection() *SqlDbConnection {
+	return &d.connection
 }
 
 func (d *SqlDb) GetDialect() string {
-	return d.dialect
+	return d.connection.GetDialect()
+}
+
+func (d *SqlDb) Close(token string) {
+	d.connection.Close()
 }
 
 func getQueryForParams(q squirrel.SelectBuilder, prefix string, props db.ObjectProps, params db.RetrieveQueryParams) (res squirrel.SelectBuilder, err error) {
@@ -102,65 +355,17 @@ func validateMutationResult(res sql.Result, err error) error {
 	return nil
 }
 
-func (d *SqlDb) prepareQueryWithDialect(query string, dialect gorp.Dialect) string {
-	switch dialect.(type) {
-	case gorp.PostgresDialect:
-		var queryBuilder strings.Builder
-		argNum := 1
-		for _, r := range query {
-			switch r {
-			case '?':
-				queryBuilder.WriteString("$" + strconv.Itoa(argNum))
-				argNum++
-			case '`':
-				queryBuilder.WriteRune('"')
-			default:
-				queryBuilder.WriteRune(r)
-			}
-		}
-		query = queryBuilder.String()
-	}
-	return query
-}
-
 func (d *SqlDb) PrepareQuery(query string) string {
-	return d.prepareQueryWithDialect(query, d.sql.Dialect)
+	return d.connection.PrepareQuery(query)
 }
 
 func (d *SqlDb) insert(primaryKeyColumnName string, query string, args ...any) (int, error) {
-	var insertId int64
-
-	switch d.sql.Dialect.(type) {
-	case gorp.PostgresDialect:
-		var err error
-		if primaryKeyColumnName != "" {
-			query += " returning " + primaryKeyColumnName
-			err = d.sql.QueryRow(d.PrepareQuery(query), args...).Scan(&insertId)
-		} else {
-			_, err = d.sql.Exec(d.PrepareQuery(query), args...)
-		}
-
-		if err != nil {
-			return 0, err
-		}
-	default:
-		res, err := d.sql.Exec(d.PrepareQuery(query), args...)
-		if err != nil {
-			return 0, err
-		}
-
-		insertId, err = res.LastInsertId()
-		if err != nil {
-			return 0, err
-		}
-	}
-
-	return int(insertId), nil
+	return d.connection.Insert(primaryKeyColumnName, query, args...)
 }
 
 func (d *SqlDb) exec(query string, args ...any) (sql.Result, error) {
 	q := d.PrepareQuery(query)
-	return d.sql.Exec(q, args...)
+	return d.Sql().Exec(q, args...)
 }
 
 func (d *SqlDb) execTx(tx *gorp.Transaction, query string, args ...any) (sql.Result, error) {
@@ -169,7 +374,7 @@ func (d *SqlDb) execTx(tx *gorp.Transaction, query string, args ...any) (sql.Res
 }
 
 func (d *SqlDb) selectOne(holder any, query string, args ...any) error {
-	err := d.sql.SelectOne(holder, d.PrepareQuery(query), args...)
+	err := d.Sql().SelectOne(holder, d.PrepareQuery(query), args...)
 
 	if errors.Is(err, sql.ErrNoRows) {
 		err = db.ErrNotFound
@@ -180,7 +385,7 @@ func (d *SqlDb) selectOne(holder any, query string, args ...any) error {
 
 func (d *SqlDb) selectAll(i any, query string, args ...any) ([]any, error) {
 	q := d.PrepareQuery(query)
-	return d.sql.Select(i, q, args...)
+	return d.Sql().Select(i, q, args...)
 }
 
 func connect() (*sql.DB, error) {
@@ -229,24 +434,7 @@ func createDb() error {
 }
 
 func (d *SqlDb) getObject(projectID int, props db.ObjectProps, objectID int, object any) (err error) {
-	q := squirrel.Select("*").
-		From(props.TableName).
-		Where("id=?", objectID)
-
-	if props.IsGlobal {
-		q = q.Where("project_id is null")
-	} else {
-		q = q.Where("project_id=?", projectID)
-	}
-
-	query, args, err := q.ToSql()
-	if err != nil {
-		return
-	}
-
-	err = d.selectOne(object, query, args...)
-
-	return
+	return d.connection.GetObject(projectID, props, objectID, object)
 }
 
 func (d *SqlDb) makeObjectsQuery(projectID int, props db.ObjectProps, params db.RetrieveQueryParams) (q squirrel.SelectBuilder, err error) {
@@ -318,25 +506,7 @@ func (d *SqlDb) getObjects(
 }
 
 func (d *SqlDb) deleteObject(projectID int, props db.ObjectProps, objectID any) error {
-	if props.IsGlobal {
-		return validateMutationResult(
-			d.exec(
-				"delete from "+props.TableName+" where id=?",
-				objectID))
-	} else {
-		return validateMutationResult(
-			d.exec(
-				"delete from "+props.TableName+" where project_id=? and id=?",
-				projectID,
-				objectID))
-	}
-}
-
-func (d *SqlDb) Close(token string) {
-	err := d.sql.Db.Close()
-	if err != nil {
-		panic(err)
-	}
+	return d.connection.DeleteObject(projectID, props, objectID)
 }
 
 func (d *SqlDb) PermanentConnection() bool {
@@ -344,71 +514,7 @@ func (d *SqlDb) PermanentConnection() bool {
 }
 
 func (d *SqlDb) Connect(_ string) {
-	sqlDb, err := connect()
-	if err != nil {
-		panic(err)
-	}
-
-	err = sqlDb.Ping()
-	if err != nil {
-		if err = sqlDb.Close(); err != nil {
-			log.Warn("Cannot close database connection: " + err.Error())
-		}
-
-		if err = createDb(); err != nil {
-			panic(err)
-		}
-
-		sqlDb, err = connect()
-		if err != nil {
-			panic(err)
-		}
-
-		if err = sqlDb.Ping(); err != nil {
-			panic(err)
-		}
-	}
-
-	cfg, err := util.Config.GetDBConfig()
-	if err != nil {
-		panic(err)
-	}
-
-	var dialect gorp.Dialect
-
-	switch cfg.Dialect {
-	case util.DbDriverMySQL:
-		dialect = gorp.MySQLDialect{Engine: "InnoDB", Encoding: "UTF8"}
-	case util.DbDriverPostgres:
-		dialect = gorp.PostgresDialect{}
-	case util.DbDriverSQLite:
-		dialect = gorp.SqliteDialect{}
-	}
-
-	d.sql = &gorp.DbMap{Db: sqlDb, Dialect: dialect}
-
-	if d.GetDialect() == util.DbDriverSQLite {
-		sqlDb.SetMaxOpenConns(1)
-	}
-
-	d.sql.AddTableWithName(db.APIToken{}, "user__token").SetKeys(false, "id")
-	d.sql.AddTableWithName(db.AccessKey{}, "access_key").SetKeys(true, "id")
-	d.sql.AddTableWithName(db.Environment{}, "project__environment").SetKeys(true, "id")
-	d.sql.AddTableWithName(db.Inventory{}, "project__inventory").SetKeys(true, "id")
-	d.sql.AddTableWithName(db.Project{}, "project").SetKeys(true, "id")
-	d.sql.AddTableWithName(db.Repository{}, "project__repository").SetKeys(true, "id")
-	d.sql.AddTableWithName(db.Task{}, "task").SetKeys(true, "id")
-	d.sql.AddTableWithName(db.TaskOutput{}, "task__output").SetUniqueTogether("task_id", "time")
-	d.sql.AddTableWithName(db.Template{}, "project__template").SetKeys(true, "id")
-	d.sql.AddTableWithName(db.User{}, "user").SetKeys(true, "id")
-	d.sql.AddTableWithName(db.Session{}, "session").SetKeys(true, "id")
-
-	if d.GetDialect() == util.DbDriverSQLite {
-		_, err = d.exec("PRAGMA foreign_keys = ON")
-		if err != nil {
-			panic(err)
-		}
-	}
+	d.connection.Connect()
 }
 
 func (d *SqlDb) getObjectRefs(projectID int, objectProps db.ObjectProps, objectID int) (refs db.ObjectReferrers, err error) {
@@ -521,12 +627,8 @@ func (d *SqlDb) getObjectRefsFrom(
 	return
 }
 
-func (d *SqlDb) Sql() *gorp.DbMap {
-	return d.sql
-}
-
 func (d *SqlDb) IsInitialized() (bool, error) {
-	_, err := d.sql.SelectInt(d.PrepareQuery("select count(1) from migrations"))
+	_, err := d.Sql().SelectInt(d.PrepareQuery("select count(1) from migrations"))
 	return err == nil, nil
 }
 
@@ -541,43 +643,6 @@ func (d *SqlDb) getObjectByReferrer(referrerID int, referringObjectProps db.Obje
 	}
 
 	err = d.selectOne(object, query, args...)
-
-	return
-}
-
-func (d *SqlDb) getObjectsByReferrer(
-	referrerID int,
-	referringObjectProps db.ObjectProps,
-	props db.ObjectProps,
-	params db.RetrieveQueryParams,
-	objects any,
-) (err error) {
-	referringColumn := referringObjectProps.ReferringColumnSuffix
-
-	columns := []string{"*"}
-	if len(props.SelectColumns) > 0 {
-		columns = props.SelectColumns
-	}
-
-	q := squirrel.Select(columns...).From(props.TableName + " pe")
-
-	if props.IsGlobal {
-		q = q.Where("pe." + referringColumn + " is null")
-	} else {
-		q = q.Where("pe."+referringColumn+"=?", referrerID)
-	}
-
-	q, err = getQueryForParams(q, "pe.", props, params)
-	if err != nil {
-		return
-	}
-
-	query, args, err := q.ToSql()
-	if err != nil {
-		return
-	}
-
-	_, err = d.selectAll(objects, query, args...)
 
 	return
 }

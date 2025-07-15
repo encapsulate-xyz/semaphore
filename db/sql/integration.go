@@ -109,7 +109,7 @@ func (d *SqlDb) CreateIntegrationExtractValue(projectId int, value db.Integratio
 
 func (d *SqlDb) GetIntegrationExtractValues(projectID int, params db.RetrieveQueryParams, integrationID int) ([]db.IntegrationExtractValue, error) {
 	var values []db.IntegrationExtractValue
-	err := d.getObjectsByReferrer(integrationID, db.IntegrationProps, db.IntegrationExtractValueProps, params, &values)
+	err := d.connection.GetObjectsByReferrer(integrationID, db.IntegrationProps, db.IntegrationExtractValueProps, params, &values)
 	return values, err
 }
 
