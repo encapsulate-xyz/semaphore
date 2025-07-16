@@ -72,7 +72,7 @@ func (c *UsersController) AddUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if user.Pro {
-		ok, err := c.subscriptionService.CanAddProUser(helpers.Store(r))
+		ok, err := c.subscriptionService.CanAddProUser()
 
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -177,7 +177,7 @@ func (c *UsersController) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if user.Pro {
-		ok, err := c.subscriptionService.CanAddProUser(helpers.Store(r))
+		ok, err := c.subscriptionService.CanAddProUser()
 
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
