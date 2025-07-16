@@ -12,9 +12,10 @@ import (
 	"time"
 
 	proApi "github.com/semaphoreui/semaphore/pro/api"
+	proProjects "github.com/semaphoreui/semaphore/pro/api/projects"
 	proFeatures "github.com/semaphoreui/semaphore/pro/pkg/features"
 	"github.com/semaphoreui/semaphore/services/server"
-	task2 "github.com/semaphoreui/semaphore/services/tasks"
+	taskServices "github.com/semaphoreui/semaphore/services/tasks"
 
 	"github.com/semaphoreui/semaphore/api/debug"
 	"github.com/semaphoreui/semaphore/pkg/tz"
@@ -83,7 +84,7 @@ func DelayMiddleware(delay time.Duration) func(http.Handler) http.Handler {
 func Route(
 	store db.Store,
 	terraformStore db.TerraformStore,
-	taskPool *task2.TaskPool,
+	taskPool *taskServices.TaskPool,
 	projectService server.ProjectService,
 	integrationService server.IntegrationService,
 	encryptionService server.AccessKeyEncryptionService,
@@ -103,6 +104,7 @@ func Route(
 	keyController := projects.NewKeyController(accessKeyService)
 	projectsController := projects.NewProjectsController(accessKeyService)
 	terraformController := proApi.NewTerraformController(encryptionService, terraformStore)
+	terraformInventoryController := proProjects.NewTerraformInventoryController(terraformStore)
 	userController := NewUserController(subscriptionService)
 	usersController := NewUsersController(subscriptionService)
 	subscriptionController := proApi.NewSubscriptionController()
@@ -387,16 +389,16 @@ func Route(
 	projectInventoryManagement.HandleFunc("/{inventory_id}", projects.UpdateInventory).Methods("PUT")
 	projectInventoryManagement.HandleFunc("/{inventory_id}", projects.RemoveInventory).Methods("DELETE")
 
-	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/aliases", projects.GetTerraformInventoryAliases).Methods("GET", "HEAD")
-	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/aliases", projects.AddTerraformInventoryAlias).Methods("POST")
-	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/aliases/{alias_id}", projects.GetTerraformInventoryAlias).Methods("GET")
-	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/aliases/{alias_id}", projects.DeleteTerraformInventoryAlias).Methods("DELETE")
-	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/aliases/{alias_id}", projects.SetTerraformInventoryAliasAccessKey).Methods("PUT")
+	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/aliases", terraformInventoryController.GetTerraformInventoryAliases).Methods("GET", "HEAD")
+	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/aliases", terraformInventoryController.AddTerraformInventoryAlias).Methods("POST")
+	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/aliases/{alias_id}", terraformInventoryController.GetTerraformInventoryAlias).Methods("GET")
+	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/aliases/{alias_id}", terraformInventoryController.DeleteTerraformInventoryAlias).Methods("DELETE")
+	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/aliases/{alias_id}", terraformInventoryController.SetTerraformInventoryAliasAccessKey).Methods("PUT")
 
-	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/states", projects.GetTerraformInventoryStates).Methods("GET", "HEAD")
-	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/states/latest", projects.GetTerraformInventoryLatestState).Methods("GET", "HEAD")
-	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/states/{state_id}", projects.GetTerraformInventoryState).Methods("GET")
-	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/states/{state_id}", projects.DeleteTerraformInventoryState).Methods("DELETE")
+	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/states", terraformInventoryController.GetTerraformInventoryStates).Methods("GET", "HEAD")
+	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/states/latest", terraformInventoryController.GetTerraformInventoryLatestState).Methods("GET", "HEAD")
+	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/states/{state_id}", terraformInventoryController.GetTerraformInventoryState).Methods("GET")
+	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/states/{state_id}", terraformInventoryController.DeleteTerraformInventoryState).Methods("DELETE")
 
 	projectEnvManagement := projectUserAPI.PathPrefix("/environment").Subrouter()
 	projectEnvManagement.Use(environmentController.EnvironmentMiddleware)
