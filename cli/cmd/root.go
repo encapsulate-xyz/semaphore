@@ -15,6 +15,7 @@ import (
 	"github.com/semaphoreui/semaphore/db"
 	"github.com/semaphoreui/semaphore/db/factory"
 	proFactory "github.com/semaphoreui/semaphore/pro/db/factory"
+	proServer "github.com/semaphoreui/semaphore/pro/services/server"
 	"github.com/semaphoreui/semaphore/services/schedules"
 	"github.com/semaphoreui/semaphore/services/tasks"
 	"github.com/semaphoreui/semaphore/util"
@@ -85,6 +86,7 @@ func runService() {
 	accessKeyService := server.NewAccessKeyService(store, encryptionService, store)
 	secretStorageService := server.NewSecretStorageService(store, accessKeyService)
 	environmentService := server.NewEnvironmentService(store, encryptionService)
+	subscriptionService := proServer.NewSubscriptionService()
 
 	taskPool := tasks.CreateTaskPool(
 		store,
@@ -130,6 +132,7 @@ func runService() {
 		secretStorageService,
 		accessKeyService,
 		environmentService,
+		subscriptionService,
 	)
 
 	route.Use(func(next http.Handler) http.Handler {

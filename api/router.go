@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"embed"
 	"fmt"
+	"github.com/semaphoreui/semaphore/services/interfaces"
 	"net/http"
 	"os"
 	"path"
@@ -91,6 +92,7 @@ func Route(
 	secretStorageService server.SecretStorageService,
 	accessKeyService server.AccessKeyService,
 	environmentService server.EnvironmentService,
+	subscriptionService interfaces.SubscriptionService,
 ) *mux.Router {
 
 	projectController := &projects.ProjectController{ProjectService: projectService}
@@ -102,6 +104,8 @@ func Route(
 	keyController := projects.NewKeyController(accessKeyService)
 	projectsController := projects.NewProjectsController(accessKeyService)
 	terraformController := proApi.NewTerraformController(encryptionService, terraformStore)
+	userController := NewUserController(subscriptionService)
+	usersController := NewUsersController(subscriptionService)
 
 	r := mux.NewRouter()
 	r.NotFoundHandler = http.HandlerFunc(servePublic)
@@ -182,9 +186,9 @@ func Route(
 	authenticatedAPI.Path("/events").HandlerFunc(getAllEvents).Methods("GET", "HEAD")
 	authenticatedAPI.HandleFunc("/events/last", getLastEvents).Methods("GET", "HEAD")
 
-	authenticatedAPI.Path("/users").HandlerFunc(getUsers).Methods("GET", "HEAD")
-	authenticatedAPI.Path("/users").HandlerFunc(addUser).Methods("POST")
-	authenticatedAPI.Path("/user").HandlerFunc(getUser).Methods("GET", "HEAD")
+	authenticatedAPI.Path("/users").HandlerFunc(usersController.GetUsers).Methods("GET", "HEAD")
+	authenticatedAPI.Path("/users").HandlerFunc(usersController.AddUser).Methods("POST")
+	authenticatedAPI.Path("/user").HandlerFunc(userController.GetUser).Methods("GET", "HEAD")
 
 	authenticatedAPI.Path("/apps").HandlerFunc(getApps).Methods("GET", "HEAD")
 
@@ -230,12 +234,12 @@ func Route(
 
 	userUserAPI := authenticatedAPI.Path("/users/{user_id}").Subrouter()
 	userUserAPI.Use(readonlyUserMiddleware)
-	userUserAPI.Methods("GET", "HEAD").HandlerFunc(getUser)
+	userUserAPI.Methods("GET", "HEAD").HandlerFunc(userController.GetUser)
 
 	userAPI := authenticatedAPI.Path("/users/{user_id}").Subrouter()
 	userAPI.Use(getUserMiddleware)
 
-	userAPI.Methods("PUT").HandlerFunc(updateUser)
+	userAPI.Methods("PUT").HandlerFunc(usersController.UpdateUser)
 	userAPI.Methods("DELETE").HandlerFunc(deleteUser)
 
 	userPasswordAPI := authenticatedAPI.PathPrefix("/users/{user_id}").Subrouter()
