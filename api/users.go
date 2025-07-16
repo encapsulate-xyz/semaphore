@@ -7,7 +7,7 @@ import (
 	"github.com/pquerna/otp/totp"
 	"github.com/semaphoreui/semaphore/api/helpers"
 	"github.com/semaphoreui/semaphore/db"
-	"github.com/semaphoreui/semaphore/services/interfaces"
+	"github.com/semaphoreui/semaphore/pro_interfaces"
 	log "github.com/sirupsen/logrus"
 	"image/png"
 	"net/http"
@@ -16,10 +16,10 @@ import (
 )
 
 type UsersController struct {
-	subscriptionService interfaces.SubscriptionService
+	subscriptionService pro_interfaces.SubscriptionService
 }
 
-func NewUsersController(subscriptionService interfaces.SubscriptionService) *UsersController {
+func NewUsersController(subscriptionService pro_interfaces.SubscriptionService) *UsersController {
 	return &UsersController{
 		subscriptionService: subscriptionService,
 	}

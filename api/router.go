@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"embed"
 	"fmt"
-	"github.com/semaphoreui/semaphore/services/interfaces"
+	"github.com/semaphoreui/semaphore/pro_interfaces"
 	"net/http"
 	"os"
 	"path"
@@ -18,7 +18,6 @@ import (
 
 	"github.com/semaphoreui/semaphore/api/debug"
 	"github.com/semaphoreui/semaphore/pkg/tz"
-	proSubscriptions "github.com/semaphoreui/semaphore/pro/api/subscriptions"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/semaphoreui/semaphore/api/runners"
@@ -92,7 +91,7 @@ func Route(
 	secretStorageService server.SecretStorageService,
 	accessKeyService server.AccessKeyService,
 	environmentService server.EnvironmentService,
-	subscriptionService interfaces.SubscriptionService,
+	subscriptionService pro_interfaces.SubscriptionService,
 ) *mux.Router {
 
 	projectController := &projects.ProjectController{ProjectService: projectService}
@@ -106,6 +105,7 @@ func Route(
 	terraformController := proApi.NewTerraformController(encryptionService, terraformStore)
 	userController := NewUserController(subscriptionService)
 	usersController := NewUsersController(subscriptionService)
+	subscriptionController := proApi.NewSubscriptionController()
 
 	r := mux.NewRouter()
 	r.NotFoundHandler = http.HandlerFunc(servePublic)
@@ -177,8 +177,8 @@ func Route(
 
 	authenticatedAPI.Path("/info").HandlerFunc(getSystemInfo).Methods("GET", "HEAD")
 
-	authenticatedAPI.Path("/subscription").HandlerFunc(proSubscriptions.Activate).Methods("POST")
-	authenticatedAPI.Path("/subscription").HandlerFunc(proSubscriptions.GetSubscription).Methods("GET")
+	authenticatedAPI.Path("/subscription").HandlerFunc(subscriptionController.Activate).Methods("POST")
+	authenticatedAPI.Path("/subscription").HandlerFunc(subscriptionController.GetSubscription).Methods("GET")
 
 	authenticatedAPI.Path("/projects").HandlerFunc(projects.GetProjects).Methods("GET", "HEAD")
 	authenticatedAPI.Path("/projects").HandlerFunc(projectsController.AddProject).Methods("POST")

@@ -6,7 +6,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/semaphoreui/semaphore/api/helpers"
 	"github.com/semaphoreui/semaphore/db"
-	"github.com/semaphoreui/semaphore/services/interfaces"
+	"github.com/semaphoreui/semaphore/pro_interfaces"
 	"github.com/semaphoreui/semaphore/util"
 	"io"
 	"net/http"
@@ -14,10 +14,10 @@ import (
 )
 
 type UserController struct {
-	subscriptionService interfaces.SubscriptionService
+	subscriptionService pro_interfaces.SubscriptionService
 }
 
-func NewUserController(subscriptionService interfaces.SubscriptionService) *UserController {
+func NewUserController(subscriptionService pro_interfaces.SubscriptionService) *UserController {
 	return &UserController{
 		subscriptionService: subscriptionService,
 	}
