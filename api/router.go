@@ -107,7 +107,7 @@ func Route(
 	terraformInventoryController := proProjects.NewTerraformInventoryController(terraformStore)
 	userController := NewUserController(subscriptionService)
 	usersController := NewUsersController(subscriptionService)
-	subscriptionController := proApi.NewSubscriptionController()
+	subscriptionController := proApi.NewSubscriptionController(store)
 	projectRunnerController := proProjects.NewProjectRunnerController()
 
 	r := mux.NewRouter()

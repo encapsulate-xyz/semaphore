@@ -1,11 +1,12 @@
 package api
 
 import (
+	"github.com/semaphoreui/semaphore/db"
 	"github.com/semaphoreui/semaphore/pro_interfaces"
 	"net/http"
 )
 
-func NewSubscriptionController() pro_interfaces.SubscriptionController {
+func NewSubscriptionController(optionsRepo db.OptionsManager) pro_interfaces.SubscriptionController {
 	return &subscriptionControllerImpl{}
 }
 
