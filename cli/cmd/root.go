@@ -2,12 +2,13 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/semaphoreui/semaphore/api/helpers"
-	"github.com/semaphoreui/semaphore/services/server"
 	"net/http"
 	"net/url"
 	"os"
 	"strings"
+
+	"github.com/semaphoreui/semaphore/api/helpers"
+	"github.com/semaphoreui/semaphore/services/server"
 
 	"github.com/gorilla/handlers"
 	"github.com/semaphoreui/semaphore/api"
@@ -86,7 +87,7 @@ func runService() {
 	accessKeyService := server.NewAccessKeyService(store, encryptionService, store)
 	secretStorageService := server.NewSecretStorageService(store, accessKeyService)
 	environmentService := server.NewEnvironmentService(store, encryptionService)
-	subscriptionService := proServer.NewSubscriptionService()
+	subscriptionService := proServer.NewSubscriptionService(store, store)
 
 	taskPool := tasks.CreateTaskPool(
 		store,
@@ -117,6 +118,7 @@ func runService() {
 	fmt.Printf("Interface %v\n", util.Config.Interface)
 	fmt.Printf("Port %v\n", util.Config.Port)
 
+	subscriptionService.StartValidationCron()
 	go sockets.StartWS()
 	go schedulePool.Run()
 	go taskPool.Run()
