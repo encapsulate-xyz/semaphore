@@ -12,10 +12,6 @@ func Store(r *http.Request) db.Store {
 	return GetFromContext(r, "store").(db.Store)
 }
 
-func TerraformStore(r *http.Request) db.TerraformStore {
-	return GetFromContext(r, "store").(db.TerraformStore)
-}
-
 func isXHR(w http.ResponseWriter, r *http.Request) bool {
 	accept := r.Header.Get("Accept")
 	return !strings.Contains(accept, "text/html")
