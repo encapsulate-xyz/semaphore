@@ -55,9 +55,11 @@ func TestTaskRunnerRun(t *testing.T) {
 
 	pool := CreateTaskPool(
 		store,
+		nil,
 		&InventoryServiceMock{},
 		nil,
 		keyInstaller,
+		nil,
 	)
 
 	go pool.Run()

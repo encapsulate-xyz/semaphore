@@ -58,6 +58,7 @@ type TaskPool struct {
 	logger chan logRecord
 
 	store                  db.Store
+	ansibleTaskRepo        db.AnsibleTaskRepository
 	logWriteService        pro_interfaces.LogWriteService
 	inventoryService       server.InventoryService
 	encryptionService      server.AccessKeyEncryptionService
@@ -70,6 +71,7 @@ type TaskPool struct {
 
 func CreateTaskPool(
 	store db.Store,
+	ansibleTaskRepo db.AnsibleTaskRepository,
 	inventoryService server.InventoryService,
 	encryptionService server.AccessKeyEncryptionService,
 	keyInstallationService server.AccessKeyInstallationService,
@@ -218,6 +220,7 @@ func (p *TaskPool) handleLogs() {
 
 			newStage, newState, err := stage_parsers.MoveToNextStage(
 				p.store,
+				p.ansibleTaskRepo,
 				p.logWriteService,
 				record.task.Template.App,
 				record.task.Task.ProjectID,

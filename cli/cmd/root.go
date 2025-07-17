@@ -73,7 +73,7 @@ func Execute() {
 func runService() {
 	store := createStore("root")
 	terraformStore := proFactory.NewTerraformStore(store)
-	ansibleTaskRepository := proFactory.NewAnsibleTaskRepository(store)
+	ansibleTaskRepo := proFactory.NewAnsibleTaskRepository(store)
 
 	projectService := server.NewProjectService(store, store)
 	encryptionService := server.NewAccessKeyEncryptionService(store, store, store)
@@ -93,6 +93,7 @@ func runService() {
 
 	taskPool := tasks.CreateTaskPool(
 		store,
+		ansibleTaskRepo,
 		inventoryService,
 		encryptionService,
 		accessKeyInstallationService,
@@ -130,7 +131,7 @@ func runService() {
 	route := api.Route(
 		store,
 		terraformStore,
-		ansibleTaskRepository,
+		ansibleTaskRepo,
 		&taskPool,
 		projectService,
 		integrationService,
