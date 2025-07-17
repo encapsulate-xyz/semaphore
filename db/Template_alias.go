@@ -3,5 +3,5 @@
 package db
 
 func (t TemplateApp) NeedTaskAlias() bool {
-	return false
+	return t.IsTerraform()
 }

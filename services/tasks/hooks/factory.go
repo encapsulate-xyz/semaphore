@@ -2,7 +2,9 @@
 
 package hooks
 
-import "github.com/semaphoreui/semaphore/db"
+import (
+	"github.com/semaphoreui/semaphore/db"
+)
 
 func GetHook(app db.TemplateApp) Hook {
 	switch app {

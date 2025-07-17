@@ -119,6 +119,7 @@ func runService() {
 	fmt.Printf("Port %v\n", util.Config.Port)
 
 	subscriptionService.StartValidationCron()
+
 	go sockets.StartWS()
 	go schedulePool.Run()
 	go taskPool.Run()

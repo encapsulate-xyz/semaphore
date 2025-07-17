@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/semaphoreui/semaphore/pkg/random"
 	"github.com/semaphoreui/semaphore/pkg/tz"
+	"github.com/semaphoreui/semaphore/pro/pkg/stage_parsers"
 	"github.com/semaphoreui/semaphore/services/server"
-	"github.com/semaphoreui/semaphore/services/tasks/stage_parsers"
 	"regexp"
 	"slices"
 	"strconv"
@@ -107,118 +107,6 @@ func (p *TaskPool) GetTaskByAlias(alias string) (task *TaskRunner) {
 	return p.aliases[alias]
 }
 
-func (p *TaskPool) MoveToNextStage(
-	app db.TemplateApp,
-	projectID int,
-	currentState any,
-	currentStage *db.TaskStage,
-	currentOutput *db.TaskOutput,
-	newOutput db.TaskOutput,
-) (newStage *db.TaskStage, newState any, err error) {
-
-	newState = currentState
-	stages := stage_parsers.GetAllTaskStages(app)
-
-	for _, stageType := range stages {
-
-		parser := stage_parsers.GetStageResultParser(app, stageType, newState)
-		if parser == nil {
-			continue
-		}
-
-		matched := false
-
-		var oldStage *db.TaskStage
-
-		var stage db.TaskStage
-
-		if parser.IsEnd(currentStage, newOutput) {
-
-			err = p.store.EndTaskStage(
-				currentStage.TaskID,
-				currentStage.ID,
-				newOutput.Time,
-				newOutput.ID,
-			)
-
-			if err != nil {
-				return
-			}
-
-			stage = *currentStage
-			stage.End = &newOutput.Time
-			stage.EndOutputID = &newOutput.ID
-			oldStage = &stage
-
-			matched = true
-
-		} else if parser.IsStart(currentStage, newOutput) {
-
-			if currentStage != nil {
-				err = p.store.EndTaskStage(
-					currentStage.TaskID,
-					currentStage.ID,
-					currentOutput.Time,
-					currentOutput.ID,
-				)
-
-				if err != nil {
-					return
-				}
-
-				oldSt := *currentStage
-				oldSt.End = &currentOutput.Time
-				oldSt.EndOutputID = &currentOutput.ID
-				oldStage = &oldSt
-			}
-
-			stage, err = p.store.CreateTaskStage(db.TaskStage{
-				TaskID:        newOutput.TaskID,
-				Start:         &newOutput.Time,
-				Type:          stageType,
-				StartOutputID: &newOutput.ID,
-				EndOutputID:   nil,
-			})
-
-			if err != nil {
-				return
-			}
-
-			matched = true
-		} else {
-			var ok bool
-			ok, err = parser.Parse(currentStage, newOutput, p.store, projectID)
-			if err != nil {
-				log.Error(err.Error())
-			} else if ok {
-				newState = parser.State()
-			}
-		}
-
-		if matched {
-
-			newStage = &stage
-
-			var oldParser stage_parsers.StageResultParser
-
-			if oldStage != nil {
-				oldParser = stage_parsers.GetStageResultParser(app, oldStage.Type, currentState)
-			}
-
-			if oldParser != nil && oldParser.NeedParse() {
-
-				res := oldParser.Result()
-
-				err = p.store.CreateTaskStageResult(oldStage.TaskID, oldStage.ID, res)
-			}
-
-			break
-		}
-	}
-
-	return
-}
-
 // nolint: gocyclo
 func (p *TaskPool) Run() {
 	ticker := time.NewTicker(5 * time.Second)
@@ -304,7 +192,8 @@ func (p *TaskPool) handleLogs() {
 			currentOutput := record.task.currentOutput
 			record.task.currentOutput = &newOutput
 
-			newStage, newState, err := p.MoveToNextStage(
+			newStage, newState, err := stage_parsers.MoveToNextStage(
+				p.store,
 				record.task.Template.App,
 				record.task.Task.ProjectID,
 				record.task.currentState,
