@@ -1,6 +1,8 @@
 package server
 
-import "github.com/semaphoreui/semaphore/pro_interfaces"
+import (
+	"github.com/semaphoreui/semaphore/pro_interfaces"
+)
 
 type LogWriteServiceImpl struct {
 }
@@ -15,5 +17,8 @@ func (l *LogWriteServiceImpl) WriteEventLog(event pro_interfaces.EventLogRecord)
 }
 
 func (l *LogWriteServiceImpl) WriteTaskLog(task pro_interfaces.TaskLogRecord) error {
+	return nil
+}
+func (l *LogWriteServiceImpl) WriteResult(task any) error {
 	return nil
 }

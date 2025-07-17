@@ -5,6 +5,7 @@ import "github.com/semaphoreui/semaphore/pkg/task_logger"
 type LogWriteService interface {
 	WriteEventLog(event EventLogRecord) error
 	WriteTaskLog(task TaskLogRecord) error
+	WriteResult(task any) error
 }
 
 type EventLogRecord struct {
