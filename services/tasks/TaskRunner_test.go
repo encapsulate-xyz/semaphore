@@ -2,6 +2,7 @@ package tasks
 
 import (
 	"github.com/semaphoreui/semaphore/pkg/task_logger"
+	"github.com/semaphoreui/semaphore/pro_interfaces"
 	"math/rand"
 	"os"
 	"path"
@@ -48,6 +49,20 @@ func (s *EncryptionServiceMock) FillEnvironmentSecrets(env *db.Environment, dese
 	return nil
 }
 
+type mockLogWriteService struct {
+}
+
+func (l *mockLogWriteService) WriteEventLog(event pro_interfaces.EventLogRecord) error {
+	return nil
+}
+
+func (l *mockLogWriteService) WriteTaskLog(task pro_interfaces.TaskLogRecord) error {
+	return nil
+}
+func (l *mockLogWriteService) WriteResult(task any) error {
+	return nil
+}
+
 func TestTaskRunnerRun(t *testing.T) {
 
 	store := bolt.CreateTestStore()
@@ -59,7 +74,7 @@ func TestTaskRunnerRun(t *testing.T) {
 		&InventoryServiceMock{},
 		nil,
 		keyInstaller,
-		nil,
+		&mockLogWriteService{},
 	)
 
 	go pool.Run()
