@@ -459,7 +459,6 @@ type Store interface {
 	SessionManager
 	TokenManager
 	TaskManager
-	AnsibleTaskRepository
 	ScheduleManager
 	ViewManager
 	RunnerManager

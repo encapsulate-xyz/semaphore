@@ -15,6 +15,16 @@ import (
 	"time"
 )
 
+type TaskController struct {
+	ansibleTaskRepo db.AnsibleTaskRepository
+}
+
+func NewTaskController(ansibleTaskRepo db.AnsibleTaskRepository) *TaskController {
+	return &TaskController{
+		ansibleTaskRepo: ansibleTaskRepo,
+	}
+}
+
 func taskPool(r *http.Request) *tasks.TaskPool {
 	return helpers.GetFromContext(r, "task_pool").(*tasks.TaskPool)
 }
@@ -139,10 +149,10 @@ func GetTaskMiddleware(next http.Handler) http.Handler {
 //	return
 //}
 
-func GetAnsibleTaskHosts(w http.ResponseWriter, r *http.Request) {
+func (c *TaskController) GetAnsibleTaskHosts(w http.ResponseWriter, r *http.Request) {
 	task := helpers.GetFromContext(r, "task").(db.Task)
 	project := helpers.GetFromContext(r, "project").(db.Project)
-	hosts, err := helpers.Store(r).GetAnsibleTaskHosts(project.ID, task.ID)
+	hosts, err := c.ansibleTaskRepo.GetAnsibleTaskHosts(project.ID, task.ID)
 	if err != nil {
 		helpers.WriteError(w, err)
 		return
@@ -151,10 +161,10 @@ func GetAnsibleTaskHosts(w http.ResponseWriter, r *http.Request) {
 	helpers.WriteJSON(w, http.StatusOK, hosts)
 }
 
-func GetAnsibleTaskErrors(w http.ResponseWriter, r *http.Request) {
+func (c *TaskController) GetAnsibleTaskErrors(w http.ResponseWriter, r *http.Request) {
 	task := helpers.GetFromContext(r, "task").(db.Task)
 	project := helpers.GetFromContext(r, "project").(db.Project)
-	hosts, err := helpers.Store(r).GetAnsibleTaskErrors(project.ID, task.ID)
+	hosts, err := c.ansibleTaskRepo.GetAnsibleTaskErrors(project.ID, task.ID)
 	if err != nil {
 		helpers.WriteError(w, err)
 		return

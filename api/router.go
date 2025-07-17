@@ -84,6 +84,7 @@ func DelayMiddleware(delay time.Duration) func(http.Handler) http.Handler {
 func Route(
 	store db.Store,
 	terraformStore db.TerraformStore,
+	ansibleTaskRepo db.AnsibleTaskRepository,
 	taskPool *taskServices.TaskPool,
 	projectService server.ProjectService,
 	integrationService server.IntegrationService,
@@ -109,6 +110,7 @@ func Route(
 	usersController := NewUsersController(subscriptionService)
 	subscriptionController := proApi.NewSubscriptionController(store)
 	projectRunnerController := proProjects.NewProjectRunnerController()
+	taskController := projects.NewTaskController(ansibleTaskRepo)
 
 	r := mux.NewRouter()
 	r.NotFoundHandler = http.HandlerFunc(servePublic)
@@ -436,8 +438,8 @@ func Route(
 	projectTaskManagement.HandleFunc("/{task_id}", projects.GetTask).Methods("GET", "HEAD")
 	projectTaskManagement.HandleFunc("/{task_id}", projects.RemoveTask).Methods("DELETE")
 	projectTaskManagement.HandleFunc("/{task_id}/stages", projects.GetTaskStages).Methods("GET", "HEAD")
-	projectTaskManagement.HandleFunc("/{task_id}/ansible/hosts", projects.GetAnsibleTaskHosts).Methods("GET", "HEAD")
-	projectTaskManagement.HandleFunc("/{task_id}/ansible/errors", projects.GetAnsibleTaskErrors).Methods("GET", "HEAD")
+	projectTaskManagement.HandleFunc("/{task_id}/ansible/hosts", taskController.GetAnsibleTaskHosts).Methods("GET", "HEAD")
+	projectTaskManagement.HandleFunc("/{task_id}/ansible/errors", taskController.GetAnsibleTaskErrors).Methods("GET", "HEAD")
 
 	projectScheduleManagement := projectUserAPI.PathPrefix("/schedules").Subrouter()
 	projectScheduleManagement.Use(projects.SchedulesMiddleware)
