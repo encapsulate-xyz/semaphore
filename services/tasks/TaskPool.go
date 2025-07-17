@@ -218,6 +218,7 @@ func (p *TaskPool) handleLogs() {
 
 			newStage, newState, err := stage_parsers.MoveToNextStage(
 				p.store,
+				p.logWriteService,
 				record.task.Template.App,
 				record.task.Task.ProjectID,
 				record.task.currentState,
