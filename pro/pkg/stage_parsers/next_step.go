@@ -7,6 +7,7 @@ import (
 
 func MoveToNextStage(
 	store db.Store,
+	ansibleTaskRepo db.AnsibleTaskRepository,
 	logWriter pro_interfaces.LogWriteService,
 	app db.TemplateApp,
 	projectID int,
