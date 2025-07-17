@@ -19,7 +19,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/semaphoreui/semaphore/pkg/task_logger"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/natefinch/lumberjack.v2"
 
@@ -144,14 +143,6 @@ type EventLogType struct {
 	Logger  *lumberjack.Logger `json:"logger,omitempty" env:"SEMAPHORE_EVENT_LOGGER"`
 }
 
-type EventLogRecord struct {
-	Action        string  `json:"action"`
-	UserID        *int    `json:"user,omitempty"`
-	IntegrationID *int    `json:"integration,omitempty"`
-	ProjectID     *int    `json:"project,omitempty"`
-	Description   *string `json:"description,omitempty"`
-}
-
 type FileLogFormat string
 
 const (
@@ -164,18 +155,6 @@ type TaskLogType struct {
 	Format       FileLogFormat      `json:"format,omitempty" env:"SEMAPHORE_TASK_LOG_FORMAT"`
 	Logger       *lumberjack.Logger `json:"logger,omitempty" env:"SEMAPHORE_TASK_LOGGER"`
 	ResultLogger *lumberjack.Logger `json:"result_logger,omitempty" env:"SEMAPHORE_TASK_RESULT_LOGGER"`
-}
-
-type TaskLogRecord struct {
-	Username     string                 `json:"username,omitempty"`
-	TaskID       int                    `json:"task"`
-	ProjectID    int                    `json:"project"`
-	TemplateID   int                    `json:"template"`
-	TemplateName string                 `json:"template_name"`
-	UserID       *int                   `json:"user,omitempty"`
-	Description  *string                `json:"-"`
-	RunnerID     *int                   `json:"runner,omitempty"`
-	Status       task_logger.TaskStatus `json:"status"`
 }
 
 type ConfigLog struct {

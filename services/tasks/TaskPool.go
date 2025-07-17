@@ -5,6 +5,7 @@ import (
 	"github.com/semaphoreui/semaphore/pkg/random"
 	"github.com/semaphoreui/semaphore/pkg/tz"
 	"github.com/semaphoreui/semaphore/pro/pkg/stage_parsers"
+	"github.com/semaphoreui/semaphore/pro_interfaces"
 	"github.com/semaphoreui/semaphore/services/server"
 	"regexp"
 	"slices"
@@ -57,6 +58,7 @@ type TaskPool struct {
 	logger chan logRecord
 
 	store                  db.Store
+	logWriteService        pro_interfaces.LogWriteService
 	inventoryService       server.InventoryService
 	encryptionService      server.AccessKeyEncryptionService
 	keyInstallationService server.AccessKeyInstallationService
@@ -66,6 +68,28 @@ type TaskPool struct {
 	aliases map[string]*TaskRunner
 }
 
+func CreateTaskPool(
+	store db.Store,
+	inventoryService server.InventoryService,
+	encryptionService server.AccessKeyEncryptionService,
+	keyInstallationService server.AccessKeyInstallationService,
+	logWriteService pro_interfaces.LogWriteService,
+) TaskPool {
+	return TaskPool{
+		Queue:                  make([]*TaskRunner, 0), // queue of waiting tasks
+		register:               make(chan *TaskRunner), // add TaskRunner to queue
+		activeProj:             make(map[int]map[int]*TaskRunner),
+		RunningTasks:           make(map[int]*TaskRunner),   // working tasks
+		logger:                 make(chan logRecord, 10000), // store log records to database
+		store:                  store,
+		queueEvents:            make(chan PoolEvent),
+		aliases:                make(map[string]*TaskRunner),
+		inventoryService:       inventoryService,
+		encryptionService:      encryptionService,
+		logWriteService:        logWriteService,
+		keyInstallationService: keyInstallationService,
+	}
+}
 func (p *TaskPool) GetNumberOfRunningTasksOfRunner(runnerID int) (res int) {
 	for _, task := range p.RunningTasks {
 		if task.RunnerID == runnerID {
@@ -280,27 +304,6 @@ func (p *TaskPool) blocks(t *TaskRunner) bool {
 	}
 
 	return res
-}
-
-func CreateTaskPool(
-	store db.Store,
-	inventoryService server.InventoryService,
-	encryptionService server.AccessKeyEncryptionService,
-	keyInstallationService server.AccessKeyInstallationService,
-) TaskPool {
-	return TaskPool{
-		Queue:                  make([]*TaskRunner, 0), // queue of waiting tasks
-		register:               make(chan *TaskRunner), // add TaskRunner to queue
-		activeProj:             make(map[int]map[int]*TaskRunner),
-		RunningTasks:           make(map[int]*TaskRunner),   // working tasks
-		logger:                 make(chan logRecord, 10000), // store log records to database
-		store:                  store,
-		queueEvents:            make(chan PoolEvent),
-		aliases:                make(map[string]*TaskRunner),
-		inventoryService:       inventoryService,
-		encryptionService:      encryptionService,
-		keyInstallationService: keyInstallationService,
-	}
 }
 
 func (p *TaskPool) ConfirmTask(targetTask db.Task) error {

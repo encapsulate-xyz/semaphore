@@ -88,12 +88,14 @@ func runService() {
 	secretStorageService := server.NewSecretStorageService(store, accessKeyService)
 	environmentService := server.NewEnvironmentService(store, encryptionService)
 	subscriptionService := proServer.NewSubscriptionService(store, store)
+	logWriteService := proServer.NewLogWriteService()
 
 	taskPool := tasks.CreateTaskPool(
 		store,
 		inventoryService,
 		encryptionService,
 		accessKeyInstallationService,
+		logWriteService,
 	)
 
 	schedulePool := schedules.CreateSchedulePool(
@@ -143,6 +145,7 @@ func runService() {
 			r = helpers.SetContextValue(r, "store", store)
 			r = helpers.SetContextValue(r, "schedule_pool", schedulePool)
 			r = helpers.SetContextValue(r, "task_pool", &taskPool)
+			r = helpers.SetContextValue(r, "log_writer", logWriteService)
 			next.ServeHTTP(w, r)
 		})
 	})

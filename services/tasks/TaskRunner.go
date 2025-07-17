@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/semaphoreui/semaphore/db_lib"
 	"github.com/semaphoreui/semaphore/pkg/tz"
+	"github.com/semaphoreui/semaphore/pro_interfaces"
 	"github.com/semaphoreui/semaphore/services/tasks/hooks"
 	"os"
 	"strconv"
@@ -135,8 +136,8 @@ func (t *TaskRunner) createTaskEvent() {
 	if t.RunnerID > 0 {
 		runnerID = &t.RunnerID
 	}
-
-	if err := util.Config.Log.Tasks.Write(util.TaskLogRecord{
+	
+	if err := t.pool.logWriteService.WriteTaskLog(pro_interfaces.TaskLogRecord{
 		ProjectID:    t.Task.ProjectID,
 		TemplateID:   t.Template.ID,
 		TemplateName: t.Template.Name,
