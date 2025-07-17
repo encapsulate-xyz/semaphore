@@ -7,8 +7,7 @@ import (
 
 func MoveToNextStage(
 	store db.Store,
-	logWriter pro_interfaces.LogWriteService,.
-
+	logWriter pro_interfaces.LogWriteService,
 	app db.TemplateApp,
 	projectID int,
 	currentState any,
