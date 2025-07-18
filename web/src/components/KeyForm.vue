@@ -43,6 +43,8 @@
       dense
     />
 
+    <v-divider class="mb-6" />
+
     <v-select
         v-model="item.type"
         :label="$t('type')"

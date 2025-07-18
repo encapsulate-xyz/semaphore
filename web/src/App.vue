@@ -458,16 +458,6 @@
 
               <v-divider/>
 
-              <v-list-item key="users" to="/users" v-if="user.admin">
-                <v-list-item-icon>
-                  <v-icon>mdi-account-multiple</v-icon>
-                </v-list-item-icon>
-
-                <v-list-item-content>
-                  {{ $t('users') }}
-                </v-list-item-content>
-              </v-list-item>
-
               <v-list-item
                 key="tasks"
                 to="/tasks"
@@ -496,16 +486,6 @@
                 </v-list-item-content>
               </v-list-item>
 
-              <v-list-item key="edit" @click="userDialog = true">
-                <v-list-item-icon>
-                  <v-icon>mdi-pencil</v-icon>
-                </v-list-item-icon>
-
-                <v-list-item-content>
-                  {{ $t('editAccount') }}
-                </v-list-item-content>
-              </v-list-item>
-
               <v-list-item
                 key="tokens"
                 to="/tokens"
@@ -519,6 +499,28 @@
                   {{ $t('api_tokens') }}
                 </v-list-item-content>
               </v-list-item>
+
+              <v-list-item key="users" to="/users" v-if="user.admin">
+                <v-list-item-icon>
+                  <v-icon>mdi-account-multiple</v-icon>
+                </v-list-item-icon>
+
+                <v-list-item-content>
+                  {{ $t('users') }}
+                </v-list-item-content>
+              </v-list-item>
+
+              <v-list-item key="edit" @click="userDialog = true">
+                <v-list-item-icon>
+                  <v-icon>mdi-pencil</v-icon>
+                </v-list-item-icon>
+
+                <v-list-item-content>
+                  {{ $t('editAccount') }}
+                </v-list-item-content>
+              </v-list-item>
+
+              <v-divider />
 
               <v-list-item key="sign_out" @click="signOut()" data-testid="sidebar-signout">
                 <v-list-item-icon>

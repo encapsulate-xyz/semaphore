@@ -45,6 +45,7 @@
       item-text="tag"
       outlined
       dense
+      clearable
       :disabled="formSaving"
       :placeholder="$t('runner_tag')"
     ></v-autocomplete>
