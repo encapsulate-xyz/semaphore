@@ -97,7 +97,7 @@ func Route(
 ) *mux.Router {
 
 	projectController := &projects.ProjectController{ProjectService: projectService}
-	runnerController := runners.NewRunnerController(store, taskPool)
+	runnerController := runners.NewRunnerController(store, taskPool, encryptionService)
 	integrationController := NewIntegrationController(integrationService)
 	environmentController := projects.NewEnvironmentController(store, encryptionService, accessKeyService, environmentService)
 	secretStorageController := projects.NewSecretStorageController(store, secretStorageService)

@@ -87,6 +87,7 @@ func CreateTaskPool(
 		queueEvents:            make(chan PoolEvent),
 		aliases:                make(map[string]*TaskRunner),
 		inventoryService:       inventoryService,
+		ansibleTaskRepo:        ansibleTaskRepo,
 		encryptionService:      encryptionService,
 		logWriteService:        logWriteService,
 		keyInstallationService: keyInstallationService,

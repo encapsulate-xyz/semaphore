@@ -99,10 +99,11 @@ type RunnerController struct {
 	encryptionService server.AccessKeyEncryptionService
 }
 
-func NewRunnerController(runnerRepo db.RunnerManager, taskPool *tasks.TaskPool) *RunnerController {
+func NewRunnerController(runnerRepo db.RunnerManager, taskPool *tasks.TaskPool, encryptionService server.AccessKeyEncryptionService) *RunnerController {
 	return &RunnerController{
-		runnerRepo: runnerRepo,
-		taskPool:   taskPool,
+		runnerRepo:        runnerRepo,
+		taskPool:          taskPool,
+		encryptionService: encryptionService,
 	}
 }
 
