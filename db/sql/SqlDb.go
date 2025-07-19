@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/Masterminds/squirrel"
 	"github.com/go-gorp/gorp/v3"
@@ -134,24 +135,38 @@ func (d *SqlDbConnection) PrepareQuery(query string) string {
 	return d.prepareQueryWithDialect(query, d.sql.Dialect)
 }
 
+func formatArgs(args []any) (formattedArgs []any) {
+	for _, arg := range args {
+		switch typedArg := arg.(type) {
+		case time.Time:
+			formattedArgs = append(formattedArgs, typedArg.Format("2006-01-02 15:04:05.0000000"))
+		default:
+			formattedArgs = append(formattedArgs, arg)
+		}
+	}
+	return
+}
+
 func (d *SqlDbConnection) Insert(primaryKeyColumnName string, query string, args ...any) (int, error) {
 	var insertId int64
+
+	formattedArgs := formatArgs(args)
 
 	switch d.sql.Dialect.(type) {
 	case gorp.PostgresDialect:
 		var err error
 		if primaryKeyColumnName != "" {
 			query += " returning " + primaryKeyColumnName
-			err = d.sql.QueryRow(d.PrepareQuery(query), args...).Scan(&insertId)
+			err = d.sql.QueryRow(d.PrepareQuery(query), formattedArgs...).Scan(&insertId)
 		} else {
-			_, err = d.sql.Exec(d.PrepareQuery(query), args...)
+			_, err = d.sql.Exec(d.PrepareQuery(query), formattedArgs...)
 		}
 
 		if err != nil {
 			return 0, err
 		}
 	default:
-		res, err := d.sql.Exec(d.PrepareQuery(query), args...)
+		res, err := d.sql.Exec(d.PrepareQuery(query), formattedArgs...)
 		if err != nil {
 			return 0, err
 		}
@@ -364,8 +379,7 @@ func (d *SqlDb) insert(primaryKeyColumnName string, query string, args ...any) (
 }
 
 func (d *SqlDb) exec(query string, args ...any) (sql.Result, error) {
-	q := d.PrepareQuery(query)
-	return d.Sql().Exec(q, args...)
+	return d.connection.Exec(query, args...)
 }
 
 func (d *SqlDb) execTx(tx *gorp.Transaction, query string, args ...any) (sql.Result, error) {
@@ -384,8 +398,7 @@ func (d *SqlDb) selectOne(holder any, query string, args ...any) error {
 }
 
 func (d *SqlDb) selectAll(i any, query string, args ...any) ([]any, error) {
-	q := d.PrepareQuery(query)
-	return d.Sql().Select(i, q, args...)
+	return d.connection.SelectAll(i, query, args...)
 }
 
 func connect() (*sql.DB, error) {
