@@ -7,39 +7,39 @@
     class="pb-3"
   >
 
-    <v-dialog
-      v-model="envEditorDialog"
-      max-width="800"
-      persistent
-      :transition="false"
-    >
-      <div style="position: relative;">
-        <codemirror
-          class="EnvironmentMaximizedEditor"
-          :style="{ border: '1px solid lightgray' }"
-          v-model="json"
-          :options="cmOptions"
-          :placeholder="$t('enterExtraVariablesJson')"
-        />
+<!--    <v-dialog-->
+<!--      v-model="envEditorDialog"-->
+<!--      max-width="800"-->
+<!--      persistent-->
+<!--      :transition="false"-->
+<!--    >-->
+<!--      <div style="position: relative;">-->
+<!--        <codemirror-->
+<!--          class="EnvironmentMaximizedEditor"-->
+<!--          :style="{ border: '1px solid lightgray' }"-->
+<!--          v-model="json"-->
+<!--          :options="cmOptions"-->
+<!--          :placeholder="$t('enterExtraVariablesJson')"-->
+<!--        />-->
 
-        <v-btn
-          dark
-          fab
-          small
-          color="blue-grey"
-          v-if="extraVarsEditMode === 'json'"
-          style="
-            position: absolute;
-            right: 0;
-            top: 0;
-            margin: 10px;
-          "
-          @click="envEditorDialog = false"
-        >
-          <v-icon>mdi-arrow-collapse</v-icon>
-        </v-btn>
-      </div>
-    </v-dialog>
+<!--        <v-btn-->
+<!--          dark-->
+<!--          fab-->
+<!--          small-->
+<!--          color="blue-grey"-->
+<!--          v-if="extraVarsEditMode === 'json'"-->
+<!--          style="-->
+<!--            position: absolute;-->
+<!--            right: 0;-->
+<!--            top: 0;-->
+<!--            margin: 10px;-->
+<!--          "-->
+<!--          @click="envEditorDialog = false"-->
+<!--        >-->
+<!--          <v-icon>mdi-arrow-collapse</v-icon>-->
+<!--        </v-btn>-->
+<!--      </div>-->
+<!--    </v-dialog>-->
 
     <v-alert
       :value="formError"
@@ -145,11 +145,8 @@
             :placeholder="$t('enterExtraVariablesJson')"
           />
 
-          <v-btn
-            dark
-            fab
-            small
-            color="blue-grey"
+          <RichEditor
+            v-model="json"
             v-if="extraVarsEditMode === 'json'"
             style="
               position: absolute;
@@ -157,10 +154,24 @@
               top: 0;
               margin: 10px;
             "
-            @click="envEditorDialog = true"
-          >
-            <v-icon>mdi-arrow-expand</v-icon>
-          </v-btn>
+          />
+
+<!--          <v-btn-->
+<!--            dark-->
+<!--            fab-->
+<!--            small-->
+<!--            color="blue-grey"-->
+<!--            v-if="extraVarsEditMode === 'json'"-->
+<!--            style="-->
+<!--              position: absolute;-->
+<!--              right: 0;-->
+<!--              top: 0;-->
+<!--              margin: 10px;-->
+<!--            "-->
+<!--            @click="envEditorDialog = true"-->
+<!--          >-->
+<!--            <v-icon>mdi-arrow-expand</v-icon>-->
+<!--          </v-btn>-->
 
         </div>
         <div v-else-if="extraVarsEditMode === 'table'">
@@ -424,12 +435,12 @@
   }
 }
 
-.EnvironmentMaximizedEditor {
-  .CodeMirror {
-    font-size: 14px;
-    height: 600px !important;
-  }
-}
+//.EnvironmentMaximizedEditor {
+//  .CodeMirror {
+//    font-size: 14px;
+//    height: 600px !important;
+//  }
+//}
 </style>
 <script>
 /* eslint-disable import/no-extraneous-dependencies,import/extensions */
@@ -441,6 +452,7 @@ import 'codemirror/lib/codemirror.css';
 import 'codemirror/mode/vue/vue.js';
 import 'codemirror/addon/display/placeholder.js';
 import { getErrorMessage } from '@/lib/error';
+import RichEditor from '@/components/RichEditor.vue';
 
 export default {
   mixins: [ItemFormBase],
@@ -450,6 +462,7 @@ export default {
   },
 
   components: {
+    RichEditor,
     codemirror,
   },
 
@@ -463,11 +476,11 @@ export default {
   },
 
   watch: {
-    envEditorDialog(val) {
-      this.$emit('maximize', {
-        maximized: val,
-      });
-    },
+    // envEditorDialog(val) {
+    //   this.$emit('maximize', {
+    //     maximized: val,
+    //   });
+    // },
 
     extraVarsEditMode(val) {
       let extraVars;
@@ -532,7 +545,7 @@ export default {
       },
 
       extraVarsEditMode: 'json',
-      envEditorDialog: false,
+      // envEditorDialog: false,
 
       secretStorages: null,
     };

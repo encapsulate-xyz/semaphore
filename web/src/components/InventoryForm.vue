@@ -112,18 +112,31 @@
       dense
     ></v-select>
 
-    <codemirror
-      :class="{
+    <div style="position: relative">
+      <codemirror
+        :class="{
         'InventoryEditor': true,
         'InventoryEditor--static': item.type === 'static',
         'InventoryEditor--static-yaml': item.type === 'static-yaml',
       }"
-      :style="{ border: '1px solid lightgray' }"
-      v-model.trim="item.inventory"
-      :options="cmOptions"
-      v-if="item.type === 'static' || item.type === 'static-yaml'"
-      :placeholder="$t('enterInventory')"
-    />
+        :style="{ border: '1px solid lightgray' }"
+        v-model.trim="item.inventory"
+        :options="cmOptions"
+        v-if="item.type === 'static' || item.type === 'static-yaml'"
+        :placeholder="$t('enterInventory')"
+      />
+
+      <RichEditor
+        v-model.trim="item.inventory"
+        style="
+              position: absolute;
+              right: 0;
+              top: 0;
+              margin: 10px;
+            "
+      />
+
+    </div>
 
   </v-form>
 </template>
@@ -149,11 +162,13 @@ import { codemirror } from 'vue-codemirror';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/mode/vue/vue.js';
 import 'codemirror/addon/display/placeholder.js';
+import RichEditor from '@/components/RichEditor.vue';
 
 export default {
   mixins: [ItemFormBase],
 
   components: {
+    RichEditor,
     codemirror,
   },
 

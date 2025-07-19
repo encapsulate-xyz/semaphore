@@ -105,11 +105,12 @@ export default {
   watch: {
     vars(val) {
       this.var = val || [];
+      this.fillModifiedVars();
     },
   },
 
   created() {
-    this.modifiedVars = (this.vars || []).map((v) => ({ name: v }));
+    this.fillModifiedVars();
   },
 
   data() {
@@ -123,6 +124,10 @@ export default {
     };
   },
   methods: {
+    fillModifiedVars() {
+      this.modifiedVars = (this.vars || []).map((v) => ({ name: v }));
+    },
+
     addEditedVarValue() {
       this.editedValues.push({
         name: '',
