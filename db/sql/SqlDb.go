@@ -893,11 +893,11 @@ func (d *SqlDb) GetTaskStats(projectID int, templateID *int, unit db.TaskStatUni
 		Count  int                    `db:"count"`
 	}
 
-	q := squirrel.Select("DATE(created) AS date, status, COUNT(*) AS count").
+	q := squirrel.Select("DATE(SUBSTR(created, 1, 25)) AS date, status, COUNT(*) AS count").
 		From("task").
 		Where("project_id=?", projectID).
-		GroupBy("DATE(created), status").
-		OrderBy("DATE(created) DESC")
+		GroupBy("date, status").
+		OrderBy("date DESC")
 
 	if templateID != nil {
 		q = q.Where("template_id=?", *templateID)
