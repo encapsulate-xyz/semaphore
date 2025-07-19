@@ -128,6 +128,7 @@
 
       <RichEditor
         v-model.trim="item.inventory"
+        type="ini"
         style="
               position: absolute;
               right: 0;

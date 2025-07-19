@@ -147,6 +147,7 @@
 
           <RichEditor
             v-model="json"
+            type="json"
             v-if="extraVarsEditMode === 'json'"
             style="
               position: absolute;

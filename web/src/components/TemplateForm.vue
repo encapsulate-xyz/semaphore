@@ -341,6 +341,7 @@
 
             <RichEditor
               v-model="argsJson"
+              type="json_array"
               style="
               position: absolute;
               right: -23px;
