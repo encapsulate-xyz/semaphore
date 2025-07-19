@@ -131,6 +131,14 @@ func (d *SqlDbConnection) prepareQueryWithDialect(query string, dialect gorp.Dia
 	return query
 }
 
+func (d *SqlDbConnection) PrepareDateQueryParam(paramName string) string {
+	if d.dialect == util.DbDriverSQLite {
+		return "substr(" + paramName + ", 1, 25)"
+	}
+
+	return paramName
+}
+
 func (d *SqlDbConnection) PrepareQuery(query string) string {
 	return d.prepareQueryWithDialect(query, d.sql.Dialect)
 }
@@ -139,7 +147,7 @@ func formatArgs(args []any) (formattedArgs []any) {
 	for _, arg := range args {
 		switch typedArg := arg.(type) {
 		case time.Time:
-			formattedArgs = append(formattedArgs, typedArg.Format("2006-01-02 15:04:05.0000000"))
+			formattedArgs = append(formattedArgs, typedArg.Format("2006-01-02 15:04:05.000000"))
 		default:
 			formattedArgs = append(formattedArgs, arg)
 		}
@@ -893,7 +901,7 @@ func (d *SqlDb) GetTaskStats(projectID int, templateID *int, unit db.TaskStatUni
 		Count  int                    `db:"count"`
 	}
 
-	q := squirrel.Select("DATE(SUBSTR(created, 1, 25)) AS date, status, COUNT(*) AS count").
+	q := squirrel.Select("DATE("+d.connection.PrepareDateQueryParam("created")+") AS date, status, COUNT(*) AS count").
 		From("task").
 		Where("project_id=?", projectID).
 		GroupBy("date, status").
@@ -920,7 +928,11 @@ func (d *SqlDb) GetTaskStats(projectID int, templateID *int, unit db.TaskStatUni
 		return
 	}
 
-	_, err = d.selectAll(&res, query, args...)
+	_, err = d.connection.SelectAll(&res, query, args...)
+
+	if err != nil {
+		return
+	}
 
 	var date string
 	var stat *db.TaskStat
