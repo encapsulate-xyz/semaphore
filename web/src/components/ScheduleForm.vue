@@ -355,7 +355,7 @@ const MINUTES = [
 
 function formatDateInTZ(date, tz) {
   if (date == null) {
-    return '-';
+    return '—';
   }
   const parts = new Intl.DateTimeFormat('en-GB', {
     timeZone: tz,
@@ -375,7 +375,7 @@ function formatDateInTZ(date, tz) {
 
 function formatTimeInTZ(date, tz) {
   if (date == null) {
-    return '-';
+    return '—';
   }
 
   const parts = new Intl.DateTimeFormat('en-GB', {
