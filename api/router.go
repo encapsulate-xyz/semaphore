@@ -620,19 +620,21 @@ func getSystemInfo(w http.ResponseWriter, r *http.Request) {
 		authMethods.Email = &LoginEmailAuthMethod{}
 	}
 
+	timezone := util.Config.Schedule.Timezone
+
+	if timezone == "" {
+		timezone = "UTC"
+	}
+
 	body := map[string]any{
 		"version":           util.Version(),
 		"ansible":           util.AnsibleVersion(),
 		"web_host":          util.Config.WebHost,
 		"use_remote_runner": util.Config.UseRemoteRunner,
-
-		"auth_methods": authMethods,
-
-		"premium_features": proFeatures.GetFeatures(user),
-
-		"git_client": util.Config.GitClientId,
-
-		"schedule_timezone": util.Config.Schedule.Timezone,
+		"auth_methods":      authMethods,
+		"premium_features":  proFeatures.GetFeatures(user),
+		"git_client":        util.Config.GitClientId,
+		"schedule_timezone": timezone,
 	}
 
 	helpers.WriteJSON(w, http.StatusOK, body)

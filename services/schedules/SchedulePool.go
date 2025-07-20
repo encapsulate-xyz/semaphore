@@ -106,6 +106,7 @@ func (r ScheduleRunner) Run() {
 	task := db.Task{
 		TemplateID: schedule.TemplateID,
 		ProjectID:  schedule.ProjectID,
+		ScheduleID: &schedule.ID,
 	}
 
 	_, err = r.pool.taskPool.AddTask(
