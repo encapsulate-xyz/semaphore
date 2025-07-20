@@ -300,6 +300,7 @@ import TerraformAliasForm from '@/components/TerraformAliasForm.vue';
 import TaskStatus from '@/components/TaskStatus.vue';
 import TaskLink from '@/components/TaskLink.vue';
 import TerraformStateView from '@/components/TerraformStateView.vue';
+import copyToClipboard from '@/lib/copyToClipboard';
 
 export default {
   mixins: [AppsMixin],
@@ -380,6 +381,8 @@ export default {
   },
 
   methods: {
+    copyToClipboard,
+
     deleteState(id) {
       console.log(id);
     },
@@ -465,21 +468,6 @@ export default {
         url: `/api/project/${this.template.project_id}/inventory/${this.inventoryId}/terraform/aliases/${alias}`,
       });
       await this.loadAliases();
-    },
-
-    async copyToClipboard(text) {
-      try {
-        await window.navigator.clipboard.writeText(text);
-        EventBus.$emit('i-snackbar', {
-          color: 'success',
-          text: 'The command has been copied to the clipboard.',
-        });
-      } catch (e) {
-        EventBus.$emit('i-snackbar', {
-          color: 'error',
-          text: `Can't copy the command: ${e.message}`,
-        });
-      }
     },
 
     editAlias(alias) {

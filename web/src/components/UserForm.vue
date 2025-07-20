@@ -191,6 +191,7 @@ import axios from 'axios';
 import EventBus from '@/event-bus';
 import EditDialog from '@/components/EditDialog.vue';
 import ChangePasswordForm from '@/components/ChangePasswordForm.vue';
+import copyToClipboard from '@/lib/copyToClipboard';
 
 export default {
   components: { ChangePasswordForm, EditDialog },
@@ -249,6 +250,8 @@ export default {
   },
 
   methods: {
+    copyToClipboard,
+
     afterLoadData() {
       if (this.item.totp == null) {
         this.totpEnabled = false;
@@ -256,21 +259,6 @@ export default {
       } else {
         this.totpEnabled = true;
         this.totpQrUrl = `${document.baseURI}api/users/${this.itemId}/2fas/totp/${this.item.totp.id}/qr`;
-      }
-    },
-
-    async copyToClipboard(text) {
-      try {
-        await window.navigator.clipboard.writeText(text);
-        EventBus.$emit('i-snackbar', {
-          color: 'success',
-          text: 'The recovery code has been copied to your clipboard.',
-        });
-      } catch (e) {
-        EventBus.$emit('i-snackbar', {
-          color: 'error',
-          text: `Can't copy the recovery code: ${e.message}`,
-        });
       }
     },
 
