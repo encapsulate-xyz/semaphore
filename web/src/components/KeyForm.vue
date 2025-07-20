@@ -23,6 +23,7 @@
     />
 
     <v-autocomplete
+      v-if="supportStorages"
       v-model="item.source_storage_id"
       :label="$t('Storage (optional)')"
       :items="secretStorages"
@@ -35,7 +36,7 @@
     />
 
     <v-text-field
-      v-if="item.source_storage_id != null"
+      v-if="supportStorages && item.source_storage_id != null"
       v-model="item.source_storage_key"
       :label="$t('Source Key')"
       :disabled="formSaving || !canEditSecrets"

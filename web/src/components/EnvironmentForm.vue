@@ -6,41 +6,6 @@
     v-if="item != null && secretStorages != null"
     class="pb-3"
   >
-
-<!--    <v-dialog-->
-<!--      v-model="envEditorDialog"-->
-<!--      max-width="800"-->
-<!--      persistent-->
-<!--      :transition="false"-->
-<!--    >-->
-<!--      <div style="position: relative;">-->
-<!--        <codemirror-->
-<!--          class="EnvironmentMaximizedEditor"-->
-<!--          :style="{ border: '1px solid lightgray' }"-->
-<!--          v-model="json"-->
-<!--          :options="cmOptions"-->
-<!--          :placeholder="$t('enterExtraVariablesJson')"-->
-<!--        />-->
-
-<!--        <v-btn-->
-<!--          dark-->
-<!--          fab-->
-<!--          small-->
-<!--          color="blue-grey"-->
-<!--          v-if="extraVarsEditMode === 'json'"-->
-<!--          style="-->
-<!--            position: absolute;-->
-<!--            right: 0;-->
-<!--            top: 0;-->
-<!--            margin: 10px;-->
-<!--          "-->
-<!--          @click="envEditorDialog = false"-->
-<!--        >-->
-<!--          <v-icon>mdi-arrow-collapse</v-icon>-->
-<!--        </v-btn>-->
-<!--      </div>-->
-<!--    </v-dialog>-->
-
     <v-alert
       :value="formError"
       color="error"
@@ -58,7 +23,7 @@
       dense
     ></v-text-field>
 
-    <v-row v-if="isNew">
+    <v-row v-if="supportStorages && isNew">
       <v-col>
         <v-autocomplete
           v-model="item.secret_storage_id"
@@ -156,24 +121,6 @@
               margin: 10px;
             "
           />
-
-<!--          <v-btn-->
-<!--            dark-->
-<!--            fab-->
-<!--            small-->
-<!--            color="blue-grey"-->
-<!--            v-if="extraVarsEditMode === 'json'"-->
-<!--            style="-->
-<!--              position: absolute;-->
-<!--              right: 0;-->
-<!--              top: 0;-->
-<!--              margin: 10px;-->
-<!--            "-->
-<!--            @click="envEditorDialog = true"-->
-<!--          >-->
-<!--            <v-icon>mdi-arrow-expand</v-icon>-->
-<!--          </v-btn>-->
-
         </div>
         <div v-else-if="extraVarsEditMode === 'table'">
           <v-data-table
@@ -435,13 +382,6 @@
     height: 160px !important;
   }
 }
-
-//.EnvironmentMaximizedEditor {
-//  .CodeMirror {
-//    font-size: 14px;
-//    height: 600px !important;
-//  }
-//}
 </style>
 <script>
 /* eslint-disable import/no-extraneous-dependencies,import/extensions */
@@ -460,6 +400,7 @@ export default {
 
   props: {
     needHelp: Boolean,
+    supportStorages: Boolean,
   },
 
   components: {
@@ -477,12 +418,6 @@ export default {
   },
 
   watch: {
-    // envEditorDialog(val) {
-    //   this.$emit('maximize', {
-    //     maximized: val,
-    //   });
-    // },
-
     extraVarsEditMode(val) {
       let extraVars;
 
@@ -546,7 +481,6 @@ export default {
       },
 
       extraVarsEditMode: 'json',
-      // envEditorDialog: false,
 
       secretStorages: null,
     };

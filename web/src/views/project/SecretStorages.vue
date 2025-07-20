@@ -42,7 +42,7 @@
 
       <v-menu
         offset-y
-        v-if="premiumFeatures.secret_storages"
+        v-if="premiumFeatures.secret_storage_management"
       >
         <template v-slot:activator="{ on, attrs }">
 
@@ -95,7 +95,7 @@
     <v-divider style="margin-top: -1px;"/>
 
     <v-alert
-      v-if="!premiumFeatures.secret_storages"
+      v-if="!premiumFeatures.secret_storage_management"
       type="info"
       text
       color="hsl(348deg, 86%, 61%)"
