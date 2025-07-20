@@ -169,15 +169,13 @@
               >
                 {{ item.totp.recovery_code }}
               </code>
-              <v-btn
+
+              <CopyClipboardButton
                 style="position: absolute; right: -4px; top: -12px;"
-                icon
+                :text="item.totp.recovery_code"
                 large
                 color="white"
-                @click="copyToClipboard(item.totp.recovery_code)"
-              >
-                <v-icon>mdi-content-copy</v-icon>
-              </v-btn>
+              />
             </div>
           </div>
         </div>
@@ -188,13 +186,12 @@
 <script>
 import ItemFormBase from '@/components/ItemFormBase';
 import axios from 'axios';
-import EventBus from '@/event-bus';
 import EditDialog from '@/components/EditDialog.vue';
 import ChangePasswordForm from '@/components/ChangePasswordForm.vue';
-import copyToClipboard from '@/lib/copyToClipboard';
+import CopyClipboardButton from '@/components/CopyClipboardButton.vue';
 
 export default {
-  components: { ChangePasswordForm, EditDialog },
+  components: { CopyClipboardButton, ChangePasswordForm, EditDialog },
   props: {
     isAdmin: Boolean,
     authMethods: Object,
@@ -250,7 +247,6 @@ export default {
   },
 
   methods: {
-    copyToClipboard,
 
     afterLoadData() {
       if (this.item.totp == null) {

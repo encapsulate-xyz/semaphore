@@ -1,17 +1,19 @@
 <template>
-  <div>
+  <span>
+    <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
     <textarea
       style="position: absolute; left: -9999px; top: -9999px;"
       ref="copy_to_clipboard_textarea"
     ></textarea>
+
     <v-btn
       icon
-      color="white"
       @click="copy()"
+      :large="large"
     >
       <v-icon>mdi-content-copy</v-icon>
     </v-btn>
-  </div>
+  </span>
 </template>
 
 <script>
@@ -22,8 +24,10 @@ export default {
     text: String,
     successMessage: {
       type: String,
-      default: 'Text copied to clipboard!'
+      default: 'Text copied to clipboard!',
     },
+    large: Boolean,
+    color: String,
   },
   methods: {
     copy() {
@@ -40,15 +44,15 @@ export default {
 
         EventBus.$emit('i-snackbar', {
           color: 'success',
-          text: this.successMessage
+          text: this.successMessage,
         });
       } catch (e) {
         EventBus.$emit('i-snackbar', {
           color: 'error',
-          text: `Can't copy to clipboard: ${e.message}`
+          text: `Can't copy to clipboard: ${e.message}`,
         });
       }
-    }
-  }
+    },
+  },
 };
 </script>

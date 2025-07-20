@@ -203,12 +203,10 @@
 
       <div v-else v-for="alias of (aliases || [])" :key="alias.id">
         <code class="mr-2">{{ alias.url }}</code>
-        <v-btn
-          icon
-          @click="copyToClipboard(alias.url, $t('aliasUrlCopied'))"
-        >
-          <v-icon>mdi-content-copy</v-icon>
-        </v-btn>
+        <CopyClipboardButton
+          :text="alias.url"
+          :success-message="$t('aliasUrlCopied')"
+        />
         <v-btn icon @click="editAlias(alias.id)">
           <v-icon>mdi-pencil</v-icon>
         </v-btn>
@@ -289,7 +287,6 @@
 <script>
 
 import axios from 'axios';
-import EventBus from '@/event-bus';
 import TerraformInventoryForm from '@/components/TerraformInventoryForm.vue';
 import EditDialog from '@/components/EditDialog.vue';
 import { APP_INVENTORY_TITLE } from '@/lib/constants';
@@ -300,7 +297,7 @@ import TerraformAliasForm from '@/components/TerraformAliasForm.vue';
 import TaskStatus from '@/components/TaskStatus.vue';
 import TaskLink from '@/components/TaskLink.vue';
 import TerraformStateView from '@/components/TerraformStateView.vue';
-import copyToClipboard from '@/lib/copyToClipboard';
+import CopyClipboardButton from '@/components/CopyClipboardButton.vue';
 
 export default {
   mixins: [AppsMixin],
@@ -311,6 +308,7 @@ export default {
   },
 
   components: {
+    CopyClipboardButton,
     TerraformStateView,
     TaskLink,
     TaskStatus,
@@ -381,7 +379,6 @@ export default {
   },
 
   methods: {
-    copyToClipboard,
 
     deleteState(id) {
       console.log(id);

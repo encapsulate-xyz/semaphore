@@ -362,7 +362,6 @@ import RunnerForm from '@/components/RunnerForm.vue';
 import axios from 'axios';
 import DashboardMenu from '@/components/DashboardMenu.vue';
 import delay from '@/lib/delay';
-import copyToClipboard from '@/lib/copyToClipboard';
 import CopyClipboardButton from '@/components/CopyClipboardButton.vue';
 
 export default {
@@ -448,8 +447,6 @@ semaphore runner start --no-config`;
   },
 
   methods: {
-
-    copyToClipboard,
 
     async clearCache(runner) {
       const projectId = this.projectId || this.getProjectIdOfItem(runner.id);
