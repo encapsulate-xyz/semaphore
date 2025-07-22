@@ -9,7 +9,6 @@
       v-model="showInfo"
       color="info"
       text
-      dismissible
       class="mb-6"
     >
       Use environment variable <code>SEMAPHORE_SCHEDULE_TIMEZONE</code> or config param
@@ -46,6 +45,20 @@
       dense
     />
 
+    <v-card
+      style="background: rgba(133, 133, 133, 0.06)"
+      v-if="item.template_id"
+      class="mb-8"
+    >
+      <v-card-text>
+        <TaskParamsForm
+          :template="templates.find(t => t.id === item.template_id)"
+          v-model="item.task_params"
+        />
+
+      </v-card-text>
+    </v-card>
+
     <v-switch
       v-model="rawCron"
       label="Show cron format"
@@ -79,11 +92,12 @@
         :disabled="formSaving"
         @change="refreshCron()"
         outlined
+        hide-details
         dense
       />
 
       <div v-if="['yearly'].includes(timing)">
-        <div>Months</div>
+        <div class="mt-4">Months</div>
         <div class="d-flex flex-wrap">
           <v-checkbox
             class="mr-2 mt-0 ScheduleCheckbox"
@@ -116,7 +130,7 @@
       </div>
 
       <div v-if="['yearly', 'monthly'].includes(timing)">
-        <div>Days</div>
+        <div class="mt-4">Days</div>
         <div class="d-flex flex-wrap">
           <v-checkbox
             class="mr-2 mt-0 ScheduleCheckbox"
@@ -257,8 +271,9 @@
 import ItemFormBase from '@/components/ItemFormBase';
 import axios from 'axios';
 
-import { CronExpression, CronExpressionParser } from 'cron-parser';
+import { CronExpression, CronExpressionParser, CronFieldCollection } from 'cron-parser';
 import { getErrorMessage } from '@/lib/error';
+import TaskParamsForm from '@/components/TaskParamsForm.vue';
 
 const MONTHS = [{
   id: 1,
@@ -395,6 +410,7 @@ function formatTimeInTZ(date, tz) {
 }
 
 export default {
+  components: { TaskParamsForm },
   mixins: [ItemFormBase],
 
   data() {
@@ -578,7 +594,7 @@ export default {
     },
 
     refreshCron() {
-      const fields = JSON.parse(JSON.stringify(CronExpressionParser.parse('* * * * *').fields));
+      const fields = {};
 
       switch (this.timing) {
         case 'hourly':
@@ -624,7 +640,10 @@ export default {
         fields.minute = this.minutes;
       }
 
-      this.item.cron_format = CronExpression.fieldsToExpression(fields).stringify();
+      const origFields = CronExpressionParser.parse('* * * * *').fields;
+      const modFields = CronFieldCollection.from(origFields, fields);
+      const exp = CronExpression.fieldsToExpression(modFields);
+      this.item.cron_format = exp.stringify();
     },
 
     getItemsUrl() {
