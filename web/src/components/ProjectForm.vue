@@ -47,12 +47,15 @@
     ></v-text-field>
 
     <v-checkbox
+      class="mt-0"
       v-model="item.alert"
       :label="$t('allowAlertsForThisProject')"
       data-testid="newProject-alert"
     ></v-checkbox>
 
-    <v-btn color="white">Send test notification</v-btn>
+    <v-btn v-if="itemId !== 'new'" color="blue-grey">
+      Test notifications
+    </v-btn>
 
     <v-switch
       v-if="itemId === 'new'"

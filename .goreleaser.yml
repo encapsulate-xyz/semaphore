@@ -25,6 +25,8 @@ builds:
       - ppc64le
     ignore:
       - goos: freebsd
+        goarch: arm
+      - goos: freebsd
         goarch: 386
       - goos: freebsd
         goarch: ppc64le
