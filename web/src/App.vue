@@ -605,6 +605,14 @@
 </template>
 <style lang="scss">
 
+.theme--dark {
+  --highlighted-card-bg-color: #262626;
+}
+
+.theme--light {
+  --highlighted-card-bg-color: white;
+}
+
 .DarkModeSwitch {
   .v-input__prepend-outer {
     transform: translateY(1px);
