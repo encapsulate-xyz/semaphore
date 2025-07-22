@@ -60,6 +60,7 @@
         top: -14px;
         border-radius: 0;
       "></div>
+
       <v-card-text>
         <TaskParamsForm
           :template="templates.find(t => t.id === item.template_id)"
