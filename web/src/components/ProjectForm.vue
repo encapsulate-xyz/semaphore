@@ -22,21 +22,6 @@
       dense
     ></v-text-field>
 
-    <v-checkbox
-      v-model="item.alert"
-      :label="$t('allowAlertsForThisProject')"
-      data-testid="newProject-alert"
-    ></v-checkbox>
-
-    <v-text-field
-      v-model="item.alert_chat"
-      :label="$t('telegramChatIdOptional')"
-      :disabled="formSaving"
-      data-testid="newProject-tg"
-      outlined
-      dense
-    ></v-text-field>
-
     <v-text-field
       v-model.number="item.max_parallel_tasks"
       :label="$t('maxNumberOfParallelTasksOptional')"
@@ -51,6 +36,23 @@
       outlined
       dense
     ></v-text-field>
+
+    <v-text-field
+      v-model="item.alert_chat"
+      :label="$t('telegramChatIdOptional')"
+      :disabled="formSaving"
+      data-testid="newProject-tg"
+      outlined
+      dense
+    ></v-text-field>
+
+    <v-checkbox
+      v-model="item.alert"
+      :label="$t('allowAlertsForThisProject')"
+      data-testid="newProject-alert"
+    ></v-checkbox>
+
+    <v-btn color="white">Send test notification</v-btn>
 
     <v-switch
       v-if="itemId === 'new'"
