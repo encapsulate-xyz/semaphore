@@ -112,7 +112,10 @@
       dense
     ></v-select>
 
-    <div style="position: relative">
+    <div
+      style="position: relative"
+      v-if="item.type === 'static' || item.type === 'static-yaml'"
+    >
       <codemirror
         :class="{
         'InventoryEditor': true,
@@ -122,7 +125,6 @@
         :style="{ border: '1px solid lightgray' }"
         v-model.trim="item.inventory"
         :options="cmOptions"
-        v-if="item.type === 'static' || item.type === 'static-yaml'"
         :placeholder="$t('enterInventory')"
       />
 
