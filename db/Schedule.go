@@ -11,8 +11,8 @@ type Schedule struct {
 	LastCommitHash *string `db:"last_commit_hash" json:"-" backup:"-"`
 	RepositoryID   *int    `db:"repository_id" json:"repository_id" backup:"-"`
 
-	TaskParamsID *int        `db:"task_params_id" json:"-" backup:"-"`
-	TaskParams   *TaskParams `db:"-" json:"task_params,omitempty" backup:"task_params"`
+	TaskParamsID *int       `db:"task_params_id" json:"-" backup:"-"`
+	TaskParams   TaskParams `db:"-" json:"task_params,omitempty" backup:"task_params"`
 }
 
 type ScheduleWithTpl struct {
