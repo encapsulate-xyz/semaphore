@@ -363,6 +363,10 @@ func (b *BackupDB) format() (*BackupFormat, error) {
 			Template:      *tplName,
 			AuthSecret:    keyName,
 		}
+
+		if o.TaskParams != nil && o.TaskParams.InventoryID != nil {
+			integrations[i].TaskParams.InventoryName, _ = findNameByID[db.Inventory](*o.TaskParams.InventoryID, b.inventories)
+		}
 	}
 
 	var integrationAliases []string
