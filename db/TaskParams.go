@@ -15,7 +15,7 @@ type TaskParams struct {
 	Version *string `db:"version" json:"version,omitempty"`
 
 	InventoryID   *int    `db:"inventory_id" json:"inventory_id,omitempty" backup:"-"`
-	InventoryName *string `db:"-" json:"-" backup:"inventory_name,omitempty"`
+	InventoryName *string `db:"-" json:"-" backup:"inventory_name"`
 
 	Params MapStringAnyField `db:"params" json:"params,omitempty"`
 }

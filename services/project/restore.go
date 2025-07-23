@@ -76,12 +76,19 @@ func (e BackupSchedule) Restore(store db.Store, b *BackupDB) error {
 	}
 	v.TemplateID = tpl.ID
 
-	newView, err := store.CreateSchedule(v)
+	if v.TaskParams != nil {
+		inv := findEntityByName[db.Inventory](e.TaskParams.InventoryName, b.inventories)
+		if inv != nil {
+			v.TaskParams.InventoryID = &inv.ID
+		}
+	}
+
+	newSchedule, err := store.CreateSchedule(v)
 	if err != nil {
 		return err
 	}
 
-	b.schedules = append(b.schedules, newView)
+	b.schedules = append(b.schedules, newSchedule)
 	return nil
 }
 

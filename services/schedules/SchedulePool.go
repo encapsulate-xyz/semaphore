@@ -103,10 +103,7 @@ func (r ScheduleRunner) Run() {
 		return
 	}
 
-	schedule.TaskParams.CreateTask()
-
 	task := schedule.TaskParams.CreateTask()
-
 	task.TemplateID = schedule.TemplateID
 	task.ScheduleID = &schedule.ID
 

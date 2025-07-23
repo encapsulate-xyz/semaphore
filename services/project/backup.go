@@ -164,12 +164,15 @@ func (b *BackupDB) load(projectID int, store db.Store) (err error) {
 		return
 	}
 
-	schedules, err := store.GetSchedules()
+	schedules, err := store.GetProjectSchedules(projectID, true)
 	if err != nil {
 		return
 	}
 
-	b.schedules = getSchedulesByProject(projectID, schedules)
+	for _, s := range schedules {
+		b.schedules = append(b.schedules, s.Schedule)
+	}
+	//b.schedules = getSchedulesByProject(projectID, schedules)
 
 	b.meta, err = store.GetProject(projectID)
 	if err != nil {
@@ -223,6 +226,10 @@ func (b *BackupDB) format() (*BackupFormat, error) {
 		schedules[i] = BackupSchedule{
 			o,
 			*tplName,
+		}
+
+		if o.TaskParams != nil && o.TaskParams.InventoryID != nil {
+			schedules[i].TaskParams.InventoryName, _ = findNameByID[db.Inventory](*o.TaskParams.InventoryID, b.inventories)
 		}
 	}
 
