@@ -48,6 +48,7 @@ type BackupEnvironment struct {
 type BackupAccessKey struct {
 	db.AccessKey
 	SourceStorage *string `backup:"source_storage"`
+	Storage       *string `backup:"storage"`
 }
 
 type BackupSchedule struct {
@@ -101,7 +102,6 @@ type BackupIntegration struct {
 
 type BackupSecretStorage struct {
 	db.SecretStorage
-	VaultTokenKeyName string `backup:"vault_token_key_name"`
 }
 
 type BackupEntry interface {

@@ -116,6 +116,22 @@ func (e BackupAccessKey) Restore(store db.Store, b *BackupDB) error {
 	key := e.AccessKey
 	key.ProjectID = &b.meta.ID
 
+	if e.Storage != nil {
+		storage := findEntityByName[db.SecretStorage](e.Storage, b.secretStorages)
+		if storage == nil {
+			return fmt.Errorf("secret storage does not exist in secret_storage[].name")
+		}
+		key.StorageID = &storage.ID
+	}
+
+	if e.SourceStorage != nil {
+		storage := findEntityByName[db.SecretStorage](e.SourceStorage, b.secretStorages)
+		if storage == nil {
+			return fmt.Errorf("secret storage does not exist in secret_storage[].name")
+		}
+		key.StorageID = &storage.ID
+	}
+
 	newKey, err := store.CreateAccessKey(key)
 
 	if err != nil {
@@ -461,6 +477,12 @@ func (backup *BackupFormat) Restore(user db.User, store db.Store) (*db.Project, 
 
 	b.meta = newProject
 
+	for i, o := range backup.SecretStorages {
+		if err := o.Restore(store, &b); err != nil {
+			return nil, fmt.Errorf("error at secret storage[%d]: %s", i, err.Error())
+		}
+	}
+
 	for i, o := range backup.Environments {
 		if err := o.Restore(store, &b); err != nil {
 			return nil, fmt.Errorf("error at environments[%d]: %s", i, err.Error())
@@ -526,12 +548,6 @@ func (backup *BackupFormat) Restore(user db.User, store db.Store) (*db.Project, 
 	for i, o := range backup.Schedules {
 		if err := o.Restore(store, &b); err != nil {
 			return nil, fmt.Errorf("error at schedules[%d]: %s", i, err.Error())
-		}
-	}
-
-	for i, o := range backup.SecretStorages {
-		if err := o.Restore(store, &b); err != nil {
-			return nil, fmt.Errorf("error at secret storage[%d]: %s", i, err.Error())
 		}
 	}
 

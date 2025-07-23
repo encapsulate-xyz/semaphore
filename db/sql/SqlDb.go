@@ -111,6 +111,26 @@ func (d *SqlDbConnection) Close() {
 	}
 }
 
+func CreateTestStore() *SqlDb {
+	util.Config = &util.ConfigType{
+		SQLite: &util.DbConfig{
+			Hostname: ":memory:",
+		},
+		Dialect: "sqlite",
+		Log: &util.ConfigLog{
+			Events: &util.EventLogType{},
+			Tasks:  &util.TaskLogType{},
+		},
+	}
+	store := CreateDb(util.DbDriverSQLite)
+
+	store.Connect("")
+
+	db.Migrate(store, nil)
+
+	return store
+}
+
 func (d *SqlDbConnection) prepareQueryWithDialect(query string, dialect gorp.Dialect) string {
 	switch dialect.(type) {
 	case gorp.PostgresDialect:

@@ -252,15 +252,11 @@ func (b *BackupDB) format() (*BackupFormat, error) {
 			SecretStorage: o,
 		}
 
-		for _, key := range keys {
-			if *key.StorageID == o.ID {
-				secretStorages[i].VaultTokenKeyName = key.Name
-				break
-			}
-		}
-
 		for k := range keys {
-			if *keys[k].SourceStorageID == o.ID {
+			if keys[k].StorageID != nil && *keys[k].StorageID == o.ID {
+				keys[k].Storage = &o.Name
+			}
+			if keys[k].SourceStorageID != nil && *keys[k].SourceStorageID == o.ID {
 				keys[k].SourceStorage = &o.Name
 			}
 		}
