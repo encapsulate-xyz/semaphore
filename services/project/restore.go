@@ -32,6 +32,21 @@ func verifyDuplicate[T BackupEntry](name string, items []T) error {
 	return nil
 }
 
+func (e BackupSecretStorage) Verify(backup *BackupFormat) error {
+	return verifyDuplicate[BackupSecretStorage](e.Name, backup.SecretStorages)
+}
+
+func (e BackupSecretStorage) Restore(store db.Store, b *BackupDB) error {
+	st := e.SecretStorage
+	st.ProjectID = b.meta.ID
+	newStorage, err := store.CreateSecretStorage(st)
+	if err != nil {
+		return err
+	}
+	b.secretStorages = append(b.secretStorages, newStorage)
+	return nil
+}
+
 func (e BackupEnvironment) Verify(backup *BackupFormat) error {
 	return verifyDuplicate[BackupEnvironment](e.Name, backup.Environments)
 }
@@ -412,6 +427,11 @@ func (backup *BackupFormat) Verify() error {
 			return fmt.Errorf("error at inventories[%d]: %s", i, err.Error())
 		}
 	}
+	for i, o := range backup.SecretStorages {
+		if err := o.Verify(backup); err != nil {
+			return fmt.Errorf("error at secret storage[%d]: %s", i, err.Error())
+		}
+	}
 	for i, o := range backup.Templates {
 		if err := o.Verify(backup); err != nil {
 			return fmt.Errorf("error at templates[%d]: %s", i, err.Error())
@@ -506,6 +526,12 @@ func (backup *BackupFormat) Restore(user db.User, store db.Store) (*db.Project, 
 	for i, o := range backup.Schedules {
 		if err := o.Restore(store, &b); err != nil {
 			return nil, fmt.Errorf("error at schedules[%d]: %s", i, err.Error())
+		}
+	}
+
+	for i, o := range backup.SecretStorages {
+		if err := o.Restore(store, &b); err != nil {
+			return nil, fmt.Errorf("error at secret storage[%d]: %s", i, err.Error())
 		}
 	}
 

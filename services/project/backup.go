@@ -174,6 +174,11 @@ func (b *BackupDB) load(projectID int, store db.Store) (err error) {
 	}
 	//b.schedules = getSchedulesByProject(projectID, schedules)
 
+	b.secretStorages, err = store.GetSecretStorages(projectID)
+	if err != nil {
+		return
+	}
+
 	b.meta, err = store.GetProject(projectID)
 	if err != nil {
 		return
@@ -214,6 +219,7 @@ func (b *BackupDB) load(projectID int, store db.Store) (err error) {
 }
 
 func (b *BackupDB) format() (*BackupFormat, error) {
+
 	schedules := make([]BackupSchedule, len(b.schedules))
 	for i, o := range b.schedules {
 
@@ -236,7 +242,27 @@ func (b *BackupDB) format() (*BackupFormat, error) {
 	keys := make([]BackupAccessKey, len(b.keys))
 	for i, o := range b.keys {
 		keys[i] = BackupAccessKey{
-			o,
+			AccessKey: o,
+		}
+	}
+
+	secretStorages := make([]BackupSecretStorage, len(b.secretStorages))
+	for i, o := range b.secretStorages {
+		secretStorages[i] = BackupSecretStorage{
+			SecretStorage: o,
+		}
+
+		for _, key := range keys {
+			if *key.StorageID == o.ID {
+				secretStorages[i].VaultTokenKeyName = key.Name
+				break
+			}
+		}
+
+		for k := range keys {
+			if *keys[k].SourceStorageID == o.ID {
+				keys[k].SourceStorage = &o.Name
+			}
 		}
 	}
 
@@ -388,6 +414,7 @@ func (b *BackupDB) format() (*BackupFormat, error) {
 		Integration:        integrations,
 		IntegrationAliases: integrationAliases,
 		Schedules:          schedules,
+		SecretStorages:     secretStorages,
 	}, nil
 }
 
@@ -405,7 +432,7 @@ func (b *BackupFormat) Marshal() (res string, err error) {
 		return
 	}
 
-	bytes, err := json.Marshal(data)
+	bytes, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
 		return
 	}
