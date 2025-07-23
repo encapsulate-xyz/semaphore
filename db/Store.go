@@ -299,6 +299,7 @@ type EnvironmentManager interface {
 
 type GetAccessKeyOptions struct {
 	Owner         AccessKeyOwner
+	IgnoreOwner   bool
 	EnvironmentID *int
 	StorageID     *int
 }

@@ -24,13 +24,15 @@ func (d *SqlDb) GetAccessKeys(projectID int, options db.GetAccessKeyOptions, par
 		return
 	}
 
-	q = q.Where("pe.owner=?", options.Owner)
+	if !options.IgnoreOwner {
+		q = q.Where("pe.owner=?", options.Owner)
 
-	switch options.Owner {
-	case db.AccessKeyVariable, db.AccessKeyEnvironment:
-		q = q.Where(squirrel.Eq{"pe.environment_id": *options.EnvironmentID})
-	case db.AccessKeyVault:
-		q = q.Where(squirrel.Eq{"pe.storage_id": options.StorageID})
+		switch options.Owner {
+		case db.AccessKeyVariable, db.AccessKeyEnvironment:
+			q = q.Where(squirrel.Eq{"pe.environment_id": *options.EnvironmentID})
+		case db.AccessKeyVault:
+			q = q.Where(squirrel.Eq{"pe.storage_id": options.StorageID})
+		}
 	}
 
 	query, args, err := q.ToSql()

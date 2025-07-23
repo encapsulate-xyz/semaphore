@@ -117,6 +117,7 @@ func TestBackup_BackupSecretStorage(t *testing.T) {
 		Type:      db.AccessKeyNone,
 		StorageID: &storage.ID,
 		Name:      "Test Key",
+		Owner:     "vault",
 	})
 	assert.NoError(t, err)
 
@@ -138,7 +139,7 @@ func TestBackup_BackupSecretStorage(t *testing.T) {
   "keys": [
     {
       "name": "Test Key",
-      "owner": "",
+      "owner": "vault",
       "storage": "Test",
       "type": "none"
     }
@@ -186,7 +187,7 @@ func TestBackup_BackupSecretStorage(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Len(t, restoredStorages, 1)
 
-	restoredKeys, err := store.GetAccessKeys(restoredProj.ID, db.GetAccessKeyOptions{}, db.RetrieveQueryParams{})
+	restoredKeys, err := store.GetAccessKeys(restoredProj.ID, db.GetAccessKeyOptions{IgnoreOwner: true}, db.RetrieveQueryParams{})
 	assert.NoError(t, err)
 	assert.Len(t, restoredKeys, 1)
 
