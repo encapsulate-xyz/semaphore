@@ -181,7 +181,7 @@ func (b *BackupDB) load(projectID int, store db.Store) (err error) {
 		return
 	}
 
-	b.integrations, err = store.GetIntegrations(projectID, db.RetrieveQueryParams{})
+	b.integrations, err = store.GetIntegrations(projectID, db.RetrieveQueryParams{}, true)
 	if err != nil {
 		return
 	}
@@ -190,6 +190,7 @@ func (b *BackupDB) load(projectID int, store db.Store) (err error) {
 	b.integrationMatchers = make(map[int][]db.IntegrationMatcher)
 	b.integrationExtractValues = make(map[int][]db.IntegrationExtractValue)
 	for _, o := range b.integrations {
+
 		b.integrationAliases[o.ID], err = store.GetIntegrationAliases(projectID, &o.ID)
 		if err != nil {
 			return

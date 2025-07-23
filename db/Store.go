@@ -317,7 +317,7 @@ type AccessKeyManager interface {
 // IntegrationManager handles integration-related operations
 type IntegrationManager interface {
 	CreateIntegration(integration Integration) (newIntegration Integration, err error)
-	GetIntegrations(projectID int, params RetrieveQueryParams) ([]Integration, error)
+	GetIntegrations(projectID int, params RetrieveQueryParams, includeTaskParams bool) ([]Integration, error)
 	GetIntegration(projectID int, integrationID int) (integration Integration, err error)
 	UpdateIntegration(integration Integration) error
 	GetIntegrationRefs(projectID int, integrationID int) (IntegrationReferrers, error)

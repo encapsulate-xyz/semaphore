@@ -1,8 +1,8 @@
 package db
 
 type TaskParams struct {
-	ID        int `db:"id" json:"-"`
-	ProjectID int `db:"project_id" json:"-"`
+	ID        int `db:"id" json:"-" backup:"-"`
+	ProjectID int `db:"project_id" json:"-" backup:"-"`
 
 	Environment string  `db:"environment" json:"environment,omitempty"`
 	Arguments   *string `db:"arguments" json:"arguments,omitempty"`
@@ -14,7 +14,8 @@ type TaskParams struct {
 	// This field available only for Build tasks.
 	Version *string `db:"version" json:"version,omitempty"`
 
-	InventoryID *int `db:"inventory_id" json:"inventory_id,omitempty"`
+	InventoryID   *int    `db:"inventory_id" json:"inventory_id,omitempty" backup:"-"`
+	InventoryName *string `db:"-" json:"-" backup:"inventory_name,omitempty"`
 
 	Params MapStringAnyField `db:"params" json:"params,omitempty"`
 }

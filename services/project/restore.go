@@ -338,6 +338,12 @@ func (e BackupIntegration) Restore(store db.Store, b *BackupDB) error {
 	integration.ProjectID = b.meta.ID
 	integration.AuthSecretID = authSecretID
 	integration.TemplateID = tpl.ID
+	if integration.TaskParams != nil {
+		params := e.TaskParams
+		if params != nil {
+			integration.TaskParams.InventoryID = &params.ID
+		}
+	}
 
 	newIntegration, err := store.CreateIntegration(integration)
 	if err != nil {

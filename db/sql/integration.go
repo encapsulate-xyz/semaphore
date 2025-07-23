@@ -46,8 +46,24 @@ func (d *SqlDb) CreateIntegration(integration db.Integration) (newIntegration db
 	return
 }
 
-func (d *SqlDb) GetIntegrations(projectID int, params db.RetrieveQueryParams) (integrations []db.Integration, err error) {
+func (d *SqlDb) GetIntegrations(projectID int, params db.RetrieveQueryParams, includeTaskParams bool) (integrations []db.Integration, err error) {
 	err = d.getObjects(projectID, db.IntegrationProps, params, nil, &integrations)
+
+	if includeTaskParams {
+		for i := range integrations {
+			if integrations[i].TaskParamsID == nil {
+				continue
+			}
+
+			var taskParams db.TaskParams
+			err = d.getObject(projectID, db.TaskParamsProps, *integrations[i].TaskParamsID, &taskParams)
+			if err != nil {
+				return nil, err
+			}
+			integrations[i].TaskParams = &taskParams
+		}
+	}
+
 	return integrations, err
 }
 
