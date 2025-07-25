@@ -53,10 +53,6 @@
       data-testid="newProject-alert"
     ></v-checkbox>
 
-    <v-btn v-if="itemId !== 'new'" color="blue-grey">
-      Test notifications
-    </v-btn>
-
     <v-switch
       v-if="itemId === 'new'"
       v-model="item.demo"
