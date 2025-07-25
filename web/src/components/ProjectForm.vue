@@ -23,7 +23,6 @@
     ></v-text-field>
 
     <v-text-field
-      v-if="item.type === ''"
       v-model.number="item.max_parallel_tasks"
       :label="$t('maxNumberOfParallelTasksOptional')"
       :disabled="formSaving"
@@ -39,7 +38,6 @@
     ></v-text-field>
 
     <v-text-field
-      v-if="item.type === ''"
       v-model="item.alert_chat"
       :label="$t('telegramChatIdOptional')"
       :disabled="formSaving"
@@ -49,7 +47,6 @@
     ></v-text-field>
 
     <v-checkbox
-      v-if="item.type === ''"
       class="mt-0"
       v-model="item.alert"
       :label="$t('allowAlertsForThisProject')"
