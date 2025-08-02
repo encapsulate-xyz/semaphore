@@ -398,7 +398,7 @@
 
           <v-list-item
             key="premium"
-            v-if="user.admin && !user.has_active_subscription"
+            v-if="isPro && user.admin && !user.has_active_subscription"
             @click="subscriptionDialog = true"
             class="ActivatePremiumSubscriptionButton"
           >
@@ -539,7 +539,7 @@
 
               <v-list-item
                 key="subscription"
-                v-if="user.admin"
+                v-if="isPro && user.admin"
                 @click="subscriptionDialog = true"
               >
                 <v-list-item-icon>
@@ -1095,6 +1095,10 @@ export default {
   },
 
   computed: {
+
+    isPro() {
+      return (process.env.VUE_APP_BUILD_TYPE || '').startsWith('pro_');
+    },
 
     lang() {
       const locale = localStorage.getItem('lang');
