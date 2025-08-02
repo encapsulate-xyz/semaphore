@@ -53,6 +53,10 @@ dayjs.extend(relativeTime);
 dayjs.extend(localizedFormat);
 dayjs.extend(durationPlugin);
 
+Vue.filter('formatDate2', (value) => (value
+  ? dayjs(String(value)).format('LL')
+  : '—'));
+
 // formatDate: “from now” if today, else localized date+time
 Vue.filter('formatDate', (value) => {
   if (!value) return '—';
