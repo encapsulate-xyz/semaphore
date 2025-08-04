@@ -144,6 +144,7 @@ $task-log-status-tab-height:
   $task-log-status-height;
 
 .task-log-view__message {
+  display: none;
   margin-top: $task-log-message-offset;
   height: $task-log-message-height;
   white-space: nowrap;
@@ -173,6 +174,10 @@ $task-log-status-tab-height:
   font-family: monospace;
   margin: 0;
   padding: 5px 10px 50px;
+}
+
+.task-log-view--with-message .task-log-view__message {
+  display: block;
 }
 
 .task-log-view--with-message .task-log-records {
