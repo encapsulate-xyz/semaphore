@@ -25,13 +25,17 @@
       class="overflow-auto text-no-wrap px-5 task-log-view__status"
     >
       <TaskStatus :status="item.status" data-testid="task-status" />
-      <span class="ml-3 hidden-xs-only">
+
+      <span class="ml-3 hidden-xs-only task-log-view__status_part">
 
         Started <span v-if="user">by <b>{{ user.name }}</b></span>
 
         at <b>{{ item.start | formatDate }}</b>
+      </span>
+
+      <span class="ml-3 hidden-sm-and-down task-log-view__status_part">
         <v-icon
-          class="ml-6" small style="transform: translateY(-1px)">mdi-clock-outline</v-icon>
+          small style="transform: translateY(-1px)">mdi-clock-outline</v-icon>
         {{ [item.start, item.end] | formatMilliseconds }}
       </span>
     </div>
@@ -155,6 +159,12 @@ $task-log-status-tab-height:
 .task-log-view__status {
   height: $task-log-status-height;
   margin-bottom: $task-log-status-offset;
+}
+
+.task-log-view__status_part {
+  padding: 6px 10px;
+  border-radius: 6px;
+  background-color: var(--highlighted-card-bg-color);
 }
 
 .task-log-view__tabs {
