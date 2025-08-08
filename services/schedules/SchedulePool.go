@@ -1,11 +1,12 @@
 package schedules
 
 import (
-	"github.com/semaphoreui/semaphore/services/server"
-	"github.com/semaphoreui/semaphore/util"
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/semaphoreui/semaphore/services/server"
+	"github.com/semaphoreui/semaphore/util"
 
 	"github.com/robfig/cron/v3"
 	"github.com/semaphoreui/semaphore/db"
@@ -103,8 +104,7 @@ func (r ScheduleRunner) Run() {
 		return
 	}
 
-	task := schedule.TaskParams.CreateTask()
-	task.TemplateID = schedule.TemplateID
+	task := schedule.TaskParams.CreateTask(schedule.TemplateID)
 	task.ScheduleID = &schedule.ID
 
 	_, err = r.pool.taskPool.AddTask(
