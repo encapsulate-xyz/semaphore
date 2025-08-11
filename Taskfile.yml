@@ -16,7 +16,8 @@ tasks:
         vars:
           GOOS: ""
           GOARCH: ""
-          VUE_APP_BUILD_TYPE: ""
+          APP_BUILD_TYPE: ""
+          GPG_KEY_ID: ""
 
   deps:
     desc: Install all build dependencies
@@ -40,7 +41,7 @@ tasks:
   deps:be:
     desc: Vendor application dependencies
     cmds:
-      - go mod vendor
+      - go {{ if eq .APP_BUILD_TYPE "" }}.mod{{else}}work{{ end }} vendor
 
   deps:fe:
     desc: Installs nodejs requirements
@@ -91,7 +92,7 @@ tasks:
       - ../api/public/favicon.ico
     cmds:
       - >-
-        env VUE_APP_BUILD_TYPE={{ .VUE_APP_BUILD_TYPE }}
+        env VUE_APP_BUILD_TYPE={{ .APP_BUILD_TYPE }}
         npm run build
 
   build:be:
@@ -176,7 +177,7 @@ tasks:
   release:test:
     desc: Create a local test release
     cmds:
-      - goreleaser --auto-snapshot --clean --skip=sign
+      - GPG_KEY_ID={{ .GPG_KEY_ID }} goreleaser --auto-snapshot --clean --skip=sign
 
   docker:test:
     desc: Test containers by building, running, testing and deleting them
