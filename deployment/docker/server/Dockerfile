@@ -25,7 +25,7 @@ RUN if [ -n "$APP_BUILD_TYPE" ]; then \
 
 RUN --mount=type=cache,target=/go/pkg \
     --mount=type=cache,target=/root/.cache/go-build \
-    task deps && \
+    task deps APP_BUILD_TYPE=${APP_BUILD_TYPE} && \
     task build GOOS=${TARGETOS} GOARCH=${TARGETARCH} APP_BUILD_TYPE=${APP_BUILD_TYPE}
 
 

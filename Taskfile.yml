@@ -40,7 +40,7 @@ tasks:
   deps:be:
     desc: Vendor application dependencies
     cmds:
-      - go {{ if eq .APP_BUILD_TYPE "" }}.mod{{else}}work{{ end }} vendor
+      - go {{ if eq .APP_BUILD_TYPE "pro_selfhosted" }}work{{ else }}mod{{ end }} vendor
 
   deps:fe:
     desc: Installs nodejs requirements

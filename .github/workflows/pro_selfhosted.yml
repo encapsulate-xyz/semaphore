@@ -38,7 +38,7 @@ jobs:
 
       - name: Install deps
         run: |
-          task deps
+          task deps APP_BUILD_TYPE=pro_selfhosted
 
       - name: Run build
         run: task build APP_BUILD_TYPE=pro_selfhosted

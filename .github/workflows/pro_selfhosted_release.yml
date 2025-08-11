@@ -42,7 +42,7 @@ jobs:
 
       - name: Install deps
         run: |
-          task deps
+          task deps APP_BUILD_TYPE=pro_selfhosted
 
       - name: Import gnupg
         run: |
