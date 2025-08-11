@@ -1,4 +1,4 @@
-name: Release
+name: Pro Self-Hosted Release
 
 'on':
   push:

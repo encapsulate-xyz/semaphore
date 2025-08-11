@@ -1,5 +1,4 @@
-name: Pro
-
+name: Pro Self-Hosted
 'on':
   push:
     branches:
