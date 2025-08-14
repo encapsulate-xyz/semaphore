@@ -2367,6 +2367,10 @@ paths:
                 type: string
               message:
                 type: string
+              arguments:
+                type: string
+              inventory_id:
+                type: integer
       responses:
         201:
           description: Task queued
