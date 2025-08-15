@@ -707,7 +707,7 @@
 }
 
 .theme--light {
-  --highlighted-card-bg-color: white;
+  --highlighted-card-bg-color: #F3F3F3;
 }
 
 .DarkModeSwitch {
