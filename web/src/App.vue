@@ -83,7 +83,8 @@
 
     <EditDialog
       v-model="subscriptionDialog"
-      :save-button-text="user.admin && !user.has_active_subscription ? 'Activate' : 'Reactivate'"
+      :save-button-text="null"
+      :cancel-button-text="$t('close')"
       v-if="user"
       event-name="i-user"
       dont-close-on-save
