@@ -5,7 +5,7 @@ info:
   description: |
     Semaphore API provides endpoints for managing and interacting with the Semaphore UI.
     This documentation outlines the available operations and data models.
-  version: "2.14.0-beta1"
+  version: "2.16.11"
 
 consumes:
   - application/json
@@ -159,16 +159,12 @@ definitions:
           alert:
             type: boolean
           alert_chat:
-            type:
-              - string
-              - 'null'
+            type: string
           max_parallel_tasks:
             type: integer
             minimum: 0
           type:
-            type:
-              - string
-              - 'null'
+            type: string
       templates:
         type: array
         items:
@@ -187,9 +183,7 @@ definitions:
             playbook:
               type: string
             arguments:
-              type:
-                - string
-                - 'null'
+              type: string
             description:
               type: string
             allow_override_args_in_task:
@@ -197,29 +191,19 @@ definitions:
             suppress_success_alerts:
               type: boolean
             cron:
-              type:
-                - string
-                - 'null'
+              type: string
             build_template:
-              type:
-                - string
-                - 'null'
+              type: string
             autorun:
               type: boolean
             survey_vars:
-              type:
-                - string
-                - 'null'
+              type: string
             start_version:
-              type:
-                - string
-                - 'null'
+              type: string
             type:
               type: string
             vault_key:
-              type:
-                - string
-                - 'null'
+              type: string
             allow_override_branch_in_task:
               type: boolean
       repositories:
@@ -265,13 +249,9 @@ definitions:
             inventory:
               type: string
             ssh_key:
-              type:
-                - string
-                - 'null'
+              type: string
             become_key:
-              type:
-                - string
-                - 'null'
+              type: string
             type:
               type: string
               enum: [static, static-yaml, file]
@@ -283,15 +263,11 @@ definitions:
             name:
               type: string
             password:
-              type:
-                - string
-                - 'null'
+              type: string
             json:
               type: string
             env:
-              type:
-                - string
-                - 'null'
+              type: string
 
   APIToken:
     type: object
@@ -316,17 +292,13 @@ definitions:
       alert:
         type: boolean
       alert_chat:
-        type:
-          - string
-          - 'null'
+        type: string
         example: Test
       max_parallel_tasks:
         type: integer
         minimum: 0
       type:
-        type:
-          - string
-          - 'null'
+        type: string
       demo:
         description: Create Demo project resources?
         type: boolean
@@ -345,17 +317,13 @@ definitions:
       alert:
         type: boolean
       alert_chat:
-        type:
-          - string
-          - 'null'
+        type: string
         example: Test
       max_parallel_tasks:
         type: integer
         minimum: 0
       type:
-        type:
-          - string
-          - 'null'
+        type: string
 
   AccessKeyRequest:
     type: object
@@ -719,9 +687,7 @@ definitions:
       secret:
         type: string
       git_branch:
-        type:
-          - string
-          - 'null'
+        type: string
       limit:
         type: string
       params:
@@ -861,13 +827,9 @@ definitions:
         type: string
         enum: ["", build, deploy]
       start_version:
-        type:
-          - string
-          - 'null'
+        type: string
       build_template_id:
-        type:
-          - integer
-          - 'null'
+        type: integer
       autorun:
         type: boolean
       survey_vars:
@@ -920,13 +882,9 @@ definitions:
         enum: [password, script]
         example: script
       vault_key_id:
-        type:
-          - integer
-          - 'null'
+        type: integer
       script:
-        type:
-          - string
-          - 'null'
+        type: string
         example: path/to/script-client.py
 
   ScheduleRequest:
@@ -1001,13 +959,9 @@ definitions:
       user_id:
         type: integer
       object_id:
-        type:
-          - integer
-          - 'null'
+        type: integer
       object_type:
-        type:
-          - string
-          - 'null'
+        type: string
       description:
         type: string
 
