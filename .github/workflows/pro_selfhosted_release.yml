@@ -56,6 +56,7 @@ jobs:
 
       - name: Run release
         run: |
+          APP_BUILD_TYPE=pro_selfhosted \
           GITHUB_TOKEN=${{ secrets.GH_TOKEN }} \
           GPG_KEY_ID="A4FB 7208 48EA 79FA EC4E 9C30 0443 8136 6A5D 4731" \
             task release:prod
