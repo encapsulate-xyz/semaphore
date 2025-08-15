@@ -525,6 +525,8 @@ definitions:
       template_id:
         type: integer
         minimum: 1
+      params:
+        $ref: '#/definitions/TaskPrams'
 
   IntegrationRequest:
     type: object
@@ -536,6 +538,8 @@ definitions:
         type: integer
       template_id:
         type: integer
+      params:
+        $ref: '#/definitions/TaskPrams'
 
   IntegrationExtractValueRequest:
     type: object
@@ -651,6 +655,7 @@ definitions:
         example: master
       ssh_key_id:
         type: integer
+  
   Repository:
     type: object
     properties:
@@ -686,23 +691,72 @@ definitions:
         type: string
       secret:
         type: string
+      arguments:
+        type: string
       git_branch:
         type: string
-      limit:
-        type: string
-      params:
-        type: object
-        properties:
-          debug:
-            type: boolean
-          dry_run:
-            type: boolean
-          diff:
-            type: boolean
-          limit:
-            type: array
       message:
         type: string
+      inventory_id:
+        type: integer
+      params:
+        allOf:
+          - $ref: '#/definitions/AnsibleTaskParams'
+          - $ref: '#/definitions/TerraformTaskParams'
+      limit:
+        type: string
+
+  AnsibleTaskParams:
+    type: object
+    properties:
+      debug:
+        type: boolean
+      dry_run:
+        type: boolean
+      diff:
+        type: boolean
+      limit:
+        type: array
+        items:
+          type: string
+      tags:
+        type: array
+        items:
+          type: string
+      skip_tags:
+        type: array
+        items:
+          type: string
+
+  TerraformTaskParams:
+    type: object
+    properties:
+      plan:
+        type: boolean
+      destroy:
+        type: boolean
+      auto_approve:
+        type: boolean
+      upgrade:
+        type: boolean
+
+  TaskPrams:
+    type: object
+    properties:
+      environment:
+        type: string
+      git_branch:
+        type: string
+      message:
+        type: string
+      inventory_id:
+        type: integer
+      arguments:
+        type: string
+      params:
+        allOf:
+          - $ref: '#/definitions/AnsibleTaskParams'
+          - $ref: '#/definitions/TerraformTaskParams'
 
   TaskOutput:
     type: object
@@ -904,6 +958,8 @@ definitions:
         type: string
       active:
         type: boolean
+      params:
+        $ref: '#/definitions/TaskPrams'
 
   Schedule:
     type: object
@@ -920,6 +976,8 @@ definitions:
         type: string
       active:
         type: boolean
+      params:
+        $ref: '#/definitions/TaskPrams'
 
   ViewRequest:
     type: object
