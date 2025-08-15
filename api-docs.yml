@@ -302,6 +302,7 @@ definitions:
       demo:
         description: Create Demo project resources?
         type: boolean
+
   Project:
     type: object
     properties:
@@ -1028,13 +1029,22 @@ definitions:
     properties:
       version:
         type: string
-      updateBody:
+      ansible:
         type: string
-      update:
+      web_host:
+        type: string
+      use_remote_runner:
+        type: boolean
+      auth_methods:
+        type: array
+        items:
+          type: string
+      git_client:
+        type: string
+      schedule_timezone:
+        type: string
+      premium_features:
         type: object
-        properties:
-          tag_name:
-            type: string
 
 securityDefinitions:
   cookie:
@@ -1436,6 +1446,7 @@ paths:
           description: Created project
           schema:
             $ref: "#/definitions/Project"
+  
   /projects/restore:
     post:
       tags:
@@ -1465,6 +1476,7 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Event'
+  
   /events/last:
     get:
       summary: Get last 200 Events related to Semaphore and projects you are part of
