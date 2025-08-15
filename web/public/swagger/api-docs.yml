@@ -1036,9 +1036,7 @@ definitions:
       use_remote_runner:
         type: boolean
       auth_methods:
-        type: array
-        items:
-          type: string
+        type: object
       git_client:
         type: string
       schedule_timezone:

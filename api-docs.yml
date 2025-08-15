@@ -1420,7 +1420,7 @@ paths:
   /projects:
     get:
       tags:
-        - projects
+        - project
       summary: Get projects
       responses:
         200:
@@ -1431,7 +1431,7 @@ paths:
               $ref: "#/definitions/Project"
     post:
       tags:
-        - projects
+        - project
       summary: Create a new project
       consumes:
         - application/json
@@ -1450,7 +1450,7 @@ paths:
   /projects/restore:
     post:
       tags:
-        - projects
+        - project
       summary: Restore Project
       consumes:
         - application/json
@@ -1661,7 +1661,7 @@ paths:
       - $ref: "#/parameters/project_id"
     get:
       tags:
-        - project
+        - integration
       summary: get all integrations
       responses:
         200:
@@ -1673,7 +1673,7 @@ paths:
     post:
       summary: create a new integration
       tags:
-        - project
+        - integration
       parameters:
         - name: Integration
           in: body
@@ -1691,7 +1691,7 @@ paths:
       - $ref: "#/parameters/integration_id"
     put:
       tags:
-        - project
+        - integration
       summary: Update Integration
       parameters:
         - name: Integration
@@ -1704,7 +1704,7 @@ paths:
           description: Integration updated
     delete:
       tags:
-        - project
+        - integration
       summary: Remove integration
       responses:
         204:
@@ -1726,7 +1726,7 @@ paths:
               $ref: "#/definitions/IntegrationExtractValue"
     post:
       tags:
-        - project
+        - integration
       summary: Add Integration Extracted Value
       parameters:
         - name: Integration Extracted Value
@@ -1783,7 +1783,7 @@ paths:
               $ref: "#/definitions/IntegrationMatcher"
     post:
       tags:
-        - project
+        - integration
       summary: Add Integration Matcher
       parameters:
         - name: Integration Matcher
@@ -1830,7 +1830,7 @@ paths:
       - $ref: "#/parameters/project_id"
     get:
       tags:
-        - project
+        - key store
       summary: Get access keys linked to project
       parameters:
         # TODO - the space in this parameter name results in a dredd warning
@@ -1864,7 +1864,7 @@ paths:
               $ref: "#/definitions/AccessKey"
     post:
       tags:
-        - project
+        - key store
       summary: Add access key
       parameters:
         - name: Access Key
@@ -1885,7 +1885,7 @@ paths:
       - $ref: "#/parameters/key_id"
     put:
       tags:
-        - project
+        - key store
       summary: Updates access key
       parameters:
         - name: Access Key
@@ -1900,7 +1900,7 @@ paths:
           description: Bad type
     delete:
       tags:
-        - project
+        - key store
       summary: Removes access key
       responses:
         204:
@@ -1912,7 +1912,7 @@ paths:
       - $ref: "#/parameters/project_id"
     get:
       tags:
-        - project
+        - repository
       summary: Get repositories
       parameters:
         - name: sort
@@ -1937,7 +1937,7 @@ paths:
               $ref: "#/definitions/Repository"
     post:
       tags:
-        - project
+        - repository
       summary: Add repository
       parameters:
         - name: Repository
@@ -1957,7 +1957,7 @@ paths:
       - $ref: "#/parameters/repository_id"
     get:
       tags:
-        - project
+        - repository
       summary: Get repository
       responses:
         200:
@@ -1966,7 +1966,7 @@ paths:
             $ref: "#/definitions/Repository"
     put:
       tags:
-        - project
+        - repository
       summary: Updates repository
       parameters:
         - name: Repository
@@ -1981,7 +1981,7 @@ paths:
           description: Bad request
     delete:
       tags:
-        - project
+        - repository
       summary: Removes repository
       responses:
         204:
@@ -1993,7 +1993,7 @@ paths:
       - $ref: "#/parameters/project_id"
     get:
       tags:
-        - project
+        - inventory
       summary: Get inventory
       parameters:
         - name: sort
@@ -2017,7 +2017,7 @@ paths:
               $ref: "#/definitions/Inventory"
     post:
       tags:
-        - project
+        - inventory
       summary: create inventory
       parameters:
         - name: Inventory
@@ -2036,7 +2036,7 @@ paths:
       - $ref: "#/parameters/inventory_id"
     get:
       tags:
-        - project
+        - inventory
       summary: Get inventory
       responses:
         200:
@@ -2045,7 +2045,7 @@ paths:
             $ref: "#/definitions/Inventory"
     put:
       tags:
-        - project
+        - inventory
       summary: Updates inventory
       parameters:
         - name: Inventory
@@ -2058,7 +2058,7 @@ paths:
           description: Inventory updated
     delete:
       tags:
-        - project
+        - inventory
       summary: Removes inventory
       responses:
         204:
@@ -2070,7 +2070,7 @@ paths:
       - $ref: "#/parameters/project_id"
     get:
       tags:
-        - project
+        - variable group (environment)
       summary: Get environment
       parameters:
         - name: sort
@@ -2096,7 +2096,7 @@ paths:
               $ref: "#/definitions/Environment"
     post:
       tags:
-        - project
+        - variable group (environment)
       summary: Add environment
       parameters:
         - name: environment
@@ -2115,7 +2115,7 @@ paths:
       - $ref: "#/parameters/environment_id"
     get:
       tags:
-        - project
+        - variable group (environment)
       summary: Get environment
       responses:
         200:
@@ -2124,7 +2124,7 @@ paths:
             $ref: "#/definitions/Environment"
     put:
       tags:
-        - project
+        - variable group (environment)
       summary: Update environment
       parameters:
         - name: environment
@@ -2137,7 +2137,7 @@ paths:
           description: Environment Updated
     delete:
       tags:
-        - project
+        - variable group (environment)
       summary: Removes environment
       responses:
         204:
@@ -2149,7 +2149,7 @@ paths:
       - $ref: "#/parameters/project_id"
     get:
       tags:
-        - project
+        - template
       summary: Get template
       parameters:
         - name: sort
@@ -2180,7 +2180,7 @@ paths:
                   $ref: "#/definitions/Task"
     post:
       tags:
-        - project
+        - template
       summary: create template
       parameters:
         - name: template
@@ -2199,7 +2199,7 @@ paths:
       - $ref: "#/parameters/template_id"
     get:
       tags:
-        - project
+        - template
       summary: Get template
       responses:
         200:
@@ -2208,7 +2208,7 @@ paths:
             $ref: "#/definitions/Template"
     put:
       tags:
-        - project
+        - template
       summary: Updates template
       parameters:
         - name: template
@@ -2221,7 +2221,7 @@ paths:
           description: template updated
     delete:
       tags:
-        - project
+        - template
       summary: Removes template
       responses:
         204:
@@ -2353,7 +2353,7 @@ paths:
       - $ref: "#/parameters/project_id"
     get:
       tags:
-        - project
+        - task
       summary: Get Tasks related to current project
       responses:
         200:
@@ -2364,7 +2364,7 @@ paths:
               $ref: '#/definitions/Task'
     post:
       tags:
-        - project
+        - task
       summary: Starts a job
       parameters:
         - name: task
@@ -2407,7 +2407,7 @@ paths:
       - $ref: "#/parameters/project_id"
     get:
       tags:
-        - project
+        - task
       summary: Get last 200 Tasks related to current project
       responses:
         200:
@@ -2424,7 +2424,7 @@ paths:
       - $ref: '#/parameters/task_id'
     post:
       tags:
-        - project
+        - task
       summary: Stop a job
       responses:
         204:
@@ -2445,7 +2445,7 @@ paths:
             $ref: "#/definitions/Task"
     delete:
       tags:
-        - project
+        - task
       summary: Deletes task (including output)
       responses:
         204:
@@ -2457,7 +2457,7 @@ paths:
       - $ref: '#/parameters/task_id'
     get:
       tags:
-        - project
+        - task
       summary: Get task output
       responses:
         200:
@@ -2473,7 +2473,7 @@ paths:
       - $ref: '#/parameters/task_id'
     get:
       tags:
-        - project
+        - task
       summary: Get task raw output
       responses:
         200:
