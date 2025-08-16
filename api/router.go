@@ -105,7 +105,7 @@ func Route(
 	repositoryController := projects.NewRepositoryController(accessKeyInstallationService)
 	keyController := projects.NewKeyController(accessKeyService)
 	projectsController := projects.NewProjectsController(accessKeyService)
-	terraformController := proApi.NewTerraformController(encryptionService, terraformStore)
+	terraformController := proApi.NewTerraformController(encryptionService, terraformStore, store)
 	terraformInventoryController := proProjects.NewTerraformInventoryController(terraformStore)
 	userController := NewUserController(subscriptionService)
 	usersController := NewUsersController(subscriptionService)
