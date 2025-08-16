@@ -94,7 +94,7 @@
           margin-top: 20px;
           font-weight: bold;
           color: #00bc00;
-        ">Renews in {{ (new Date() - item.expiresAt) | formatMilliseconds }}</div>
+        ">Renews in {{ (new Date() - new Date(item.expiresAt)) | formatMilliseconds }}</div>
       </v-card-text>
     </v-card>
 
