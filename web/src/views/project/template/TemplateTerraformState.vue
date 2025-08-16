@@ -265,14 +265,6 @@
               {{ item.created | formatDate }}
             </template>
 
-            <template v-slot:item.actions="{ item }">
-              <v-btn-toggle dense :value-comparator="() => false">
-                <v-btn @click="deleteState(item)">
-                  <v-icon>mdi-delete</v-icon>
-                </v-btn>
-              </v-btn-toggle>
-            </template>
-
             <template v-slot:expanded-item="{ headers, item }">
               <td
                 :colspan="headers.length"
@@ -394,10 +386,6 @@ export default {
   },
 
   methods: {
-
-    deleteState(id) {
-      console.log(id);
-    },
 
     async setDefaultInventory() {
       await axios({
