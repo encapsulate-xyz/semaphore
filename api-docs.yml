@@ -1036,9 +1036,7 @@ definitions:
       use_remote_runner:
         type: boolean
       auth_methods:
-        type: array
-        items:
-          type: string
+        type: object
       git_client:
         type: string
       schedule_timezone:
@@ -1830,7 +1828,7 @@ paths:
       - $ref: "#/parameters/project_id"
     get:
       tags:
-        - key store
+        - key-store
       summary: Get access keys linked to project
       parameters:
         # TODO - the space in this parameter name results in a dredd warning
@@ -1864,7 +1862,7 @@ paths:
               $ref: "#/definitions/AccessKey"
     post:
       tags:
-        - key store
+        - key-store
       summary: Add access key
       parameters:
         - name: Access Key
@@ -1885,7 +1883,7 @@ paths:
       - $ref: "#/parameters/key_id"
     put:
       tags:
-        - key store
+        - key-store
       summary: Updates access key
       parameters:
         - name: Access Key
@@ -1900,7 +1898,7 @@ paths:
           description: Bad type
     delete:
       tags:
-        - key store
+        - key-store
       summary: Removes access key
       responses:
         204:
@@ -2070,7 +2068,7 @@ paths:
       - $ref: "#/parameters/project_id"
     get:
       tags:
-        - variable group (environment)
+        - variable-group
       summary: Get environment
       parameters:
         - name: sort
@@ -2096,7 +2094,7 @@ paths:
               $ref: "#/definitions/Environment"
     post:
       tags:
-        - variable group (environment)
+        - variable-group
       summary: Add environment
       parameters:
         - name: environment
@@ -2115,7 +2113,7 @@ paths:
       - $ref: "#/parameters/environment_id"
     get:
       tags:
-        - variable group (environment)
+        - variable-group
       summary: Get environment
       responses:
         200:
@@ -2124,7 +2122,7 @@ paths:
             $ref: "#/definitions/Environment"
     put:
       tags:
-        - variable group (environment)
+        - variable-group
       summary: Update environment
       parameters:
         - name: environment
@@ -2137,7 +2135,7 @@ paths:
           description: Environment Updated
     delete:
       tags:
-        - variable group (environment)
+        - variable-group
       summary: Removes environment
       responses:
         204:
@@ -2436,7 +2434,7 @@ paths:
       - $ref: "#/parameters/task_id"
     get:
       tags:
-        - project
+        - task
       summary: Get a single task
       responses:
         200:
