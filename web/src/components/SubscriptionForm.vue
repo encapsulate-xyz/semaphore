@@ -24,8 +24,16 @@
       dense
     ></v-textarea>
 
-    <div style="text-align: right; margin-bottom: 30px; margin-top: -10px;">
-      <v-btn @click="save" color="primary">Activate new key</v-btn>
+    <div style="text-align: right; margin-bottom: 30px; margin-top: -5px;">
+      <v-btn @click="save" style="width: 100%;" color="primary" :disabled="formSaving">
+        <v-progress-circular
+          v-if="formSaving"
+          indeterminate
+          color="white"
+          :size="24"
+        ></v-progress-circular>
+        <span v-else>Activate new key</span>
+      </v-btn>
     </div>
 
     <v-card
