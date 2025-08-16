@@ -141,8 +141,8 @@
       >
 
         <v-card-title
-          class="mb-6 d-flex justify-space-between align-center"
-          style="border-bottom: 1px solid gray; font-weight: normal;"
+          class="d-flex justify-space-between align-center"
+          style="font-weight: normal;"
         >
 
           <span>Workspace: <strong>{{ inventory.inventory }}</strong></span>
@@ -186,6 +186,8 @@
           </div>
 
         </v-card-title>
+
+        <v-divider />
 
         <v-card-text>
 
