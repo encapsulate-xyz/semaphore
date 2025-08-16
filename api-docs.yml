@@ -5,7 +5,7 @@ info:
   description: |
     Semaphore API provides endpoints for managing and interacting with the Semaphore UI.
     This documentation outlines the available operations and data models.
-  version: "2.16.11"
+  version: "2.16.14"
 
 consumes:
   - application/json
