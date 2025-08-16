@@ -1691,14 +1691,12 @@ paths:
     get:
       tags:
         - integration
-      summary: Get Integration by ID
+      summary: Get Integration
       responses:
         200:
           description: Integration Value
           schema:
-            type: array
-            items:
-              $ref: "#/definitions/Integration"
+            $ref: "#/definitions/Integration"
     put:
       tags:
         - integration
