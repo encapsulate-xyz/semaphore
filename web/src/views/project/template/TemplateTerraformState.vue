@@ -210,6 +210,9 @@
             </v-btn>
           </v-alert>
 
+          <h3>Aliases</h3>
+          <div class="mb-6">Alieases allows you to use state externally</div>
+
           <div class="mb-3 pl-1" v-if="(aliases || []).length === 0">There is no aliases.</div>
 
           <div v-else v-for="alias of (aliases || [])" :key="alias.id">
@@ -230,19 +233,27 @@
             color="primary"
             @click="addAlias()"
             :disabled="!premiumFeatures.terraform_backend"
+            class="mb-8"
           >
             {{ aliases == null ? $t('LoadAlias') : $t('AddAlias') }}
           </v-btn>
 
+          <v-divider class="mb-4" />
+
+          <h3>State history</h3>
+          <div class="mb-6">Alieases allows you to use state externally</div>
+
           <v-data-table
-            style="max-width: 1000px; margin: auto; background: transparent;"
+            style="
+              background: transparent;
+            "
             v-if="premiumFeatures.terraform_backend"
             :headers="headers"
             :items="states"
             :footer-props="{ itemsPerPageOptions: [20] }"
             single-expand
             show-expand
-            class="mt-4 TaskListTable"
+            class="mt-4 TaskListTable TaskListTable TerraformStateTable"
           >
             <template v-slot:item.id="{ item }">
               #{{ item.id }}
@@ -291,6 +302,20 @@
 
   </div>
 </template>
+<style lang="scss">
+.TerraformStateTable {
+
+  .v-data-table__wrapper {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .v-data-footer {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+</style>
 <script>
 
 import axios from 'axios';
