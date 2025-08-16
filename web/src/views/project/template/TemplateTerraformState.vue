@@ -210,7 +210,7 @@
         <v-card-text>
 
           <h3>Aliases</h3>
-          <div class="mb-6">Alieases allows you to use state externally</div>
+          <div class="mb-6">Unique endpoints (aliases) to access your Terraform HTTP backend.</div>
 
           <div class="mb-3 pl-1" v-if="(aliases || []).length === 0">There is no aliases.</div>
 
@@ -240,7 +240,7 @@
           <v-divider class="mb-4" />
 
           <h3>State history</h3>
-          <div class="mb-6">Alieases allows you to use state externally</div>
+          <div class="mb-6">Chronological history of Terraform state changes.</div>
 
           <v-data-table
             style="
