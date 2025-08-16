@@ -189,26 +189,25 @@
 
         <v-divider />
 
-        <v-card-text>
-
-          <v-alert
-            type="info"
-            text
+        <v-alert
+          type="info"
+          text
+          color="hsl(348deg, 86%, 61%)"
+          style="border-radius: 0;"
+          v-if="!premiumFeatures.terraform_backend"
+        >
+            <span class="mr-2">
+              Terraform/OpenTofu HTTP backend available only in <b>PRO</b> version.
+            </span>
+          <v-btn
             color="hsl(348deg, 86%, 61%)"
-            style="border-radius: 0;"
-            v-if="!premiumFeatures.terraform_backend"
+            href="https://semaphoreui.com/pro#runners"
           >
-        <span class="mr-2">
-          Terraform/OpenTofu HTTP backend available only in <b>PRO</b> version.
-        </span>
-            <v-btn
-              color="hsl(348deg, 86%, 61%)"
-              href="https://semaphoreui.com/pro#runners"
-            >
-              Learn more
-              <v-icon>mdi-chevron-right</v-icon>
-            </v-btn>
-          </v-alert>
+            Learn more
+            <v-icon>mdi-chevron-right</v-icon>
+          </v-btn>
+        </v-alert>
+        <v-card-text>
 
           <h3>Aliases</h3>
           <div class="mb-6">Alieases allows you to use state externally</div>
@@ -269,7 +268,7 @@
             </template>
 
             <template v-slot:item.status="{ item }">
-              <TaskStatus :status="item.status"/>
+              <TaskStatus :status="item.status" />
             </template>
 
             <template v-slot:item.created="{ item }">
