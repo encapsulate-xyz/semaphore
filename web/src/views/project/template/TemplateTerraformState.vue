@@ -238,7 +238,7 @@
           <v-divider class="mb-4" />
 
           <h3>State history</h3>
-          <div class="mb-6">Chronological history of Terraform state changes.</div>
+          <div class="mb-6">Chronological history of the workspace state changes.</div>
 
           <v-data-table
             style="
