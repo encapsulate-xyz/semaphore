@@ -11,21 +11,60 @@
     >{{ formError }}
     </v-alert>
 
-    <v-textarea
-      class="mt-4"
-      rows="4"
-      auto-grow
-      v-model="item.key"
-      label="Subscription Key"
-      :rules="[v => !!v || $t('key_required')]"
-      required
-      :disabled="formSaving"
-      outlined
-      dense
-    ></v-textarea>
+    <div v-if="showProUser" style="margin-bottom: 30px">
+      <v-alert
+        class="mb-3"
+        type="success"
+      >
+        <span>
+          Congrats! You are now using a Pro subscription.
+        </span>
+      </v-alert>
 
-    <div style="text-align: right; margin-bottom: 30px; margin-top: -5px;">
-      <v-btn @click="save" style="width: 100%;" color="primary" :disabled="formSaving">
+      <div style="margin: 20px 0; font-size: 16px;">
+        Are you want to make your current user <strong>Pro</strong>?
+      </div>
+
+      <div>
+        <v-btn
+          @click="showProUser = false"
+          color="primary"
+          :disabled="formSaving"
+          style="width: calc(50% - 5px); margin-right: 10px;"
+        >
+          No
+        </v-btn>
+        <v-btn
+          @click="makeProUser"
+          color="primary"
+          :disabled="formSaving"
+          style="width: calc(50% - 5px);"
+        >
+          Yes
+        </v-btn>
+      </div>
+    </div>
+
+    <div v-else style=" margin-bottom: 30px;">
+      <v-textarea
+        class="mt-4"
+        rows="4"
+        auto-grow
+        v-model="item.key"
+        label="Subscription Key"
+        :rules="[v => !!v || $t('key_required')]"
+        required
+        :disabled="formSaving"
+        outlined
+        dense
+      ></v-textarea>
+
+      <v-btn
+        @click="save"
+        style="width: 100%; margin-top: -5px;"
+        color="primary"
+        :disabled="formSaving"
+      >
         <v-progress-circular
           v-if="formSaving"
           indeterminate
@@ -65,7 +104,7 @@
               <v-list-item class="pa-0">
                 <v-list-item-content>
                   <v-list-item-title>Pro users</v-list-item-title>
-                  <v-list-item-subtitle>{{ item.users }}</v-list-item-subtitle>
+                  <v-list-item-subtitle>{{ item.users }} / {{ item.used }}</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
               <v-list-item class="pa-0">
@@ -112,6 +151,8 @@
 </template>
 <script>
 import ItemFormBase from '@/components/ItemFormBase';
+import { getErrorMessage } from '@/lib/error';
+import axios from 'axios';
 
 export default {
   mixins: [ItemFormBase],
@@ -119,6 +160,7 @@ export default {
   data() {
     return {
       tab: 0,
+      showProUser: false,
     };
   },
 
@@ -140,8 +182,26 @@ export default {
   },
 
   methods: {
+    async makeProUser() {
+      try {
+        const user = (await axios.get('/api/user')).data;
+        user.pro = true;
+        await axios.put(`/api/users/${user.id}`, user);
+        await this.loadData();
+        this.$emit('save', {
+          item: this.item,
+          action: 'edit',
+        });
+        this.showProUser = false;
+      } catch (err) {
+        this.formError = getErrorMessage(err);
+      }
+    },
+
     async afterSave() {
       await this.loadData();
+      const user = (await axios.get('/api/user')).data;
+      this.showProUser = this.item.used < this.item.users && !user.pro;
     },
 
     getItemsUrl() {

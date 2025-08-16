@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"embed"
 	"fmt"
-	"github.com/semaphoreui/semaphore/pro_interfaces"
 	"net/http"
 	"os"
 	"path"
 	"strings"
 	"time"
+
+	"github.com/semaphoreui/semaphore/pro_interfaces"
 
 	proApi "github.com/semaphoreui/semaphore/pro/api"
 	proProjects "github.com/semaphoreui/semaphore/pro/api/projects"
@@ -108,7 +109,7 @@ func Route(
 	terraformInventoryController := proProjects.NewTerraformInventoryController(terraformStore)
 	userController := NewUserController(subscriptionService)
 	usersController := NewUsersController(subscriptionService)
-	subscriptionController := proApi.NewSubscriptionController(store)
+	subscriptionController := proApi.NewSubscriptionController(store, store)
 	projectRunnerController := proProjects.NewProjectRunnerController()
 	taskController := projects.NewTaskController(ansibleTaskRepo)
 

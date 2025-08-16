@@ -463,7 +463,13 @@
                 v-on="on"
               >
                 <v-list-item-icon>
-                  <v-icon>mdi-account</v-icon>
+                  <v-icon
+                    color="#f14668"
+                    v-if="user.pro"
+                  >
+                    mdi-professional-hexagon
+                  </v-icon>
+                  <v-icon v-else>mdi-account</v-icon>
                 </v-list-item-icon>
 
                 <v-list-item-content>
