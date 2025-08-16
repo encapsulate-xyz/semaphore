@@ -526,7 +526,7 @@ definitions:
       template_id:
         type: integer
         minimum: 1
-      params:
+      task_params:
         $ref: '#/definitions/TaskPrams'
 
   IntegrationRequest:
@@ -959,7 +959,7 @@ definitions:
         type: string
       active:
         type: boolean
-      params:
+      task_params:
         $ref: '#/definitions/TaskPrams'
 
   Schedule:
@@ -977,7 +977,7 @@ definitions:
         type: string
       active:
         type: boolean
-      params:
+      task_params:
         $ref: '#/definitions/TaskPrams'
 
   ViewRequest:
@@ -1683,10 +1683,22 @@ paths:
           description: Integration Created
           schema:
             $ref: "#/definitions/Integration"
+  
   /project/{project_id}/integrations/{integration_id}:
     parameters:
       - $ref: "#/parameters/project_id"
       - $ref: "#/parameters/integration_id"
+    get:
+      tags:
+        - integration
+      summary: Get Integration by ID
+      responses:
+        200:
+          description: Integration Value
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Integration"
     put:
       tags:
         - integration
