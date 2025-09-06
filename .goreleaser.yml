@@ -65,7 +65,7 @@ snapshot:
 
 nfpms:
   - file_name_template: "{{ if .Env.PROJECT_NAME }}{{ .Env.PROJECT_NAME }}{{ else }}{{ .ProjectName }}{{ end }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
-    package_name: "{{ if .Env.PACKAGE_NAME }}{{ .Env.PACKAGE_NAME }}{{ else if .Env.PROJECT_NAME }}{{ .Env.PROJECT_NAME }}{{ else }}{{ .ProjectName }}{{ end }}"
+    package_name: "{{ if .Env.PROJECT_NAME }}{{ .Env.PROJECT_NAME }}{{ else }}{{ .ProjectName }}{{ end }}"
     description: Modern UI and powerful API for Ansible, Terraform, OpenTofu, PowerShell and other DevOps tools.
     homepage: https://github.com/semaphoreui/semaphore
     vendor: Semaphore UI
