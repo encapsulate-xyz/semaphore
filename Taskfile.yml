@@ -170,8 +170,10 @@ tasks:
 
   release:prod:
     desc: Create and publish a release
+    vars:
+      PROJECT_NAME: "semaphore"
     cmds:
-      - goreleaser
+      - goreleaser --set project_name="{{ .PROJECT_NAME }}"
 
   release:test:
     desc: Create a local test release

@@ -5,7 +5,7 @@ before:
     - task build:fe
 
 builds:
-  - binary: "{{ .Env.PROJECT_NAME | default \"semaphore\" }}"
+  - binary: semaphore
     env:
       - CGO_ENABLED=0
     main: ./cli/main.go
@@ -64,10 +64,9 @@ snapshot:
   name_template: "{{ .Timestamp }}-{{ .ShortCommit }}-SNAPSHOT"
 
 nfpms:
-  - file_name_template: "{{ .Env.PROJECT_NAME | default .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
-    package_name: "{{ .Env.PACKAGE_NAME | default (.Env.PROJECT_NAME | default .ProjectName) }}"
+  - file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     description: Modern UI and powerful API for Ansible, Terraform, OpenTofu, PowerShell and other DevOps tools.
-    homepage: https://semaphoreui.com
+    homepage: https://github.com/semaphoreui/semaphore
     vendor: Semaphore UI
     maintainer: Denis Gukov <denis@semaphoreui.com>
     license: MIT
