@@ -59,7 +59,8 @@ jobs:
           APP_BUILD_TYPE=pro_selfhosted \
           GITHUB_TOKEN=${{ secrets.GH_TOKEN }} \
           GPG_KEY_ID="${{ vars.GPG_KEY_ID }}" \
-            task release:prod PROJECT_NAME=semaphorepro
+          PROJECT_NAME=semaphorepro \
+            task release:prod
 
   deploy-prod:
     runs-on: ubuntu-latest
