@@ -113,6 +113,7 @@ jobs:
           build-args: |
             GH_TOKEN=${{ secrets.GH_TOKEN }}
             APP_BUILD_TYPE=pro_selfhosted
+            PRO_IMPL_BRANCH=2-16-stable
           file: deployment/docker/server/Dockerfile
           platforms: linux/amd64,linux/arm64 # ,linux/arm/v6
           push: ${{ github.event_name != 'pull_request' }}
@@ -128,6 +129,7 @@ jobs:
             ANSIBLE_VERSION=9.4.0
             GH_TOKEN=${{ secrets.GH_TOKEN }}
             APP_BUILD_TYPE=pro_selfhosted
+            PRO_IMPL_BRANCH=2-16-stable
           file: deployment/docker/server/Dockerfile
           platforms: linux/amd64,linux/arm64 # ,linux/arm/v6
           push: ${{ github.event_name != 'pull_request' }}
@@ -145,6 +147,7 @@ jobs:
             SEMAPHORE_VERSION=${{ github.ref_name }}
             GH_TOKEN=${{ secrets.GH_TOKEN }}
             APP_BUILD_TYPE=pro_selfhosted
+            PRO_IMPL_BRANCH=2-16-stable
           file: deployment/docker/server/powershell/Dockerfile
           platforms: linux/amd64
           push: ${{ github.event_name != 'pull_request' }}
@@ -175,6 +178,8 @@ jobs:
           context: .
           build-args: |
             GH_TOKEN=${{ secrets.GH_TOKEN }}
+            APP_BUILD_TYPE=pro_selfhosted
+            PRO_IMPL_BRANCH=2-16-stable
           file: deployment/docker/runner/Dockerfile
           platforms: linux/amd64,linux/arm64 #,linux/arm/v6
           push: ${{ github.event_name != 'pull_request' }}
@@ -189,6 +194,8 @@ jobs:
           build-args: |
             ANSIBLE_VERSION=9.4.0
             GH_TOKEN=${{ secrets.GH_TOKEN }}
+            APP_BUILD_TYPE=pro_selfhosted
+            PRO_IMPL_BRANCH=2-16-stable
           file: deployment/docker/runner/Dockerfile
           platforms: linux/amd64,linux/arm64 #,linux/arm/v6
           push: ${{ github.event_name != 'pull_request' }}
