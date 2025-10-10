@@ -464,8 +464,17 @@ func getOidcProvider(id string, ctx context.Context, redirectPath string) (*oidc
 		}
 	}
 
+	endpoint := oidcProvider.Endpoint()
+
+	switch provider.AuthStyle {
+	case util.OidcProviderAuthInParams:
+		endpoint.AuthStyle = oauth2.AuthStyleInParams
+	case util.OidcProviderAuthSInHeader:
+		endpoint.AuthStyle = oauth2.AuthStyleInHeader
+	}
+
 	oauthConfig := oauth2.Config{
-		Endpoint:     oidcProvider.Endpoint(),
+		Endpoint:     endpoint,
 		ClientID:     clientID,
 		ClientSecret: clientSecret,
 		RedirectURL:  provider.RedirectURL + redirectPath,
