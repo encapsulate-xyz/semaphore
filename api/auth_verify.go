@@ -112,33 +112,3 @@ func sendEmailVerificationCode(code string, email string) error {
 
 	return err
 }
-
-func startEmailVerification(w http.ResponseWriter, r *http.Request) {
-	if !util.Config.Auth.Email.Enabled {
-		helpers.WriteErrorStatus(w, "EMAIL_VERIFICATION_DISABLED", http.StatusForbidden)
-		return
-	}
-
-	session, ok := getSession(r)
-
-	if !ok {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-
-	store := helpers.Store(r)
-
-	user, err := store.GetUser(session.UserID)
-	if err != nil {
-		helpers.WriteError(w, err)
-		return
-	}
-
-	code := util.RandString(16)
-
-	err = sendEmailVerificationCode(code, user.Email)
-	if err != nil {
-		helpers.WriteError(w, err)
-		return
-	}
-}

@@ -224,47 +224,12 @@
                   {{ $t('signIn') }}
                 </v-btn>
 
+                <div
+                  class="auth__divider"
+                  v-if="oidcProviders.length > 0"
+                >or</div>
+
               </div>
-
-              <div v-else>
-                <v-text-field
-                  v-model="email"
-                  :label="$t('Email')"
-                  :rules="[v => !!v || $t('email_required')]"
-                  type="email"
-                  required
-                  :disabled="signInProcess"
-                  @keyup.enter.native="signInWithEmail"
-                  style="margin-bottom: 20px;"
-                  data-testid="auth-password"
-                  outlined
-                  class="mb-0"
-                ></v-text-field>
-
-                <v-btn
-                  large
-                  color="primary"
-                  @click="signInWithEmail"
-                  :disabled="signInProcess"
-                  block
-                  rounded
-                  data-testid="auth-signin-with-eamil"
-                >
-                  <v-icon
-                    left
-                    dark
-                  >
-                    mdi-email
-                  </v-icon>
-
-                  {{ $t('Continue with Email') }}
-                </v-btn>
-              </div>
-
-              <div
-                class="auth__divider"
-                v-if="oidcProviders.length > 0"
-              >or</div>
 
               <v-btn
                 large
