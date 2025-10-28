@@ -117,10 +117,6 @@
                 get your verification code.
               </div>
 
-              <div v-else-if="verificationMethod === 'email'" class="text-center mb-4">
-                Check your email for the verification code we just sent you.
-              </div>
-
               <v-otp-input
                 v-model="verificationCode"
                 length="6"
@@ -139,21 +135,6 @@
                 >
                   {{ $t('Use recovery code') }}
                 </a>
-
-                <v-btn
-                  :width="200"
-                  small
-                  :disabled="verificationEmailSending"
-                  color="primary"
-                  v-if="verificationMethod === 'email'"
-                  @click="resendEmailVerification()"
-                >
-                  {{
-                    verificationEmailSending
-                      ? $t('Email sending...')
-                      : $t('Resend code to email')
-                  }}
-                </v-btn>
               </div>
             </div>
 
@@ -349,31 +330,6 @@ export default {
   },
 
   methods: {
-    async resendEmailVerification() {
-      if (this.verificationEmailSending) {
-        return;
-      }
-
-      this.verificationEmailSending = true;
-      try {
-        (await axios({
-          method: 'post',
-          url: '/api/auth/login/email/resend',
-          responseType: 'json',
-        }));
-        EventBus.$emit('i-snackbar', {
-          color: 'success',
-          text: 'Verification email sent successfully.',
-        });
-      } catch (e) {
-        EventBus.$emit('i-snackbar', {
-          color: 'error',
-          text: getErrorMessage(e),
-        });
-      } finally {
-        this.verificationEmailSending = false;
-      }
-    },
 
     async loadLoginData() {
       await axios({
@@ -488,35 +444,6 @@ export default {
         document.location = document.baseURI + window.location.search;
       } catch (err) {
         this.signInError = getErrorMessage(err);
-      } finally {
-        this.signInProcess = false;
-      }
-    },
-
-    async signInWithEmail() {
-      this.signInError = null;
-
-      if (!this.$refs.signInForm.validate()) {
-        return;
-      }
-
-      this.signInProcess = true;
-      try {
-        await axios({
-          method: 'post',
-          url: '/api/auth/login/email',
-          responseType: 'json',
-          data: {
-            email: this.email,
-          },
-        });
-        document.location = document.baseURI + window.location.search;
-      } catch (err) {
-        if (err.response.status === 401) {
-          this.signInError = this.$t('incorrectEmail');
-        } else {
-          this.signInError = getErrorMessage(err);
-        }
       } finally {
         this.signInProcess = false;
       }
