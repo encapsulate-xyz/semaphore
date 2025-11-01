@@ -175,6 +175,10 @@ const BASE_FIELDS = {
 
 export const ANSIBLE_FIELDS = {
   ...BASE_FIELDS,
+  playbook: {
+    label: 'playbookFilename',
+    placeholder: 'exampleSiteyml',
+  },
   vault: {
     label: 'vaultPassword2',
   },
@@ -207,7 +211,9 @@ export const ANSIBLE_FIELDS = {
 export const TERRAFORM_FIELDS = {
   ...BASE_FIELDS,
   playbook: {
-    label: 'Subdirectory path (Optional)',
+    label: 'Terraform code path (Optional)',
+    placeholder: '',
+    hint: 'Path to the folder in the repository containing Terraform code.',
     optional: true,
   },
   inventory: {
@@ -236,7 +242,8 @@ export const TERRAFORM_FIELDS = {
 export const UNKNOWN_APP_FIELDS = {
   ...BASE_FIELDS,
   playbook: {
-    label: 'Script Filename *',
+    label: 'Script file path',
+    placeholder: 'Example: path/to/script/in/repo',
   },
   inventory: undefined,
 };

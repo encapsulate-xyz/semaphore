@@ -173,7 +173,8 @@
           dense
           :required="isFieldRequired('playbook')"
           :disabled="formSaving"
-          :placeholder="$t('exampleSiteyml')"
+          :placeholder="fieldPlaceholder('playbook')"
+          :hint="fieldHint('playbook')"
           v-if="needField('playbook')"
         ></v-text-field>
 

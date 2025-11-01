@@ -10,6 +10,14 @@ export default {
 
   methods: {
 
+    fieldPlaceholder(f) {
+      return this.$t((this.fields[f] || { label: f }).placeholder);
+    },
+
+    fieldHint(f) {
+      return this.$t((this.fields[f] || { label: f }).hint);
+    },
+
     fieldLabel(f) {
       return this.$t((this.fields[f] || { label: f }).label);
     },
@@ -20,6 +28,10 @@ export default {
 
     isFieldRequired(f) {
       return this.fields[f] != null && !this.fields[f].optional;
+    },
+
+    fieldRequiredError(f) {
+      return this.$t((this.fields[f] || { label: f }).required);
     },
   },
 };
