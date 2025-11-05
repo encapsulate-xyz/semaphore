@@ -295,8 +295,12 @@ func GetTaskDefinition(
 		if err != nil {
 			return
 		}
+	}
 
-		for k, v := range extractedEnvResults {
+	// Add extracted environment variables only if they don't conflict with
+	// existing task definition variables (task definition has higher priority)
+	for k, v := range extractedEnvResults {
+		if _, exists := env[k]; !exists {
 			env[k] = v
 		}
 	}
