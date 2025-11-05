@@ -21,20 +21,17 @@ tasks:
   deps:
     desc: Install all build dependencies
     cmds:
-      - task: deps:tools
       - task: deps:be
       - task: deps:fe
 
   deps:tools:
     desc: Installs required tools to build and publish
     vars:
-      SWAGGER_VERSION: v0.30.5
       GORELEASER_VERSION: v1.25.1
-      GOLINTER_VERSION: v1.57.2
     cmds:
-#      - go install github.com/go-swagger/go-swagger/cmd/swagger@{{ .SWAGGER_VERSION }}
-      - go install github.com/goreleaser/goreleaser@{{ .GORELEASER_VERSION }}
-#      - go install github.com/golangci/golangci-lint/cmd/golangci-lint@{{ .GOLINTER_VERSION }}
+      - wget https://github.com/goreleaser/goreleaser/releases/download/{{ .GORELEASER_VERSION }}/goreleaser_Linux_x86_64.tar.gz
+      - tar xf goreleaser_Linux_x86_64.tar.gz
+      - mv goreleaser /usr/local/bin/
     dir: /tmp
 
   deps:be:

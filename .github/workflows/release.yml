@@ -37,6 +37,7 @@ jobs:
       - name: Install deps
         run: |
           task deps
+          task deps:tools
 
       - name: Import gnupg
         run: |
