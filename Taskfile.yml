@@ -16,29 +16,28 @@ tasks:
         vars:
           GOOS: ""
           GOARCH: ""
+          APP_BUILD_TYPE: ""
 
   deps:
     desc: Install all build dependencies
     cmds:
-      - task: deps:tools
       - task: deps:be
       - task: deps:fe
 
   deps:tools:
     desc: Installs required tools to build and publish
     vars:
-      SWAGGER_VERSION: v0.30.5
       GORELEASER_VERSION: v1.25.1
-      GOLINTER_VERSION: v1.57.2
     cmds:
-#      - go install github.com/go-swagger/go-swagger/cmd/swagger@{{ .SWAGGER_VERSION }}
-      - go install github.com/goreleaser/goreleaser@{{ .GORELEASER_VERSION }}
-#      - go install github.com/golangci/golangci-lint/cmd/golangci-lint@{{ .GOLINTER_VERSION }}
+      - wget https://github.com/goreleaser/goreleaser/releases/download/{{ .GORELEASER_VERSION }}/goreleaser_Linux_x86_64.tar.gz
+      - tar xf goreleaser_Linux_x86_64.tar.gz
+      - mv goreleaser /usr/local/bin/
+    dir: /tmp
 
   deps:be:
     desc: Vendor application dependencies
     cmds:
-      - go mod vendor
+      - go {{ if eq .APP_BUILD_TYPE "pro_selfhosted" }}work{{ else }}mod{{ end }} vendor
 
   deps:fe:
     desc: Installs nodejs requirements
@@ -88,7 +87,9 @@ tasks:
       - ../api/public/index.html
       - ../api/public/favicon.ico
     cmds:
-      - npm run build
+      - >-
+        env VUE_APP_BUILD_TYPE={{ .APP_BUILD_TYPE }}
+        npm run build
 
   build:be:
     desc: Build server binary
@@ -110,18 +111,17 @@ tasks:
   lint:
     cmds:
       - task: lint:fe
-#      - task: lint:be
+      - task: lint:be
 
   lint:fe:
     dir: web
     cmds:
       - npm run lint
 
-#  lint:be:
-#    cmds:
-#      - golangci-lint run --disable goconst --timeout 240s ./...
-#      - go vet ./...
-#      - swagger validate ./api-docs.yml
+  lint:be:
+    cmds:
+      - golangci-lint run
+      - swagger validate ./api-docs.yml
 
   test:
     cmds:
@@ -138,29 +138,29 @@ tasks:
     cmds:
       - go test -v -coverprofile=coverage.out ./...
 
-  e2e:goodman:
+  dredd:goodman:
     desc: Installs goodman which is required by dredd
     cmds:
       - go install github.com/snikch/goodman/cmd/goodman@latest
 
-  e2e:deps:
+  dredd:deps:
     desc: Installs dredd dep for integration testing
     dir: web
     cmds:
       - npm install dredd@13.1.2
 
-  e2e:hooks:
+  dredd:hooks:
     desc: Compile required dredd hooks built
     dir: ./.dredd/hooks
     cmds:
       - go build -o ../compiled_hooks{{ if eq OS "windows" }}.exe{{ end }}
 
-  e2e:test:
+  dredd:test:
     desc: Run end to end test for API with dredd
     cmds:
       - ./web/node_modules/.bin/dredd --config .dredd/dredd.testing.yml
 
-  e2e:test:local:
+  dredd:test:local:
     desc: Run end to end test for API with dredd
     cmds:
       - ./web/node_modules/.bin/dredd --config .dredd/dredd.local.yml

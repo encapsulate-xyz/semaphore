@@ -1,9 +1,9 @@
-name: Beta
+name: Community Beta
 
 'on':
   push:
     tags:
-      - v*-beta
+      - v*-beta*
 
 jobs:
   prerelease:
@@ -16,7 +16,7 @@ jobs:
       - name: Setup golang
         uses: actions/setup-go@v5
         with:
-          go-version: '^1.21.0'
+          go-version: '^1.24.6'
 
       - name: Setup nodejs
         uses: actions/setup-node@v4
@@ -49,7 +49,7 @@ jobs:
 
       - name: Run release
         run: |
-          GITHUB_TOKEN=${{ secrets.GH_TOKEN }} task release:prod
+          GITHUB_TOKEN=${{ secrets.GH_TOKEN }} PROJECT_NAME=semaphore task release:prod
 
   deploy-beta:
     runs-on: ubuntu-latest
@@ -95,12 +95,13 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
           file: deployment/docker/server/Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/arm/v6
+          platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
           labels: ${{ steps.server.outputs.labels }}
           tags: ${{ steps.server.outputs.tags }}
 
       - name: Runner meta
+        if: false
         id: runner
         uses: docker/metadata-action@v5
         with:
@@ -116,12 +117,13 @@ jobs:
             latest=false
 
       - name: Runner build
+        if: false
         uses: docker/build-push-action@v5
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
           file: deployment/docker/runner/Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/arm/v6
+          platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
           labels: ${{ steps.runner.outputs.labels }}
           tags: ${{ steps.runner.outputs.tags }}

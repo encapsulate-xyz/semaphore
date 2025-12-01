@@ -45,12 +45,16 @@ func (d *SqlDb) CreateEnvironment(env db.Environment) (newEnv db.Environment, er
 
 	insertID, err := d.insert(
 		"id",
-		"insert into project__environment (project_id, name, json, env, password) values (?, ?, ?, ?, ?)",
+		"insert into project__environment "+
+			"(project_id, name, json, env, password, secret_storage_id, secret_storage_key_prefix) values "+
+			"(?, ?, ?, ?, ?, ?, ?)",
 		env.ProjectID,
 		env.Name,
 		env.JSON,
 		env.ENV,
-		env.Password)
+		env.Password,
+		env.SecretStorageID,
+		env.SecretStorageKeyPrefix)
 
 	if err != nil {
 		return
@@ -68,7 +72,13 @@ func (d *SqlDb) DeleteEnvironment(projectID int, environmentID int) error {
 func (d *SqlDb) GetEnvironmentSecrets(projectID int, environmentID int) (keys []db.AccessKey, err error) {
 	keys = make([]db.AccessKey, 0)
 
-	q := d.makeObjectsQuery(projectID, db.AccessKeyProps, db.RetrieveQueryParams{}).Where("pe.environment_id = ?", environmentID)
+	q, err := d.makeObjectsQuery(projectID, db.AccessKeyProps, db.RetrieveQueryParams{})
+
+	if err != nil {
+		return
+	}
+
+	q = q.Where("pe.environment_id = ?", environmentID)
 
 	query, args, err := q.ToSql()
 

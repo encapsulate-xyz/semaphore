@@ -1,19 +1,30 @@
 package projects
 
 import (
+	"github.com/semaphoreui/semaphore/services/server"
 	"net/http"
 
 	"github.com/semaphoreui/semaphore/api/helpers"
 	"github.com/semaphoreui/semaphore/db"
 	"github.com/semaphoreui/semaphore/util"
 	log "github.com/sirupsen/logrus"
-
-	"github.com/gorilla/context"
 )
+
+type ProjectsController struct {
+	accessKeyService server.AccessKeyService
+}
+
+func NewProjectsController(
+	accessKeyService server.AccessKeyService,
+) *ProjectsController {
+	return &ProjectsController{
+		accessKeyService: accessKeyService,
+	}
+}
 
 // GetProjects returns all projects in this users context
 func GetProjects(w http.ResponseWriter, r *http.Request) {
-	user := context.Get(r, "user").(*db.User)
+	user := helpers.GetFromContext(r, "user").(*db.User)
 
 	var err error
 	var projects []db.Project
@@ -31,18 +42,48 @@ func GetProjects(w http.ResponseWriter, r *http.Request) {
 	helpers.WriteJSON(w, http.StatusOK, projects)
 }
 
-func createDemoProject(projectID int, noneKeyID int, emptyEnvID int, store db.Store) (err error) {
+func (c *ProjectsController) createDemoProject(projectID int, noneKeyID int, emptyEnvID int, store db.Store) (err error) {
 	var demoRepo db.Repository
 
 	var buildInv db.Inventory
 	var devInv db.Inventory
 	var prodInv db.Inventory
 
+	var buildView db.View
+	var deployView db.View
+	var toolsView db.View
+
+	buildView, err = store.CreateView(db.View{
+		ProjectID: projectID,
+		Title:     "Build",
+		Position:  0,
+	})
+
 	if err != nil {
 		return
 	}
 
-	vaultKey, err := store.CreateAccessKey(db.AccessKey{
+	deployView, err = store.CreateView(db.View{
+		ProjectID: projectID,
+		Title:     "Deploy",
+		Position:  1,
+	})
+
+	if err != nil {
+		return
+	}
+
+	toolsView, err = store.CreateView(db.View{
+		ProjectID: projectID,
+		Title:     "Tools",
+		Position:  2,
+	})
+
+	if err != nil {
+		return
+	}
+
+	vaultKey, err := c.accessKeyService.Create(db.AccessKey{
 		Name:      "Vault Password",
 		Type:      db.AccessKeyLoginPassword,
 		ProjectID: &projectID,
@@ -58,7 +99,7 @@ func createDemoProject(projectID int, noneKeyID int, emptyEnvID int, store db.St
 	demoRepo, err = store.CreateRepository(db.Repository{
 		Name:      "Demo",
 		ProjectID: projectID,
-		GitURL:    "https://github.com/semaphoreui/demo-project.git",
+		GitURL:    "https://github.com/semaphoreui/semaphore-demo.git",
 		GitBranch: "main",
 		SSHKeyID:  noneKeyID,
 	})
@@ -105,9 +146,9 @@ func createDemoProject(projectID int, noneKeyID int, emptyEnvID int, store db.St
 		return
 	}
 
-	desc = "This task pings the website to provide real word example of using Semaphore."
+	desc = "Pings the website to provide a real-world example of using Semaphore."
 	_, err = store.CreateTemplate(db.Template{
-		Name:          "Ping Site",
+		Name:          "Ping semaphoreui.com",
 		Playbook:      "ping.yml",
 		Description:   &desc,
 		ProjectID:     projectID,
@@ -115,17 +156,18 @@ func createDemoProject(projectID int, noneKeyID int, emptyEnvID int, store db.St
 		EnvironmentID: &emptyEnvID,
 		RepositoryID:  demoRepo.ID,
 		App:           db.AppAnsible,
+		ViewID:        &toolsView.ID,
 	})
 
 	if err != nil {
 		return
 	}
 
-	desc = "Creates artifact and store it in the cache."
+	desc = "Creates a demo artifact and stores it in the cache."
 
 	var startVersion = "1.0.0"
 	buildTpl, err := store.CreateTemplate(db.Template{
-		Name:          "Build",
+		Name:          "Build demo app",
 		Playbook:      "build.yml",
 		Type:          db.TemplateBuild,
 		ProjectID:     projectID,
@@ -134,6 +176,7 @@ func createDemoProject(projectID int, noneKeyID int, emptyEnvID int, store db.St
 		RepositoryID:  demoRepo.ID,
 		StartVersion:  &startVersion,
 		App:           db.AppAnsible,
+		ViewID:        &buildView.ID,
 	})
 
 	if err != nil {
@@ -142,7 +185,7 @@ func createDemoProject(projectID int, noneKeyID int, emptyEnvID int, store db.St
 
 	var template db.Template
 	template, err = store.CreateTemplate(db.Template{
-		Name:            "Deploy to Dev",
+		Name:            "Deploy demo app to Dev",
 		Type:            db.TemplateDeploy,
 		Playbook:        "deploy.yml",
 		ProjectID:       projectID,
@@ -152,6 +195,7 @@ func createDemoProject(projectID int, noneKeyID int, emptyEnvID int, store db.St
 		BuildTemplateID: &buildTpl.ID,
 		Autorun:         true,
 		App:             db.AppAnsible,
+		ViewID:          &deployView.ID,
 	})
 
 	if err != nil {
@@ -171,7 +215,7 @@ func createDemoProject(projectID int, noneKeyID int, emptyEnvID int, store db.St
 	}
 
 	template, err = store.CreateTemplate(db.Template{
-		Name:            "Deploy to Production",
+		Name:            "Deploy demo app to Production",
 		Type:            db.TemplateDeploy,
 		Playbook:        "deploy.yml",
 		ProjectID:       projectID,
@@ -180,6 +224,7 @@ func createDemoProject(projectID int, noneKeyID int, emptyEnvID int, store db.St
 		RepositoryID:    demoRepo.ID,
 		BuildTemplateID: &buildTpl.ID,
 		App:             db.AppAnsible,
+		ViewID:          &deployView.ID,
 	})
 
 	if err != nil {
@@ -194,13 +239,78 @@ func createDemoProject(projectID int, noneKeyID int, emptyEnvID int, store db.St
 		Type:       "password",
 	})
 
+	if err != nil {
+		return
+	}
+
+	template, err = store.CreateTemplate(db.Template{
+		Name:            "Apply infrastructure (OpenTofu)",
+		Type:            db.TemplateTask,
+		Playbook:        "",
+		ProjectID:       projectID,
+		EnvironmentID:   &emptyEnvID,
+		RepositoryID:    demoRepo.ID,
+		BuildTemplateID: &buildTpl.ID,
+		App:             db.AppTofu,
+		ViewID:          &buildView.ID,
+	})
+
+	if err != nil {
+		return
+	}
+
+	template, err = store.CreateTemplate(db.Template{
+		Name:            "Apply infrastructure (Terragrunt)",
+		Type:            db.TemplateTask,
+		Playbook:        "",
+		ProjectID:       projectID,
+		EnvironmentID:   &emptyEnvID,
+		RepositoryID:    demoRepo.ID,
+		BuildTemplateID: &buildTpl.ID,
+		App:             db.AppTerragrunt,
+		ViewID:          &buildView.ID,
+	})
+
+	if err != nil {
+		return
+	}
+
+	template, err = store.CreateTemplate(db.Template{
+		Name:            "Print system info (Bash)",
+		Type:            db.TemplateTask,
+		Playbook:        "print_system_info.sh",
+		ProjectID:       projectID,
+		InventoryID:     &prodInv.ID,
+		EnvironmentID:   &emptyEnvID,
+		RepositoryID:    demoRepo.ID,
+		BuildTemplateID: &buildTpl.ID,
+		App:             db.AppBash,
+		ViewID:          &toolsView.ID,
+	})
+
+	if err != nil {
+		return
+	}
+
+	template, err = store.CreateTemplate(db.Template{
+		Name:            "Print system info (PowerShell)",
+		Type:            db.TemplateTask,
+		Playbook:        "print_system_info.ps1",
+		ProjectID:       projectID,
+		InventoryID:     &prodInv.ID,
+		EnvironmentID:   &emptyEnvID,
+		RepositoryID:    demoRepo.ID,
+		BuildTemplateID: &buildTpl.ID,
+		App:             db.AppPowerShell,
+		ViewID:          &toolsView.ID,
+	})
 	return
 }
 
 // AddProject adds a new project to the database
-func AddProject(w http.ResponseWriter, r *http.Request) {
+func (c *ProjectsController) AddProject(w http.ResponseWriter, r *http.Request) {
 
-	user := context.Get(r, "user").(*db.User)
+	user := helpers.GetFromContext(r, "user").(*db.User)
 
 	if !user.Admin && !util.Config.NonAdminCanCreateProject {
 		log.Warn(user.Username + " is not permitted to edit users")
@@ -233,7 +343,7 @@ func AddProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	noneKey, err := store.CreateAccessKey(db.AccessKey{
+	noneKey, err := c.accessKeyService.Create(db.AccessKey{
 		Name:      "None",
 		Type:      db.AccessKeyNone,
 		ProjectID: &body.ID,
@@ -267,7 +377,7 @@ func AddProject(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if bodyWithDemo.Demo {
-		err = createDemoProject(body.ID, noneKey.ID, emptyEnv.ID, store)
+		err = c.createDemoProject(body.ID, noneKey.ID, emptyEnv.ID, store)
 
 		if err != nil {
 			helpers.WriteError(w, err)

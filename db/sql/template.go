@@ -1,7 +1,6 @@
 package sql
 
 import (
-	"database/sql"
 	"encoding/json"
 
 	"github.com/Masterminds/squirrel"
@@ -17,28 +16,45 @@ func (d *SqlDb) CreateTemplate(template db.Template) (newTemplate db.Template, e
 
 	insertID, err := d.insert(
 		"id",
-		"insert into project__template (project_id, inventory_id, repository_id, environment_id, "+
-			"name, playbook, arguments, allow_override_args_in_task, description, `type`, start_version,"+
-			"build_template_id, view_id, autorun, survey_vars, suppress_success_alerts, app, git_branch)"+
-			"values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+		"insert into project__template ("+
+			"project_id, inventory_id, repository_id, environment_id, name, "+
+			"playbook, arguments, allow_override_args_in_task, description, `type`, "+
+			"start_version, build_template_id, view_id, autorun, survey_vars, "+
+			"suppress_success_alerts, app, git_branch, runner_tag, task_params, "+
+			"allow_override_branch_in_task, allow_parallel_tasks)"+
+			"values ("+
+			"?, ?, ?, ?, ?, "+
+			"?, ?, ?, ?, ?, "+
+			"?, ?, ?, ?, ?, "+
+			"?, ?, ?, ?, ?,"+
+			"?, ?)",
 		template.ProjectID,
 		template.InventoryID,
 		template.RepositoryID,
 		template.EnvironmentID,
 		template.Name,
+
 		template.Playbook,
 		template.Arguments,
 		template.AllowOverrideArgsInTask,
 		template.Description,
 		template.Type,
+
 		template.StartVersion,
 		template.BuildTemplateID,
 		template.ViewID,
 		template.Autorun,
 		db.ObjectToJSON(template.SurveyVars),
+
 		template.SuppressSuccessAlerts,
 		template.App,
-		template.GitBranch)
+		template.GitBranch,
+		template.RunnerTag,
+		template.TaskParams,
+
+		template.AllowOverrideBranchInTask,
+		template.AllowParallelTasks,
+	)
 
 	if err != nil {
 		return
@@ -85,7 +101,11 @@ func (d *SqlDb) UpdateTemplate(template db.Template) error {
 		"survey_vars=?, "+
 		"suppress_success_alerts=?, "+
 		"app=?, "+
-		"`git_branch`=? "+
+		"`git_branch`=?, "+
+		"task_params=?, "+
+		"runner_tag=?, "+
+		"allow_override_branch_in_task=?, "+
+		"allow_parallel_tasks=? "+
 		"where id=? and project_id=?",
 		template.InventoryID,
 		template.RepositoryID,
@@ -104,6 +124,11 @@ func (d *SqlDb) UpdateTemplate(template db.Template) error {
 		template.SuppressSuccessAlerts,
 		template.App,
 		template.GitBranch,
+		template.TaskParams,
+		template.RunnerTag,
+		template.AllowOverrideBranchInTask,
+		template.AllowParallelTasks,
+
 		template.ID,
 		template.ProjectID,
 	)
@@ -115,8 +140,25 @@ func (d *SqlDb) UpdateTemplate(template db.Template) error {
 
 	return err
 }
+func (d *SqlDb) SetTemplateDescription(projectID int, templateID int, description string) (err error) {
+
+	_, err = d.exec("update project__template set "+
+		"description=? "+
+		"where id=? and project_id=?",
+		description,
+		templateID,
+		projectID,
+	)
+
+	return
+}
 
 func (d *SqlDb) GetTemplates(projectID int, filter db.TemplateFilter, params db.RetrieveQueryParams) (templates []db.Template, err error) {
+
+	pp, err := params.Validate(db.TemplateProps)
+	if err != nil {
+		return
+	}
 
 	templates = []db.Template{}
 
@@ -144,8 +186,16 @@ func (d *SqlDb) GetTemplates(projectID int, filter db.TemplateFilter, params db.
 		"pt.start_version",
 		"pt.`type`",
 		"pt.`tasks`",
+		"pt.runner_tag",
+		"pt.task_params",
+		"pt.allow_override_branch_in_task",
+		"pt.allow_parallel_tasks",
 		"(SELECT `id` FROM `task` WHERE template_id = pt.id ORDER BY `id` DESC LIMIT 1) last_task_id").
 		From("project__template pt")
+
+	if filter.App != nil {
+		q = q.Where("pt.app=?", *filter.App)
+	}
 
 	if filter.ViewID != nil {
 		q = q.Where("pt.view_id=?", *filter.ViewID)
@@ -159,14 +209,14 @@ func (d *SqlDb) GetTemplates(projectID int, filter db.TemplateFilter, params db.
 	}
 
 	order := "ASC"
-	if params.SortInverted {
+	if pp.SortInverted {
 		order = "DESC"
 	}
 
-	switch params.SortBy {
+	switch pp.SortBy {
 	case "name", "playbook":
 		q = q.Where("pt.project_id=?", projectID).
-			OrderBy("pt." + params.SortBy + " " + order)
+			OrderBy("pt." + pp.SortBy + " " + order)
 	case "inventory":
 		q = q.LeftJoin("project__inventory pi ON (pt.inventory_id = pi.id)").
 			Where("pt.project_id=?", projectID).
@@ -230,7 +280,7 @@ func (d *SqlDb) GetTemplates(projectID int, filter db.TemplateFilter, params db.
 		}
 
 		if tpl.SurveyVarsJSON != nil {
-			err = json.Unmarshal([]byte(*tpl.SurveyVarsJSON), &tpl.SurveyVars)
+			err = json.Unmarshal([]byte(*tpl.SurveyVarsJSON), &template.SurveyVars)
 		}
 
 		if err != nil {
@@ -254,10 +304,6 @@ func (d *SqlDb) GetTemplate(projectID int, templateID int) (template db.Template
 		"select * from project__template where project_id=? and id=?",
 		projectID,
 		templateID)
-
-	if err == sql.ErrNoRows {
-		err = db.ErrNotFound
-	}
 
 	if err != nil {
 		return

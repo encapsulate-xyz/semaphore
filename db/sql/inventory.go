@@ -1,20 +1,25 @@
 package sql
 
-import "github.com/semaphoreui/semaphore/db"
+import (
+	"github.com/Masterminds/squirrel"
+	"github.com/semaphoreui/semaphore/db"
+)
 
 func (d *SqlDb) GetInventory(projectID int, inventoryID int) (inventory db.Inventory, err error) {
 	err = d.getObject(projectID, db.InventoryProps, inventoryID, &inventory)
-	if err != nil {
-		return
-	}
 
-	err = db.FillInventory(d, &inventory)
 	return
 }
 
-func (d *SqlDb) GetInventories(projectID int, params db.RetrieveQueryParams) ([]db.Inventory, error) {
+func (d *SqlDb) GetInventories(projectID int, params db.RetrieveQueryParams, types []db.InventoryType) ([]db.Inventory, error) {
 	var inventories []db.Inventory
-	err := d.getObjects(projectID, db.InventoryProps, params, nil, &inventories)
+	err := d.getObjects(projectID, db.InventoryProps, params, func(builder squirrel.SelectBuilder) squirrel.SelectBuilder {
+		if len(types) == 0 {
+			return builder
+		}
+
+		return builder.Where(squirrel.Eq{"type": types})
+	}, &inventories)
 	return inventories, err
 }
 
@@ -34,13 +39,24 @@ func (d *SqlDb) UpdateInventory(inventory db.Inventory) error {
     	}
 
 	_, err = d.exec(
-		"update project__inventory set name=?, type=?, ssh_key_id=?, inventory=?, become_key_id=?, holder_id=?, repository_id=? where id=?",
+		"update project__inventory set "+
+			"name=?, "+
+			"type=?, "+
+			"runner_tag=?, "+
+			"ssh_key_id=?, "+
+			"inventory=?, "+
+			"become_key_id=?, "+
+			"template_id=?, "+
+			"repository_id=? "+
+			"where id=?",
+
 		inventory.Name,
 		inventory.Type,
+		inventory.RunnerTag,
 		inventory.SSHKeyID,
 		inventory.Inventory,
 		inventory.BecomeKeyID,
-		inventory.HolderID,
+		inventory.TemplateID,
 		inventory.RepositoryID,
 		inventory.ID)
 
@@ -55,16 +71,23 @@ func (d *SqlDb) CreateInventory(inventory db.Inventory) (newInventory db.Invento
 	}
 	insertID, err := d.insert(
 		"id",
-		"insert into project__inventory (project_id, name, type, ssh_key_id, inventory, become_key_id, holder_id, repository_id) values "+
-			"(?, ?, ?, ?, ?, ?, ?, ?)",
+		"insert into project__inventory ("+
+			"project_id, name, type, "+
+			"ssh_key_id, inventory, become_key_id, "+
+			"template_id, repository_id, runner_tag) values "+
+			"(?, ?, ?, "+
+			"?, ?, ?, "+
+			"?, ?, ?)",
 		inventory.ProjectID,
 		inventory.Name,
 		inventory.Type,
 		inventory.SSHKeyID,
 		inventory.Inventory,
 		inventory.BecomeKeyID,
-		inventory.HolderID,
-		inventory.RepositoryID)
+		inventory.TemplateID,
+		inventory.RepositoryID,
+		inventory.RunnerTag,
+	)
 
 	if err != nil {
 		return

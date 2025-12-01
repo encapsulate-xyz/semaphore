@@ -1,6 +1,7 @@
 package db
 
 import (
+	"github.com/semaphoreui/semaphore/pkg/tz"
 	"time"
 )
 
@@ -15,6 +16,26 @@ type User struct {
 	Admin    bool      `db:"admin" json:"admin"`
 	External bool      `db:"external" json:"external"`
 	Alert    bool      `db:"alert" json:"alert"`
+	Pro      bool      `db:"pro" json:"pro"`
+
+	Totp     *UserTotp     `db:"-" json:"totp,omitempty"`
+	EmailOtp *UserEmailOtp `db:"-" json:"email_otp,omitempty"`
+}
+
+type UserTotp struct {
+	ID           int       `db:"id" json:"id"`
+	Created      time.Time `db:"created" json:"created"`
+	UserID       int       `db:"user_id" json:"user_id"`
+	URL          string    `db:"url" json:"url"`
+	RecoveryHash string    `db:"recovery_hash" json:"-"`
+	RecoveryCode string    `db:"-" json:"recovery_code,omitempty"`
+}
+
+type UserEmailOtp struct {
+	ID      int       `db:"id" json:"id"`
+	Created time.Time `db:"created" json:"created"`
+	UserID  int       `db:"user_id" json:"user_id"`
+	Code    string    `db:"code" json:"code"`
 }
 
 type UserWithProjectRole struct {
@@ -39,4 +60,9 @@ func ValidateUser(user User) error {
 		return &ValidationError{Message: "Name cannot be empty"}
 	}
 	return nil
+}
+
+func (o *UserEmailOtp) IsExpired() bool {
+	// Email OTP is valid for 10 minutes
+	return tz.Now().Sub(o.Created) > 10*time.Minute
 }

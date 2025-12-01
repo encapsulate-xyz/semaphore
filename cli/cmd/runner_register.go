@@ -3,8 +3,8 @@ package cmd
 import (
 	"io"
 	"os"
+	"strings"
 
-	"github.com/semaphoreui/semaphore/services/runners"
 	"github.com/semaphoreui/semaphore/util"
 	"github.com/spf13/cobra"
 )
@@ -18,25 +18,33 @@ func init() {
 	runnerCmd.AddCommand(runnerRegisterCmd)
 }
 
-func registerRunner() {
-
-	util.ConfigInit(persistentFlags.configPath, persistentFlags.noConfig)
-
-	if runnerRegisterArgs.stdinRegistrationToken {
-		tokenBytes, err := io.ReadAll(os.Stdin)
-		if err != nil {
-			panic(err)
-		}
-
-		if len(tokenBytes) == 0 {
-			panic("Empty token")
-		}
-
-		util.Config.Runner.Token = string(tokenBytes)
+func initRunnerRegistrationToken() {
+	if !runnerRegisterArgs.stdinRegistrationToken {
+		return
 	}
 
-	taskPool := runners.JobPool{}
-	err := taskPool.Register()
+	tokenBytes, err := io.ReadAll(os.Stdin)
+	if err != nil {
+		panic(err)
+	}
+
+	if len(tokenBytes) == 0 {
+		panic("Empty token")
+	}
+
+	util.Config.Runner.RegistrationToken = strings.TrimSpace(string(tokenBytes))
+}
+
+func registerRunner() {
+
+	configFile := util.ConfigInit(persistentFlags.configPath, persistentFlags.noConfig)
+
+	initRunnerRegistrationToken()
+
+	taskPool := createRunnerJobPool()
+
+	err := taskPool.Register(configFile)
+
 	if err != nil {
 		panic(err)
 	}

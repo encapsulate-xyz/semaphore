@@ -114,6 +114,13 @@ func (b *BackupDB) makeUniqueNames() {
 	}, func(item *db.Integration, name string) {
 		item.Name = name
 	})
+
+	makeUniqueNames(b.schedules, func(item *db.Schedule) string {
+		return item.Name
+	}, func(item *db.Schedule, name string) {
+		item.Name = name
+	})
+
 }
 
 func (b *BackupDB) load(projectID int, store db.Store) (err error) {
@@ -137,7 +144,7 @@ func (b *BackupDB) load(projectID int, store db.Store) (err error) {
 		return
 	}
 
-	b.keys, err = store.GetAccessKeys(projectID, db.RetrieveQueryParams{})
+	b.keys, err = store.GetAccessKeys(projectID, db.GetAccessKeyOptions{IgnoreOwner: true}, db.RetrieveQueryParams{})
 	if err != nil {
 		return
 	}
@@ -147,7 +154,7 @@ func (b *BackupDB) load(projectID int, store db.Store) (err error) {
 		return
 	}
 
-	b.inventories, err = store.GetInventories(projectID, db.RetrieveQueryParams{})
+	b.inventories, err = store.GetInventories(projectID, db.RetrieveQueryParams{}, []db.InventoryType{})
 	if err != nil {
 		return
 	}
@@ -157,12 +164,20 @@ func (b *BackupDB) load(projectID int, store db.Store) (err error) {
 		return
 	}
 
-	schedules, err := store.GetSchedules()
+	schedules, err := store.GetProjectSchedules(projectID, true)
 	if err != nil {
 		return
 	}
 
-	b.schedules = getSchedulesByProject(projectID, schedules)
+	for _, s := range schedules {
+		b.schedules = append(b.schedules, s.Schedule)
+	}
+	//b.schedules = getSchedulesByProject(projectID, schedules)
+
+	b.secretStorages, err = store.GetSecretStorages(projectID)
+	if err != nil {
+		return
+	}
 
 	b.meta, err = store.GetProject(projectID)
 	if err != nil {
@@ -174,7 +189,7 @@ func (b *BackupDB) load(projectID int, store db.Store) (err error) {
 		return
 	}
 
-	b.integrations, err = store.GetIntegrations(projectID, db.RetrieveQueryParams{})
+	b.integrations, err = store.GetIntegrations(projectID, db.RetrieveQueryParams{}, true)
 	if err != nil {
 		return
 	}
@@ -183,6 +198,7 @@ func (b *BackupDB) load(projectID int, store db.Store) (err error) {
 	b.integrationMatchers = make(map[int][]db.IntegrationMatcher)
 	b.integrationExtractValues = make(map[int][]db.IntegrationExtractValue)
 	for _, o := range b.integrations {
+
 		b.integrationAliases[o.ID], err = store.GetIntegrationAliases(projectID, &o.ID)
 		if err != nil {
 			return
@@ -203,10 +219,46 @@ func (b *BackupDB) load(projectID int, store db.Store) (err error) {
 }
 
 func (b *BackupDB) format() (*BackupFormat, error) {
+
+	schedules := make([]BackupSchedule, len(b.schedules))
+	for i, o := range b.schedules {
+
+		tplName, _ := findNameByID[db.Template](o.TemplateID, b.templates)
+
+		if tplName == nil {
+			continue
+		}
+
+		schedules[i] = BackupSchedule{
+			o,
+			*tplName,
+		}
+
+		if o.TaskParams.InventoryID != nil {
+			schedules[i].TaskParams.InventoryName, _ = findNameByID[db.Inventory](*o.TaskParams.InventoryID, b.inventories)
+		}
+	}
+
 	keys := make([]BackupAccessKey, len(b.keys))
 	for i, o := range b.keys {
 		keys[i] = BackupAccessKey{
-			o,
+			AccessKey: o,
+		}
+	}
+
+	secretStorages := make([]BackupSecretStorage, len(b.secretStorages))
+	for i, o := range b.secretStorages {
+		secretStorages[i] = BackupSecretStorage{
+			SecretStorage: o,
+		}
+
+		for k := range keys {
+			if keys[k].StorageID != nil && *keys[k].StorageID == o.ID {
+				keys[k].Storage = &o.Name
+			}
+			if keys[k].SourceStorageID != nil && *keys[k].SourceStorageID == o.ID {
+				keys[k].SourceStorage = &o.Name
+			}
 		}
 	}
 
@@ -283,6 +335,15 @@ func (b *BackupDB) format() (*BackupFormat, error) {
 			Inventory, _ = findNameByID[db.Inventory](*o.InventoryID, b.inventories)
 		}
 
+		if o.SurveyVarsJSON != nil {
+			surveyVars := make([]db.SurveyVar, 0)
+			err := json.Unmarshal([]byte(*o.SurveyVarsJSON), &surveyVars)
+			if err != nil {
+				return nil, err
+			}
+			o.SurveyVars = surveyVars
+		}
+
 		templates[i] = BackupTemplate{
 			Template:      o,
 			View:          View,
@@ -324,6 +385,10 @@ func (b *BackupDB) format() (*BackupFormat, error) {
 			Template:      *tplName,
 			AuthSecret:    keyName,
 		}
+
+		if o.TaskParams != nil && o.TaskParams.InventoryID != nil {
+			integrations[i].TaskParams.InventoryName, _ = findNameByID[db.Inventory](*o.TaskParams.InventoryID, b.inventories)
+		}
 	}
 
 	var integrationAliases []string
@@ -344,6 +409,8 @@ func (b *BackupDB) format() (*BackupFormat, error) {
 		Templates:          templates,
 		Integration:        integrations,
 		IntegrationAliases: integrationAliases,
+		Schedules:          schedules,
+		SecretStorages:     secretStorages,
 	}, nil
 }
 
@@ -361,7 +428,7 @@ func (b *BackupFormat) Marshal() (res string, err error) {
 		return
 	}
 
-	bytes, err := json.Marshal(data)
+	bytes, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
 		return
 	}
@@ -373,7 +440,7 @@ func (b *BackupFormat) Marshal() (res string, err error) {
 
 func (b *BackupFormat) Unmarshal(res string) (err error) {
 	// Parse the JSON data into a map
-	var jsonData interface{}
+	var jsonData any
 	if err = json.Unmarshal([]byte(res), &jsonData); err != nil {
 		return
 	}

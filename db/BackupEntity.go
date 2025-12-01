@@ -13,6 +13,10 @@ func (e View) GetName() string {
 	return e.Title
 }
 
+func (e Schedule) GetName() string {
+	return e.Name
+}
+
 func (e Template) GetID() int {
 	return e.ID
 }
@@ -50,5 +54,13 @@ func (e Environment) GetID() int {
 }
 
 func (e Environment) GetName() string {
+	return e.Name
+}
+
+func (e SecretStorage) GetID() int {
+	return e.ID
+}
+
+func (e SecretStorage) GetName() string {
 	return e.Name
 }

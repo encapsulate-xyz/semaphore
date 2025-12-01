@@ -10,6 +10,18 @@ import (
 	"strings"
 	"time"
 
+	"github.com/semaphoreui/semaphore/pro_interfaces"
+
+	proApi "github.com/semaphoreui/semaphore/pro/api"
+	proProjects "github.com/semaphoreui/semaphore/pro/api/projects"
+	proFeatures "github.com/semaphoreui/semaphore/pro/pkg/features"
+	"github.com/semaphoreui/semaphore/services/server"
+	taskServices "github.com/semaphoreui/semaphore/services/tasks"
+
+	"github.com/semaphoreui/semaphore/api/debug"
+	"github.com/semaphoreui/semaphore/pkg/tz"
+	log "github.com/sirupsen/logrus"
+
 	"github.com/semaphoreui/semaphore/api/runners"
 
 	"github.com/gorilla/mux"
@@ -21,7 +33,7 @@ import (
 	"github.com/semaphoreui/semaphore/util"
 )
 
-var startTime = time.Now().UTC()
+var startTime = tz.Now()
 
 //go:embed public/*
 var publicAssets embed.FS
@@ -59,10 +71,60 @@ func pongHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("pong"))
 }
 
+// DelayMiddleware adds artificial delay to simulate slow network conditions
+func DelayMiddleware(delay time.Duration) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			time.Sleep(delay)
+			next.ServeHTTP(w, r)
+		})
+	}
+}
+
 // Route declares all routes
-func Route() *mux.Router {
+func Route(
+	store db.Store,
+	terraformStore db.TerraformStore,
+	ansibleTaskRepo db.AnsibleTaskRepository,
+	taskPool *taskServices.TaskPool,
+	projectService server.ProjectService,
+	integrationService server.IntegrationService,
+	encryptionService server.AccessKeyEncryptionService,
+	accessKeyInstallationService server.AccessKeyInstallationService,
+	secretStorageService server.SecretStorageService,
+	accessKeyService server.AccessKeyService,
+	environmentService server.EnvironmentService,
+	subscriptionService pro_interfaces.SubscriptionService,
+) *mux.Router {
+
+	projectController := &projects.ProjectController{ProjectService: projectService}
+	runnerController := runners.NewRunnerController(store, taskPool, encryptionService)
+	integrationController := NewIntegrationController(integrationService)
+	environmentController := projects.NewEnvironmentController(store, encryptionService, accessKeyService, environmentService)
+	secretStorageController := projects.NewSecretStorageController(store, secretStorageService)
+	repositoryController := projects.NewRepositoryController(accessKeyInstallationService)
+	keyController := projects.NewKeyController(accessKeyService)
+	projectsController := projects.NewProjectsController(accessKeyService)
+	terraformController := proApi.NewTerraformController(encryptionService, terraformStore, store)
+	terraformInventoryController := proProjects.NewTerraformInventoryController(terraformStore)
+	userController := NewUserController(subscriptionService)
+	usersController := NewUsersController(subscriptionService)
+	subscriptionController := proApi.NewSubscriptionController(store, store)
+	projectRunnerController := proProjects.NewProjectRunnerController()
+	taskController := projects.NewTaskController(ansibleTaskRepo)
+
 	r := mux.NewRouter()
 	r.NotFoundHandler = http.HandlerFunc(servePublic)
+
+	if util.Config.Debugging.ApiDelay != "" {
+		delay, err := time.ParseDuration(util.Config.Debugging.ApiDelay)
+		if err != nil {
+			log.WithError(err).WithFields(log.Fields{
+				"context": "debugging",
+			}).Panic("Invalid API delay format")
+		}
+		r.Use(DelayMiddleware(delay))
+	}
 
 	webPath := "/"
 	if util.WebHostURL != nil {
@@ -82,6 +144,9 @@ func Route() *mux.Router {
 	publicAPIRouter.Use(StoreMiddleware, JSONMiddleware)
 
 	publicAPIRouter.HandleFunc("/auth/login", login).Methods("GET", "POST")
+	publicAPIRouter.HandleFunc("/auth/verify", verifySession).Methods("POST")
+	publicAPIRouter.HandleFunc("/auth/recovery", recoverySession).Methods("POST")
+
 	publicAPIRouter.HandleFunc("/auth/logout", logout).Methods("POST")
 	publicAPIRouter.HandleFunc("/auth/oidc/{provider}/login", oidcLogin).Methods("GET")
 	publicAPIRouter.HandleFunc("/auth/oidc/{provider}/redirect", oidcRedirect).Methods("GET")
@@ -92,13 +157,21 @@ func Route() *mux.Router {
 
 	runnersAPI := internalAPI.PathPrefix("/runners").Subrouter()
 	runnersAPI.Use(runners.RunnerMiddleware)
-	runnersAPI.Path("").HandlerFunc(runners.GetRunner).Methods("GET", "HEAD")
-	runnersAPI.Path("").HandlerFunc(runners.UpdateRunner).Methods("PUT")
+	runnersAPI.Path("").HandlerFunc(runnerController.GetRunner).Methods("GET", "HEAD")
+	runnersAPI.Path("").HandlerFunc(runnerController.UpdateRunner).Methods("PUT")
 	runnersAPI.Path("").HandlerFunc(runners.UnregisterRunner).Methods("DELETE")
 
 	publicWebHookRouter := r.PathPrefix(webPath + "api").Subrouter()
 	publicWebHookRouter.Use(StoreMiddleware, JSONMiddleware)
-	publicWebHookRouter.Path("/integrations/{integration_alias}").HandlerFunc(ReceiveIntegration).Methods("POST", "GET", "OPTIONS")
+	publicWebHookRouter.Path("/integrations/{integration_alias}").HandlerFunc(
+		integrationController.ReceiveIntegration).Methods("POST", "GET", "OPTIONS")
+
+	terraformWebhookRouter := publicWebHookRouter.PathPrefix("/terraform").Subrouter()
+	terraformWebhookRouter.Use(terraformController.TerraformInventoryAliasMiddleware)
+	terraformWebhookRouter.Path("/{alias}").HandlerFunc(terraformController.GetTerraformState).Methods("GET")
+	terraformWebhookRouter.Path("/{alias}").HandlerFunc(terraformController.AddTerraformState).Methods("POST")
+	terraformWebhookRouter.Path("/{alias}").HandlerFunc(terraformController.LockTerraformState).Methods("LOCK")
+	terraformWebhookRouter.Path("/{alias}").HandlerFunc(terraformController.UnlockTerraformState).Methods("UNLOCK")
 
 	authenticatedWS := r.PathPrefix(webPath + "api").Subrouter()
 	authenticatedWS.Use(JSONMiddleware, authenticationWithStore)
@@ -109,30 +182,39 @@ func Route() *mux.Router {
 
 	authenticatedAPI.Path("/info").HandlerFunc(getSystemInfo).Methods("GET", "HEAD")
 
+	authenticatedAPI.Path("/subscription").HandlerFunc(subscriptionController.Activate).Methods("POST")
+	authenticatedAPI.Path("/subscription").HandlerFunc(subscriptionController.GetSubscription).Methods("GET")
+
 	authenticatedAPI.Path("/projects").HandlerFunc(projects.GetProjects).Methods("GET", "HEAD")
-	authenticatedAPI.Path("/projects").HandlerFunc(projects.AddProject).Methods("POST")
+	authenticatedAPI.Path("/projects").HandlerFunc(projectsController.AddProject).Methods("POST")
 	authenticatedAPI.Path("/projects/restore").HandlerFunc(projects.Restore).Methods("POST")
 	authenticatedAPI.Path("/events").HandlerFunc(getAllEvents).Methods("GET", "HEAD")
 	authenticatedAPI.HandleFunc("/events/last", getLastEvents).Methods("GET", "HEAD")
 
-	authenticatedAPI.Path("/users").HandlerFunc(getUsers).Methods("GET", "HEAD")
-	authenticatedAPI.Path("/users").HandlerFunc(addUser).Methods("POST")
-	authenticatedAPI.Path("/user").HandlerFunc(getUser).Methods("GET", "HEAD")
+	authenticatedAPI.Path("/users").HandlerFunc(usersController.GetUsers).Methods("GET", "HEAD")
+	authenticatedAPI.Path("/users").HandlerFunc(usersController.AddUser).Methods("POST")
+	authenticatedAPI.Path("/user").HandlerFunc(userController.GetUser).Methods("GET", "HEAD")
 
 	authenticatedAPI.Path("/apps").HandlerFunc(getApps).Methods("GET", "HEAD")
 
 	tokenAPI := authenticatedAPI.PathPrefix("/user").Subrouter()
 	tokenAPI.Path("/tokens").HandlerFunc(getAPITokens).Methods("GET", "HEAD")
 	tokenAPI.Path("/tokens").HandlerFunc(createAPIToken).Methods("POST")
-	tokenAPI.HandleFunc("/tokens/{token_id}", expireAPIToken).Methods("DELETE")
+	tokenAPI.HandleFunc("/tokens/{token_id}", deleteAPIToken).Methods("DELETE")
 
 	adminAPI := authenticatedAPI.NewRoute().Subrouter()
 	adminAPI.Use(adminMiddleware)
 	adminAPI.Path("/options").HandlerFunc(getOptions).Methods("GET", "HEAD")
 	adminAPI.Path("/options").HandlerFunc(setOption).Methods("POST")
 
-	adminAPI.Path("/runners").HandlerFunc(getGlobalRunners).Methods("GET", "HEAD")
+	adminAPI.Path("/runners").HandlerFunc(getAllRunners).Methods("GET", "HEAD")
 	adminAPI.Path("/runners").HandlerFunc(addGlobalRunner).Methods("POST", "HEAD")
+
+	adminAPI.Path("/cache").HandlerFunc(clearCache).Methods("DELETE", "HEAD")
+
+	debugAPI := adminAPI.PathPrefix("/debug").Subrouter()
+	debugAPI.Path("/gc").HandlerFunc(debug.GC).Methods("POST")
+	debugAPI.Path("/pprof/dump").HandlerFunc(debug.Dump).Methods("POST")
 
 	globalRunnersAPI := adminAPI.PathPrefix("/runners").Subrouter()
 	globalRunnersAPI.Use(globalRunnerMiddleware)
@@ -140,6 +222,7 @@ func Route() *mux.Router {
 	globalRunnersAPI.Path("/{runner_id}").HandlerFunc(updateGlobalRunner).Methods("PUT", "POST")
 	globalRunnersAPI.Path("/{runner_id}/active").HandlerFunc(setGlobalRunnerActive).Methods("POST")
 	globalRunnersAPI.Path("/{runner_id}").HandlerFunc(deleteGlobalRunner).Methods("DELETE")
+	globalRunnersAPI.Path("/{runner_id}/cache").HandlerFunc(clearGlobalRunnerCache).Methods("DELETE")
 
 	appsAPI := adminAPI.PathPrefix("/apps").Subrouter()
 	appsAPI.Use(appMiddleware)
@@ -154,16 +237,22 @@ func Route() *mux.Router {
 	tasksAPI.Path("/{task_id}").HandlerFunc(tasks.GetTasks).Methods("GET", "HEAD")
 	tasksAPI.Path("/{task_id}").HandlerFunc(tasks.DeleteTask).Methods("DELETE")
 
+	userUserAPI := authenticatedAPI.Path("/users/{user_id}").Subrouter()
+	userUserAPI.Use(readonlyUserMiddleware)
+	userUserAPI.Methods("GET", "HEAD").HandlerFunc(userController.GetUser)
+
 	userAPI := authenticatedAPI.Path("/users/{user_id}").Subrouter()
 	userAPI.Use(getUserMiddleware)
 
-	userAPI.Methods("GET", "HEAD").HandlerFunc(getUser)
-	userAPI.Methods("PUT").HandlerFunc(updateUser)
+	userAPI.Methods("PUT").HandlerFunc(usersController.UpdateUser)
 	userAPI.Methods("DELETE").HandlerFunc(deleteUser)
 
 	userPasswordAPI := authenticatedAPI.PathPrefix("/users/{user_id}").Subrouter()
 	userPasswordAPI.Use(getUserMiddleware)
 	userPasswordAPI.Path("/password").HandlerFunc(updateUserPassword).Methods("POST")
+	userPasswordAPI.Path("/2fas/totp").HandlerFunc(enableTotp).Methods("POST")
+	userPasswordAPI.Path("/2fas/totp/{totp_id}/qr").HandlerFunc(totpQr).Methods("GET")
+	userPasswordAPI.Path("/2fas/totp/{totp_id}").HandlerFunc(disableTotp).Methods("DELETE")
 
 	projectGet := authenticatedAPI.Path("/project/{project_id}").Subrouter()
 	projectGet.Use(projects.ProjectMiddleware)
@@ -179,6 +268,7 @@ func Route() *mux.Router {
 	projectTaskStop.Use(projects.ProjectMiddleware, projects.GetTaskMiddleware, projects.GetMustCanMiddleware(db.CanRunProjectTasks))
 	projectTaskStop.HandleFunc("/tasks/{task_id}/stop", projects.StopTask).Methods("POST")
 	projectTaskStop.HandleFunc("/tasks/{task_id}/confirm", projects.ConfirmTask).Methods("POST")
+	projectTaskStop.HandleFunc("/tasks/{task_id}/reject", projects.RejectTask).Methods("POST")
 
 	//
 	// Project resources CRUD
@@ -193,7 +283,10 @@ func Route() *mux.Router {
 	projectUserAPI.Path("/users").HandlerFunc(projects.GetUsers).Methods("GET", "HEAD")
 
 	projectUserAPI.Path("/keys").HandlerFunc(projects.GetKeys).Methods("GET", "HEAD")
-	projectUserAPI.Path("/keys").HandlerFunc(projects.AddKey).Methods("POST")
+	projectUserAPI.Path("/keys").HandlerFunc(keyController.AddKey).Methods("POST")
+
+	projectUserAPI.Path("/secret_storages").HandlerFunc(secretStorageController.GetSecretStorages).Methods("GET", "HEAD")
+	projectUserAPI.Path("/secret_storages").HandlerFunc(secretStorageController.Add).Methods("POST")
 
 	projectUserAPI.Path("/repositories").HandlerFunc(projects.GetRepositories).Methods("GET", "HEAD")
 	projectUserAPI.Path("/repositories").HandlerFunc(projects.AddRepository).Methods("POST")
@@ -202,10 +295,12 @@ func Route() *mux.Router {
 	projectUserAPI.Path("/inventory").HandlerFunc(projects.AddInventory).Methods("POST")
 
 	projectUserAPI.Path("/environment").HandlerFunc(projects.GetEnvironment).Methods("GET", "HEAD")
-	projectUserAPI.Path("/environment").HandlerFunc(projects.AddEnvironment).Methods("POST")
+	projectUserAPI.Path("/environment").HandlerFunc(environmentController.AddEnvironment).Methods("POST")
 
 	projectUserAPI.Path("/tasks").HandlerFunc(projects.GetAllTasks).Methods("GET", "HEAD")
 	projectUserAPI.HandleFunc("/tasks/last", projects.GetLastTasks).Methods("GET", "HEAD")
+
+	projectUserAPI.Path("/stats").HandlerFunc(projects.GetTaskStats).Methods("GET", "HEAD")
 
 	projectUserAPI.Path("/templates").HandlerFunc(projects.GetTemplates).Methods("GET", "HEAD")
 	projectUserAPI.Path("/templates").HandlerFunc(projects.AddTemplate).Methods("POST")
@@ -221,27 +316,34 @@ func Route() *mux.Router {
 	projectUserAPI.Path("/integrations").HandlerFunc(projects.GetIntegrations).Methods("GET", "HEAD")
 	projectUserAPI.Path("/integrations").HandlerFunc(projects.AddIntegration).Methods("POST")
 	projectUserAPI.Path("/backup").HandlerFunc(projects.GetBackup).Methods("GET", "HEAD")
+	projectUserAPI.Path("/notifications/test").HandlerFunc(projectController.SendTestNotification).Methods("POST")
 
-	projectUserAPI.Path("/runners").HandlerFunc(projects.GetRunners).Methods("GET", "HEAD")
-	projectUserAPI.Path("/runners").HandlerFunc(projects.AddRunner).Methods("POST")
+	projectUserAPI.Path("/runners").HandlerFunc(projectRunnerController.GetRunners).Methods("GET", "HEAD")
+	projectUserAPI.Path("/runners").HandlerFunc(projectRunnerController.AddRunner).Methods("POST")
+	projectUserAPI.Path("/runner_tags").HandlerFunc(projectRunnerController.GetRunnerTags).Methods("GET", "HEAD")
 
 	projectRunnersAPI := projectUserAPI.PathPrefix("/runners").Subrouter()
-	projectRunnersAPI.Use(projects.RunnerMiddleware)
-	projectRunnersAPI.Path("/{runner_id}").HandlerFunc(projects.GetRunner).Methods("GET", "HEAD")
-	projectRunnersAPI.Path("/{runner_id}").HandlerFunc(projects.UpdateRunner).Methods("PUT", "POST")
-	projectRunnersAPI.Path("/{runner_id}/active").HandlerFunc(projects.SetRunnerActive).Methods("POST")
-	projectRunnersAPI.Path("/{runner_id}").HandlerFunc(projects.DeleteRunner).Methods("DELETE")
+	projectRunnersAPI.Use(projectRunnerController.RunnerMiddleware)
+	projectRunnersAPI.Path("/{runner_id}").HandlerFunc(projectRunnerController.GetRunner).Methods("GET", "HEAD")
+	projectRunnersAPI.Path("/{runner_id}").HandlerFunc(projectRunnerController.UpdateRunner).Methods("PUT", "POST")
+	projectRunnersAPI.Path("/{runner_id}/active").HandlerFunc(projectRunnerController.SetRunnerActive).Methods("POST")
+	projectRunnersAPI.Path("/{runner_id}").HandlerFunc(projectRunnerController.DeleteRunner).Methods("DELETE")
+	projectRunnersAPI.Path("/{runner_id}/cache").HandlerFunc(projectRunnerController.ClearRunnerCache).Methods("DELETE")
 
 	//
 	// Updating and deleting project
 	projectAdminAPI := authenticatedAPI.Path("/project/{project_id}").Subrouter()
 	projectAdminAPI.Use(projects.ProjectMiddleware, projects.GetMustCanMiddleware(db.CanUpdateProject))
-	projectAdminAPI.Methods("PUT").HandlerFunc(projects.UpdateProject)
-	projectAdminAPI.Methods("DELETE").HandlerFunc(projects.DeleteProject)
+	projectAdminAPI.Methods("PUT").HandlerFunc(projectController.UpdateProject)
+	projectAdminAPI.Methods("DELETE").HandlerFunc(projectController.DeleteProject)
 
 	meAPI := authenticatedAPI.Path("/project/{project_id}/me").Subrouter()
 	meAPI.Use(projects.ProjectMiddleware)
 	meAPI.HandleFunc("", projects.LeftProject).Methods("DELETE")
+
+	cacheAPI := authenticatedAPI.Path("/project/{project_id}/cache").Subrouter()
+	cacheAPI.Use(projects.ProjectMiddleware)
+	cacheAPI.HandleFunc("", projects.ClearCache).Methods("DELETE")
 
 	//
 	// Manage project users
@@ -264,8 +366,15 @@ func Route() *mux.Router {
 
 	projectKeyManagement.HandleFunc("/{key_id}", projects.GetKeys).Methods("GET", "HEAD")
 	projectKeyManagement.HandleFunc("/{key_id}/refs", projects.GetKeyRefs).Methods("GET", "HEAD")
-	projectKeyManagement.HandleFunc("/{key_id}", projects.UpdateKey).Methods("PUT")
-	projectKeyManagement.HandleFunc("/{key_id}", projects.RemoveKey).Methods("DELETE")
+	projectKeyManagement.HandleFunc("/{key_id}", keyController.UpdateKey).Methods("PUT")
+	projectKeyManagement.HandleFunc("/{key_id}", keyController.RemoveKey).Methods("DELETE")
+
+	projectSecretStorageManagement := projectUserAPI.PathPrefix("/secret_storages").Subrouter()
+	projectSecretStorageManagement.Use(projects.SecretStorageMiddleware)
+	projectSecretStorageManagement.HandleFunc("/{storage_id}", secretStorageController.GetSecretStorage).Methods("GET", "HEAD")
+	projectSecretStorageManagement.HandleFunc("/{storage_id}/refs", secretStorageController.GetRefs).Methods("GET", "HEAD")
+	projectSecretStorageManagement.HandleFunc("/{storage_id}", secretStorageController.Update).Methods("PUT")
+	projectSecretStorageManagement.HandleFunc("/{storage_id}", secretStorageController.Remove).Methods("DELETE")
 
 	projectRepoManagement := projectUserAPI.PathPrefix("/repositories").Subrouter()
 	projectRepoManagement.Use(projects.RepositoryMiddleware)
@@ -274,6 +383,7 @@ func Route() *mux.Router {
 	projectRepoManagement.HandleFunc("/{repository_id}/refs", projects.GetRepositoryRefs).Methods("GET", "HEAD")
 	projectRepoManagement.HandleFunc("/{repository_id}", projects.UpdateRepository).Methods("PUT")
 	projectRepoManagement.HandleFunc("/{repository_id}", projects.RemoveRepository).Methods("DELETE")
+	projectRepoManagement.HandleFunc("/{repository_id}/branches", repositoryController.GetRepositoryBranches).Methods("GET", "HEAD")
 
 	projectInventoryManagement := projectUserAPI.PathPrefix("/inventory").Subrouter()
 	projectInventoryManagement.Use(projects.InventoryMiddleware)
@@ -283,31 +393,55 @@ func Route() *mux.Router {
 	projectInventoryManagement.HandleFunc("/{inventory_id}", projects.UpdateInventory).Methods("PUT")
 	projectInventoryManagement.HandleFunc("/{inventory_id}", projects.RemoveInventory).Methods("DELETE")
 
+	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/aliases", terraformInventoryController.GetTerraformInventoryAliases).Methods("GET", "HEAD")
+	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/aliases", terraformInventoryController.AddTerraformInventoryAlias).Methods("POST")
+	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/aliases/{alias_id}", terraformInventoryController.GetTerraformInventoryAlias).Methods("GET")
+	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/aliases/{alias_id}", terraformInventoryController.DeleteTerraformInventoryAlias).Methods("DELETE")
+	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/aliases/{alias_id}", terraformInventoryController.SetTerraformInventoryAliasAccessKey).Methods("PUT")
+
+	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/states", terraformInventoryController.GetTerraformInventoryStates).Methods("GET", "HEAD")
+	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/states/latest", terraformInventoryController.GetTerraformInventoryLatestState).Methods("GET", "HEAD")
+	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/states/{state_id}", terraformInventoryController.GetTerraformInventoryState).Methods("GET")
+	projectInventoryManagement.HandleFunc("/{inventory_id}/terraform/states/{state_id}", terraformInventoryController.DeleteTerraformInventoryState).Methods("DELETE")
+
 	projectEnvManagement := projectUserAPI.PathPrefix("/environment").Subrouter()
-	projectEnvManagement.Use(projects.EnvironmentMiddleware)
+	projectEnvManagement.Use(environmentController.EnvironmentMiddleware)
 
 	projectEnvManagement.HandleFunc("/{environment_id}", projects.GetEnvironment).Methods("GET", "HEAD")
 	projectEnvManagement.HandleFunc("/{environment_id}/refs", projects.GetEnvironmentRefs).Methods("GET", "HEAD")
-	projectEnvManagement.HandleFunc("/{environment_id}", projects.UpdateEnvironment).Methods("PUT")
-	projectEnvManagement.HandleFunc("/{environment_id}", projects.RemoveEnvironment).Methods("DELETE")
+	projectEnvManagement.HandleFunc("/{environment_id}", environmentController.UpdateEnvironment).Methods("PUT")
+	projectEnvManagement.HandleFunc("/{environment_id}", environmentController.RemoveEnvironment).Methods("DELETE")
 
 	projectTmplManagement := projectUserAPI.PathPrefix("/templates").Subrouter()
 	projectTmplManagement.Use(projects.TemplatesMiddleware)
 
 	projectTmplManagement.HandleFunc("/{template_id}", projects.UpdateTemplate).Methods("PUT")
+	projectTmplManagement.HandleFunc("/{template_id}/description", projects.UpdateTemplateDescription).Methods("PUT")
 	projectTmplManagement.HandleFunc("/{template_id}", projects.RemoveTemplate).Methods("DELETE")
 	projectTmplManagement.HandleFunc("/{template_id}", projects.GetTemplate).Methods("GET")
 	projectTmplManagement.HandleFunc("/{template_id}/refs", projects.GetTemplateRefs).Methods("GET", "HEAD")
 	projectTmplManagement.HandleFunc("/{template_id}/tasks", projects.GetAllTasks).Methods("GET")
 	projectTmplManagement.HandleFunc("/{template_id}/tasks/last", projects.GetLastTasks).Methods("GET")
 	projectTmplManagement.HandleFunc("/{template_id}/schedules", projects.GetTemplateSchedules).Methods("GET")
+	projectTmplManagement.HandleFunc("/{template_id}/stats", projects.GetTaskStats).Methods("GET")
+	projectTmplManagement.HandleFunc("/{template_id}/stop_all_tasks", taskController.StopAllTasks).Methods("POST")
+
+	projectTmplInvManagement := projectTmplManagement.PathPrefix("/{template_id}/inventory").Subrouter()
+	projectTmplInvManagement.Use(projects.InventoryMiddleware)
+	projectTmplInvManagement.HandleFunc("/{inventory_id}/set_default", projects.SetTemplateInventory).Methods("POST")
+	projectTmplInvManagement.HandleFunc("/{inventory_id}/attach", projects.AttachInventory).Methods("POST")
+	projectTmplInvManagement.HandleFunc("/{inventory_id}/detach", projects.DetachInventory).Methods("POST")
 
 	projectTaskManagement := projectUserAPI.PathPrefix("/tasks").Subrouter()
 	projectTaskManagement.Use(projects.GetTaskMiddleware)
 
 	projectTaskManagement.HandleFunc("/{task_id}/output", projects.GetTaskOutput).Methods("GET", "HEAD")
+	projectTaskManagement.HandleFunc("/{task_id}/raw_output", projects.GetTaskRawOutput).Methods("GET", "HEAD")
 	projectTaskManagement.HandleFunc("/{task_id}", projects.GetTask).Methods("GET", "HEAD")
 	projectTaskManagement.HandleFunc("/{task_id}", projects.RemoveTask).Methods("DELETE")
+	projectTaskManagement.HandleFunc("/{task_id}/stages", projects.GetTaskStages).Methods("GET", "HEAD")
+	projectTaskManagement.HandleFunc("/{task_id}/ansible/hosts", taskController.GetAnsibleTaskHosts).Methods("GET", "HEAD")
+	projectTaskManagement.HandleFunc("/{task_id}/ansible/errors", taskController.GetAnsibleTaskErrors).Methods("GET", "HEAD")
 
 	projectScheduleManagement := projectUserAPI.PathPrefix("/schedules").Subrouter()
 	projectScheduleManagement.Use(projects.SchedulesMiddleware)
@@ -474,21 +608,35 @@ func serveFile(w http.ResponseWriter, r *http.Request, name string) {
 }
 
 func getSystemInfo(w http.ResponseWriter, r *http.Request) {
-	host := ""
+	user := helpers.GetFromContext(r, "user").(*db.User)
 
-	if util.WebHostURL != nil {
-		host = util.WebHostURL.String()
+	var authMethods LoginAuthMethods
+
+	if util.Config.Auth.Totp.Enabled {
+		authMethods.Totp = &LoginTotpAuthMethod{
+			AllowRecovery: util.Config.Auth.Totp.AllowRecovery,
+		}
 	}
 
-	body := map[string]interface{}{
+	if util.Config.Auth.Email.Enabled {
+		authMethods.Email = &LoginEmailAuthMethod{}
+	}
+
+	timezone := util.Config.Schedule.Timezone
+
+	if timezone == "" {
+		timezone = "UTC"
+	}
+
+	body := map[string]any{
 		"version":           util.Version(),
 		"ansible":           util.AnsibleVersion(),
-		"web_host":          host,
+		"web_host":          util.Config.WebHost,
 		"use_remote_runner": util.Config.UseRemoteRunner,
-
-		"premium_features": map[string]bool{
-			"project_runners": false,
-		},
+		"auth_methods":      authMethods,
+		"premium_features":  proFeatures.GetFeatures(user),
+		"git_client":        util.Config.GitClientId,
+		"schedule_timezone": timezone,
 	}
 
 	helpers.WriteJSON(w, http.StatusOK, body)

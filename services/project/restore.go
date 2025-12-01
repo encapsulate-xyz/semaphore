@@ -32,6 +32,21 @@ func verifyDuplicate[T BackupEntry](name string, items []T) error {
 	return nil
 }
 
+func (e BackupSecretStorage) Verify(backup *BackupFormat) error {
+	return verifyDuplicate[BackupSecretStorage](e.Name, backup.SecretStorages)
+}
+
+func (e BackupSecretStorage) Restore(store db.Store, b *BackupDB) error {
+	st := e.SecretStorage
+	st.ProjectID = b.meta.ID
+	newStorage, err := store.CreateSecretStorage(st)
+	if err != nil {
+		return err
+	}
+	b.secretStorages = append(b.secretStorages, newStorage)
+	return nil
+}
+
 func (e BackupEnvironment) Verify(backup *BackupFormat) error {
 	return verifyDuplicate[BackupEnvironment](e.Name, backup.Environments)
 }
@@ -62,6 +77,36 @@ func (e BackupView) Restore(store db.Store, b *BackupDB) error {
 	return nil
 }
 
+func (e BackupSchedule) Verify(backup *BackupFormat) error {
+	return verifyDuplicate[BackupSchedule](e.Name, backup.Schedules)
+}
+
+func (e BackupSchedule) Restore(store db.Store, b *BackupDB) error {
+	v := e.Schedule
+	v.ProjectID = b.meta.ID
+
+	tpl := findEntityByName[db.Template](&e.Template, b.templates)
+	if tpl == nil {
+		return fmt.Errorf("template does not exist in templates[].name")
+	}
+	v.TemplateID = tpl.ID
+
+	//if v.TaskParams != nil {
+	inv := findEntityByName[db.Inventory](e.TaskParams.InventoryName, b.inventories)
+	if inv != nil {
+		v.TaskParams.InventoryID = &inv.ID
+	}
+	//}
+
+	newSchedule, err := store.CreateSchedule(v)
+	if err != nil {
+		return err
+	}
+
+	b.schedules = append(b.schedules, newSchedule)
+	return nil
+}
+
 func (e BackupAccessKey) Verify(backup *BackupFormat) error {
 	return verifyDuplicate[BackupAccessKey](e.Name, backup.Keys)
 }
@@ -70,6 +115,22 @@ func (e BackupAccessKey) Restore(store db.Store, b *BackupDB) error {
 
 	key := e.AccessKey
 	key.ProjectID = &b.meta.ID
+
+	if e.Storage != nil {
+		storage := findEntityByName[db.SecretStorage](e.Storage, b.secretStorages)
+		if storage == nil {
+			return fmt.Errorf("secret storage does not exist in secret_storage[].name")
+		}
+		key.StorageID = &storage.ID
+	}
+
+	if e.SourceStorage != nil {
+		storage := findEntityByName[db.SecretStorage](e.SourceStorage, b.secretStorages)
+		if storage == nil {
+			return fmt.Errorf("secret storage does not exist in secret_storage[].name")
+		}
+		key.StorageID = &storage.ID
+	}
 
 	newKey, err := store.CreateAccessKey(key)
 
@@ -271,19 +332,20 @@ func (e BackupTemplate) Restore(store db.Store, b *BackupDB) error {
 
 	if e.Vaults != nil {
 		for _, vault := range e.Vaults {
-			var VaultKeyID int
-			if vault.VaultKeyID != nil {
+			var VaultKeyID *int
+
+			if vault.VaultKey != nil {
 				if k := findEntityByName[db.AccessKey](vault.VaultKey, b.keys); k == nil {
 					return fmt.Errorf("vaults[].vaultKey does not exist in keys[].name")
 				} else {
-					VaultKeyID = k.ID
+					VaultKeyID = &k.ID
 				}
 			}
 
 			tplVault := vault.TemplateVault
 			tplVault.ProjectID = b.meta.ID
 			tplVault.TemplateID = newTemplate.ID
-			tplVault.VaultKeyID = &VaultKeyID
+			tplVault.VaultKeyID = VaultKeyID
 
 			_, err := store.CreateTemplateVault(tplVault)
 			if err != nil {
@@ -314,6 +376,13 @@ func (e BackupIntegration) Restore(store db.Store, b *BackupDB) error {
 	integration.ProjectID = b.meta.ID
 	integration.AuthSecretID = authSecretID
 	integration.TemplateID = tpl.ID
+
+	if integration.TaskParams != nil {
+		inv := findEntityByName[db.Inventory](e.TaskParams.InventoryName, b.inventories)
+		if inv != nil {
+			integration.TaskParams.InventoryID = &inv.ID
+		}
+	}
 
 	newIntegration, err := store.CreateIntegration(integration)
 	if err != nil {
@@ -354,6 +423,11 @@ func (backup *BackupFormat) Verify() error {
 			return fmt.Errorf("error at views[%d]: %s", i, err.Error())
 		}
 	}
+	for i, o := range backup.Schedules {
+		if err := o.Verify(backup); err != nil {
+			return fmt.Errorf("error at templates[%d]: %s", i, err.Error())
+		}
+	}
 	for i, o := range backup.Keys {
 		if err := o.Verify(backup); err != nil {
 			return fmt.Errorf("error at keys[%d]: %s", i, err.Error())
@@ -369,11 +443,17 @@ func (backup *BackupFormat) Verify() error {
 			return fmt.Errorf("error at inventories[%d]: %s", i, err.Error())
 		}
 	}
+	for i, o := range backup.SecretStorages {
+		if err := o.Verify(backup); err != nil {
+			return fmt.Errorf("error at secret storage[%d]: %s", i, err.Error())
+		}
+	}
 	for i, o := range backup.Templates {
 		if err := o.Verify(backup); err != nil {
 			return fmt.Errorf("error at templates[%d]: %s", i, err.Error())
 		}
 	}
+
 	return nil
 }
 
@@ -396,6 +476,12 @@ func (backup *BackupFormat) Restore(user db.User, store db.Store) (*db.Project, 
 	}
 
 	b.meta = newProject
+
+	for i, o := range backup.SecretStorages {
+		if err := o.Restore(store, &b); err != nil {
+			return nil, fmt.Errorf("error at secret storage[%d]: %s", i, err.Error())
+		}
+	}
 
 	for i, o := range backup.Environments {
 		if err := o.Restore(store, &b); err != nil {
@@ -457,6 +543,12 @@ func (backup *BackupFormat) Restore(user db.User, store db.Store) (*db.Project, 
 			ProjectID: b.meta.ID,
 		}
 		_, _ = store.CreateIntegrationAlias(alias)
+	}
+
+	for i, o := range backup.Schedules {
+		if err := o.Restore(store, &b); err != nil {
+			return nil, fmt.Errorf("error at schedules[%d]: %s", i, err.Error())
+		}
 	}
 
 	return &newProject, nil

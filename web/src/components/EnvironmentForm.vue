@@ -3,13 +3,15 @@
     ref="form"
     lazy-validation
     v-model="formValid"
-    v-if="item != null"
+    v-if="item != null && (!supportStorages || secretStorages != null)"
+    class="pb-3"
   >
     <v-alert
       :value="formError"
       color="error"
-      class="pb-2"
-    >{{ formError }}</v-alert>
+      data-testid="varGroup-error"
+    >{{ formError }}
+    </v-alert>
 
     <v-text-field
       v-model="item.name"
@@ -17,247 +19,370 @@
       :rules="[v => !!v || $t('name_required')]"
       required
       :disabled="formSaving"
-      class="mb-4"
+      outlined
+      dense
     ></v-text-field>
 
-    <v-subheader class="px-0">
-      <v-icon class="mr-1">mdi-variable</v-icon> {{ $t('extraVariables') }}
+    <v-row v-if="supportStorages && isNew">
+      <v-col>
+        <v-autocomplete
+          v-model="item.secret_storage_id"
+          :label="$t('Secret storage (optional)')"
+          :items="secretStorages"
+          :disabled="formSaving || !isNew"
+          item-value="id"
+          item-text="name"
+          outlined
+          dense
+          clearable
+        />
+      </v-col>
+      <v-col>
+        <v-text-field
+          v-model="item.secret_storage_key_prefix"
+          :label="$t('Secret key prefix')"
+          :disabled="formSaving || !item.secret_storage_id|| !isNew"
+          outlined
+          dense
+        />
+      </v-col>
+    </v-row>
 
-      <v-tooltip bottom color="black" open-delay="300" max-width="400">
-        <template v-slot:activator="{ on, attrs }">
-          <v-icon
-            class="ml-1"
-            v-bind="attrs"
-            v-on="on"
-          >mdi-help-circle</v-icon>
-        </template>
-        <span>
-          Variables passed via <code>--extra-vars</code> (Ansible) or
-          <code>-var</code> (Terraform/OpenTofu).
-        </span>
-      </v-tooltip>
+    <v-tabs grow v-model="tab">
+      <v-tab key="variables">Variables</v-tab>
+      <v-tab key="secrets">Secrets</v-tab>
+    </v-tabs>
 
-      <v-spacer />
+    <v-divider style="margin-top: -1px;" class="mb-7"/>
 
-      <v-btn-toggle
-        v-model="extraVarsEditMode"
-        tile
-        group
-      >
-        <v-btn value="table" small class="mr-0" style="border-radius: 4px;">
-          Table
-        </v-btn>
-        <v-btn value="json" small class="mr-0" style="border-radius: 4px;">
-          JSON
-        </v-btn>
-      </v-btn-toggle>
-    </v-subheader>
+    <v-tabs-items v-model="tab">
+      <v-tab-item key="variables">
 
-    <codemirror
-      v-if="extraVarsEditMode === 'json'"
-      :style="{ border: '1px solid lightgray' }"
-      v-model="json"
-      :options="cmOptions"
-      :placeholder="$t('enterExtraVariablesJson')"
-    />
+        <v-subheader class="px-0">
+          {{ $t('extraVariables') }}
 
-    <div v-else-if="extraVarsEditMode === 'table'">
-      <v-data-table
-        v-if="extraVars != null"
-        :items="extraVars"
-        :items-per-page="-1"
-        class="elevation-1"
-        hide-default-footer
-        :no-data-text="$t('noValues')"
-      >
-        <template v-slot:item="props">
-          <tr>
-            <td class="pa-1">
-              <v-text-field
-                solo-inverted
-                flat
-                hide-details
-                v-model="props.item.name"
-                class="v-text-field--solo--no-min-height"
-                :placeholder="$t('name')"
-              ></v-text-field>
-            </td>
-            <td class="pa-1">
-              <v-text-field
-                solo-inverted
-                flat
-                hide-details
-                v-model="props.item.value"
-                class="v-text-field--solo--no-min-height"
-                :placeholder="$t('Value')"
-              ></v-text-field>
-            </td>
-            <td style="width: 38px;">
+          <v-tooltip v-if="needHelp" bottom color="black" open-delay="300" max-width="400">
+            <template v-slot:activator="{ on, attrs }">
               <v-icon
-                small
-                class="pa-1"
-                @click="removeExtraVar(props.item)"
-              >
-                mdi-delete
+                class="ml-1"
+                v-bind="attrs"
+                v-on="on"
+              >mdi-help-box
               </v-icon>
-            </td>
-          </tr>
-        </template>
-      </v-data-table>
-      <div class="mt-2 mb-4" v-if="extraVars != null">
-        <v-btn
-          color="primary"
-          @click="addExtraVar()"
-        >{{ $t('New Extra Variable') }}</v-btn>
-      </div>
-      <v-alert color="error" v-else>Can't be displayed as table.</v-alert>
-    </div>
+            </template>
+            <div>
+              <div><code>--extra-vars</code> for Ansible</div>
+              <div><code>-var</code> for Terraform/OpenTofu</div>
+            </div>
+          </v-tooltip>
 
-    <div>
-      <v-subheader class="px-0 mt-4">
-        <v-icon class="mr-1">mdi-application-settings</v-icon>
-        {{ $t('environmentVariables') }}
-      </v-subheader>
-      <v-data-table
-        :items="env"
-        :items-per-page="-1"
-        class="elevation-1"
-        hide-default-footer
-        :no-data-text="$t('noValues')"
-      >
-        <template v-slot:item="props">
-          <tr>
-            <td class="pa-1">
-              <v-text-field
-                solo-inverted
-                flat
-                hide-details
-                v-model="props.item.name"
-                class="v-text-field--solo--no-min-height"
-                :placeholder="$t('name')"
-              ></v-text-field>
-            </td>
-            <td class="pa-1">
-              <v-text-field
-                solo-inverted
-                flat
-                hide-details
-                v-model="props.item.value"
-                class="v-text-field--solo--no-min-height"
-                :placeholder="$t('Value')"
-              ></v-text-field>
-            </td>
-            <td style="width: 38px;">
-              <v-icon
-                small
-                class="pa-1"
-                @click="removeEnvVar(props.item)"
-              >
-                mdi-delete
-              </v-icon>
-            </td>
-          </tr>
-        </template>
-      </v-data-table>
-      <div class="mt-2 mb-4">
-        <v-btn
-          color="primary"
-          @click="addEnvVar()"
-        >{{ $t('New Environment Variable') }}</v-btn>
-      </div>
-    </div>
+          <v-spacer/>
 
-    <div>
-      <v-subheader class="px-0 mt-4">
-        <v-icon class="mr-1">mdi-lock</v-icon>{{ $t('Secrets') }}
-      </v-subheader>
+          <v-btn-toggle
+            v-model="extraVarsEditMode"
+            tile
+            group
+          >
+            <v-btn value="table" small class="mr-0" style="border-radius: 4px;">
+              Table
+            </v-btn>
+            <v-btn value="json" small class="mr-0" style="border-radius: 4px;">
+              JSON
+            </v-btn>
+          </v-btn-toggle>
 
-      <v-data-table
-        :items="secrets.filter(s => !s.remove)"
-        :items-per-page="-1"
-        class="elevation-1"
-        hide-default-footer
-        :no-data-text="$t('noValues')"
-      >
-        <template v-slot:item="props">
-          <tr>
-            <td class="pa-1">
+          <v-btn icon @click="addExtraVar()" data-testid="varGroup-addVar">
+            <v-icon>
+              mdi-plus
+            </v-icon>
+          </v-btn>
+
+        </v-subheader>
+
+        <div v-if="extraVarsEditMode === 'json'" style="position: relative;">
+          <codemirror
+            :class="{
+              'EnvironmentEditor': true,
+            }"
+            :style="{ border: '1px solid lightgray' }"
+            v-model="json"
+            :options="cmOptions"
+            :placeholder="$t('enterExtraVariablesJson')"
+          />
+
+          <RichEditor
+            v-model="json"
+            type="json"
+            v-if="extraVarsEditMode === 'json'"
+            style="
+              position: absolute;
+              right: 0;
+              top: 0;
+              margin: 10px;
+            "
+          />
+        </div>
+        <div v-else-if="extraVarsEditMode === 'table'">
+          <v-data-table
+            v-if="extraVars != null"
+            :items="extraVars"
+            :items-per-page="-1"
+            class="elevation-1 FieldTable"
+            hide-default-footer
+            :no-data-text="$t('noValues')"
+            style="background: #8585850f"
+          >
+            <template v-slot:item="props">
+              <tr>
+                <td class="pa-1">
+                  <v-text-field
+                    solo-inverted
+                    flat
+                    hide-details
+                    v-model="props.item.name"
+                    class="v-text-field--solo--no-min-height"
+                    :placeholder="$t('name')"
+                  ></v-text-field>
+                </td>
+                <td class="pa-1">
+                  <v-text-field
+                    solo-inverted
+                    flat
+                    hide-details
+                    v-model="props.item.value"
+                    class="v-text-field--solo--no-min-height"
+                    :placeholder="$t('Value')"
+                  ></v-text-field>
+                </td>
+                <td style="width: 38px;">
+                  <v-icon
+                    small
+                    class="pa-1"
+                    @click="removeExtraVar(props.item)"
+                  >
+                    mdi-delete
+                  </v-icon>
+                </td>
+              </tr>
+            </template>
+          </v-data-table>
+
+          <v-alert color="warning" v-else>
+            Oops! This JSON structure is a little too complex to display as a table.
+          </v-alert>
+        </div>
+
+        <div>
+          <v-subheader class="px-0 mt-4">
+            {{ $t('environmentVariables') }}
+
+            <v-spacer/>
+
+            <v-btn icon @click="addEnvVar()" data-testid="varGroup-addEnv">
               <v-icon>
-                {{ props.item.type === 'var' ? 'mdi-variable' : 'mdi-application-settings' }}
+                mdi-plus
               </v-icon>
-            </td>
-            <td class="pa-1">
-              <v-text-field
-                solo-inverted
-                flat
-                hide-details
-                v-model="props.item.name"
-                class="v-text-field--solo--no-min-height"
-                :placeholder="$t('name')"
-              ></v-text-field>
-            </td>
-            <td class="pa-1">
-              <v-text-field
-                solo-inverted
-                flat
-                hide-details
-                v-model="props.item.value"
-                placeholder="*******"
-                class="v-text-field--solo--no-min-height"
-              ></v-text-field>
-            </td>
-            <td style="width: 38px;">
-              <v-icon
-                small
-                class="pa-1"
-                @click="removeSecret(props.item)"
-              >
-                mdi-delete
+            </v-btn>
+          </v-subheader>
+          <v-data-table
+            :items="env"
+            :items-per-page="-1"
+            class="elevation-1 FieldTable"
+            hide-default-footer
+            :no-data-text="$t('noValues')"
+            style="background: #8585850f"
+          >
+            <template v-slot:item="props">
+              <tr>
+                <td class="pa-1">
+                  <v-text-field
+                    solo-inverted
+                    flat
+                    hide-details
+                    v-model="props.item.name"
+                    class="v-text-field--solo--no-min-height"
+                    :placeholder="$t('name')"
+                  ></v-text-field>
+                </td>
+                <td class="pa-1">
+                  <v-text-field
+                    solo-inverted
+                    flat
+                    hide-details
+                    v-model="props.item.value"
+                    class="v-text-field--solo--no-min-height"
+                    :placeholder="$t('Value')"
+                  ></v-text-field>
+                </td>
+                <td style="width: 38px;">
+                  <v-icon
+                    small
+                    class="pa-1"
+                    @click="removeEnvVar(props.item)"
+                  >
+                    mdi-delete
+                  </v-icon>
+                </td>
+              </tr>
+            </template>
+          </v-data-table>
+        </div>
+      </v-tab-item>
+
+      <v-tab-item key="secrets">
+
+        <div v-if="!isNew && secretStorage" class="pb-3">
+          <div style="font-weight: bold; font-size: 20px;">
+            <v-icon small class="mr-1">$vuetify.icons.hashicorp_vault</v-icon>
+            {{ secretStorage.name }}
+          </div>
+          <pre>{{ item.secret_storage_key_prefix }}*</pre>
+        </div>
+
+        <div>
+          <v-subheader class="px-0">
+            {{ $t('extraVariables') }}
+
+            <v-tooltip v-if="needHelp" bottom color="black" open-delay="300" max-width="400">
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon
+                  class="ml-1"
+                  v-bind="attrs"
+                  v-on="on"
+                >mdi-help-box
+                </v-icon>
+              </template>
+              <div>
+                <div><code>--extra-vars</code> for Ansible</div>
+                <div><code>-var</code> for Terraform/OpenTofu</div>
+              </div>
+            </v-tooltip>
+
+            <v-spacer/>
+            <v-btn icon @click="addSecret('var')" data-testid="varGroup-addSecretVar">
+              <v-icon>
+                mdi-plus
               </v-icon>
-            </td>
-          </tr>
-        </template>
-      </v-data-table>
+            </v-btn>
+          </v-subheader>
 
-      <div class="mt-2 mb-4">
-        <v-menu
-          offset-y
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              v-bind="attrs"
-              v-on="on"
-              color="primary"
-            >New Secret</v-btn>
-          </template>
-          <v-list>
-            <v-list-item
-              link
-              @click="addSecret('var')"
-            >
-              <v-list-item-icon>
-                <v-icon>mdi-variable</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>{{ $t('Secret Extra Variable') }}</v-list-item-title>
-            </v-list-item>
-            <v-list-item
-              link
-              @click="addSecret('env')"
-            >
-              <v-list-item-icon>
-                <v-icon>mdi-application-settings</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>{{ $t('Secret Environment Variable') }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </div>
+          <v-data-table
+            :items="secrets.filter(s => !s.remove && s.type === 'var')"
+            :items-per-page="-1"
+            class="elevation-1 FieldTable"
+            hide-default-footer
+            :no-data-text="$t('noValues')"
+            style="background: #8585850f"
+          >
+            <template v-slot:item="props">
+              <tr>
+                <td class="pa-1">
+                  <v-text-field
+                    solo-inverted
+                    flat
+                    hide-details
+                    v-model="props.item.name"
+                    class="v-text-field--solo--no-min-height"
+                    :placeholder="$t('name')"
+                  ></v-text-field>
+                </td>
 
-    </div>
+                <td class="pa-1">
+                  <v-text-field
+                    solo-inverted
+                    flat
+                    hide-details
+                    v-model="props.item.value"
+                    placeholder="*******"
+                    class="v-text-field--solo--no-min-height"
+                  ></v-text-field>
+                </td>
+
+                <td style="width: 38px;">
+                  <v-icon
+                    small
+                    class="pa-1"
+                    @click="removeSecret(props.item)"
+                  >
+                    mdi-delete
+                  </v-icon>
+                </td>
+              </tr>
+            </template>
+          </v-data-table>
+        </div>
+
+        <div>
+          <v-subheader class="px-0 mt-4">
+            {{ $t('environmentVariables') }}
+
+            <v-spacer/>
+
+            <v-btn icon @click="addSecret('env')" data-testid="varGroup-addSecretEnv">
+              <v-icon>
+                mdi-plus
+              </v-icon>
+            </v-btn>
+          </v-subheader>
+
+          <v-data-table
+            :items="secrets.filter(s => !s.remove && s.type === 'env')"
+            :items-per-page="-1"
+            class="elevation-1 FieldTable"
+            hide-default-footer
+            :no-data-text="$t('noValues')"
+            style="background: #8585850f"
+          >
+            <template v-slot:item="props">
+              <tr>
+                <td class="pa-1">
+                  <v-text-field
+                    solo-inverted
+                    flat
+                    hide-details
+                    v-model="props.item.name"
+                    class="v-text-field--solo--no-min-height"
+                    :placeholder="$t('name')"
+                  ></v-text-field>
+                </td>
+
+                <td class="pa-1">
+                  <v-text-field
+                    solo-inverted
+                    flat
+                    hide-details
+                    v-model="props.item.value"
+                    placeholder="*******"
+                    class="v-text-field--solo--no-min-height"
+                  ></v-text-field>
+                </td>
+
+                <td style="width: 38px;">
+                  <v-icon
+                    small
+                    class="pa-1"
+                    @click="removeSecret(props.item)"
+                  >
+                    mdi-delete
+                  </v-icon>
+                </td>
+              </tr>
+            </template>
+          </v-data-table>
+        </div>
+
+      </v-tab-item>
+    </v-tabs-items>
 
   </v-form>
 </template>
-
+<style lang="scss">
+.EnvironmentEditor {
+  .CodeMirror {
+    height: 160px !important;
+  }
+}
+</style>
 <script>
 /* eslint-disable import/no-extraneous-dependencies,import/extensions */
 
@@ -268,22 +393,28 @@ import 'codemirror/lib/codemirror.css';
 import 'codemirror/mode/vue/vue.js';
 import 'codemirror/addon/display/placeholder.js';
 import { getErrorMessage } from '@/lib/error';
-// import EventBus from '@/event-bus';
-// import { getErrorMessage } from '@/lib/error';
-
-// const PREDEFINED_ENV_VARS = [{
-//   name: 'ANSIBLE_HOST_KEY_CHECKING',
-//   value: 'False',
-//   description: 'Avoid host key checking by the tools Ansible uses to connect to the host.',
-// }];
+import RichEditor from '@/components/RichEditor.vue';
 
 export default {
   mixins: [ItemFormBase],
+
+  props: {
+    needHelp: Boolean,
+    supportStorages: Boolean,
+  },
+
   components: {
+    RichEditor,
     codemirror,
   },
 
-  created() {
+  computed: {
+    secretStorage() {
+      if (this.item && this.item.secret_storage_id && this.secretStorages) {
+        return this.secretStorages.find((s) => s.id === this.item.secret_storage_id);
+      }
+      return null;
+    },
   },
 
   watch: {
@@ -330,14 +461,33 @@ export default {
     return {
       // PREDEFINED_ENV_VARS,
       images: [
-        'dind-runner:latest',
+        'dind-runner:v2.0.0',
+        'dind-runner:v2.0.2',
+        'dind-runner:v2.0.3',
+        'dind-runner:v2.0.4',
+        'dind-runner:v2.0.5',
+        'dind-runner:v2.0.6',
+        'dind-runner:v2.0.7',
+        'dind-runner:v2.0.8',
+        'dind-runner:v2.0.9',
+        'dind-runner:v2.0.10',
+        'nodejs-runner:v2.0.0',
+        'nodejs-runner:v2.0.3',
+        'nodejs-runner:v2.0.4',
+        'nodejs-runner:v2.0.5',
+        'nodejs-runner:v2.0.6',
+        'nodejs-runner:v2.0.7',
+        'nodejs-runner:v2.0.8',
+        'nodejs-runner:v2.0.9',
+        'nodejs-runner:v2.0.10',
       ],
-      advancedOptions: false,
 
       json: '{}',
       extraVars: [],
       env: [],
       secrets: [],
+
+      tab: 'variables',
 
       cmOptions: {
         tabSize: 2,
@@ -349,7 +499,8 @@ export default {
       },
 
       extraVarsEditMode: 'json',
-      // predefinedEnvVars: [],
+
+      secretStorages: null,
     };
   },
 
@@ -397,23 +548,6 @@ export default {
       }
     },
 
-    // setExtraVar(name, value) {
-    //   try {
-    //     const obj = JSON.parse(this.json || '{}');
-    //     if (value == null) {
-    //       delete obj[name];
-    //     } else {
-    //       obj[name] = value;
-    //     }
-    //     this.json = JSON.stringify(obj, null, 2);
-    //   } catch (err) {
-    //     EventBus.$emit('i-snackbar', {
-    //       color: 'error',
-    //       text: getErrorMessage(err),
-    //     });
-    //   }
-    // },
-
     beforeSave() {
       switch (this.extraVarsEditMode) {
         case 'json':
@@ -438,18 +572,13 @@ export default {
         [curr.name]: curr.value,
       }), {});
 
-      // this.predefinedEnvVars.forEach((index) => {
-      //   const predefinedVar = PREDEFINED_ENV_VARS[index];
-      //   env[predefinedVar.name] = predefinedVar.value;
-      // });
-
       const secrets = (this.secrets || []).map((s) => {
         let operation;
         if (s.new) {
           operation = 'create';
         } else if (s.remove) {
           operation = 'delete';
-        } else if (s.value !== '') {
+        } else {
           operation = 'update';
         }
         return {
@@ -465,7 +594,23 @@ export default {
       this.item.secrets = secrets;
     },
 
-    afterLoadData() {
+    async afterLoadData() {
+      if (this.itemId === 'new') {
+        [
+          this.secretStorages,
+        ] = await Promise.all([
+          this.loadProjectResources('secret_storages'),
+        ]);
+      } else {
+        this.secretStorages = [];
+
+        if (this.item.secret_storage_id) {
+          this.secretStorages.push(
+            await this.loadProjectResource('secret_storages', this.item.secret_storage_id),
+          );
+        }
+      }
+
       this.json = JSON.stringify(JSON.parse(this.item?.json || '{}'), null, 2);
 
       const json = JSON.parse(this.item?.json || '{}');

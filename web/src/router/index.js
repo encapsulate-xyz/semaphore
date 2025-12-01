@@ -2,6 +2,9 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import RestoreProject from '@/views/project/RestoreProject.vue';
 import Tasks from '@/views/Tasks.vue';
+import TaskList from '@/components/TaskList.vue';
+import TemplateDetails from '@/views/project/template/TemplateDetails.vue';
+import TemplateTerraformState from '@/views/project/template/TemplateTerraformState.vue';
 import Schedule from '../views/project/Schedule.vue';
 import History from '../views/project/History.vue';
 import Activity from '../views/project/Activity.vue';
@@ -20,6 +23,9 @@ import Integrations from '../views/project/Integrations.vue';
 import IntegrationExtractor from '../views/project/IntegrationExtractor.vue';
 import Apps from '../views/Apps.vue';
 import Runners from '../views/Runners.vue';
+import Stats from '../views/project/Stats.vue';
+import Tokens from '../views/Tokens.vue';
+import SecretStorage from '../views/project/SecretStorages.vue';
 
 Vue.use(VueRouter);
 
@@ -37,8 +43,16 @@ const routes = [
     redirect: '/project/:projectId/history',
   },
   {
+    path: '/project/:projectId/secret_storages',
+    component: SecretStorage,
+  },
+  {
     path: '/project/:projectId/history',
     component: History,
+  },
+  {
+    path: '/project/:projectId/stats',
+    component: Stats,
   },
   {
     path: '/project/:projectId/activity',
@@ -66,16 +80,34 @@ const routes = [
   },
   {
     path: '/project/:projectId/templates/:templateId',
+    redirect: '/project/:projectId/templates/:templateId/tasks',
     component: TemplateView,
+    children: [{
+      path: 'tasks',
+      component: TaskList,
+    }, {
+      path: 'details',
+      component: TemplateDetails,
+    }, {
+      path: 'state',
+      component: TemplateTerraformState,
+    }],
   },
   {
     path: '/project/:projectId/views/:viewId/templates/:templateId',
+    redirect: '/project/:projectId/views/:viewId/templates/:templateId/tasks',
     component: TemplateView,
+    children: [{
+      path: 'tasks',
+      component: TaskList,
+    }, {
+      path: 'details',
+      component: TemplateDetails,
+    }, {
+      path: 'state',
+      component: TemplateTerraformState,
+    }],
   },
-  // {
-  //   path: '/project/:projectId/views/:viewId/templates/:templateId/edit',
-  //   component: TemplateEdit,
-  // },
   {
     path: '/project/:projectId/environment',
     component: Environment,
@@ -89,7 +121,7 @@ const routes = [
     component: Integrations,
   },
   {
-    path: '/project/:projectId/integration/:integrationId',
+    path: '/project/:projectId/integrations/:integrationId',
     component: IntegrationExtractor,
   },
   {
@@ -123,6 +155,10 @@ const routes = [
   {
     path: '/apps',
     component: Apps,
+  },
+  {
+    path: '/tokens',
+    component: Tokens,
   },
 ];
 

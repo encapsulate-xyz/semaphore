@@ -15,9 +15,13 @@
       </div>
 
       <div class="ml-6">
-        <span v-for="t in objectRefs[s.slug]" class="object-refs-view__link-wrap" :key="t.id">
+        <span
+            v-for="t in (objectRefs[s.slug] || [])"
+            class="object-refs-view__link-wrap"
+            :key="t.id"
+        >
           <router-link
-            :to="`/project/${projectId}/templates/${t.id}`"
+            :to="`/project/${projectId}/${s.path || s.slug}/${s.pageless ? '' : t.id}`"
             class="object-refs-view__link">{{ t.name }}</router-link>
         </span>
       </div>
@@ -56,7 +60,21 @@ export default {
         slug: 'repositories',
         title: 'Repositories',
         icon: 'git',
-      }].filter((s) => this.objectRefs[s.slug].length > 0);
+      }, {
+        slug: 'integrations',
+        title: 'Integrations',
+        icon: 'connection',
+      }, {
+        slug: 'access_keys',
+        pageless: true,
+        path: 'keys',
+        title: 'Access Keys',
+        icon: 'key-change',
+      }, {
+        slug: 'schedules',
+        title: 'Schedules',
+        icon: 'clock-outline',
+      }].filter((s) => (this.objectRefs[s.slug] || []).length > 0);
     },
   },
 };

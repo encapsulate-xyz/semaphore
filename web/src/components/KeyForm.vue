@@ -3,7 +3,7 @@
       ref="form"
       lazy-validation
       v-model="formValid"
-      v-if="item != null"
+      v-if="item != null && secretStorages != null"
   >
     <v-alert
         :value="formError"
@@ -18,7 +18,33 @@
         :rules="[v => !!v || $t('name_required')]"
         required
         :disabled="formSaving"
+        outlined
+        dense
     />
+
+    <v-autocomplete
+      v-if="supportStorages"
+      v-model="item.source_storage_id"
+      :label="$t('Storage (optional)')"
+      :items="secretStorages"
+      item-value="id"
+      item-text="name"
+      :disabled="formSaving || !canEditSecrets"
+      outlined
+      dense
+      clearable
+    />
+
+    <v-text-field
+      v-if="supportStorages && item.source_storage_id != null"
+      v-model="item.source_storage_key"
+      :label="$t('Source Key')"
+      :disabled="formSaving || !canEditSecrets"
+      outlined
+      dense
+    />
+
+    <v-divider class="mb-6" />
 
     <v-select
         v-model="item.type"
@@ -29,6 +55,8 @@
         item-text="name"
         :required="canEditSecrets"
         :disabled="formSaving || !canEditSecrets"
+        outlined
+        dense
     />
 
     <v-text-field
@@ -36,6 +64,8 @@
         :label="$t('loginOptional')"
         v-if="item.type === 'login_password'"
         :disabled="formSaving || !canEditSecrets"
+        outlined
+        dense
     />
 
     <v-text-field
@@ -49,6 +79,8 @@
         :disabled="formSaving || !canEditSecrets"
         autocomplete="new-password"
         @click:append="showLoginPassword = !showLoginPassword"
+        outlined
+        dense
     />
 
     <v-text-field
@@ -56,6 +88,8 @@
       :label="$t('usernameOptional')"
       v-if="item.type === 'ssh'"
       :disabled="formSaving || !canEditSecrets"
+      outlined
+      dense
     />
 
     <v-text-field
@@ -66,6 +100,8 @@
       v-if="item.type === 'ssh'"
       :disabled="formSaving || !canEditSecrets"
       @click:append="showSSHPassphrase = !showSSHPassphrase"
+      outlined
+      dense
     />
 
     <v-textarea
@@ -98,6 +134,11 @@ import ItemFormBase from '@/components/ItemFormBase';
 
 export default {
   mixins: [ItemFormBase],
+
+  props: {
+    supportStorages: Boolean,
+  },
+
   data() {
     return {
       showLoginPassword: false,
@@ -112,6 +153,7 @@ export default {
         id: 'none',
         name: `${this.$t('keyFormNone')}`,
       }],
+      secretStorages: null,
     };
   },
 
@@ -119,6 +161,14 @@ export default {
     canEditSecrets() {
       return this.isNew || this.item.override_secret;
     },
+  },
+
+  async created() {
+    [
+      this.secretStorages,
+    ] = await Promise.all([
+      this.loadProjectResources('secret_storages'),
+    ]);
   },
 
   methods: {

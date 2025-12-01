@@ -40,17 +40,16 @@ func (r *bashReader) Read(p []byte) (n int, err error) {
 	return len(*r.input) + 1, nil
 }
 
-func (t *ShellApp) makeCmd(command string, args []string, environmentVars *[]string) *exec.Cmd {
+func (t *ShellApp) makeCmd(command string, args []string, environmentVars []string) *exec.Cmd {
 	cmd := exec.Command(command, args...) //nolint: gas
 	cmd.Dir = t.GetFullPath()
 
 	cmd.Env = getEnvironmentVars()
-	cmd.Env = append(cmd.Env, fmt.Sprintf("HOME=%s", util.Config.TmpPath))
+	cmd.Env = append(cmd.Env, fmt.Sprintf("HOME=%s", util.Config.GetProjectTmpDir(t.Template.ProjectID)))
 	cmd.Env = append(cmd.Env, fmt.Sprintf("PWD=%s", cmd.Dir))
+	cmd.Env = append(cmd.Env, environmentVars...)
 
-	if environmentVars != nil {
-		cmd.Env = append(cmd.Env, *environmentVars...)
-	}
+	cmd.SysProcAttr = util.Config.GetSysProcAttr()
 
 	return cmd
 }
@@ -75,11 +74,14 @@ func (t *ShellApp) SetLogger(logger task_logger.Logger) task_logger.Logger {
 	return logger
 }
 
-func (t *ShellApp) InstallRequirements(environmentVars *[]string) error {
+func (t *ShellApp) Clear() {
+}
+
+func (t *ShellApp) InstallRequirements(args LocalAppInstallingArgs) error {
 	return nil
 }
 
-func (t *ShellApp) makeShellCmd(args []string, environmentVars *[]string) *exec.Cmd {
+func (t *ShellApp) makeShellCmd(args []string, environmentVars []string) *exec.Cmd {
 	var command string
 	var appArgs []string
 	switch t.App {

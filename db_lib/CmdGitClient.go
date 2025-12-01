@@ -2,7 +2,7 @@ package db_lib
 
 import (
 	"fmt"
-	"os"
+	"github.com/semaphoreui/semaphore/pkg/ssh"
 	"os/exec"
 	"strings"
 
@@ -11,26 +11,22 @@ import (
 )
 
 type CmdGitClient struct {
-	keyInstallation db.AccessKeyInstallation
+	keyInstaller AccessKeyInstaller
 }
 
-func (c CmdGitClient) makeCmd(r GitRepository, targetDir GitRepositoryDirType, args ...string) *exec.Cmd {
+func (c CmdGitClient) makeCmd(
+	r GitRepository,
+	targetDir GitRepositoryDirType,
+	installation ssh.AccessKeyInstallation,
+	args ...string,
+) *exec.Cmd {
 	cmd := exec.Command("git") //nolint: gas
 
-	cmd.Env = os.Environ()
-	cmd.Env = append(cmd.Env, fmt.Sprintln("GIT_TERMINAL_PROMPT=0"))
-	if r.Repository.SSHKey.Type == db.AccessKeySSH {
-		cmd.Env = append(cmd.Env, fmt.Sprintf("SSH_AUTH_SOCK=%s", c.keyInstallation.SSHAgent.SocketFile))
-		sshCmd := "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
-		if util.Config.SshConfigPath != "" {
-			sshCmd += " -F " + util.Config.SshConfigPath
-		}
-		cmd.Env = append(cmd.Env, fmt.Sprintf("GIT_SSH_COMMAND=%s", sshCmd))
-	}
+	cmd.Env = append(getEnvironmentVars(), installation.GetGitEnv()...)
 
 	switch targetDir {
 	case GitRepositoryTmpPath:
-		cmd.Dir = util.Config.TmpPath
+		cmd.Dir = util.Config.GetProjectTmpDir(r.Repository.ProjectID)
 	case GitRepositoryFullPath:
 		cmd.Dir = r.GetFullPath()
 	default:
@@ -44,15 +40,15 @@ func (c CmdGitClient) makeCmd(r GitRepository, targetDir GitRepositoryDirType, a
 
 func (c CmdGitClient) run(r GitRepository, targetDir GitRepositoryDirType, args ...string) error {
 	var err error
-	c.keyInstallation, err = r.Repository.SSHKey.Install(db.AccessKeyRoleGit, r.Logger)
+	keyInstallation, err := c.keyInstaller.Install(r.Repository.SSHKey, db.AccessKeyRoleGit, r.Logger)
 
 	if err != nil {
 		return err
 	}
 
-	defer c.keyInstallation.Destroy() //nolint: errcheck
+	defer keyInstallation.Destroy() //nolint: errcheck
 
-	cmd := c.makeCmd(r, targetDir, args...)
+	cmd := c.makeCmd(r, targetDir, keyInstallation, args...)
 
 	r.Logger.LogCmd(cmd)
 
@@ -60,14 +56,14 @@ func (c CmdGitClient) run(r GitRepository, targetDir GitRepositoryDirType, args 
 }
 
 func (c CmdGitClient) output(r GitRepository, targetDir GitRepositoryDirType, args ...string) (out string, err error) {
-	c.keyInstallation, err = r.Repository.SSHKey.Install(db.AccessKeyRoleGit, r.Logger)
+	keyInstallation, err := c.keyInstaller.Install(r.Repository.SSHKey, db.AccessKeyRoleGit, r.Logger)
 	if err != nil {
 		return
 	}
 
-	defer c.keyInstallation.Destroy() //nolint: errcheck
+	defer keyInstallation.Destroy() //nolint: errcheck
 
-	bytes, err := c.makeCmd(r, targetDir, args...).Output()
+	bytes, err := c.makeCmd(r, targetDir, keyInstallation, args...).Output()
 	if err != nil {
 		return
 	}
@@ -90,7 +86,7 @@ func (c CmdGitClient) Clone(r GitRepository) error {
 		"--recursive",
 		"--branch",
 		r.Repository.GitBranch,
-		r.Repository.GetGitURL(),
+		r.Repository.GetGitURL(false),
 		dirName)
 }
 
@@ -140,7 +136,7 @@ func (c CmdGitClient) GetLastCommitHash(r GitRepository) (hash string, err error
 }
 
 func (c CmdGitClient) GetLastRemoteCommitHash(r GitRepository) (hash string, err error) {
-	out, err := c.output(r, GitRepositoryTmpPath, "ls-remote", r.Repository.GetGitURL(), r.Repository.GitBranch)
+	out, err := c.output(r, GitRepositoryTmpPath, "ls-remote", r.Repository.GetGitURL(false), r.Repository.GitBranch)
 	if err != nil {
 		return
 	}
@@ -155,4 +151,39 @@ func (c CmdGitClient) GetLastRemoteCommitHash(r GitRepository) (hash string, err
 
 	hash = out[0:firstSpaceIndex]
 	return
+}
+
+func (c CmdGitClient) GetRemoteBranches(r GitRepository) ([]string, error) {
+	out, err := c.output(r, GitRepositoryTmpPath, "ls-remote", "--heads", r.Repository.GetGitURL(false))
+	if err != nil {
+		return nil, err
+	}
+
+	if len(out) == 0 {
+		return []string{}, nil
+	}
+
+	branches := strings.Split(out, "\n")
+	branchNames := getRepositoryBranchNames(branches)
+	return branchNames, nil
+}
+
+func getRepositoryBranchNames(branches []string) []string {
+	branchNames := make([]string, 0, len(branches))
+
+	for _, branch := range branches {
+		parts := strings.Split(branch, "\t")
+		if len(parts) < 2 {
+			continue
+		}
+
+		refPath := parts[1]
+
+		if idx := strings.LastIndex(refPath, "/"); idx != -1 {
+			branchName := refPath[idx+1:]
+			branchNames = append(branchNames, branchName)
+		}
+	}
+
+	return branchNames
 }

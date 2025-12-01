@@ -27,17 +27,85 @@ func InteractiveRunnerSetup(conf *util.ConfigType) {
 
 	conf.Runner = &util.RunnerConfig{}
 
-	askValue("Path to the file where runner token will be stored", "", &conf.Runner.TokenFile)
+	needTokenFile := false
+	askConfirmation("Do you want to store token in external file?", false, &needTokenFile)
 
-	haveToken := false
-	askConfirmation("Do you have runner token?", false, &haveToken)
-
-	if haveToken {
-		token := ""
-		askValue("Runner token", "", &token)
-
-		// TODO: write token
+	if needTokenFile {
+		askValue("Path to the file where runner token will be stored", "", &conf.Runner.TokenFile)
 	}
+
+	needToken := false
+	askConfirmation("Do you have runner's token?", false, &needToken)
+
+	if needToken {
+		token := ""
+		for {
+			askValue("Enter valid runner token", "", &token)
+
+			if token == "" {
+				fmt.Println("Invalid token")
+				continue
+			}
+			break
+		}
+
+		conf.Runner.Token = token
+
+		hasPrivateKey := false
+		askConfirmation("Do you have runner's private key file?", false, &hasPrivateKey)
+
+		if hasPrivateKey {
+			pkFile := ""
+			for {
+				askValue("Enter path to the private key file", "", &pkFile)
+
+				if pkFile == "" {
+					fmt.Println("Invalid private key file path")
+					continue
+				}
+				break
+			}
+			conf.Runner.PrivateKeyFile = pkFile
+		}
+
+		return
+	}
+
+	needRegistration := false
+	askConfirmation("Do you want to register new runner on the server?", false, &needRegistration)
+	if needRegistration {
+		regToken := ""
+
+		for {
+			askValue("Enter runner registration token", "", &regToken)
+
+			if regToken == "" {
+				fmt.Println("Invalid registration token")
+				continue
+			}
+
+			break
+		}
+
+		conf.Runner.RegistrationToken = regToken
+
+		pkFile := ""
+		for {
+			askValue("Enter path to the private key file (will be generated if not exists)", "", &pkFile)
+
+			if pkFile == "" {
+				fmt.Println("Invalid private key file path")
+				continue
+			}
+			break
+		}
+
+		conf.Runner.PrivateKeyFile = pkFile
+
+		return
+	}
+
+	return
 }
 
 func InteractiveSetup(conf *util.ConfigType) {
@@ -45,8 +113,9 @@ func InteractiveSetup(conf *util.ConfigType) {
 
 	dbPrompt := `What database to use:
    1 - MySQL
-   2 - BoltDB
+   2 - BoltDB (DEPRECATED!!!)
    3 - PostgreSQL
+   4 - SQLite
 `
 
 	var db int
@@ -62,6 +131,9 @@ func InteractiveSetup(conf *util.ConfigType) {
 	case 3:
 		conf.Dialect = util.DbDriverPostgres
 		scanPostgres(conf)
+	case 4:
+		conf.Dialect = util.DbDriverSQLite
+		scanSQLite(conf)
 	}
 
 	defaultPlaybookPath := filepath.Join(os.TempDir(), "semaphore")
@@ -115,13 +187,11 @@ func InteractiveSetup(conf *util.ConfigType) {
 }
 
 func scanBoltDb(conf *util.ConfigType) {
-	workingDirectory, err := os.Getwd()
-	if err != nil {
-		workingDirectory = os.TempDir()
-	}
-	defaultBoltDBPath := filepath.Join(workingDirectory, "database.boltdb")
-	conf.BoltDb = &util.DbConfig{}
-	askValue("db filename", defaultBoltDBPath, &conf.BoltDb.Hostname)
+	conf.BoltDb = scanFileDB("database.boltdb")
+}
+
+func scanSQLite(conf *util.ConfigType) {
+	conf.SQLite = scanFileDB("database.sqlite")
 }
 
 func scanMySQL(conf *util.ConfigType) {
@@ -144,6 +214,17 @@ func scanPostgres(conf *util.ConfigType) {
 	if _, exists := conf.Postgres.Options["sslmode"]; !exists {
 		conf.Postgres.Options["sslmode"] = "disable"
 	}
+}
+
+func scanFileDB(defaultDbFile string) *util.DbConfig {
+	workingDirectory, err := os.Getwd()
+	if err != nil {
+		workingDirectory = os.TempDir()
+	}
+	defaultDBPath := filepath.Join(workingDirectory, defaultDbFile)
+	conf := &util.DbConfig{}
+	askValue("db Hostname", defaultDBPath, &conf.Hostname)
+	return conf
 }
 
 func scanErrorChecker(n int, err error) {
@@ -205,7 +286,7 @@ func SaveConfig(config IConfig, defaultFilename string, requiredConfigPath strin
 	return
 }
 
-func askValue(prompt string, defaultValue string, item interface{}) {
+func askValue(prompt string, defaultValue string, item any) {
 	// Print prompt with optional default value
 	fmt.Print(prompt)
 	if len(defaultValue) != 0 {
@@ -215,7 +296,8 @@ func askValue(prompt string, defaultValue string, item interface{}) {
 
 	_, _ = fmt.Sscanln(defaultValue, item)
 
-	scanErrorChecker(fmt.Scanln(item))
+	n, err := fmt.Scanln(item)
+	scanErrorChecker(n, err)
 
 	// Empty line after prompt
 	fmt.Println("")
@@ -231,7 +313,8 @@ func askConfirmation(prompt string, defaultValue bool, item *bool) {
 
 	var answer string
 
-	scanErrorChecker(fmt.Scanln(&answer))
+	n, err := fmt.Scanln(&answer)
+	scanErrorChecker(n, err)
 
 	switch strings.ToLower(answer) {
 	case "y", "yes":

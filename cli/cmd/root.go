@@ -3,18 +3,23 @@ package cmd
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 
+	"github.com/semaphoreui/semaphore/api/helpers"
+	"github.com/semaphoreui/semaphore/services/server"
+
+	"github.com/gorilla/handlers"
 	"github.com/semaphoreui/semaphore/api"
 	"github.com/semaphoreui/semaphore/api/sockets"
 	"github.com/semaphoreui/semaphore/db"
 	"github.com/semaphoreui/semaphore/db/factory"
+	proFactory "github.com/semaphoreui/semaphore/pro/db/factory"
+	proServer "github.com/semaphoreui/semaphore/pro/services/server"
 	"github.com/semaphoreui/semaphore/services/schedules"
 	"github.com/semaphoreui/semaphore/services/tasks"
 	"github.com/semaphoreui/semaphore/util"
-	"github.com/gorilla/context"
-	"github.com/gorilla/handlers"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -35,16 +40,22 @@ Complete documentation is available at https://semaphoreui.com.`,
 		_ = cmd.Help()
 		os.Exit(0)
 	},
+
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		if persistentFlags.logLevel == "" {
+		str := persistentFlags.logLevel
+		if str == "" {
+			str = os.Getenv("SEMAPHORE_LOG_LEVEL")
+		}
+		if str == "" {
 			return
 		}
 
-		lvl, err := log.ParseLevel(persistentFlags.logLevel)
+		lvl, err := log.ParseLevel(str)
 		if err != nil {
 			log.Panic(err)
 		}
 
+		fmt.Println("Log level set to", lvl)
 		log.SetLevel(lvl)
 	},
 }
@@ -61,8 +72,40 @@ func Execute() {
 
 func runService() {
 	store := createStore("root")
-	taskPool := tasks.CreateTaskPool(store)
-	schedulePool := schedules.CreateSchedulePool(store, &taskPool)
+	terraformStore := proFactory.NewTerraformStore(store)
+	ansibleTaskRepo := proFactory.NewAnsibleTaskRepository(store)
+
+	projectService := server.NewProjectService(store, store)
+	encryptionService := server.NewAccessKeyEncryptionService(store, store, store)
+	accessKeyInstallationService := server.NewAccessKeyInstallationService(encryptionService)
+	integrationService := server.NewIntegrationService(store, encryptionService)
+	inventoryService := server.NewInventoryService(
+		store,
+		store,
+		store,
+		encryptionService,
+	)
+	accessKeyService := server.NewAccessKeyService(store, encryptionService, store)
+	secretStorageService := server.NewSecretStorageService(store, accessKeyService)
+	environmentService := server.NewEnvironmentService(store, encryptionService)
+	subscriptionService := proServer.NewSubscriptionService(store, store)
+	logWriteService := proServer.NewLogWriteService()
+
+	taskPool := tasks.CreateTaskPool(
+		store,
+		ansibleTaskRepo,
+		inventoryService,
+		encryptionService,
+		accessKeyInstallationService,
+		logWriteService,
+	)
+
+	schedulePool := schedules.CreateSchedulePool(
+		store,
+		&taskPool,
+		accessKeyInstallationService,
+		encryptionService,
+	)
 
 	defer schedulePool.Destroy()
 
@@ -79,17 +122,33 @@ func runService() {
 	fmt.Printf("Interface %v\n", util.Config.Interface)
 	fmt.Printf("Port %v\n", util.Config.Port)
 
+	subscriptionService.StartValidationCron()
+
 	go sockets.StartWS()
 	go schedulePool.Run()
 	go taskPool.Run()
 
-	route := api.Route()
+	route := api.Route(
+		store,
+		terraformStore,
+		ansibleTaskRepo,
+		&taskPool,
+		projectService,
+		integrationService,
+		encryptionService,
+		accessKeyInstallationService,
+		secretStorageService,
+		accessKeyService,
+		environmentService,
+		subscriptionService,
+	)
 
 	route.Use(func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			context.Set(r, "store", store)
-			context.Set(r, "schedule_pool", schedulePool)
-			context.Set(r, "task_pool", &taskPool)
+			r = helpers.SetContextValue(r, "store", store)
+			r = helpers.SetContextValue(r, "schedule_pool", schedulePool)
+			r = helpers.SetContextValue(r, "task_pool", &taskPool)
+			r = helpers.SetContextValue(r, "log_writer", logWriteService)
 			next.ServeHTTP(w, r)
 		})
 	})
@@ -107,21 +166,72 @@ func runService() {
 		store.Close("root")
 	}
 
-	err := http.ListenAndServe(util.Config.Interface+port, cropTrailingSlashMiddleware(router))
+	var err error
+	if util.Config.TLS.Enabled {
+		if util.Config.TLS.HTTPRedirectPort != nil {
+
+			go func() {
+				httpRedirectPort := fmt.Sprintf(":%d", *util.Config.TLS.HTTPRedirectPort)
+				err = http.ListenAndServe(httpRedirectPort, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					target := "https://"
+
+					if util.Config.WebHost != "" {
+						webHost, err2 := url.Parse(util.Config.WebHost)
+						if err2 != nil {
+							log.Panic(err2)
+						}
+						target += webHost.Host + r.URL.Path
+					} else {
+						hostParts := strings.Split(r.Host, ":")
+						host := hostParts[0]
+						target += host + port + r.URL.Path
+					}
+
+					if len(r.URL.RawQuery) > 0 {
+						target += "?" + r.URL.RawQuery
+					}
+
+					if r.Method != "GET" && r.Method != "HEAD" && r.Method != "OPTIONS" {
+						http.Error(w, "http requests forbidden", http.StatusForbidden)
+						return
+					}
+
+					http.Redirect(w, r, target, http.StatusTemporaryRedirect)
+				}))
+				if err != nil {
+					log.Panic(err)
+				}
+			}()
+		}
+
+		err = http.ListenAndServeTLS(util.Config.Interface+port, util.Config.TLS.CertFile, util.Config.TLS.KeyFile, cropTrailingSlashMiddleware(router))
+
+		if err != nil {
+			log.Panic(err)
+		}
+
+	} else {
+		err = http.ListenAndServe(util.Config.Interface+port, cropTrailingSlashMiddleware(router))
+	}
 
 	if err != nil {
-		log.Panic(err)
+		log.WithError(err).Panic("Error starting server")
 	}
 }
 
-func createStore(token string) db.Store {
+func createStoreWithMigrationVersion(token string, undoTo *string, applyTo *string) db.Store {
 	util.ConfigInit(persistentFlags.configPath, persistentFlags.noConfig)
 
 	store := factory.CreateStore()
 
 	store.Connect(token)
 
-	err := db.Migrate(store)
+	var err error
+	if undoTo != nil {
+		err = db.Rollback(store, *undoTo)
+	} else {
+		err = db.Migrate(store, applyTo)
+	}
 
 	if err != nil {
 		panic(err)
@@ -136,4 +246,8 @@ func createStore(token string) db.Store {
 	util.LookupDefaultApps()
 
 	return store
+}
+
+func createStore(token string) db.Store {
+	return createStoreWithMigrationVersion(token, nil, nil)
 }
