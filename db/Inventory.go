@@ -65,9 +65,10 @@ func (e Inventory) Validate() error {
         return &ValidationError{"Repository must be present"}
     }
 
-	if e.RunnerTag == nil && *e.RunnerTag == "" {
-		return &ValidationError{"template runner tag can not be empty"}
-	}
+   // RunnerTag is optional, but if set, it can't be empty
+    if e.RunnerTag != nil && *e.RunnerTag == "" {
+        return &ValidationError{"template runner tag can not be empty"}
+    }
 
 	return nil
 }
