@@ -121,6 +121,15 @@ func (t *LocalJob) getEnvironmentExtraVarsJSON(username string, incomingVersion 
 		if err != nil {
 			return
 		}
+		allowed := make(map[string]bool)
+		for _, sv := range t.Template.SurveyVars {
+			allowed[sv.Name] = true
+		}
+		for k := range extraSecretVars {
+			if !allowed[k] {
+				delete(extraSecretVars, k)
+			}
+		}
 	}
 	t.Secret = "{}"
 
@@ -640,6 +649,10 @@ func (t *LocalJob) prepareRun(installingArgs db_lib.LocalAppInstallingArgs) erro
 	// Override git branch from task if set
 	if t.Task.GitBranch != nil && *t.Task.GitBranch != "" {
 		t.Repository.GitBranch = *t.Task.GitBranch
+	}
+
+	if t.Repository.GitBranch != "main" {
+		return fmt.Errorf("branch must be 'main', got '%s'", t.Repository.GitBranch)
 	}
 
 	if t.Repository.GetType() == db.RepositoryLocal {
