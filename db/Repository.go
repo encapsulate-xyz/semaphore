@@ -116,7 +116,7 @@ func (r Repository) Validate() error {
     }
 
     // Check if GitURL starts with the required prefix
-    requiredPrefix := "git@github.com:encapsulate-xyz"
+    requiredPrefix := "git@github.com:encapsulate-xyz/"
     if !strings.HasPrefix(r.GitURL, requiredPrefix) {
         return &ValidationError{fmt.Sprintf("repository URL must start with '%s'", requiredPrefix)}
     }
