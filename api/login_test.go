@@ -1,7 +1,10 @@
 package api
 
 import (
+	"net/url"
 	"testing"
+
+	"github.com/semaphoreui/semaphore/util"
 )
 
 func TestParseClaim(t *testing.T) {
@@ -81,5 +84,38 @@ func TestParseClaim5(t *testing.T) {
 
 	if !ok || res != "123456757343" {
 		t.Fatalf("Expected: %v, Got: %v", "123456757343", res)
+	}
+}
+
+func TestIsSecureWebHost(t *testing.T) {
+	orig := util.WebHostURL
+	defer func() { util.WebHostURL = orig }()
+
+	tests := []struct {
+		name     string
+		webHost  string
+		expected bool
+	}{
+		{"https host is secure", "https://semaphore.example.com", true},
+		{"http host is not secure", "http://semaphore.example.com:3000", false},
+		{"nil host is not secure", "", false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.webHost == "" {
+				util.WebHostURL = nil
+			} else {
+				u, err := url.Parse(tt.webHost)
+				if err != nil {
+					t.Fatal(err)
+				}
+				util.WebHostURL = u
+			}
+
+			if got := isSecureWebHost(); got != tt.expected {
+				t.Fatalf("Expected: %v, Got: %v", tt.expected, got)
+			}
+		})
 	}
 }

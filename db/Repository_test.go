@@ -65,3 +65,28 @@ func TestRepository_GetGitURL(t *testing.T) {
 		assert.Equal(t, v.ExpectedGitUrl, gitUrl, "wrong gitUrl")
 	}
 }
+
+func TestRepository_ValidateOrgPrefix(t *testing.T) {
+	tests := []struct {
+		name    string
+		url     string
+		wantErr bool
+	}{
+		{"org repo", "git@github.com:encapsulate-xyz/infrastructure-ansible.git", false},
+		{"org name prefix of another org", "git@github.com:encapsulate-xyzz/repo.git", true},
+		{"org name without slash", "git@github.com:encapsulate-xyz", true},
+		{"https url", "https://github.com/encapsulate-xyz/repo.git", true},
+		{"option injection", "--upload-pack=/tmp/evil.sh", true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := Repository{Name: "repo", GitURL: tt.url, GitBranch: "main"}.Validate()
+			if tt.wantErr {
+				require.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
+		})
+	}
+}
