@@ -71,6 +71,8 @@ func setupGitClientTest(t *testing.T) {
 	original := util.Config
 	t.Cleanup(func() { util.Config = original })
 	util.Config = &util.ConfigType{TmpPath: t.TempDir(), Process: &util.ConfigProcess{}}
+	// Remote git commands run in the project tmp dir, which this version doesn't create on demand.
+	require.NoError(t, os.MkdirAll(util.Config.GetProjectTmpDir(1), 0755))
 }
 
 // TestCmdGitClient_OptionInjectionNeutralized proves that a GitURL crafted as a git

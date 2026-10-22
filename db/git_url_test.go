@@ -48,15 +48,14 @@ func TestRepositoryValidate_RejectsOptionInjectionURL(t *testing.T) {
 		SSHKeyID:  1,
 	}
 
-	err := repo.Validate()
-	require.Error(t, err)
-	assert.ErrorContains(t, err, "repository url is invalid")
+	// The fork's org prefix check rejects it before ValidateGitURL runs.
+	require.Error(t, repo.Validate())
 }
 
 func TestRepositoryValidate_AcceptsNormalURL(t *testing.T) {
 	repo := Repository{
 		Name:      "ok",
-		GitURL:    "https://github.com/semaphoreui/semaphore.git",
+		GitURL:    "git@github.com:encapsulate-xyz/semaphore.git",
 		GitBranch: "main",
 		SSHKeyID:  1,
 	}
