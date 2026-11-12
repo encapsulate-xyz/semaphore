@@ -64,6 +64,9 @@ type BackupInventory struct {
 	db.Inventory
 	SSHKey    *string `backup:"ssh_key"`
 	BecomeKey *string `backup:"become_key"`
+	// Repository is the name of the repository the inventory is read from. Every inventory must have one
+	// (Inventory.Validate), so a backup without it can't be restored.
+	Repository *string `backup:"repository"`
 }
 
 type BackupRepository struct {

@@ -36,14 +36,15 @@ func TestBackupProject(t *testing.T) {
 		ProjectID: proj.ID,
 		SSHKeyID:  key.ID,
 		Name:      "Test",
-		GitURL:    "git@example.com:test/test",
-		GitBranch: "master",
+		GitURL:    "git@github.com:encapsulate-xyz/test.git",
+		GitBranch: "main",
 	})
 	assert.NoError(t, err)
 
 	inv, err := store.CreateInventory(db.Inventory{
-		ProjectID: proj.ID,
-		ID:        1,
+		ProjectID:    proj.ID,
+		ID:           1,
+		RepositoryID: &repo.ID,
 	})
 	assert.NoError(t, err)
 
@@ -91,6 +92,16 @@ func TestBackupProject(t *testing.T) {
 	restoredProj, err := restoredBackup.Restore(user, store)
 	assert.NoError(t, err)
 	assert.Equal(t, proj.Name, restoredProj.Name)
+
+	// The inventory keeps its repository through a backup and restore: every inventory must have one.
+	assert.Equal(t, "Test", *restoredBackup.Inventories[0].Repository)
+	restoredInvs, err := store.GetInventories(restoredProj.ID, db.RetrieveQueryParams{}, nil)
+	assert.NoError(t, err)
+	restoredRepos, err := store.GetRepositories(restoredProj.ID, db.RetrieveQueryParams{})
+	assert.NoError(t, err)
+	if assert.Len(t, restoredInvs, 1) && assert.Len(t, restoredRepos, 1) && assert.NotNil(t, restoredInvs[0].RepositoryID) {
+		assert.Equal(t, restoredRepos[0].ID, *restoredInvs[0].RepositoryID)
+	}
 }
 
 func TestBackup_BackupSecretStorage(t *testing.T) {
