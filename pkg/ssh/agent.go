@@ -7,6 +7,7 @@ import (
 	"github.com/semaphoreui/semaphore/util"
 	"io"
 	"net"
+	"os"
 	"path"
 
 	"github.com/semaphoreui/semaphore/pkg/task_logger"
@@ -55,6 +56,11 @@ func (a *Agent) Listen() error {
 		}); err != nil {
 			return fmt.Errorf("adding private key: %w", err)
 		}
+	}
+
+	// The socket lives in the project's folder under tmp_path, which may not exist (upstream 20ebe7c05)
+	if err := os.MkdirAll(path.Dir(a.SocketFile), 0o755); err != nil {
+		return fmt.Errorf("creating socket directory: %w", err)
 	}
 
 	l, err := net.ListenUnix(
