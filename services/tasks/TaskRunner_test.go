@@ -11,6 +11,7 @@ import (
 	"github.com/semaphoreui/semaphore/pkg/task_logger"
 	"github.com/semaphoreui/semaphore/pro_interfaces"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/semaphoreui/semaphore/db_lib"
 
@@ -233,15 +234,16 @@ func TestPopulateDetails(t *testing.T) {
 		ProjectID: proj.ID,
 		SSHKeyID:  key.ID,
 		Name:      "Test",
-		GitURL:    "git@example.com:test/test",
-		GitBranch: "master",
+		GitURL:    "git@github.com:encapsulate-xyz/test.git",
+		GitBranch: "main",
 	})
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	inv, err := store.CreateInventory(db.Inventory{
-		ProjectID: proj.ID,
+		ProjectID:    proj.ID,
+		RepositoryID: &repo.ID,
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -263,6 +265,8 @@ func TestPopulateDetails(t *testing.T) {
 		RepositoryID:  repo.ID,
 		InventoryID:   &inv.ID,
 		EnvironmentID: &env.ID,
+		// A task may only set survey variables (the fork's rule), so the two this task sets are survey variables.
+		SurveyVars: []db.SurveyVar{{Name: "comment"}, {Name: "time"}},
 	})
 
 	if err != nil {
@@ -331,23 +335,25 @@ func TestPopulateDetailsInventory(t *testing.T) {
 		ProjectID: proj.ID,
 		SSHKeyID:  key.ID,
 		Name:      "Test",
-		GitURL:    "git@example.com:test/test",
-		GitBranch: "master",
+		GitURL:    "git@github.com:encapsulate-xyz/test.git",
+		GitBranch: "main",
 	})
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	inv, err := store.CreateInventory(db.Inventory{
-		ProjectID: proj.ID,
-		ID:        1,
+		ProjectID:    proj.ID,
+		ID:           1,
+		RepositoryID: &repo.ID,
 	})
 	if err != nil {
 		t.Fatal(err)
 	}
 	inv2, err := store.CreateInventory(db.Inventory{
-		ProjectID: proj.ID,
-		ID:        2,
+		ProjectID:    proj.ID,
+		ID:           2,
+		RepositoryID: &repo.ID,
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -440,16 +446,17 @@ func TestPopulateDetailsInventory1(t *testing.T) {
 		ProjectID: proj.ID,
 		SSHKeyID:  key.ID,
 		Name:      "Test",
-		GitURL:    "git@example.com:test/test",
-		GitBranch: "master",
+		GitURL:    "git@github.com:encapsulate-xyz/test.git",
+		GitBranch: "main",
 	})
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	inv, err := store.CreateInventory(db.Inventory{
-		ProjectID: proj.ID,
-		ID:        1,
+		ProjectID:    proj.ID,
+		ID:           1,
+		RepositoryID: &repo.ID,
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -725,6 +732,9 @@ func TestTaskRunner_populateTaskEnvironment(t *testing.T) {
 		Task: db.Task{
 			Environment: "{\"a\":11, \"b\": 22, \"c\": 33}",
 		},
+		Template: db.Template{
+			SurveyVars: []db.SurveyVar{{Name: "a"}, {Name: "b"}, {Name: "c"}},
+		},
 		Environment: db.Environment{
 			JSON: "{\"a\":1, \"d\": 4}",
 		},
@@ -735,5 +745,30 @@ func TestTaskRunner_populateTaskEnvironment(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	assert.Equal(t, tsk.Environment.JSON, "{\"a\":11,\"b\":22,\"c\":33,\"d\":4}")
+	assert.Equal(t, "{\"a\":11,\"b\":22,\"c\":33,\"d\":4}", tsk.Environment.JSON)
+}
+
+// A task may only set the template's survey variables: anything else it sends is dropped, so whoever runs a task
+// can't override the variable group (the fork's rule since 95898999).
+func TestTaskRunner_populateTaskEnvironment_onlySurveyVars(t *testing.T) {
+	tsk := TaskRunner{
+		Task: db.Task{
+			Environment: "{\"a\":11, \"ansible_ssh_common_args\": \"-o ProxyCommand=evil\"}",
+		},
+		Template: db.Template{
+			SurveyVars: []db.SurveyVar{{Name: "a"}},
+		},
+		Environment: db.Environment{
+			JSON: "{\"a\":1, \"d\": 4}",
+		},
+	}
+	require.NoError(t, tsk.populateTaskEnvironment())
+	assert.Equal(t, "{\"a\":11,\"d\":4}", tsk.Environment.JSON)
+
+	tsk = TaskRunner{
+		Task:        db.Task{Environment: "{\"d\": 5}"},
+		Environment: db.Environment{JSON: "{\"a\":1, \"d\": 4}"},
+	}
+	require.NoError(t, tsk.populateTaskEnvironment())
+	assert.Equal(t, "{\"a\":1, \"d\": 4}", tsk.Environment.JSON, "no survey variables: every task variable is dropped")
 }

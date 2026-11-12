@@ -216,8 +216,8 @@ func TestBoltDb_GetRepositoryRefs(t *testing.T) {
 
 	repo1, err := store.CreateRepository(db.Repository{
 		Name:      "repo1",
-		GitURL:    "git@example.com/repo1",
-		GitBranch: "master",
+		GitURL:    "git@github.com:encapsulate-xyz/repo1.git",
+		GitBranch: "main",
 		ProjectID: 1,
 	})
 	require.NoError(t, err)
