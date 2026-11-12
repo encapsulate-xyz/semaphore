@@ -3,8 +3,11 @@ package db_lib
 import (
 	"fmt"
 	"github.com/semaphoreui/semaphore/pkg/ssh"
+	"os"
 	"os/exec"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/semaphoreui/semaphore/db"
 	"github.com/semaphoreui/semaphore/util"
@@ -27,6 +30,21 @@ func (c CmdGitClient) makeCmd(
 	switch targetDir {
 	case GitRepositoryTmpPath:
 		cmd.Dir = util.Config.GetProjectTmpDir(r.Repository.ProjectID)
+		_, err := os.Stat(cmd.Dir)
+		if err != nil {
+			if os.IsNotExist(err) {
+				err = os.MkdirAll(cmd.Dir, 0755)
+				if err != nil {
+					log.WithError(err).WithFields(log.Fields{
+						"context": "git",
+					}).Error("failed to create project temp directory")
+				}
+			} else {
+				log.WithError(err).WithFields(log.Fields{
+					"context": "git",
+				}).Error("failed to check existing project temp directory")
+			}
+		}
 	case GitRepositoryFullPath:
 		cmd.Dir = r.GetFullPath()
 	default:
